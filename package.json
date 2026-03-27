@@ -5,6 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "node server.js",
-    "test": "npm --prefix apps/aegean-week test"
+    "test": "npm --prefix apps/aegean-week test",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

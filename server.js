@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const port = Number(process.env.PORT) || 0;
+const port = Number(process.env.PORT) || 3000;
 
 const mimeTypes = {
   ".css": "text/css; charset=utf-8",
@@ -19,10 +19,6 @@ const mimeTypes = {
   ".ico": "image/x-icon",
   ".woff2": "font/woff2",
 };
-
-function isFile(p) {
-  try { const s = require("fs").statSync(p); return s.isFile(); } catch { return false; }
-}
 
 const server = http.createServer(async (request, response) => {
   try {
