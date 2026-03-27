@@ -1,3 +1,174 @@
+/* === DARK THEME OVERRIDE === */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg: #0f0d0a !important;
+  --bg-deep: #0a0908 !important;
+  --surface: #1a1714 !important;
+  --surface-strong: #201d19 !important;
+  --line: #2e2a24 !important;
+  --text: #f0ebe3 !important;
+  --muted: #7a7063 !important;
+  --olive: #c8922a !important;
+  --sea: #8fbe6b !important;
+  --copper: #5b9bd5 !important;
+  --gold: #c8922a !important;
+  --shadow: 0 24px 70px rgba(0,0,0,0.5) !important;
+  --check-bg: #2a2520;
+  --border: #2e2a24;
+  --accent: #c8922a;
+  --green: #8fbe6b;
+  --blue: #5b9bd5;
+}
+
+html {
+  background: #0f0d0a !important;
+  background-image:
+    radial-gradient(ellipse at 15% 10%, rgba(200,146,42,0.06) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 90%, rgba(91,155,213,0.05) 0%, transparent 50%) !important;
+}
+
+body {
+  background: #0f0d0a !important;
+  color: #f0ebe3 !important;
+  font-family: 'DM Sans', sans-serif !important;
+  background-image:
+    radial-gradient(ellipse at 15% 10%, rgba(200,146,42,0.06) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 90%, rgba(91,155,213,0.05) 0%, transparent 50%) !important;
+}
+
+.masthead, .planner-panel, .inspector-panel, .headline-stat,
+.day-button, .meal-card, .booster-card, .meter-card, .staple-item,
+.prep-note, .field input, .field select {
+  background: #1a1714 !important;
+  border-color: #2e2a24 !important;
+  color: #f0ebe3 !important;
+}
+
+.masthead {
+  background: linear-gradient(145deg, #1a1714, #201d19) !important;
+  border-color: #2e2a24 !important;
+}
+
+.day-button.is-active {
+  background: #252118 !important;
+  border-color: #c8922a !important;
+}
+
+.day-button:hover {
+  background: #201d19 !important;
+  border-color: #3e3a32 !important;
+}
+
+.meal-card:hover {
+  background: #201d19 !important;
+}
+
+.masthead h1, .section-heading h2, .day-identity h3, .meal-heading h4 {
+  font-family: 'Playfair Display', serif !important;
+  color: #f0ebe3 !important;
+}
+
+.masthead h1 em, h1 em { color: #c8922a !important; font-style: italic !important; }
+
+.eyebrow, .label-line, .meal-slot, .prep-label { color: #c8922a !important; }
+
+.chip, .protein-pill {
+  background: rgba(200,146,42,0.1) !important;
+  border-color: rgba(200,146,42,0.2) !important;
+  color: #c8922a !important;
+}
+
+.nutrient-tags span, .ingredient-row span {
+  background: rgba(200,146,42,0.1) !important;
+  color: #c8922a !important;
+}
+
+.micro-stat {
+  background: rgba(200,146,42,0.08) !important;
+  border-color: #2e2a24 !important;
+}
+
+.meter-track { background: #2e2a24 !important; }
+
+.meter-fill.sea {
+  background: linear-gradient(90deg, #8fbe6b, #5bbfb5) !important;
+}
+
+.meter-fill.copper {
+  background: linear-gradient(90deg, #c8922a, #e8b84b) !important;
+}
+
+.progress-bar-inner {
+  background: linear-gradient(90deg, #c8922a, #8fbe6b) !important;
+}
+
+.field input, .field select {
+  background: #201d19 !important;
+  border-color: #2e2a24 !important;
+  color: #f0ebe3 !important;
+}
+
+.field input:focus, .field select:focus {
+  border-color: #c8922a !important;
+  outline-color: rgba(200,146,42,0.2) !important;
+}
+
+/* Nav */
+.nav-bar {
+  max-width: 1200px;
+  margin: 0 auto 20px;
+  display: flex;
+  gap: 10px;
+  padding: 0 20px;
+}
+.nav-link {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #7a7063;
+  text-decoration: none;
+  border: 1px solid #2e2a24;
+  padding: 6px 14px;
+  border-radius: 20px;
+  transition: all 0.2s;
+}
+.nav-link:hover, .nav-link.active {
+  border-color: #c8922a;
+  color: #c8922a;
+}
+
+/* reset button */
+.reset-btn {
+  background: none;
+  border: 1px solid #2e2a24;
+  color: #7a7063;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.reset-btn:hover { border-color: #c8922a; color: #c8922a; }
+
+/* Headline accent */
+.headline-stat strong { color: #c8922a !important; }
+.meter-copy strong { color: #f0ebe3 !important; }
+
+/* Booster cards */
+.booster-card { background: #1a1714 !important; border-color: #2e2a24 !important; }
+.prep-note { background: rgba(200,146,42,0.06) !important; border-color: rgba(200,146,42,0.15) !important; }
+
+/* Meter rings */
+.meter-ring { color: #f0ebe3 !important; }
+.meter-ring.sea { --ring-color: #8fbe6b; }
+.meter-ring.copper { --ring-color: #c8922a; }
+
+/* === END DARK THEME OVERRIDE === */
+
 :root {
   --bg: #f2ede3;
   --bg-deep: #e4dac8;
