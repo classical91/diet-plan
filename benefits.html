@@ -97,6 +97,40 @@
   .tag-spice { border-color: rgba(200,107,143,0.3); color: var(--pink); background: rgba(200,107,143,0.07); }
   .tag-fungi { border-color: rgba(91,191,181,0.3); color: var(--teal); background: rgba(91,191,181,0.07); }
 
+  
+  /* Subsections */
+  .subsection { max-width: 900px; margin: 0 auto 8px; }
+  .subsection-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    margin-bottom: 0;
+    user-select: none;
+  }
+  .subsection-header:hover { border-color: #3e3a32; background: #1d1a16; }
+  .subsection-header.open { border-color: var(--accent); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  .subsection-icon { font-size: 18px; }
+  .subsection-title { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; color: var(--text); flex: 1; }
+  .subsection-count { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; }
+  .subsection-chevron { color: var(--muted); transition: transform 0.25s; }
+  .subsection-header.open .subsection-chevron { transform: rotate(180deg); }
+  .subsection-color-bar { height: 3px; background: var(--teal); border-radius: 0; margin: 0; }
+  .subsection-body {
+    display: none;
+    border: 1px solid var(--accent);
+    border-top: none;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    padding: 12px;
+    background: #13100d;
+  }
+  .subsection-body.open { display: block; }
+  .subsection-body .grid { max-width: 100%; margin: 0; }
+
   .no-results { max-width: 900px; margin: 40px auto; text-align: center; color: var(--muted); font-family: 'Playfair Display', serif; font-size: 18px; }
 </style>
 </head>
@@ -216,34 +250,92 @@ let activeCat = 'all';
 const grid = document.getElementById('grid');
 const noResults = document.getElementById('noResults');
 
+const SUBSECTIONS = {
+  fungi: [
+    { id:'mushrooms', icon:'🍄', title:'Mushrooms', color:'var(--teal)', names:["Lion's Mane","Chaga","Shiitake","Turkey Tail","Oyster Mushroom","Maitake","Reishi Mushroom","Cordyceps","Mushrooms"] }
+  ]
+};
+
+function makeCard(item, i) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = (i * 0.02) + 's';
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard(this.closest('.card'))">
+      <span class="card-icon">${item.icon}</span>
+      <div>
+        <div class="card-title">${item.name}</div>
+        <div class="card-cat tag tag-${item.cat}">${item.cat}</div>
+      </div>
+      <svg class="card-expand" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <div class="card-body">
+      <ul class="benefit-list">
+        ${item.benefits.map(b => `<li>${b}</li>`).join('')}
+      </ul>
+      <div class="tags">
+        ${item.tags.map(t => `<span class="tag tag-${t}">${t}</span>`).join('')}
+      </div>
+    </div>`;
+  return card;
+}
+
 function render(items) {
   grid.innerHTML = '';
   if (!items.length) { noResults.style.display = 'block'; grid.style.display = 'none'; return; }
   noResults.style.display = 'none'; grid.style.display = 'grid';
   document.getElementById('count').textContent = items.length + ' item' + (items.length !== 1 ? 's' : '');
-  items.forEach((item, i) => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.style.animationDelay = (i * 0.02) + 's';
-    card.innerHTML = `
-      <div class="card-header" onclick="toggleCard(this.closest('.card'))">
-        <span class="card-icon">${item.icon}</span>
-        <div>
-          <div class="card-title">${item.name}</div>
-          <div class="card-cat tag tag-${item.cat}">${item.cat}</div>
-        </div>
-        <svg class="card-expand" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-      </div>
-      <div class="card-body">
-        <ul class="benefit-list">
-          ${item.benefits.map(b => `<li>${b}</li>`).join('')}
-        </ul>
-        <div class="tags">
-          ${item.tags.map(t => `<span class="tag tag-${t}">${t}</span>`).join('')}
-        </div>
-      </div>`;
-    grid.appendChild(card);
-  });
+
+  // Check if we're in a cat that has subsections
+  const subs = SUBSECTIONS[activeCat];
+  if (subs && subs.length) {
+    // Gather subsection items
+    const subbed = new Set();
+    subs.forEach(sub => {
+      const subItems = items.filter(item => sub.names.includes(item.name));
+      if (!subItems.length) return;
+      subItems.forEach(i => subbed.add(i.name));
+
+      // Build subsection wrapper
+      const wrapper = document.createElement('div');
+      wrapper.className = 'subsection';
+      wrapper.style.gridColumn = '1 / -1';
+
+      const header = document.createElement('div');
+      header.className = 'subsection-header';
+      header.innerHTML = `
+        <span class="subsection-icon">${sub.icon}</span>
+        <span class="subsection-title">${sub.title}</span>
+        <span class="subsection-count">${subItems.length} items</span>
+        <svg class="subsection-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>`;
+      header.onclick = () => {
+        header.classList.toggle('open');
+        body.classList.toggle('open');
+      };
+
+      const colorBar = document.createElement('div');
+      colorBar.className = 'subsection-color-bar';
+      colorBar.style.background = sub.color;
+
+      const body = document.createElement('div');
+      body.className = 'subsection-body';
+      const innerGrid = document.createElement('div');
+      innerGrid.className = 'grid';
+      subItems.forEach((item, i) => innerGrid.appendChild(makeCard(item, i)));
+      body.appendChild(innerGrid);
+
+      wrapper.appendChild(colorBar);
+      wrapper.appendChild(header);
+      wrapper.appendChild(body);
+      grid.appendChild(wrapper);
+    });
+
+    // Remaining items not in subsections
+    const rest = items.filter(item => !subbed.has(item.name));
+    rest.forEach((item, i) => grid.appendChild(makeCard(item, i)));
+  } else {
+    items.forEach((item, i) => grid.appendChild(makeCard(item, i)));
+  }
 }
 
 function toggleCard(card) { card.classList.toggle('expanded'); }
