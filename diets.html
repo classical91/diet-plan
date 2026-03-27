@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diet Types | Diet Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0f0d0a;--surface:#1a1714;--card:#201d19;--border:#2e2a24;--accent:#c8922a;--green:#8fbe6b;--blue:#5b9bd5;--pink:#c86b8f;--purple:#9b7de8;--teal:#5bbfb5;--red:#e05c5c;--text:#f0ebe3;--muted:#7a7063}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(143,190,107,.04) 0%,transparent 50%)}
+  .nav-bar{max-width:1100px;margin:0 auto 32px;display:flex;gap:10px;flex-wrap:wrap}
+  .nav-link{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:20px;transition:all .2s}
+  .nav-link:hover,.nav-link.active{border-color:var(--accent);color:var(--accent)}
+  header{text-align:center;margin-bottom:40px}
+  .sub-label{font-size:11px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-.02em;line-height:1}
+  h1 em{color:var(--accent);font-style:italic}
+  .header-line{width:50px;height:2px;background:var(--accent);margin:16px auto 0;opacity:.5}
+
+  .controls{max-width:1100px;margin:0 auto 24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .search-wrap{flex:1;min-width:200px;position:relative}
+  .search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 14px 10px 36px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border .2s}
+  .search-wrap input:focus{border-color:var(--accent)}
+  .search-wrap input::placeholder{color:var(--muted)}
+  .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
+  .cat-filters{display:flex;gap:8px;flex-wrap:wrap}
+  .cat-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:6px 12px;border-radius:20px;cursor:pointer;transition:all .2s}
+  .cat-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .cat-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(200,146,42,.08)}
+  .result-count{max-width:1100px;margin:0 auto 16px;font-size:12px;color:var(--muted);letter-spacing:.1em}
+
+  .grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;animation:fadeUp .3s ease both;cursor:pointer;transition:border-color .2s,transform .2s}
+  .card:hover{border-color:#3e3a32;transform:translateY(-2px)}
+  .card.expanded{border-color:var(--accent)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .card-stripe{height:4px}
+  .card-header{padding:18px 18px 14px;display:flex;align-items:flex-start;gap:12px}
+  .card-icon{font-size:26px;flex-shrink:0}
+  .card-meta{flex:1}
+  .card-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:3px}
+  .card-tagline{font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.4}
+  .card-expand{color:var(--muted);flex-shrink:0;transition:transform .25s;margin-top:4px}
+  .card.expanded .card-expand{transform:rotate(180deg)}
+
+  .macro-bar-row{display:flex;gap:4px;align-items:center;margin-bottom:10px;padding:0 18px}
+  .macro-seg{height:8px;border-radius:4px;transition:width .4s}
+  .macro-seg:first-child{border-radius:4px 0 0 4px}
+  .macro-seg:last-child{border-radius:0 4px 4px 0}
+  .macro-label{font-size:10px;color:var(--muted);letter-spacing:.08em;display:flex;gap:10px;padding:0 18px 10px;flex-wrap:wrap}
+  .ml{display:flex;align-items:center;gap:4px}
+  .ml-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+
+  .tags-row{display:flex;flex-wrap:wrap;gap:6px;padding:0 18px 14px}
+  .tag{font-size:10px;padding:3px 10px;border-radius:20px;border:1px solid}
+  .tag-good{border-color:rgba(143,190,107,.3);color:var(--green);background:rgba(143,190,107,.07)}
+  .tag-hard{border-color:rgba(224,92,92,.3);color:var(--red);background:rgba(224,92,92,.07)}
+  .tag-neutral{border-color:rgba(91,155,213,.3);color:var(--blue);background:rgba(91,155,213,.07)}
+
+  .card-body{display:none;padding:0 18px 18px;border-top:1px solid var(--border);margin-top:0}
+  .card.expanded .card-body{display:block}
+  .section-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:16px;margin-bottom:8px}
+  .body-text{font-size:13px;color:#b0a898;line-height:1.6}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+  .food-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+  .food-list li{font-size:12.5px;color:#b0a898;display:flex;gap:6px;line-height:1.4}
+  .food-list li.eat::before{content:'✓';color:var(--green);flex-shrink:0;font-size:11px}
+  .food-list li.avoid::before{content:'✗';color:var(--red);flex-shrink:0;font-size:11px}
+  .benefit-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+  .benefit-list li{font-size:12.5px;color:#b0a898;display:flex;gap:8px;line-height:1.4}
+  .benefit-list li::before{content:'—';color:var(--accent);flex-shrink:0}
+  .who-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid;border-radius:6px;padding:10px 12px;font-size:12.5px;color:#b0a898;line-height:1.55;margin-top:8px}
+
+  .no-results{max-width:1100px;margin:40px auto;text-align:center;color:var(--muted);font-family:'Playfair Display',serif;font-size:18px}
+</style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <a href="/" class="nav-link">Diet Plan</a>
+  <a href="/nutrition" class="nav-link">Checklist</a>
+  <a href="/benefits" class="nav-link">Benefits</a>
+  <a href="/deficiencies" class="nav-link">Deficiencies</a>
+  <a href="/overview" class="nav-link">Overview</a>
+  <a href="/howto" class="nav-link">How-To</a>
+  <a href="/diets" class="nav-link active">Diet Types</a>
+</div>
+
+<header>
+  <div class="sub-label">Reference Guide</div>
+  <h1>Types of <em>Diets</em></h1>
+  <div class="header-line"></div>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search" placeholder="Search diets or goals..." oninput="filter()">
+  </div>
+  <div class="cat-filters">
+    <button class="cat-btn active" data-cat="all" onclick="setCat('all')">All</button>
+    <button class="cat-btn" data-cat="lowcarb" onclick="setCat('lowcarb')">Low Carb</button>
+    <button class="cat-btn" data-cat="plant" onclick="setCat('plant')">Plant-Based</button>
+    <button class="cat-btn" data-cat="therapeutic" onclick="setCat('therapeutic')">Therapeutic</button>
+    <button class="cat-btn" data-cat="cultural" onclick="setCat('cultural')">Cultural</button>
+    <button class="cat-btn" data-cat="fasting" onclick="setCat('fasting')">Fasting</button>
+  </div>
+</div>
+
+<div class="result-count" id="count"></div>
+<div class="grid" id="grid"></div>
+<div class="no-results" id="noResults" style="display:none">No diets found</div>
+
+<script>
+const DIETS = [
+  {
+    name:"Ketogenic (Keto)",icon:"🥑",cat:"lowcarb",color:"#c8922a",
+    tagline:"Very low carb, high fat — forces the body into fat-burning ketosis",
+    macros:{protein:25,carb:5,fat:70},
+    tags:[{t:"Weight loss",c:"good"},{t:"Brain fuel",c:"good"},{t:"Restrictive",c:"hard"},{t:"Diabetes management",c:"good"}],
+    summary:"The ketogenic diet drastically reduces carbohydrate intake to under 50g per day, forcing the liver to produce ketones from fat as the primary fuel source. Most effective for rapid fat loss and blood sugar control.",
+    eat:["Fatty fish (salmon, mackerel)","Meat and poultry","Eggs","Avocado and olive oil","Cheese and butter","Low-carb vegetables (spinach, broccoli, zucchini)","Nuts and seeds","Heavy cream"],
+    avoid:["Bread, pasta, rice","Fruit (except small amounts of berries)","Sugar and sweets","Grains and legumes","Root vegetables (potatoes, carrots)","Most alcohol"],
+    benefits:["Rapid fat loss — especially visceral fat","Reduces blood sugar and insulin levels dramatically","Improves brain clarity and focus for many people","Reduces triglycerides and increases HDL cholesterol","Effective for epilepsy — original medical use","May reduce inflammation"],
+    who:"Best for: people with type 2 diabetes or insulin resistance, those who want rapid fat loss, people with epilepsy, or those who do well mentally on high fat. Requires commitment — not ideal for competitive endurance athletes.",
+    whoColor:"var(--accent)"
+  },
+  {
+    name:"Carnivore",icon:"🥩",cat:"lowcarb",color:"#e05c5c",
+    tagline:"Animal products only — zero plant foods",
+    macros:{protein:40,carb:0,fat:60},
+    tags:[{t:"Elimination diet",c:"good"},{t:"Autoimmune",c:"good"},{t:"Very restrictive",c:"hard"},{t:"Zero fiber",c:"hard"}],
+    summary:"The carnivore diet consists exclusively of animal products — meat, fish, eggs, and some dairy. Often used as an elimination protocol to identify food sensitivities or for autoimmune conditions.",
+    eat:["Beef (especially fatty cuts — ribeye, brisket)","Lamb and pork","Organ meats (liver, heart — nutrient dense)","Fatty fish","Eggs","Butter and tallow","Bacon","Hard cheeses (optional)"],
+    avoid:["All plants — vegetables, fruits, grains","Legumes and nuts","Sugar and sweeteners","Seed and vegetable oils","Any processed food"],
+    benefits:["Eliminates most common food triggers and allergens","Reduces autoimmune symptoms in many people","Simplifies eating — no tracking needed","May reduce inflammation from plant antinutrients","Rapid improvement in digestive issues for some"],
+    who:"Best for: people with severe autoimmune conditions, gut issues, or as a short-term elimination protocol. Not recommended long-term without monitoring. Lacks fiber and plant antioxidants — supplement carefully.",
+    whoColor:"var(--red)"
+  },
+  {
+    name:"Mediterranean",icon:"🫒",cat:"cultural",color:"#8fbe6b",
+    tagline:"Whole foods, olive oil, fish, and vegetables — most studied diet in the world",
+    macros:{protein:15,carb:50,fat:35},
+    tags:[{t:"Longevity",c:"good"},{t:"Heart health",c:"good"},{t:"Sustainable",c:"good"},{t:"Flexible",c:"neutral"}],
+    summary:"Modeled after traditional diets of Mediterranean countries. Emphasizes whole foods, healthy fats, lean protein, and minimal processed food. Consistently ranked the healthiest overall diet in research.",
+    eat:["Olive oil (primary fat)","Fish and seafood (2–3x/week)","Vegetables and leafy greens (daily)","Legumes (lentils, chickpeas)","Whole grains (farro, bulgur, whole wheat)","Fresh fruit","Nuts and seeds","Moderate red wine (optional)","Some poultry and eggs"],
+    avoid:["Processed and packaged foods","Added sugars","Red meat (limited to 1–2x/week)","Refined grains (white bread, white pasta)","Butter (replaced by olive oil)"],
+    benefits:["Reduces cardiovascular disease risk by 30%","Improves longevity and healthspan","Reduces inflammation throughout the body","Supports brain health and reduces Alzheimer's risk","Sustainable and enjoyable long-term","Improves blood sugar control without restriction"],
+    who:"Best for: almost everyone — especially those focused on long-term health, heart disease prevention, and sustainable eating. One of the few diets that is both evidence-based and genuinely enjoyable.",
+    whoColor:"var(--green)"
+  },
+  {
+    name:"Intermittent Fasting (IF)",icon:"⏱️",cat:"fasting",color:"#9b7de8",
+    tagline:"Time-restricted eating — not what you eat, but when",
+    macros:{protein:30,carb:40,fat:30},
+    tags:[{t:"Metabolic reset",c:"good"},{t:"Flexible",c:"good"},{t:"Weight loss",c:"good"},{t:"Difficult to start",c:"hard"}],
+    summary:"Intermittent fasting is an eating pattern that cycles between fasting and eating windows. Common protocols: 16:8 (fast 16h, eat 8h), 18:6, OMAD (one meal a day), and 5:2 (eat normally 5 days, restrict 2 days).",
+    eat:["Any whole foods during eating window","High protein to preserve muscle","Healthy fats for satiety","Vegetables and fiber-rich foods","Black coffee and tea are allowed during fasting"],
+    avoid:["Calories during fasting window (including milk in coffee)","Processed foods and sugar during eating window","Breaking fast with high-carb, high-sugar foods"],
+    benefits:["Triggers autophagy — cellular cleanup and renewal","Improves insulin sensitivity dramatically","Promotes fat burning — especially visceral fat","Reduces inflammation and oxidative stress","Simplifies meal planning","May extend lifespan through metabolic pathways"],
+    who:"Best for: people wanting to lose fat without counting calories, improve metabolic health, or experiment with longevity protocols. Not ideal during pregnancy, for people with a history of eating disorders, or underweight individuals.",
+    whoColor:"var(--purple)"
+  },
+  {
+    name:"Paleo",icon:"🦴",cat:"lowcarb",color:"#c8922a",
+    tagline:"Eat like our ancestors — whole, unprocessed foods only",
+    macros:{protein:30,carb:25,fat:45},
+    tags:[{t:"No processed food",c:"good"},{t:"Anti-inflammatory",c:"good"},{t:"No grains/dairy",c:"hard"},{t:"Moderate carbs",c:"neutral"}],
+    summary:"The paleo diet mimics the diet of Paleolithic ancestors — whole meats, fish, vegetables, fruits, nuts, and seeds. Eliminates all processed foods, grains, legumes, and dairy.",
+    eat:["Grass-fed beef and wild game","Fish and seafood","Eggs","Vegetables (all types)","Fruits","Nuts and seeds","Coconut and avocado oils","Sweet potatoes and root vegetables"],
+    avoid:["Grains (wheat, rice, oats, corn)","Legumes (beans, lentils, peanuts)","Dairy products","Refined sugar","Processed oils (canola, soybean)","Any packaged or processed foods"],
+    benefits:["Eliminates most inflammatory and processed foods","Improves blood sugar stability","Supports gut health by removing common irritants","Naturally high in protein and healthy fats","Often results in weight loss without counting calories","Reduces autoimmune symptoms for many people"],
+    who:"Best for: people sensitive to grains or dairy, those with autoimmune conditions, or anyone wanting to clean up their diet without complex tracking. More sustainable than keto for active people.",
+    whoColor:"var(--accent)"
+  },
+  {
+    name:"Plant-Based / Vegan",icon:"🥦",cat:"plant",color:"#8fbe6b",
+    tagline:"No animal products — all nutrition from plants",
+    macros:{protein:15,carb:60,fat:25},
+    tags:[{t:"Environmental",c:"good"},{t:"Heart health",c:"good"},{t:"B12 supplement needed",c:"hard"},{t:"Protein planning required",c:"hard"}],
+    summary:"A vegan diet eliminates all animal products. When well-planned with complete protein combinations and key supplements, it can be nutritionally complete. Requires attention to B12, iron, zinc, omega-3, and calcium.",
+    eat:["Legumes (lentils, beans, chickpeas)","Tofu and tempeh","Quinoa and whole grains","Nuts, seeds, and nut butters","Leafy greens (kale, spinach)","Nutritional yeast (B12 source)","Fortified plant milks","Fruits and vegetables of all kinds"],
+    avoid:["All meat, fish, poultry","Eggs and dairy","Honey (strict veganism)","Gelatin and other animal-derived additives"],
+    benefits:["Reduces cardiovascular disease risk","Lowers LDL cholesterol significantly","Associated with lower BMI and cancer risk","Rich in fiber and plant antioxidants","Reduces environmental footprint","May lower inflammation markers"],
+    who:"Best for: those motivated by ethics or environment, people with cardiovascular risk, or anyone who genuinely enjoys plant foods. Must supplement B12, vitamin D, omega-3 (algae-based), and monitor iron and zinc.",
+    whoColor:"var(--green)"
+  },
+  {
+    name:"Vegetarian",icon:"🥕",cat:"plant",color:"#8fbe6b",
+    tagline:"No meat — but may include eggs and dairy",
+    macros:{protein:18,carb:55,fat:27},
+    tags:[{t:"Flexible",c:"good"},{t:"Heart health",c:"good"},{t:"Iron management",c:"hard"},{t:"Sustainable",c:"good"}],
+    summary:"Vegetarianism excludes meat and fish but typically includes eggs and dairy. Easier to achieve nutritional completeness than veganism. Many subtypes: lacto-ovo (eggs + dairy), lacto (dairy only), ovo (eggs only).",
+    eat:["Eggs and dairy (lacto-ovo)","Legumes and beans","Whole grains","Tofu, tempeh, seitan","Nuts and seeds","All vegetables and fruits","Cheese, yogurt, milk"],
+    avoid:["Red meat, poultry, pork","Fish and seafood","Gelatin and animal-based additives"],
+    benefits:["Lower risk of heart disease and type 2 diabetes","Easier to meet protein needs than vegan (eggs and dairy help)","High in fiber and plant compounds","Environmentally more sustainable than omnivore diets","Flexible — many cuisines are naturally vegetarian"],
+    who:"Best for: people who want to reduce meat intake without full commitment to veganism. Good balance of health benefits and practical sustainability. Monitor iron and ensure adequate B12 through eggs/dairy.",
+    whoColor:"var(--green)"
+  },
+  {
+    name:"DASH Diet",icon:"❤️",cat:"therapeutic",color:"#e05c5c",
+    tagline:"Designed to lower blood pressure — Dietary Approaches to Stop Hypertension",
+    macros:{protein:18,carb:55,fat:27},
+    tags:[{t:"Blood pressure",c:"good"},{t:"Heart health",c:"good"},{t:"Doctor recommended",c:"good"},{t:"Low sodium",c:"neutral"}],
+    summary:"The DASH diet was specifically developed to reduce high blood pressure. Emphasizes foods rich in potassium, calcium, and magnesium while reducing sodium. Clinically proven to lower systolic blood pressure by 8–14 mmHg.",
+    eat:["Fruits (especially potassium-rich — banana, avocado)","Vegetables (particularly dark leafy greens)","Whole grains","Low-fat dairy (calcium source)","Lean meats, poultry, fish","Nuts and legumes","Low-sodium foods"],
+    avoid:["High-sodium processed foods","Red meat in excess","Full-fat dairy","Sweets and added sugar","Alcohol in excess"],
+    benefits:["Clinically proven to reduce blood pressure","Reduces cardiovascular disease risk","Improves insulin sensitivity","Rich in potassium, magnesium, and calcium","Sustainable as a lifelong approach","Reduces risk of kidney disease"],
+    who:"Best for: people with hypertension (high blood pressure), cardiovascular disease risk, or those looking for a balanced medically-endorsed diet. Very practical and not overly restrictive.",
+    whoColor:"var(--red)"
+  },
+  {
+    name:"FODMAP (Low-FODMAP)",icon:"🫁",cat:"therapeutic",color:"#5b9bd5",
+    tagline:"Eliminates fermentable carbs that trigger IBS symptoms",
+    macros:{protein:25,carb:45,fat:30},
+    tags:[{t:"IBS relief",c:"good"},{t:"Gut health",c:"good"},{t:"Complex protocol",c:"hard"},{t:"Temporary",c:"neutral"}],
+    summary:"Low-FODMAP eliminates fermentable oligosaccharides, disaccharides, monosaccharides, and polyols — short-chain carbohydrates that cause gas, bloating, and IBS symptoms. Done in phases: elimination, reintroduction, personalization.",
+    eat:["Rice and oats","Chicken, fish, eggs","Leafy greens (spinach, kale, bok choy)","Carrots, zucchini, eggplant","Blueberries, strawberries, oranges","Lactose-free dairy","Firm tofu","Maple syrup and stevia"],
+    avoid:["Wheat and rye","Onion and garlic (high FODMAP)","Most legumes","Milk and soft cheese (lactose)","Apples, pears, mangoes","Cauliflower, mushrooms","High-fructose corn syrup","Sugar alcohols (sorbitol, xylitol)"],
+    benefits:["Reduces IBS symptoms in 75% of people","Identifies specific food triggers through reintroduction","Reduces bloating, gas, and abdominal pain","Improves quality of life for people with IBD","Evidence-based — developed at Monash University"],
+    who:"Best for: people diagnosed with IBS or functional gut disorders. Should be done with dietitian guidance. Not meant to be permanent — reintroduction phase identifies which specific FODMAPs you react to.",
+    whoColor:"var(--blue)"
+  },
+  {
+    name:"Whole30",icon:"🎯",cat:"therapeutic",color:"#c8922a",
+    tagline:"30-day elimination reset — removes most common food triggers",
+    macros:{protein:30,carb:35,fat:35},
+    tags:[{t:"Reset protocol",c:"good"},{t:"Elimination",c:"good"},{t:"Strict 30 days",c:"hard"},{t:"Identifies triggers",c:"good"}],
+    summary:"A 30-day strict elimination protocol that removes sugar, alcohol, grains, legumes, soy, and dairy. Designed to identify food sensitivities by eliminating inflammatory foods completely, then reintroducing them one at a time.",
+    eat:["Meat, seafood, and eggs","Vegetables (all)","Fruit (in moderation)","Nuts and seeds","Healthy fats (olive oil, coconut oil, avocado)","Coffee (black only)"],
+    avoid:["Sugar and sweeteners (all forms)","Alcohol","Grains (including whole grains)","Legumes","Dairy","Soy products","Processed foods","Carrageenan, MSG, sulfites"],
+    benefits:["Identifies specific food sensitivities","Resets relationship with food","Reduces sugar cravings dramatically","Improves energy, sleep, and digestion","Many report skin improvements","Weight loss common (though not the primary goal)"],
+    who:"Best for: people wanting a structured elimination protocol, those curious about food sensitivities, or those wanting to break sugar and processed food habits. Requires full commitment — any slip resets the clock.",
+    whoColor:"var(--accent)"
+  },
+  {
+    name:"MIND Diet",icon:"🧠",cat:"therapeutic",color:"#9b7de8",
+    tagline:"Mediterranean + DASH — specifically optimized for brain health",
+    macros:{protein:15,carb:50,fat:35},
+    tags:[{t:"Dementia prevention",c:"good"},{t:"Brain health",c:"good"},{t:"Flexible",c:"good"},{t:"Long-term",c:"neutral"}],
+    summary:"MIND (Mediterranean-DASH Intervention for Neurodegenerative Delay) combines Mediterranean and DASH principles with specific emphasis on brain-protective foods. Reduces Alzheimer's risk by up to 53% in research.",
+    eat:["Green leafy vegetables (daily — spinach, kale)","Other vegetables","Berries (especially blueberries — 2x/week minimum)","Nuts (5x/week)","Olive oil (primary cooking fat)","Whole grains (3x/day)","Fish (1x/week minimum)","Beans (4x/week)","Poultry (2x/week)"],
+    avoid:["Red meat (limit to 4x/week)","Butter and margarine","Cheese (limit to 1x/week)","Pastries and sweets","Fried or fast food"],
+    benefits:["Reduces Alzheimer's and dementia risk by 35–53%","Protects against cognitive decline in aging","Reduces oxidative stress in brain tissue","Supports neuroplasticity through BDNF","Combines best features of two proven diets","Flexible and practical to follow"],
+    who:"Best for: anyone concerned about cognitive aging, Alzheimer's prevention, or brain performance. Particularly important after age 40. Easy to combine with an active lifestyle.",
+    whoColor:"var(--purple)"
+  },
+  {
+    name:"Flexitarian",icon:"🌿",cat:"plant",color:"#5bbfb5",
+    tagline:"Mostly plant-based with occasional meat — flexible vegetarianism",
+    macros:{protein:20,carb:50,fat:30},
+    tags:[{t:"Sustainable",c:"good"},{t:"Flexible",c:"good"},{t:"Health benefits",c:"good"},{t:"No strict rules",c:"neutral"}],
+    summary:"Flexitarianism encourages primarily plant-based eating while allowing occasional meat and animal products. No strict rules — the goal is to dramatically increase plant food intake without complete elimination of meat.",
+    eat:["Plant protein (beans, lentils, tofu) as primary","Vegetables and fruits (variety)","Whole grains","Nuts and seeds","Meat and fish occasionally (1–3x/week)","Eggs and dairy freely"],
+    avoid:["Processed meat (as much as possible)","Highly processed foods","Excessive red meat","Refined grains and sugar"],
+    benefits:["Easier to maintain than strict vegan or vegetarian","Retains most health benefits of plant-based diet","Reduces meat consumption without complete restriction","Lowers cardiovascular disease and cancer risk","Environmentally sustainable","Very flexible and socially adaptable"],
+    who:"Best for: people wanting health benefits of plant-based eating without full commitment. Perfect for those who love meat but want to reduce intake. Easiest gateway diet for transitioning to more plant-forward eating.",
+    whoColor:"var(--teal)"
+  },
+  {
+    name:"Anti-Inflammatory Diet",icon:"🫐",cat:"therapeutic",color:"#5bbfb5",
+    tagline:"Foods that reduce chronic inflammation — root of most disease",
+    macros:{protein:20,carb:45,fat:35},
+    tags:[{t:"Chronic disease",c:"good"},{t:"Joint pain",c:"good"},{t:"Autoimmune",c:"good"},{t:"Sustainable",c:"good"}],
+    summary:"Not a strict protocol but a framework — prioritizing anti-inflammatory foods and eliminating pro-inflammatory ones. Chronic inflammation is the root cause of heart disease, cancer, diabetes, and autoimmune conditions.",
+    eat:["Fatty fish (omega-3 rich — salmon, mackerel, sardines)","Colorful vegetables and fruits (antioxidants)","Berries (especially blueberries, tart cherries)","Olive oil (oleocanthal — natural anti-inflammatory)","Turmeric and ginger","Green tea and matcha","Dark chocolate (70%+)","Nuts, seeds, and avocado"],
+    avoid:["Refined carbohydrates and sugar","Vegetable/seed oils (corn, soybean, sunflower)","Processed and fried food","Excessive alcohol","Trans fats","Red meat in excess","Artificial additives and preservatives"],
+    benefits:["Reduces C-reactive protein (CRP) — inflammation marker","Improves joint pain and stiffness","Supports gut microbiome diversity","Reduces cardiovascular disease risk","Improves skin health and reduces acne","May reduce cancer risk through antioxidant activity"],
+    who:"Best for: anyone with chronic pain, autoimmune conditions, cardiovascular risk, or general aging. Anti-inflammatory eating is beneficial for virtually everyone as a preventive framework.",
+    whoColor:"var(--teal)"
+  },
+  {
+    name:"Elemental Diet",icon:"💉",cat:"therapeutic",color:"#e05c5c",
+    tagline:"Pre-digested liquid nutrition — for severe gut disorders",
+    macros:{protein:15,carb:65,fat:20},
+    tags:[{t:"Medical use",c:"neutral"},{t:"Crohn's / IBD",c:"good"},{t:"SIBO",c:"good"},{t:"Doctor supervised",c:"hard"}],
+    summary:"The elemental diet consists of pre-digested nutrients in liquid form that require no digestion. Used medically for Crohn's disease, severe IBS, SIBO, and post-surgery recovery. Not for general use.",
+    eat:["Amino acid-based formula drinks","Elemental formula products (Vivonex, Tolerex, etc.)","Electrolyte water","Clear broths (some protocols)"],
+    avoid:["All whole foods (strict elemental protocol)","Fiber of any kind","Any complex macronutrients requiring digestion"],
+    benefits:["Reduces digestive burden to near zero","Induces remission in Crohn's disease","Starves SIBO bacteria by eliminating food substrate","Allows gut to heal from inflammation","Effective when medications have failed"],
+    who:"Best for: people with active Crohn's disease flares, severe SIBO, or other serious gut disorders. Must be done under medical supervision. Typically a short-term intervention (2–6 weeks).",
+    whoColor:"var(--red)"
+  },
+  {
+    name:"GAPS Diet",icon:"🧬",cat:"therapeutic",color:"#9b7de8",
+    tagline:"Gut and Psychology Syndrome — heals gut-brain connection",
+    macros:{protein:30,carb:20,fat:50},
+    tags:[{t:"Gut healing",c:"good"},{t:"Autism / ADHD",c:"neutral"},{t:"Complex protocol",c:"hard"},{t:"Long commitment",c:"hard"}],
+    summary:"Developed by Dr. Natasha Campbell-McBride. Focuses on healing the gut lining through specific foods, broth, and fermented foods. Claims connections between gut health and neurological conditions. Six introduction stages.",
+    eat:["Bone broth (cornerstone of the protocol)","Well-cooked meats and vegetables","Fermented foods (yogurt, sauerkraut, kefir)","Eggs and fish","Homemade ghee","Probiotic-rich foods","Specific fruits after initial stages"],
+    avoid:["Grains of any kind","Processed foods and sugar","Starchy vegetables initially","Most legumes","Pasteurized dairy (use fermented only)"],
+    benefits:["May improve gut permeability (leaky gut)","Rich in collagen from bone broth — supports gut lining","High probiotic content supports microbiome","Anecdotally improves neurological symptoms","Anti-inflammatory food framework"],
+    who:"Best for: people with severe gut disorders, autism spectrum conditions, ADHD (as claimed), or chronic digestive issues. Very complex and restrictive — requires commitment and ideally professional guidance.",
+    whoColor:"var(--purple)"
+  },
+  {
+    name:"Raw Food Diet",icon:"🥗",cat:"plant",color:"#8fbe6b",
+    tagline:"Only uncooked, unprocessed plant foods",
+    macros:{protein:10,carb:70,fat:20},
+    tags:[{t:"Enzyme-rich",c:"good"},{t:"Detoxifying",c:"good"},{t:"Protein deficient risk",c:"hard"},{t:"Very restrictive",c:"hard"}],
+    summary:"The raw food diet consists primarily of uncooked, unprocessed plant foods. Proponents argue that cooking destroys enzymes and nutrients. In practice, some cooking can increase bioavailability of certain nutrients.",
+    eat:["Fresh and dried fruits","Raw vegetables","Sprouted grains and legumes","Raw nuts and seeds","Cold-pressed oils","Fermented raw foods (raw sauerkraut, kimchi)","Seaweed and algae","Smoothies and raw juices"],
+    avoid:["All cooked foods","Meat, poultry, fish","Dairy and eggs","Processed foods","Refined sugars and oils"],
+    benefits:["Very high in antioxidants and plant compounds","Rich in enzymes from raw foods","High fiber content supports gut health","Often results in weight loss","High hydration from raw produce","Eliminates processed foods completely"],
+    who:"Best for: short-term cleanse or increased raw food intake rather than full commitment. Full raw vegan diet risks deficiencies in B12, D, zinc, iron, and protein. Best combined with some cooked and fermented foods.",
+    whoColor:"var(--green)"
+  },
+  {
+    name:"Warrior Diet",icon:"⚔️",cat:"fasting",color:"#c8922a",
+    tagline:"Undereating through the day, feasting at night — 20:4 fasting",
+    macros:{protein:30,carb:40,fat:30},
+    tags:[{t:"One main meal",c:"neutral"},{t:"Fat loss",c:"good"},{t:"Ancient pattern",c:"neutral"},{t:"Not for everyone",c:"hard"}],
+    summary:"The Warrior Diet involves eating small amounts of raw fruits and vegetables during the day and one large meal at night within a 4-hour eating window. Based on the eating patterns of ancient warriors.",
+    eat:["Small raw snacks during day (fruits, vegetables, juices)","One large feast at night (within 4h window)","Whole protein sources at main meal","Complex carbs included at main meal","Salads and vegetables"],
+    avoid:["Large meals during the day","Processed foods","Eating outside the feeding window once adapted"],
+    benefits:["Promotes fat burning during undereating phase","Allows larger satisfying meal at night (psychologically easier)","May improve insulin sensitivity","Simpler than multiple meal timing protocols","Anecdotally improves energy levels through the day"],
+    who:"Best for: people who naturally aren't hungry in the morning, those who prefer eating one large meal, or those who find 16:8 too short a fasting window. Not ideal for heavy athletes needing post-workout nutrition timing.",
+    whoColor:"var(--accent)"
+  },
+  {
+    name:"Alkaline Diet",icon:"⚗️",cat:"therapeutic",color:"#5b9bd5",
+    tagline:"Foods that maintain optimal blood pH and reduce acidity",
+    macros:{protein:15,carb:55,fat:30},
+    tags:[{t:"pH balance",c:"neutral"},{t:"Anti-inflammatory",c:"good"},{t:"Plant-forward",c:"good"},{t:"Pseudoscience concerns",c:"hard"}],
+    summary:"The alkaline diet categorizes foods as acid-forming or alkaline-forming based on their effect on urine pH after digestion. While blood pH is tightly regulated by the body, the dietary pattern itself promotes healthy plant-forward eating.",
+    eat:["Most fruits and vegetables","Spinach, kale, cucumber","Avocado and olive oil","Nuts and seeds","Legumes","Tofu and plant proteins","Herbal teas and lemon water"],
+    avoid:["Meat and dairy (acid-forming)","Processed foods","Sugar and artificial sweeteners","Refined grains","Alcohol and caffeine (limit)"],
+    benefits:["Promotes high vegetable and fruit intake","Reduces processed food and sugar consumption","Anti-inflammatory food patterns","Often results in weight loss and improved energy","May improve bone density markers","Supports kidney health"],
+    who:"Best for: people wanting a framework to eat more plants and less processed food. The pH theory itself is controversial — blood pH doesn't actually change significantly. The diet works because of what it promotes, not pH.",
+    whoColor:"var(--blue)"
+  },
+];
+
+let activeCat = 'all';
+
+function makeCard(d, i) {
+  const total = d.macros.protein + d.macros.carb + d.macros.fat;
+  const p = Math.round(d.macros.protein/total*100);
+  const c = Math.round(d.macros.carb/total*100);
+  const f = 100-p-c;
+
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = (i*0.02)+'s';
+
+  card.innerHTML = `
+    <div class="card-stripe" style="background:${d.color}"></div>
+    <div class="card-header" onclick="this.closest('.card').classList.toggle('expanded')">
+      <span class="card-icon">${d.icon}</span>
+      <div class="card-meta">
+        <div class="card-name">${d.name}</div>
+        <div class="card-tagline">${d.tagline}</div>
+      </div>
+      <svg class="card-expand" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <div class="macro-bar-row">
+      <div class="macro-seg" style="width:${p}%;background:#5b9bd5;height:8px;border-radius:4px 0 0 4px"></div>
+      <div class="macro-seg" style="width:${c}%;background:#c8922a;height:8px;border-radius:0"></div>
+      <div class="macro-seg" style="width:${f}%;background:#8fbe6b;height:8px;border-radius:0 4px 4px 0"></div>
+    </div>
+    <div class="macro-label">
+      <span class="ml"><span class="ml-dot" style="background:#5b9bd5;border-radius:2px"></span>Protein ${d.macros.protein}%</span>
+      <span class="ml"><span class="ml-dot" style="background:#c8922a;border-radius:2px"></span>Carbs ${d.macros.carb}%</span>
+      <span class="ml"><span class="ml-dot" style="background:#8fbe6b;border-radius:2px"></span>Fat ${d.macros.fat}%</span>
+    </div>
+    <div class="tags-row">
+      ${d.tags.map(t=>`<span class="tag tag-${t.c}">${t.t}</span>`).join('')}
+    </div>
+    <div class="card-body">
+      <div class="section-label">Overview</div>
+      <div class="body-text">${d.summary}</div>
+      <div class="two-col">
+        <div>
+          <div class="section-label" style="color:var(--green)">Eat</div>
+          <ul class="food-list">${d.eat.map(e=>`<li class="eat">${e}</li>`).join('')}</ul>
+        </div>
+        <div>
+          <div class="section-label" style="color:var(--red)">Avoid</div>
+          <ul class="food-list">${d.avoid.map(a=>`<li class="avoid">${a}</li>`).join('')}</ul>
+        </div>
+      </div>
+      <div class="section-label" style="color:var(--accent)">Benefits</div>
+      <ul class="benefit-list">${d.benefits.map(b=>`<li>${b}</li>`).join('')}</ul>
+      <div class="section-label">Best For</div>
+      <div class="who-box" style="border-left-color:${d.whoColor}">${d.who}</div>
+    </div>`;
+  return card;
+}
+
+function render(items) {
+  const grid = document.getElementById('grid');
+  const noR = document.getElementById('noResults');
+  grid.innerHTML = '';
+  if (!items.length) { noR.style.display='block'; grid.style.display='none'; return; }
+  noR.style.display='none'; grid.style.display='grid';
+  document.getElementById('count').textContent = items.length + ' diet' + (items.length!==1?'s':'');
+  items.forEach((d,i) => grid.appendChild(makeCard(d,i)));
+}
+
+function filter() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const items = DIETS.filter(d => {
+    const mc = activeCat === 'all' || d.cat === activeCat;
+    const mq = !q || d.name.toLowerCase().includes(q) || d.tagline.toLowerCase().includes(q) || d.summary.toLowerCase().includes(q);
+    return mc && mq;
+  });
+  render(items);
+}
+
+function setCat(cat) {
+  activeCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat===cat));
+  filter();
+}
+
+render(DIETS);
+</script>
+</body>
+</html>
