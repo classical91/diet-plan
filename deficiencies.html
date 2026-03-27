@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Deficiencies | Diet Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0d0a; --surface: #1a1714; --card: #201d19; --border: #2e2a24;
+    --accent: #c8922a; --green: #8fbe6b; --blue: #5b9bd5; --pink: #c86b8f;
+    --purple: #9b7de8; --teal: #5bbfb5; --red: #e05c5c; --text: #f0ebe3; --muted: #7a7063;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; padding: 40px 20px 80px; background-image: radial-gradient(ellipse at 15% 10%, rgba(200,146,42,0.06) 0%, transparent 55%), radial-gradient(ellipse at 85% 90%, rgba(224,92,92,0.04) 0%, transparent 50%); }
+  .nav-bar { max-width: 1000px; margin: 0 auto 32px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .nav-link { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; transition: all 0.2s; }
+  .nav-link:hover, .nav-link.active { border-color: var(--accent); color: var(--accent); }
+  header { text-align: center; margin-bottom: 36px; }
+  .sub-label { font-size: 11px; font-weight: 500; letter-spacing: 0.35em; text-transform: uppercase; color: var(--red); margin-bottom: 10px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 5vw, 52px); font-weight: 900; letter-spacing: -0.02em; line-height: 1; }
+  h1 em { color: var(--accent); font-style: italic; }
+  .header-line { width: 50px; height: 2px; background: var(--accent); margin: 16px auto 0; opacity: 0.5; }
+  .header-note { max-width: 600px; margin: 16px auto 0; font-size: 13px; color: var(--muted); line-height: 1.6; text-align: center; }
+
+  .controls { max-width: 1000px; margin: 0 auto 24px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .search-wrap { flex: 1; min-width: 200px; position: relative; }
+  .search-wrap input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 10px 14px 10px 36px; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; transition: border 0.2s; }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+  .cat-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cat-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 6px 12px; border-radius: 20px; cursor: pointer; transition: all 0.2s; }
+  .cat-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .cat-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(200,146,42,0.08); }
+
+  .result-count { max-width: 1000px; margin: 0 auto 16px; font-size: 12px; color: var(--muted); letter-spacing: 0.1em; }
+
+  .grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; animation: fadeUp 0.3s ease both; transition: border-color 0.2s, transform 0.2s; }
+  .card:hover { border-color: #3e3a32; transform: translateY(-2px); }
+  .card.expanded { border-color: var(--red); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  .card-top { height: 3px; }
+  .card-header { display: flex; align-items: flex-start; gap: 12px; padding: 16px; cursor: pointer; }
+  .card-icon { font-size: 22px; flex-shrink: 0; }
+  .card-meta { flex: 1; }
+  .card-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .card-sub { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
+  .card-expand { color: var(--muted); flex-shrink: 0; transition: transform 0.2s; margin-top: 3px; }
+  .card.expanded .card-expand { transform: rotate(180deg); }
+
+  .card-body { display: none; padding: 0 16px 16px; }
+  .card.expanded .card-body { display: block; }
+
+  .section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px; margin-top: 14px; }
+
+  .symptom-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+  .symptom-list li { display: flex; gap: 8px; align-items: flex-start; font-size: 12.5px; color: #c8b89a; line-height: 1.45; }
+  .symptom-list li.severe::before { content: '⚠'; color: var(--red); flex-shrink: 0; font-size: 11px; margin-top: 1px; }
+  .symptom-list li.common::before { content: '—'; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+  .symptom-list li.mild::before { content: '·'; color: var(--muted); flex-shrink: 0; font-size: 16px; line-height: 1; }
+
+  .food-sources { display: flex; flex-wrap: wrap; gap: 6px; }
+  .food-pill { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: rgba(143,190,107,0.08); border: 1px solid rgba(143,190,107,0.2); color: var(--green); }
+
+  .risk-bar-wrap { margin-top: 6px; }
+  .risk-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .risk-bar-outer { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .risk-bar-inner { height: 100%; border-radius: 3px; }
+  .risk-low { background: var(--green); }
+  .risk-med { background: var(--accent); }
+  .risk-high { background: var(--red); }
+
+  .divider { height: 1px; background: var(--border); margin: 12px 0; }
+
+  /* Tag colors by category */
+  .tag { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; border: 1px solid; display: inline-block; }
+  .tag-vitamin { border-color: rgba(143,190,107,0.3); color: var(--green); background: rgba(143,190,107,0.07); }
+  .tag-mineral { border-color: rgba(91,155,213,0.3); color: var(--blue); background: rgba(91,155,213,0.07); }
+  .tag-fat { border-color: rgba(200,146,42,0.3); color: var(--accent); background: rgba(200,146,42,0.07); }
+  .tag-amino { border-color: rgba(155,125,232,0.3); color: var(--purple); background: rgba(155,125,232,0.07); }
+  .tag-other { border-color: rgba(91,191,181,0.3); color: var(--teal); background: rgba(91,191,181,0.07); }
+
+  .no-results { max-width: 1000px; margin: 40px auto; text-align: center; color: var(--muted); font-family: 'Playfair Display', serif; font-size: 18px; }
+
+  .prevalence-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; margin-top: 6px; }
+  .prevalence-chip.very-common { background: rgba(224,92,92,0.1); border: 1px solid rgba(224,92,92,0.25); color: var(--red); }
+  .prevalence-chip.common { background: rgba(200,146,42,0.1); border: 1px solid rgba(200,146,42,0.25); color: var(--accent); }
+  .prevalence-chip.less-common { background: rgba(91,155,213,0.1); border: 1px solid rgba(91,155,213,0.25); color: var(--blue); }
+</style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <a href="/" class="nav-link">Diet Plan</a>
+  <a href="/nutrition" class="nav-link">Nutrition Checklist</a>
+  <a href="/benefits" class="nav-link">Food Benefits</a>
+  <a href="/deficiencies" class="nav-link active">Deficiencies</a>
+</div>
+
+<header>
+  <div class="sub-label">Health Reference</div>
+  <h1>Nutrient <em>Deficiencies</em></h1>
+  <div class="header-line"></div>
+  <p class="header-note">Symptoms, risk levels, and food sources to correct deficiencies in vitamins, minerals, fatty acids, and amino acids.</p>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search" placeholder="Search deficiencies or symptoms..." oninput="filterCards()">
+  </div>
+  <div class="cat-filters">
+    <button class="cat-btn active" data-cat="all" onclick="setCat('all')">All</button>
+    <button class="cat-btn" data-cat="vitamin" onclick="setCat('vitamin')">Vitamins</button>
+    <button class="cat-btn" data-cat="mineral" onclick="setCat('mineral')">Minerals</button>
+    <button class="cat-btn" data-cat="fat" onclick="setCat('fat')">Fatty Acids</button>
+    <button class="cat-btn" data-cat="amino" onclick="setCat('amino')">Amino Acids</button>
+    <button class="cat-btn" data-cat="other" onclick="setCat('other')">Other</button>
+  </div>
+</div>
+
+<div class="result-count" id="count"></div>
+<div class="grid" id="grid"></div>
+<div class="no-results" id="noResults" style="display:none">No deficiencies found</div>
+
+<script>
+const DATA = [
+  // VITAMINS
+  {name:"Vitamin D",cat:"vitamin",icon:"☀️",color:"#c8922a",prevalence:"very-common",prevalenceLabel:"Affects 1 billion+ people",
+   symptoms:[
+    {s:"Bone pain, muscle weakness, and frequent fractures",level:"severe"},
+    {s:"Chronic fatigue and low energy despite adequate sleep",level:"common"},
+    {s:"Depression, mood disorders, and seasonal affective disorder",level:"common"},
+    {s:"Impaired immune function — frequent infections and slow healing",level:"common"},
+    {s:"Hair loss beyond normal shedding",level:"mild"},
+    {s:"Back pain and joint pain",level:"mild"},
+    {s:"Rickets in children — soft, deformed bones",level:"severe"},
+   ],
+   foods:["Fatty fish (salmon, mackerel)","Egg yolks","Fortified milk","Beef liver","Cod liver oil","Sun exposure"],
+   riskLevel:"high",note:"Get tested via 25-OH vitamin D blood test. Most people need 2,000–5,000 IU daily."},
+
+  {name:"Vitamin B12",cat:"vitamin",icon:"🔴",color:"#e05c5c",prevalence:"very-common",prevalenceLabel:"Common in vegans, elderly",
+   symptoms:[
+    {s:"Megaloblastic anemia — fatigue, weakness, pale skin",level:"severe"},
+    {s:"Neurological damage — tingling, numbness in hands and feet",level:"severe"},
+    {s:"Cognitive decline, memory loss, and brain fog",level:"common"},
+    {s:"Depression and mood instability",level:"common"},
+    {s:"Glossitis — swollen, inflamed tongue",level:"common"},
+    {s:"Mouth ulcers and angular cheilitis",level:"mild"},
+    {s:"Vision problems from optic nerve damage",level:"severe"},
+   ],
+   foods:["Meat (beef, liver)","Fish and shellfish","Eggs","Dairy","Nutritional yeast (fortified)","B12 supplements"],
+   riskLevel:"high",note:"Neurological damage from B12 deficiency can be permanent. Vegans must supplement."},
+
+  {name:"Vitamin C",cat:"vitamin",icon:"🍊",color:"#8fbe6b",prevalence:"common",prevalenceLabel:"Common in low-fruit diets",
+   symptoms:[
+    {s:"Scurvy — bleeding gums, loose teeth, skin hemorrhages",level:"severe"},
+    {s:"Slow wound healing and easy bruising",level:"common"},
+    {s:"Frequent infections and poor immune response",level:"common"},
+    {s:"Fatigue and irritability",level:"common"},
+    {s:"Dry, rough, bumpy skin (keratosis pilaris)",level:"mild"},
+    {s:"Joint pain and swelling",level:"mild"},
+    {s:"Iron deficiency anemia (C aids iron absorption)",level:"common"},
+   ],
+   foods:["Bell peppers","Citrus fruits","Strawberries","Broccoli","Kale","Kiwi"],
+   riskLevel:"med",note:"Smokers need 35mg more per day. Stress rapidly depletes vitamin C stores."},
+
+  {name:"Vitamin A",cat:"vitamin",icon:"🥕",color:"#c8922a",prevalence:"common",prevalenceLabel:"Leading cause of childhood blindness globally",
+   symptoms:[
+    {s:"Night blindness — difficulty seeing in low light",level:"severe"},
+    {s:"Xerophthalmia — dry eyes, corneal damage, blindness",level:"severe"},
+    {s:"Impaired immune function and increased infection risk",level:"common"},
+    {s:"Dry, scaly skin and keratosis pilaris",level:"common"},
+    {s:"Delayed growth in children",level:"severe"},
+    {s:"Infertility and reproductive issues",level:"common"},
+    {s:"Increased risk of acne and skin conditions",level:"mild"},
+   ],
+   foods:["Liver (richest source)","Sweet potato","Carrots","Kale and spinach","Eggs","Dairy"],
+   riskLevel:"med",note:"Preformed vitamin A from animal sources is readily absorbed. Beta-carotene from plants requires conversion."},
+
+  {name:"Vitamin K2",cat:"vitamin",icon:"🥬",color:"#8fbe6b",prevalence:"very-common",prevalenceLabel:"Widely underappreciated deficiency",
+   symptoms:[
+    {s:"Arterial calcification — calcium depositing in arteries instead of bones",level:"severe"},
+    {s:"Osteoporosis and low bone density despite calcium intake",level:"severe"},
+    {s:"Easy bruising and impaired blood clotting",level:"common"},
+    {s:"Tooth decay and dental problems",level:"common"},
+    {s:"Heart disease risk from arterial plaque",level:"severe"},
+   ],
+   foods:["Natto (fermented soybeans — richest source)","Hard cheese","Egg yolks","Butter from grass-fed cows","Sauerkraut","Liver"],
+   riskLevel:"high",note:"K2 directs calcium to bones and teeth, not arteries. Works synergistically with vitamin D3 and magnesium."},
+
+  {name:"Vitamin B6",cat:"vitamin",icon:"🧬",color:"#9b7de8",prevalence:"common",prevalenceLabel:"Common in processed food diets",
+   symptoms:[
+    {s:"Peripheral neuropathy — numbness and tingling in extremities",level:"severe"},
+    {s:"Depression and anxiety from impaired serotonin synthesis",level:"common"},
+    {s:"Microcytic anemia — fatigue and weakness",level:"common"},
+    {s:"Weakened immune system",level:"common"},
+    {s:"Cracked lips and skin inflammation around the mouth",level:"mild"},
+    {s:"Confusion and cognitive impairment",level:"common"},
+   ],
+   foods:["Poultry","Fish (tuna, salmon)","Potatoes","Bananas","Chickpeas","Fortified cereals"],
+   riskLevel:"med",note:"B6 is essential for over 100 enzyme reactions including neurotransmitter synthesis."},
+
+  {name:"Folate (B9)",cat:"vitamin",icon:"🌿",color:"#8fbe6b",prevalence:"common",prevalenceLabel:"Critical in pregnancy",
+   symptoms:[
+    {s:"Neural tube defects in unborn babies (spina bifida, anencephaly)",level:"severe"},
+    {s:"Megaloblastic anemia — large, immature red blood cells",level:"severe"},
+    {s:"Fatigue, weakness, and shortness of breath",level:"common"},
+    {s:"Mouth sores and tongue inflammation",level:"common"},
+    {s:"Elevated homocysteine — cardiovascular disease risk",level:"severe"},
+    {s:"Depression and cognitive impairment",level:"common"},
+   ],
+   foods:["Dark leafy greens (spinach, kale)","Legumes (lentils, beans)","Asparagus","Avocado","Eggs","Fortified grains"],
+   riskLevel:"high",note:"Women of childbearing age should supplement with 400-800mcg daily. MTHFR gene variants affect folate metabolism."},
+
+  // MINERALS
+  {name:"Magnesium",cat:"mineral",icon:"💎",color:"#5b9bd5",prevalence:"very-common",prevalenceLabel:"Up to 75% of people deficient",
+   symptoms:[
+    {s:"Muscle cramps, twitches, and restless legs at night",level:"common"},
+    {s:"Anxiety, irritability, and inability to relax",level:"common"},
+    {s:"Insomnia and poor sleep quality",level:"common"},
+    {s:"Heart arrhythmias and palpitations",level:"severe"},
+    {s:"Migraines and frequent headaches",level:"common"},
+    {s:"High blood pressure and cardiovascular risk",level:"severe"},
+    {s:"Constipation and poor digestion",level:"mild"},
+    {s:"Fatigue and low energy despite rest",level:"common"},
+   ],
+   foods:["Pumpkin seeds","Dark chocolate","Spinach and leafy greens","Almonds","Avocado","Black beans","Whole grains"],
+   riskLevel:"high",note:"Involved in 300+ enzymatic reactions. Stress and alcohol deplete magnesium rapidly. Glycinate form absorbs best."},
+
+  {name:"Iron",cat:"mineral",icon:"🔩",color:"#e05c5c",prevalence:"very-common",prevalenceLabel:"Most common deficiency worldwide",
+   symptoms:[
+    {s:"Iron deficiency anemia — extreme fatigue, pale skin, shortness of breath",level:"severe"},
+    {s:"Brittle nails and hair loss",level:"common"},
+    {s:"Cold hands and feet from poor circulation",level:"common"},
+    {s:"Pica — cravings for ice, clay, or dirt",level:"severe"},
+    {s:"Restless leg syndrome",level:"common"},
+    {s:"Impaired cognitive function and concentration",level:"common"},
+    {s:"Frequent infections from impaired immune function",level:"common"},
+   ],
+   foods:["Red meat and liver (heme iron)","Shellfish (oysters, clams)","Spinach","Lentils","Pumpkin seeds","Dark chocolate"],
+   riskLevel:"high",note:"Women of reproductive age, vegans, and athletes are highest risk. Vitamin C doubles non-heme iron absorption."},
+
+  {name:"Zinc",cat:"mineral",icon:"⚡",color:"#9b7de8",prevalence:"common",prevalenceLabel:"2 billion people affected globally",
+   symptoms:[
+    {s:"Impaired immune function — frequent colds and slow healing",level:"common"},
+    {s:"Loss of taste and smell (anosmia)",level:"severe"},
+    {s:"Skin conditions — acne, eczema, psoriasis",level:"common"},
+    {s:"Infertility and low testosterone in men",level:"severe"},
+    {s:"Hair thinning and loss",level:"common"},
+    {s:"Delayed wound healing",level:"common"},
+    {s:"Night blindness and eye problems",level:"mild"},
+    {s:"Delayed growth and development in children",level:"severe"},
+   ],
+   foods:["Oysters (richest source)","Beef and lamb","Pumpkin seeds","Chickpeas","Cashews","Fortified cereals"],
+   riskLevel:"high",note:"Phytates in grains and legumes block zinc absorption. Meat-based zinc is 2-3x more bioavailable."},
+
+  {name:"Calcium",cat:"mineral",icon:"🦴",color:"#5b9bd5",prevalence:"common",prevalenceLabel:"Common in dairy-free diets",
+   symptoms:[
+    {s:"Osteoporosis and stress fractures in adults",level:"severe"},
+    {s:"Rickets and poor bone development in children",level:"severe"},
+    {s:"Muscle cramps and spasms",level:"common"},
+    {s:"Dental problems — cavities, weak enamel",level:"common"},
+    {s:"Numbness and tingling in extremities",level:"common"},
+    {s:"Heart arrhythmias in severe cases",level:"severe"},
+    {s:"Weak, brittle nails",level:"mild"},
+   ],
+   foods:["Dairy (milk, cheese, yogurt)","Sardines and canned salmon (with bones)","Kale and broccoli","Fortified plant milks","Chia seeds","Almonds"],
+   riskLevel:"med",note:"Calcium requires vitamin D and K2 for proper absorption and bone deposition. Too much calcium without cofactors can calcify arteries."},
+
+  {name:"Potassium",cat:"mineral",icon:"🍌",color:"#c8922a",prevalence:"very-common",prevalenceLabel:"97% of Americans don't meet intake",
+   symptoms:[
+    {s:"Hypokalemia — dangerous heart rhythm abnormalities",level:"severe"},
+    {s:"Muscle weakness, cramps, and paralysis in severe cases",level:"severe"},
+    {s:"High blood pressure and cardiovascular disease risk",level:"severe"},
+    {s:"Fatigue and constant tiredness",level:"common"},
+    {s:"Constipation and digestive issues",level:"common"},
+    {s:"Kidney stones (low potassium reduces citrate)",level:"common"},
+    {s:"Increased salt sensitivity",level:"mild"},
+   ],
+   foods:["Bananas","Sweet potatoes","Avocado","Spinach","White beans","Salmon","Coconut water"],
+   riskLevel:"high",note:"Diuretics, excessive sweating, and vomiting rapidly deplete potassium. Essential for every cell in the body."},
+
+  {name:"Selenium",cat:"mineral",icon:"🌰",color:"#8fbe6b",prevalence:"common",prevalenceLabel:"Soil depletion affects many regions",
+   symptoms:[
+    {s:"Hypothyroidism and impaired thyroid hormone conversion",level:"severe"},
+    {s:"Weakened immune system and poor infection resistance",level:"common"},
+    {s:"Muscle weakness and pain (Keshan disease in extreme deficiency)",level:"severe"},
+    {s:"Impaired cognitive function",level:"common"},
+    {s:"Infertility in men from impaired sperm motility",level:"common"},
+    {s:"Increased cancer risk from reduced antioxidant defense",level:"severe"},
+   ],
+   foods:["Brazil nuts (2-3 per day meets daily needs)","Tuna and sardines","Eggs","Chicken","Sunflower seeds","Brown rice"],
+   riskLevel:"med",note:"Too much selenium is also toxic — do not supplement aggressively. 2 Brazil nuts daily is ideal."},
+
+  {name:"Iodine",cat:"mineral",icon:"🧂",color:"#5bbfb5",prevalence:"common",prevalenceLabel:"Leading cause of preventable brain damage",
+   symptoms:[
+    {s:"Hypothyroidism — fatigue, weight gain, cold sensitivity, brain fog",level:"severe"},
+    {s:"Goiter — enlarged thyroid gland in the neck",level:"severe"},
+    {s:"Impaired fetal brain development during pregnancy",level:"severe"},
+    {s:"Cognitive impairment and intellectual disability in severe cases",level:"severe"},
+    {s:"Hair loss and dry skin",level:"common"},
+    {s:"Heavy periods and fertility issues in women",level:"common"},
+   ],
+   foods:["Iodized salt","Seaweed (nori, kelp, wakame)","Fish and shellfish","Dairy","Eggs"],
+   riskLevel:"high",note:"Fluoride, chlorine, and bromide compete with iodine. Avoid excess raw cruciferous vegetables if iodine is low."},
+
+  {name:"Copper",cat:"mineral",icon:"🟤",color:"#c8922a",prevalence:"less-common",prevalenceLabel:"Often missed in testing",
+   symptoms:[
+    {s:"Anemia unresponsive to iron supplementation",level:"severe"},
+    {s:"Bone fragility and increased fracture risk",level:"common"},
+    {s:"Neuropathy — weakness and numbness",level:"severe"},
+    {s:"Premature gray hair",level:"mild"},
+    {s:"Impaired immune function",level:"common"},
+    {s:"Poor wound healing",level:"common"},
+   ],
+   foods:["Shellfish (oysters, crab)","Liver","Dark chocolate","Nuts and seeds","Mushrooms","Avocado"],
+   riskLevel:"med",note:"Excess zinc supplementation depletes copper. Copper and zinc must be balanced."},
+
+  // FATTY ACIDS
+  {name:"Omega-3 (DHA/EPA)",cat:"fat",icon:"🐟",color:"#5bbfb5",prevalence:"very-common",prevalenceLabel:"Most people severely low",
+   symptoms:[
+    {s:"Depression, anxiety, and mood instability",level:"severe"},
+    {s:"Brain fog and poor cognitive function",level:"common"},
+    {s:"Dry, flaky skin and eczema",level:"common"},
+    {s:"Poor memory and concentration",level:"common"},
+    {s:"Cardiovascular disease — high triglycerides, inflammation",level:"severe"},
+    {s:"Joint pain and stiffness from chronic inflammation",level:"common"},
+    {s:"Poor eye health and dry eyes",level:"common"},
+    {s:"Impaired fetal brain development in pregnancy",level:"severe"},
+   ],
+   foods:["Fatty fish (salmon, mackerel, sardines, herring)","Fish oil supplements","Algae oil (vegan DHA/EPA)","Flaxseed (ALA only — poor conversion)","Walnuts","Chia seeds"],
+   riskLevel:"high",note:"ALA from plants converts poorly to DHA/EPA (<5%). Vegans should take algae-based omega-3. Aim for 2g EPA+DHA daily."},
+
+  {name:"Omega-6 / Omega-3 Imbalance",cat:"fat",icon:"⚖️",color:"#e05c5c",prevalence:"very-common",prevalenceLabel:"Modern diet is 15-20:1 ratio (should be 4:1)",
+   symptoms:[
+    {s:"Chronic systemic inflammation — root of most modern disease",level:"severe"},
+    {s:"Cardiovascular disease and atherosclerosis",level:"severe"},
+    {s:"Autoimmune conditions — RA, lupus, Crohn's",level:"severe"},
+    {s:"Obesity and metabolic syndrome",level:"common"},
+    {s:"Depression and anxiety",level:"common"},
+    {s:"Accelerated aging and cancer risk",level:"severe"},
+   ],
+   foods:["Reduce: vegetable oils (corn, soy, sunflower)","Reduce: processed and fried foods","Increase: fatty fish","Increase: olive oil","Increase: grass-fed beef","Increase: walnuts"],
+   riskLevel:"high",note:"This is not a true deficiency but a ratio imbalance. Reducing omega-6 is as important as increasing omega-3."},
+
+  {name:"Vitamin E",cat:"fat",icon:"🌻",color:"#c8922a",prevalence:"common",prevalenceLabel:"90% of Americans below adequate intake",
+   symptoms:[
+    {s:"Peripheral neuropathy — nerve damage in hands and feet",level:"severe"},
+    {s:"Muscle weakness and coordination problems",level:"severe"},
+    {s:"Weakened immune system",level:"common"},
+    {s:"Retinopathy — vision problems",level:"common"},
+    {s:"Dry, damaged skin accelerating aging",level:"mild"},
+    {s:"Hemolytic anemia in infants",level:"severe"},
+   ],
+   foods:["Sunflower seeds","Almonds","Hazelnuts","Wheat germ oil","Spinach and Swiss chard","Avocado"],
+   riskLevel:"med",note:"Fat-soluble vitamin — absorbs best with dietary fat. Mixed tocopherols are more beneficial than synthetic alpha-tocopherol alone."},
+
+  // AMINO ACIDS
+  {name:"Tryptophan",cat:"amino",icon:"😴",color:"#9b7de8",prevalence:"common",prevalenceLabel:"Depleted by stress and poor diet",
+   symptoms:[
+    {s:"Depression from insufficient serotonin synthesis",level:"severe"},
+    {s:"Insomnia and inability to fall asleep",level:"severe"},
+    {s:"Anxiety and emotional dysregulation",level:"common"},
+    {s:"Increased pain sensitivity",level:"common"},
+    {s:"Poor appetite regulation",level:"mild"},
+    {s:"Cognitive impairment and poor memory",level:"common"},
+   ],
+   foods:["Turkey","Eggs","Cheese","Pumpkin seeds","Tofu","Salmon","Chicken"],
+   riskLevel:"med",note:"Tryptophan is the precursor to serotonin and melatonin. Needs B6, zinc, and magnesium as cofactors for conversion."},
+
+  {name:"Tyrosine",cat:"amino",icon:"⚡",color:"#9b7de8",prevalence:"less-common",prevalenceLabel:"Worsened by chronic stress",
+   symptoms:[
+    {s:"Depression from insufficient dopamine and norepinephrine",level:"severe"},
+    {s:"Hypothyroidism — tyrosine is required for thyroid hormone production",level:"severe"},
+    {s:"Fatigue, low motivation, and anhedonia",level:"common"},
+    {s:"Poor focus and ADHD-like symptoms",level:"common"},
+    {s:"Low libido and reduced drive",level:"common"},
+   ],
+   foods:["Chicken and turkey","Eggs","Dairy","Almonds","Avocado","Bananas","Pumpkin seeds"],
+   riskLevel:"med",note:"Tyrosine is the precursor to dopamine, adrenaline, and thyroid hormones. Depleted rapidly by stress and illness."},
+
+  {name:"Lysine",cat:"amino",icon:"🧬",color:"#9b7de8",prevalence:"common",prevalenceLabel:"Common in plant-based diets",
+   symptoms:[
+    {s:"Recurring cold sores and herpes outbreaks",level:"severe"},
+    {s:"Impaired collagen synthesis — slow wound healing",level:"common"},
+    {s:"Anxiety and inability to concentrate",level:"common"},
+    {s:"Muscle loss and weakness",level:"common"},
+    {s:"Impaired calcium absorption and bone loss",level:"common"},
+    {s:"Fatigue and low energy",level:"mild"},
+   ],
+   foods:["Meat (beef, pork, chicken)","Fish","Eggs","Dairy","Legumes","Quinoa"],
+   riskLevel:"med",note:"Grains are low in lysine — vegetarians relying heavily on grains may be deficient. Lysine suppresses arginine — helpful for HSV management."},
+
+  // OTHER
+  {name:"Coenzyme Q10 (CoQ10)",cat:"other",icon:"⚡",color:"#5bbfb5",prevalence:"common",prevalenceLabel:"Depleted by statins and aging",
+   symptoms:[
+    {s:"Severe fatigue and low cellular energy (mitochondrial dysfunction)",level:"severe"},
+    {s:"Heart failure and cardiomyopathy",level:"severe"},
+    {s:"Muscle pain and weakness — especially on statin drugs",level:"severe"},
+    {s:"Brain fog and cognitive decline with aging",level:"common"},
+    {s:"Migraines — CoQ10 deficiency strongly linked",level:"common"},
+    {s:"High blood pressure",level:"common"},
+   ],
+   foods:["Organ meats (heart, liver)","Fatty fish","Beef","Pork","Spinach","Broccoli","Peanuts"],
+   riskLevel:"high",note:"Statin drugs block CoQ10 synthesis — everyone on statins should supplement 100-300mg daily. Production declines 50% by age 80."},
+
+  {name:"Choline",cat:"other",icon:"🧠",color:"#5b9bd5",prevalence:"very-common",prevalenceLabel:"90% of people don't meet daily needs",
+   symptoms:[
+    {s:"Non-alcoholic fatty liver disease (NAFLD)",level:"severe"},
+    {s:"Cognitive decline and poor memory",level:"severe"},
+    {s:"Muscle damage and weakness",level:"common"},
+    {s:"Impaired fetal brain development in pregnancy",level:"severe"},
+    {s:"Mood disorders and anxiety",level:"common"},
+    {s:"Poor nerve signaling and motor function",level:"common"},
+   ],
+   foods:["Eggs (yolk has highest concentration)","Liver","Beef","Fish","Soybeans","Quinoa","Broccoli"],
+   riskLevel:"high",note:"Choline is the precursor to acetylcholine — the primary memory and learning neurotransmitter. Essential during pregnancy."},
+
+  {name:"Fiber",cat:"other",icon:"🌾",color:"#8fbe6b",prevalence:"very-common",prevalenceLabel:"95% of Americans deficient",
+   symptoms:[
+    {s:"Constipation and irregular bowel movements",level:"common"},
+    {s:"Elevated LDL cholesterol and cardiovascular risk",level:"severe"},
+    {s:"Blood sugar spikes and insulin resistance",level:"severe"},
+    {s:"Gut dysbiosis — loss of beneficial bacteria",level:"severe"},
+    {s:"Increased risk of colorectal cancer",level:"severe"},
+    {s:"Obesity and difficulty managing weight",level:"common"},
+    {s:"Inflammatory bowel conditions",level:"common"},
+   ],
+   foods:["Legumes (lentils, beans, chickpeas)","Vegetables (broccoli, artichoke, carrots)","Fruit","Oats and whole grains","Psyllium husk","Chia and flaxseed"],
+   riskLevel:"high",note:"Soluble fiber feeds gut bacteria and lowers cholesterol. Insoluble fiber adds bulk and speeds gut transit. Increase slowly to avoid gas."},
+
+  {name:"Probiotics / Gut Flora",cat:"other",icon:"🦠",color:"#5bbfb5",prevalence:"very-common",prevalenceLabel:"Antibiotics and diet devastate gut flora",
+   symptoms:[
+    {s:"Irritable bowel syndrome — bloating, gas, cramping, alternating diarrhea/constipation",level:"severe"},
+    {s:"Weakened immune system — recurrent infections",level:"severe"},
+    {s:"Anxiety and depression via disrupted gut-brain axis",level:"common"},
+    {s:"Food intolerances and sensitivities",level:"common"},
+    {s:"Skin conditions — acne, eczema, rosacea",level:"common"},
+    {s:"Brain fog and cognitive impairment",level:"common"},
+    {s:"Obesity and metabolic dysfunction",level:"common"},
+   ],
+   foods:["Yogurt with live cultures","Kefir","Sauerkraut","Kimchi","Kombucha","Miso","Tempeh"],
+   riskLevel:"high",note:"One course of antibiotics can disrupt gut flora for up to 2 years. Diversity of species is as important as quantity."},
+
+  {name:"Glutathione",cat:"other",icon:"🛡️",color:"#8fbe6b",prevalence:"common",prevalenceLabel:"Depleted by toxins, stress, aging",
+   symptoms:[
+    {s:"Increased oxidative stress and cellular damage",level:"severe"},
+    {s:"Impaired liver detoxification",level:"severe"},
+    {s:"Weakened immune system",level:"common"},
+    {s:"Chronic fatigue and low energy",level:"common"},
+    {s:"Accelerated aging and neurodegeneration",level:"severe"},
+    {s:"Increased cancer risk from free radical damage",level:"severe"},
+   ],
+   foods:["Sulfur-rich foods: garlic, onion, broccoli","Whey protein","Avocado","Spinach","Asparagus","Raw eggs"],
+   riskLevel:"med",note:"The body synthesizes glutathione from cysteine, glycine, and glutamate. N-acetylcysteine (NAC) is the most effective precursor supplement."},
+];
+
+let activeCat = 'all';
+const grid = document.getElementById('grid');
+const noResults = document.getElementById('noResults');
+
+function getRiskColor(level) {
+  if (level === 'high') return 'var(--red)';
+  if (level === 'med') return 'var(--accent)';
+  return 'var(--green)';
+}
+
+function makeCard(item, i) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = (i * 0.02) + 's';
+  card.dataset.name = item.name.toLowerCase();
+  card.dataset.symptoms = item.symptoms.map(s => s.s.toLowerCase()).join(' ');
+
+  const prevalenceClass = item.prevalence;
+
+  card.innerHTML = `
+    <div class="card-top" style="background:${item.color}"></div>
+    <div class="card-header" onclick="this.closest('.card').classList.toggle('expanded')">
+      <span class="card-icon">${item.icon}</span>
+      <div class="card-meta">
+        <div class="card-title">${item.name}</div>
+        <div class="card-sub"><span class="tag tag-${item.cat}">${item.cat}</span></div>
+        <div class="prevalence-chip ${prevalenceClass}">${item.prevalenceLabel}</div>
+      </div>
+      <svg class="card-expand" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <div class="card-body">
+      <div class="risk-bar-wrap">
+        <div class="risk-label">Severity</div>
+        <div class="risk-bar-outer"><div class="risk-bar-inner risk-${item.riskLevel}" style="width:${item.riskLevel==='high'?'90%':item.riskLevel==='med'?'55%':'30%'}"></div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="section-label" style="color:${item.color}">Symptoms</div>
+      <ul class="symptom-list">
+        ${item.symptoms.map(s => `<li class="${s.level}">${s.s}</li>`).join('')}
+      </ul>
+      ${item.note ? `<div class="divider"></div><div style="font-size:12px;color:var(--muted);line-height:1.5;font-style:italic">${item.note}</div>` : ''}
+      <div class="divider"></div>
+      <div class="section-label" style="color:var(--green)">Food Sources</div>
+      <div class="food-sources">
+        ${item.foods.map(f => `<span class="food-pill">${f}</span>`).join('')}
+      </div>
+    </div>`;
+  return card;
+}
+
+function render(items) {
+  grid.innerHTML = '';
+  if (!items.length) { noResults.style.display = 'block'; grid.style.display = 'none'; return; }
+  noResults.style.display = 'none'; grid.style.display = 'grid';
+  document.getElementById('count').textContent = items.length + ' deficiencie' + (items.length === 1 ? 'y' : 's');
+  items.forEach((item, i) => grid.appendChild(makeCard(item, i)));
+}
+
+function filterCards() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const filtered = DATA.filter(d => {
+    const matchCat = activeCat === 'all' || d.cat === activeCat;
+    const matchQ = !q || d.name.toLowerCase().includes(q) || d.symptoms.some(s => s.s.toLowerCase().includes(q)) || d.foods.some(f => f.toLowerCase().includes(q));
+    return matchCat && matchQ;
+  });
+  render(filtered);
+}
+
+function setCat(cat) {
+  activeCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+  filterCards();
+}
+
+render(DATA);
+</script>
+</body>
+</html>
