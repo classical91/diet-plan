@@ -29,6 +29,9 @@ const server = http.createServer(async (request, response) => {
     if (pathname === "/nutrition" || pathname === "/nutrition/") {
       pathname = "/nutrition.html";
     }
+    if (pathname === "/benefits" || pathname === "/benefits/") {
+      pathname = "/benefits.html";
+    }
 
     const clean = pathname === "/" ? "index.html" : pathname.replace(/^\/+/, "");
     const filePath = path.join(__dirname, clean);

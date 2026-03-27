@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Benefits | Diet Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0d0a;
+    --surface: #1a1714;
+    --card: #201d19;
+    --border: #2e2a24;
+    --accent: #c8922a;
+    --green: #8fbe6b;
+    --blue: #5b9bd5;
+    --pink: #c86b8f;
+    --purple: #9b7de8;
+    --teal: #5bbfb5;
+    --text: #f0ebe3;
+    --muted: #7a7063;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+    background-image:
+      radial-gradient(ellipse at 15% 10%, rgba(200,146,42,0.06) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 90%, rgba(91,155,213,0.05) 0%, transparent 50%);
+  }
+  .nav-bar { max-width: 900px; margin: 0 auto 32px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .nav-link { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; transition: all 0.2s; }
+  .nav-link:hover, .nav-link.active { border-color: var(--accent); color: var(--accent); }
+  header { text-align: center; margin-bottom: 36px; }
+  .sub-label { font-size: 11px; font-weight: 500; letter-spacing: 0.35em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 5vw, 52px); font-weight: 900; letter-spacing: -0.02em; line-height: 1; }
+  h1 em { color: var(--accent); font-style: italic; }
+  .header-line { width: 50px; height: 2px; background: var(--accent); margin: 16px auto 0; opacity: 0.5; }
+
+  /* Search + Filter */
+  .controls { max-width: 900px; margin: 0 auto 28px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .search-wrap { flex: 1; min-width: 200px; position: relative; }
+  .search-wrap input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 10px 14px 10px 36px; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; transition: border 0.2s; }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+  .cat-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cat-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 6px 12px; border-radius: 20px; cursor: pointer; transition: all 0.2s; }
+  .cat-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .cat-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(200,146,42,0.08); }
+
+  /* Count */
+  .result-count { max-width: 900px; margin: 0 auto 16px; font-size: 12px; color: var(--muted); letter-spacing: 0.1em; }
+
+  /* Grid */
+  .grid { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    animation: fadeUp 0.3s ease both;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: #3e3a32; transform: translateY(-2px); }
+  .card.expanded { border-color: var(--accent); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  .card-header { display: flex; align-items: flex-start; gap: 12px; }
+  .card-icon { font-size: 22px; flex-shrink: 0; }
+  .card-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .card-cat { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 3px; }
+  .card-expand { margin-left: auto; color: var(--muted); font-size: 12px; flex-shrink: 0; transition: transform 0.2s; }
+  .card.expanded .card-expand { transform: rotate(180deg); }
+
+  .card-body { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .card.expanded .card-body { display: block; }
+
+  .benefit-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .benefit-list li { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: #c8b89a; line-height: 1.45; }
+  .benefit-list li::before { content: '—'; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .tag { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; border: 1px solid; }
+
+  .tag-herb { border-color: rgba(143,190,107,0.3); color: var(--green); background: rgba(143,190,107,0.07); }
+  .tag-food { border-color: rgba(200,146,42,0.3); color: var(--accent); background: rgba(200,146,42,0.07); }
+  .tag-drink { border-color: rgba(91,155,213,0.3); color: var(--blue); background: rgba(91,155,213,0.07); }
+  .tag-supp { border-color: rgba(155,125,232,0.3); color: var(--purple); background: rgba(155,125,232,0.07); }
+  .tag-spice { border-color: rgba(200,107,143,0.3); color: var(--pink); background: rgba(200,107,143,0.07); }
+  .tag-fungi { border-color: rgba(91,191,181,0.3); color: var(--teal); background: rgba(91,191,181,0.07); }
+
+  .no-results { max-width: 900px; margin: 40px auto; text-align: center; color: var(--muted); font-family: 'Playfair Display', serif; font-size: 18px; }
+</style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <a href="/" class="nav-link">Diet Plan</a>
+  <a href="/nutrition" class="nav-link">Nutrition Checklist</a>
+  <a href="/benefits" class="nav-link active">Food Benefits</a>
+</div>
+
+<header>
+  <div class="sub-label">Reference Guide</div>
+  <h1>Food <em>Benefits</em></h1>
+  <div class="header-line"></div>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search" placeholder="Search foods..." oninput="filterCards()">
+  </div>
+  <div class="cat-filters">
+    <button class="cat-btn active" data-cat="all" onclick="setCat('all')">All</button>
+    <button class="cat-btn" data-cat="food" onclick="setCat('food')">Food</button>
+    <button class="cat-btn" data-cat="herb" onclick="setCat('herb')">Herbs</button>
+    <button class="cat-btn" data-cat="drink" onclick="setCat('drink')">Drinks</button>
+    <button class="cat-btn" data-cat="spice" onclick="setCat('spice')">Spices</button>
+    <button class="cat-btn" data-cat="supp" onclick="setCat('supp')">Supplements</button>
+    <button class="cat-btn" data-cat="fungi" onclick="setCat('fungi')">Fungi</button>
+  </div>
+</div>
+
+<div class="result-count" id="count"></div>
+<div class="grid" id="grid"></div>
+<div class="no-results" id="noResults" style="display:none">No foods found</div>
+
+<script>
+const DATA = [
+  {name:"Apple Cider",icon:"🍎",cat:"drink",tags:["drink","food"],benefits:["Rich in antioxidants and polyphenols that protect cells from oxidative stress","Supports digestion when consumed before meals","Natural source of potassium which supports heart and muscle function","Contains malic acid which may support energy production","Anti-inflammatory properties from flavonoids"]},
+  {name:"Apple Cider Vinegar",icon:"🫙",cat:"food",tags:["food","supp"],benefits:["Helps regulate blood sugar and improve insulin sensitivity","Supports weight management by increasing satiety","Antimicrobial properties help fight harmful bacteria","May lower cholesterol and triglyceride levels","Supports digestive health and reduces bloating","Can improve skin pH when diluted and applied topically"]},
+  {name:"Artichoke",icon:"🌱",cat:"food",tags:["food","herb"],benefits:["High in cynarin which supports bile production and liver detox","One of the richest plant sources of antioxidants","Supports gut health and acts as a prebiotic fiber","May lower LDL cholesterol significantly","Supports kidney function and reduces bloating","Rich in folate, vitamin C, and magnesium"]},
+  {name:"Ashwagandha",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["Adaptogen that reduces cortisol and stress hormones","Improves testosterone levels and reproductive health in men","Boosts endurance, stamina, and VO2 max","Supports thyroid hormone balance","Reduces anxiety and improves sleep quality","Anti-inflammatory and antioxidant properties from withanolides"]},
+  {name:"Astragalus",icon:"🌾",cat:"herb",tags:["herb","supp"],benefits:["Powerful immune booster used in traditional Chinese medicine","Contains polysaccharides that stimulate white blood cell production","Adaptogen that helps the body resist physical and mental stress","May slow cellular aging through telomere support","Anti-inflammatory and antiviral properties","Supports heart health and may lower blood pressure"]},
+  {name:"Bananas",icon:"🍌",cat:"food",tags:["food"],benefits:["Excellent source of potassium for heart and muscle function","Provides quick natural energy from natural sugars and carbohydrates","Rich in vitamin B6 which supports brain health and mood","Contains pectin and resistant starch that moderate blood sugar","High in dopamine and catechins with antioxidant effects","Supports digestive health and relieves constipation"]},
+  {name:"Barley",icon:"🌾",cat:"food",tags:["food"],benefits:["Beta-glucan fiber powerfully lowers LDL cholesterol","Regulates blood sugar and improves insulin sensitivity","High in fiber which feeds beneficial gut bacteria","Rich in selenium, manganese, and B vitamins","Promotes satiety and supports weight management","May reduce risk of colon cancer"]},
+  {name:"Bean Sprouts",icon:"🫘",cat:"food",tags:["food"],benefits:["Low calorie and nutrient-dense — rich in vitamins C and K","Enzyme-rich due to sprouting process which aids digestion","High in folate, magnesium, and phosphorus","Antioxidants protect against cellular damage","Supports bone health and blood clotting","Easy to digest protein source"]},
+  {name:"Beets",icon:"🫀",cat:"food",tags:["food"],benefits:["High in nitrates that convert to nitric oxide, improving blood flow","Enhances athletic performance and endurance significantly","Supports liver detoxification through betalains","Reduces blood pressure naturally","Rich in folate supporting DNA synthesis and repair","Anti-inflammatory effects from betaine"]},
+  {name:"Broccoli",icon:"🥦",cat:"food",tags:["food"],benefits:["Sulforaphane activates cancer-fighting enzymes","High in vitamin C, K, and folate","Supports gut microbiome with prebiotic fiber","Indole-3-carbinol supports estrogen metabolism and hormone balance","Powerful anti-inflammatory and antioxidant properties","Supports bone density and eye health"]},
+  {name:"Cayenne Pepper",icon:"🌶️",cat:"spice",tags:["spice"],benefits:["Capsaicin boosts metabolism and promotes fat burning","Natural pain reliever when applied topically or consumed","Reduces appetite and increases satiety","Supports cardiovascular health and blood flow","Anti-inflammatory and antioxidant properties","Clears congestion and supports respiratory health"]},
+  {name:"Celery",icon:"🥬",cat:"food",tags:["food"],benefits:["Natural anti-inflammatory through polyacetylenes and luteolin","Supports digestion and reduces bloating","High water content supports hydration","Contains phthalides that may lower blood pressure","Rich in vitamin K, folate, and potassium","Antioxidants protect against oxidative stress"]},
+  {name:"Chlorella",icon:"🌿",cat:"supp",tags:["supp","herb"],benefits:["Detoxifies heavy metals and environmental toxins from the body","Complete protein containing all essential amino acids","Rich in chlorophyll which supports blood oxygenation","Boosts immune system function","High in iron, vitamin B12, and omega-3s","Supports gut health and digestion"]},
+  {name:"Cinnamon",icon:"🪵",cat:"spice",tags:["spice"],benefits:["Powerfully lowers blood sugar and improves insulin sensitivity","Anti-inflammatory and antioxidant properties from cinnamaldehyde","Antibacterial and antifungal properties","May lower LDL cholesterol and triglycerides","Supports brain function and may protect against neurodegenerative disease","Natural preservative due to antimicrobial effects"]},
+  {name:"Citrus Peel",icon:"🍊",cat:"food",tags:["food","herb"],benefits:["High concentration of flavonoids not found in juice or flesh","D-limonene supports liver detoxification and cancer prevention","Rich in pectin fiber that lowers cholesterol","Hesperidin reduces inflammation and supports blood vessel health","Contains more vitamin C per gram than the juice","Antifungal and antimicrobial properties"]},
+  {name:"Coconut",icon:"🥥",cat:"food",tags:["food"],benefits:["Medium-chain triglycerides (MCTs) provide quick brain and body energy","Lauric acid has antimicrobial and antiviral properties","Supports thyroid function and metabolism","Rich in manganese for bone health and enzyme function","Antioxidant phenolic compounds protect against oxidative damage","Supports satiety and may aid weight management"]},
+  {name:"Coconut Water",icon:"🥤",cat:"drink",tags:["drink"],benefits:["Natural electrolyte drink — rich in potassium, magnesium, sodium","Excellent hydration after exercise or illness","Cytokinins may have anti-aging effects on cells","Low in calories compared to sports drinks","Supports kidney health and may prevent kidney stones","Contains antioxidants that neutralize free radicals"]},
+  {name:"Coffee",icon:"☕",cat:"drink",tags:["drink"],benefits:["Caffeine significantly enhances focus, alertness, and physical performance","Rich in antioxidants — one of the largest antioxidant sources in Western diet","May reduce risk of Parkinson's, Alzheimer's, and type 2 diabetes","Increases metabolic rate and fat oxidation","Chlorogenic acids support blood sugar regulation","Protective effect on liver health"]},
+  {name:"Cordyceps",icon:"🍄",cat:"fungi",tags:["fungi","supp"],benefits:["Increases ATP production for enhanced cellular energy","Improves VO2 max and endurance in athletes","Adaptogen that supports adrenal and lung function","Anti-aging properties through antioxidant effects","Supports immune modulation and anti-tumor activity","May improve libido and testosterone levels"]},
+  {name:"Dandelion",icon:"🌼",cat:"herb",tags:["herb"],benefits:["Powerful liver tonic — stimulates bile production and liver detox","Natural diuretic that supports kidney function","Rich in vitamins A, C, K and minerals including iron and calcium","Prebiotic fiber supports beneficial gut bacteria","Anti-inflammatory properties from taraxerol and luteolin","May help regulate blood sugar"]},
+  {name:"Distilled Water",icon:"💧",cat:"drink",tags:["drink"],benefits:["Purest form of water — free from contaminants, chlorine, fluoride","Acts as a solvent that may help pull toxins from the body","Ideal for short-term detox protocols","Reduces exposure to pharmaceutical residues in tap water","May be gentler on kidneys for those with sensitivity","Best used alongside mineral-rich foods to maintain electrolyte balance"]},
+  {name:"Echinacea",icon:"🌸",cat:"herb",tags:["herb","supp"],benefits:["Stimulates immune system — shortens duration of colds","Rich in alkylamides and polysaccharides that activate white blood cells","Anti-inflammatory properties","Antiviral effects particularly against respiratory viruses","Antioxidant protection from flavonoids","Wound healing properties when applied topically"]},
+  {name:"Eden Beans",icon:"🫘",cat:"food",tags:["food"],benefits:["Organic and prepared to reduce phytic acid and improve digestibility","Rich in plant-based protein and complex carbohydrates","High in iron, folate, and magnesium","Soluble fiber supports heart health and blood sugar","Prebiotic that feeds beneficial gut bacteria","BPA-free packaging preserves nutritional integrity"]},
+  {name:"Flaxseed",icon:"🌰",cat:"food",tags:["food","supp"],benefits:["Richest plant source of omega-3 fatty acid ALA","Lignans act as phytoestrogens and have anti-cancer properties","High in both soluble and insoluble fiber","Reduces LDL cholesterol and supports heart health","Supports hormone balance particularly in women","Reduces inflammation and blood pressure"]},
+  {name:"Frankincense",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["Boswellic acids powerfully inhibit inflammatory pathways","May protect against certain cancers through apoptosis induction","Supports joint health and reduces arthritis pain","Improves brain function and may protect against neurodegeneration","Supports gut health and reduces IBS symptoms","Antifungal and antibacterial properties"]},
+  {name:"Garlic",icon:"🧄",cat:"food",tags:["food","herb"],benefits:["Allicin is a potent antimicrobial, antiviral, and antifungal compound","Significantly lowers blood pressure and cholesterol","Boosts immune system function","Reduces risk of cardiovascular disease","Detoxifies heavy metals from the body","Anti-cancer properties shown in multiple studies"]},
+  {name:"Ginseng",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["Adaptogen that improves energy, focus, and stress resilience","Ginsenosides have anti-inflammatory and antioxidant effects","Supports immune function and reduces infection risk","Improves erectile function and libido","May improve blood sugar regulation","Supports cognitive function and memory"]},
+  {name:"Green Tea vs Coffee",icon:"🍵",cat:"drink",tags:["drink"],benefits:["Green tea: L-theanine + caffeine = calm focus without jitteriness","Coffee: higher caffeine, faster onset, stronger performance boost","Green tea: EGCG is a powerful cancer-fighting antioxidant","Coffee: larger antioxidant load overall for most Western diets","Green tea: gentler on adrenals and better for anxiety-prone individuals","Coffee: better for athletic performance; green tea better for longevity"]},
+  {name:"Ground Beef",icon:"🥩",cat:"food",tags:["food"],benefits:["Complete protein with all essential amino acids","Rich in heme iron — most bioavailable form for preventing anemia","High in zinc, selenium, and B12","Creatine supports muscle function and brain energy","CLA (conjugated linoleic acid) from grass-fed beef supports fat metabolism","Carnosine is an antioxidant that supports muscle and brain health"]},
+  {name:"Hemp Seed",icon:"🌿",cat:"food",tags:["food","supp"],benefits:["Complete protein with all essential amino acids — rare for a plant","Optimal omega-6 to omega-3 ratio (3:1) reduces inflammation","Rich in GLA (gamma-linolenic acid) which supports hormone balance","High in magnesium, zinc, and iron","Supports heart health and reduces blood pressure","Easy to digest protein source — no phytic acid"]},
+  {name:"Holy Basil (Tulsi)",icon:"🌿",cat:"herb",tags:["herb"],benefits:["Adaptogen that reduces cortisol and stress response","Antibacterial, antiviral, and antifungal properties","Supports blood sugar regulation","Anti-inflammatory eugenol reduces pain and inflammation","Protects liver and supports detoxification","Supports respiratory health and clears congestion"]},
+  {name:"Honey",icon:"🍯",cat:"food",tags:["food"],benefits:["Antimicrobial — inhibits bacterial growth through hydrogen peroxide","Rich in antioxidants including phenolic compounds","Soothes cough and throat irritation better than some OTC drugs","Prebiotic that feeds beneficial gut bacteria","Promotes wound healing when applied topically","Natural energy source with trace minerals and enzymes"]},
+  {name:"Hummus",icon:"🫙",cat:"food",tags:["food"],benefits:["Plant-based protein from chickpeas supports muscle maintenance","High in fiber for digestive health and blood sugar regulation","Rich in iron, folate, and B vitamins","Tahini adds calcium and healthy monounsaturated fats","Prebiotic fiber feeds beneficial gut bacteria","Supports heart health by lowering LDL cholesterol"]},
+  {name:"Jalapeños",icon:"🌶️",cat:"spice",tags:["spice","food"],benefits:["Capsaicin boosts metabolism and thermogenesis","Rich in vitamin C — one jalapeño provides significant daily needs","Anti-inflammatory and antioxidant properties","May inhibit growth of certain cancer cells","Supports cardiovascular health","Natural decongestant and pain reliever"]},
+  {name:"Kale",icon:"🥬",cat:"food",tags:["food"],benefits:["One of the most nutrient-dense foods on earth","Exceptional source of vitamins K, A, and C","Glucosinolates support liver detox and cancer prevention","High in lutein and zeaxanthin for eye health","Supports bone density through calcium and vitamin K","Bile acid sequestrants lower cholesterol naturally"]},
+  {name:"Kombucha",icon:"🫙",cat:"drink",tags:["drink","supp"],benefits:["Rich in beneficial probiotics that support gut microbiome","Contains organic acids that may support liver detoxification","B vitamins support energy and nervous system function","Antioxidants from tea base protect against oxidative stress","May support immune function through gut-immune connection","Enzymes aid in digestion and nutrient absorption"]},
+  {name:"Lavender",icon:"💜",cat:"herb",tags:["herb"],benefits:["Potent anxiolytic — reduces anxiety as effectively as some medications in studies","Promotes sleep quality and duration","Anti-inflammatory and analgesic when applied topically","Antimicrobial properties against bacteria and fungi","Supports digestive health and reduces bloating","Neuroprotective effects against cognitive decline"]},
+  {name:"Lemon Lime Water",icon:"🍋",cat:"drink",tags:["drink"],benefits:["Alkalizing effect supports optimal body pH","Vitamin C boosts immune function and collagen synthesis","Flavonoids from both fruits have anti-inflammatory effects","Stimulates digestive enzymes and bile production","Supports kidney health and reduces kidney stone risk","Natural electrolytes support hydration"]},
+  {name:"Lemon Water",icon:"🍋",cat:"drink",tags:["drink"],benefits:["Boosts liver function and bile production for fat digestion","High in vitamin C for immune support and skin health","Alkalizing despite being acidic externally","Supports weight management by increasing satiety","D-limonene has anti-cancer and detox properties","Antibacterial properties in the mouth reduce bad bacteria"]},
+  {name:"Licorice Root",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["Glycyrrhizin has powerful anti-inflammatory and antiviral properties","Soothes gastrointestinal issues including GERD and ulcers","Supports adrenal function and cortisol regulation","Antimicrobial against H. pylori, a common stomach bacteria","Expectorant that loosens mucus in respiratory conditions","Supports liver health and has hepatoprotective effects"]},
+  {name:"Matcha",icon:"🍵",cat:"drink",tags:["drink"],benefits:["Highest concentration of EGCG among all teas","L-theanine + caffeine combination produces calm sustained focus","Chlorophyll from whole leaf supports detoxification","Thermogenic effect supports fat oxidation","Exceptional antioxidant ORAC score — higher than most foods","Supports immune function and reduces inflammation"]},
+  {name:"MCT Oil",icon:"🫙",cat:"supp",tags:["supp","food"],benefits:["Rapidly converted to ketones for immediate brain energy","Supports ketosis and fat burning even without full keto diet","Antimicrobial medium-chain fatty acids — especially C8 caprylic acid","Improves cognitive function and mental clarity","Supports gut health by reducing harmful bacteria","Increases satiety and supports weight management"]},
+  {name:"Milk Thistle",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["Silymarin is one of the most potent liver-protective compounds known","Regenerates liver cells and protects against toxin damage","Anti-inflammatory and antioxidant throughout the liver","May reduce insulin resistance in people with liver disease","Supports healthy bile production for fat digestion","May reduce LDL cholesterol"]},
+  {name:"Mint",icon:"🌿",cat:"herb",tags:["herb","spice"],benefits:["Menthol relieves digestive spasms and reduces IBS symptoms","Antimicrobial properties fight bacteria in mouth and gut","Natural decongestant that opens airways","Reduces nausea effectively","Antioxidant properties protect cells from damage","Cooling effect reduces pain when applied topically"]},
+  {name:"Mushrooms",icon:"🍄",cat:"fungi",tags:["fungi","food"],benefits:["Only plant-based source of vitamin D when exposed to sunlight","Beta-glucans powerfully modulate and enhance immune function","Rich in B vitamins including B12 precursors","Ergothioneine — a unique antioxidant concentrated in brain and organs","Anti-cancer properties shown in lion's mane, reishi, and turkey tail","Prebiotic fiber feeds beneficial gut bacteria"]},
+  {name:"Myrrh",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["Potent antimicrobial against bacteria, fungi, and parasites","Anti-inflammatory terpenoids reduce pain and swelling","Supports oral health — inhibits bacteria that cause gum disease","Antioxidant protection against free radical damage","May lower blood sugar and support insulin function","Wound healing and skin regeneration properties"]},
+  {name:"Nutritional Yeast",icon:"🧀",cat:"food",tags:["food","supp"],benefits:["Complete protein with all 9 essential amino acids","Fortified form provides B12 — essential for vegans","Rich in beta-glucans that support immune function","High in zinc, selenium, and manganese","Contains glutathione — master antioxidant of the body","Supports energy metabolism through B vitamin complex"]},
+  {name:"Oil of Oregano",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["Carvacrol and thymol are among the most powerful antimicrobials in nature","Effective against antibiotic-resistant bacteria","Antifungal — especially effective against Candida","Anti-inflammatory and antioxidant protection","Supports gut health by reducing harmful bacteria","Antiviral properties against multiple viruses"]},
+  {name:"Oranges",icon:"🍊",cat:"food",tags:["food"],benefits:["Exceptionally high in vitamin C for immune function and collagen","Flavonoids including hesperidin support cardiovascular health","Folate supports DNA synthesis and nervous system health","Soluble pectin fiber lowers LDL cholesterol","Antioxidants protect skin and reduce aging","Potassium supports heart rhythm and blood pressure"]},
+  {name:"Oregano Oil",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["High-concentration antimicrobial — effective against 23+ bacteria strains","Anti-parasitic properties useful in gut cleansing protocols","Rich in rosmarinic acid — a potent antioxidant","Reduces inflammation throughout the body","Supports respiratory health and clears mucus","Antifungal against Candida and mold species"]},
+  {name:"Ormus",icon:"✨",cat:"supp",tags:["supp"],benefits:["Monoatomic elements claimed to support cellular regeneration","Traditionally used to support pineal gland function","Anecdotally reported to improve mental clarity and focus","High mineral content depending on source quality","Used in spiritual traditions for consciousness enhancement","Research is limited — choose reputable sources"]},
+  {name:"Probiotics",icon:"🦠",cat:"supp",tags:["supp"],benefits:["Restore and maintain beneficial gut microbiome balance","Boost immune function — 70% of immune system is in the gut","Reduce anxiety and depression through gut-brain axis","Improve digestion, reduce bloating, and relieve IBS","Reduce antibiotic-associated diarrhea","Support nutrient absorption, especially B vitamins and minerals"]},
+  {name:"Psyllium Husk",icon:"🌾",cat:"supp",tags:["supp","food"],benefits:["Most powerful soluble fiber supplement available","Lowers LDL cholesterol significantly through bile acid binding","Regulates blood sugar by slowing carbohydrate absorption","Relieves both constipation and diarrhea","Prebiotic that feeds beneficial bacteria","Supports weight management through satiety"]},
+  {name:"Pumpkin Seeds",icon:"🎃",cat:"food",tags:["food"],benefits:["Highest plant source of zinc — critical for immune and hormone function","Rich in magnesium which most people are deficient in","Contains tryptophan which converts to serotonin and melatonin","Antioxidant vitamin E in multiple forms","Anti-parasitic properties in cucurbitin compound","Supports prostate health and urinary function"]},
+  {name:"Radishes",icon:"🌸",cat:"food",tags:["food"],benefits:["Glucosinolates support liver detoxification pathways","Isothiocyanates have anti-cancer properties","Natural diuretic that supports kidney health","Rich in vitamin C and folate","Anti-inflammatory properties","Supports digestion and bile flow"]},
+  {name:"Reishi Mushroom",icon:"🍄",cat:"fungi",tags:["fungi","supp"],benefits:["Triterpenes have powerful anti-cancer and immune-modulating properties","Reduces stress and anxiety — natural adaptogen","Supports liver detoxification and protection","Improves sleep quality through nervous system calming","Anti-inflammatory throughout the body","Supports cardiovascular health by lowering blood pressure"]},
+  {name:"Rhodiola Rosea",icon:"🌸",cat:"herb",tags:["herb","supp"],benefits:["Adaptogen that reduces physical and mental fatigue dramatically","Increases resistance to stress without sedation","Improves cognitive function and memory under stress","May increase ATP synthesis in mitochondria","Anti-depressant effects comparable to some pharmaceuticals in studies","Supports athletic performance and recovery"]},
+  {name:"Sage",icon:"🌿",cat:"herb",tags:["herb","spice"],benefits:["Improves memory and cognitive function — studied in Alzheimer's research","Rosmarinic acid is a potent anti-inflammatory and antioxidant","Antimicrobial against bacteria and fungi","Supports hormone balance — used traditionally for menopause symptoms","Reduces excessive sweating","Antidiabetic effects through enzyme inhibition"]},
+  {name:"Sauerkraut",icon:"🫙",cat:"food",tags:["food","supp"],benefits:["One of the richest natural sources of probiotics","Vitamin C levels increase through fermentation","Supports gut microbiome diversity","K2 produced by fermentation bacteria supports bone and cardiovascular health","Supports immune function through gut-immune connection","Digestive enzymes improve overall nutrient absorption"]},
+  {name:"Schisandra",icon:"🌸",cat:"herb",tags:["herb","supp"],benefits:["Adaptogen that improves physical performance and endurance","Supports liver health and detoxification through schisandrin compounds","Improves mental focus and reduces anxiety simultaneously","Anti-aging antioxidant properties","Supports adrenal function and stress resilience","Traditional use for skin health and beautification"]},
+  {name:"Stevia",icon:"🌿",cat:"herb",tags:["herb","food"],benefits:["Zero calorie natural sweetener 200-300x sweeter than sugar","Does not spike blood sugar — safe for diabetics","May slightly lower blood pressure","Antioxidant properties from stevioside","Anti-inflammatory effects","Does not contribute to tooth decay unlike sugar"]},
+  {name:"Strawberries",icon:"🍓",cat:"food",tags:["food"],benefits:["Exceptionally high in vitamin C — one cup provides full daily value","Anthocyanins reduce inflammation and oxidative stress","Ellagic acid has anti-cancer properties","Improves insulin sensitivity and blood sugar response","Supports heart health by lowering LDL and blood pressure","High in folate for DNA repair and cell growth"]},
+  {name:"Thyme",icon:"🌿",cat:"herb",tags:["herb","spice"],benefits:["Thymol is a powerful antimicrobial against bacteria and fungi","Supports respiratory health — used for bronchitis and cough","Rich in antioxidants including vitamin C and A","Anti-inflammatory properties reduce inflammation","Supports digestion and reduces bloating","Antifungal properties helpful for Candida"]},
+  {name:"Turmeric",icon:"🟡",cat:"spice",tags:["spice","herb"],benefits:["Curcumin is one of the most studied anti-inflammatory compounds","Reduces joint pain and stiffness comparable to some NSAIDs","Powerful antioxidant that stimulates the body's own antioxidant enzymes","May reverse early Alzheimer's pathology in research models","Supports liver health and detoxification","Anti-cancer properties through multiple mechanisms — best absorbed with black pepper"]},
+  {name:"Vitex (Chaste Tree)",icon:"🌸",cat:"herb",tags:["herb","supp"],benefits:["Supports female hormone balance by acting on pituitary gland","Reduces PMS symptoms including mood swings and breast tenderness","May support fertility by normalizing luteal phase","Reduces prolactin levels — helpful for certain hormonal conditions","Traditionally used for menopause symptom relief","Adaptogenic effects on reproductive hormones"]},
+  {name:"Wheatgrass",icon:"🌱",cat:"food",tags:["food","supp"],benefits:["Extremely concentrated source of chlorophyll for blood oxygenation","Complete amino acid profile","Rich in enzymes that support digestion","High in iron, magnesium, and calcium","Supports liver detoxification and cleansing","Alkalizing effect balances body pH"]},
+  {name:"Yerba Mate",icon:"🍵",cat:"drink",tags:["drink"],benefits:["Unique stimulant blend — caffeine + theobromine + theophylline","Produces energy without jitters, often compared to clean coffee","Rich in antioxidants — higher than green tea","Supports fat oxidation and weight management","Improves physical performance and reduces fatigue","Immune-boosting saponins and polyphenols"]},
+];
+
+let activeCat = 'all';
+const grid = document.getElementById('grid');
+const noResults = document.getElementById('noResults');
+
+function render(items) {
+  grid.innerHTML = '';
+  if (!items.length) { noResults.style.display = 'block'; grid.style.display = 'none'; return; }
+  noResults.style.display = 'none'; grid.style.display = 'grid';
+  document.getElementById('count').textContent = items.length + ' item' + (items.length !== 1 ? 's' : '');
+  items.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.animationDelay = (i * 0.02) + 's';
+    card.innerHTML = `
+      <div class="card-header" onclick="toggleCard(this.closest('.card'))">
+        <span class="card-icon">${item.icon}</span>
+        <div>
+          <div class="card-title">${item.name}</div>
+          <div class="card-cat tag tag-${item.cat}">${item.cat}</div>
+        </div>
+        <svg class="card-expand" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="card-body">
+        <ul class="benefit-list">
+          ${item.benefits.map(b => `<li>${b}</li>`).join('')}
+        </ul>
+        <div class="tags">
+          ${item.tags.map(t => `<span class="tag tag-${t}">${t}</span>`).join('')}
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function toggleCard(card) { card.classList.toggle('expanded'); }
+
+function filterCards() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const filtered = DATA.filter(d => {
+    const matchCat = activeCat === 'all' || d.cat === activeCat;
+    const matchQ = !q || d.name.toLowerCase().includes(q) || d.benefits.some(b => b.toLowerCase().includes(q));
+    return matchCat && matchQ;
+  });
+  render(filtered);
+}
+
+function setCat(cat) {
+  activeCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+  filterCards();
+}
+
+render(DATA);
+document.getElementById('count').textContent = DATA.length + ' items';
+</script>
+</body>
+</html>
