@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Nutrition Checklist</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0d0a;
+    --surface: #1a1714;
+    --card: #201d19;
+    --border: #2e2a24;
+    --accent: #c8922a;
+    --green: #8fbe6b;
+    --blue: #5b9bd5;
+    --pink: #c86b8f;
+    --purple: #9b7de8;
+    --teal: #5bbfb5;
+    --text: #f0ebe3;
+    --muted: #7a7063;
+    --check-bg: #2a2520;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+    background-image:
+      radial-gradient(ellipse at 15% 10%, rgba(200,146,42,0.06) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 90%, rgba(91,155,213,0.05) 0%, transparent 50%);
+  }
+  .nav-bar {
+    max-width: 680px;
+    margin: 0 auto 32px;
+    display: flex;
+    gap: 10px;
+  }
+  .nav-link {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 20px;
+    transition: all 0.2s;
+  }
+  .nav-link:hover, .nav-link.active { border-color: var(--accent); color: var(--accent); }
+  header { text-align: center; margin-bottom: 44px; }
+  .sub-label { font-size: 11px; font-weight: 500; letter-spacing: 0.35em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(32px, 5vw, 56px); font-weight: 900; letter-spacing: -0.02em; line-height: 1; }
+  h1 em { color: var(--accent); font-style: italic; }
+  .header-line { width: 50px; height: 2px; background: var(--accent); margin: 18px auto 0; opacity: 0.5; }
+  .progress-wrap {
+    max-width: 680px; margin: 0 auto 40px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 24px; display: flex; align-items: center; gap: 18px;
+  }
+  .progress-text { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--accent); min-width: 60px; }
+  .progress-bar-outer { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-bar-inner { height: 100%; background: linear-gradient(90deg, var(--accent), var(--green)); border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; }
+  .reset-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; cursor: pointer; transition: all 0.2s; }
+  .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .main { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  .section { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; animation: fadeUp 0.4s ease both; }
+  .section:nth-child(1){animation-delay:.05s}.section:nth-child(2){animation-delay:.10s}.section:nth-child(3){animation-delay:.15s}.section:nth-child(4){animation-delay:.20s}.section:nth-child(5){animation-delay:.25s}.section:nth-child(6){animation-delay:.30s}
+  @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  .section-header { padding: 14px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
+  .section-header:hover { background: rgba(255,255,255,0.02); }
+  .section-icon { font-size: 18px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--text); flex: 1; }
+  .section-count { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; }
+  .chevron { width: 16px; height: 16px; color: var(--muted); flex-shrink: 0; transition: transform 0.25s ease; }
+  .section.collapsed .chevron { transform: rotate(-90deg); }
+  .color-bar { height: 3px; }
+  .items-list { padding: 8px 0; overflow: hidden; max-height: 1000px; transition: max-height 0.3s ease, padding 0.3s ease; }
+  .section.collapsed .items-list { max-height: 0; padding: 0; }
+  .item { display: flex; align-items: center; gap: 14px; padding: 9px 20px; cursor: pointer; transition: background 0.15s; user-select: none; }
+  .item:hover { background: rgba(255,255,255,0.02); }
+  .checkbox { width: 20px; height: 20px; border-radius: 5px; border: 1.5px solid var(--border); background: var(--check-bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+  .checkbox svg { opacity: 0; transform: scale(0.5); transition: all 0.2s; }
+  .item.checked .checkbox { border-color: currentColor; }
+  .item.checked .checkbox svg { opacity: 1; transform: scale(1); }
+  .item-info { flex: 1; }
+  .item-name { font-size: 13.5px; font-weight: 500; color: var(--text); transition: color 0.2s; }
+  .item.checked .item-name { text-decoration: line-through; color: var(--muted); }
+  .item-detail { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .item-amount { font-size: 11px; font-weight: 500; letter-spacing: 0.05em; color: var(--muted); white-space: nowrap; transition: color 0.2s; }
+  .item.checked .item-amount { color: var(--muted); opacity: 0.5; }
+  .s-macro .color-bar{background:var(--accent)}.s-macro .section-header{border-left:3px solid var(--accent)}.s-macro .item.checked .checkbox{background:rgba(200,146,42,0.15);color:var(--accent)}
+  .s-vitamins .color-bar{background:var(--green)}.s-vitamins .section-header{border-left:3px solid var(--green)}.s-vitamins .item.checked .checkbox{background:rgba(143,190,107,0.15);color:var(--green)}
+  .s-minerals .color-bar{background:var(--blue)}.s-minerals .section-header{border-left:3px solid var(--blue)}.s-minerals .item.checked .checkbox{background:rgba(91,155,213,0.15);color:var(--blue)}
+  .s-electrolytes .color-bar{background:var(--pink)}.s-electrolytes .section-header{border-left:3px solid var(--pink)}.s-electrolytes .item.checked .checkbox{background:rgba(200,107,143,0.15);color:var(--pink)}
+  .s-extras .color-bar{background:var(--purple)}.s-extras .section-header{border-left:3px solid var(--purple)}.s-extras .item.checked .checkbox{background:rgba(155,125,232,0.15);color:var(--purple)}
+  .s-hydration .color-bar{background:var(--teal)}.s-hydration .section-header{border-left:3px solid var(--teal)}.s-hydration .item.checked .checkbox{background:rgba(91,191,181,0.15);color:var(--teal)}
+  .s-vitamins-b .color-bar{background:var(--green)}.s-vitamins-b .section-header{border-left:3px solid var(--green)}.s-vitamins-b .item.checked .checkbox{background:rgba(143,190,107,0.15);color:var(--green)}
+</style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <a href="/" class="nav-link">Diet Plan</a>
+  <a href="/nutrition" class="nav-link active">Nutrition Checklist</a>
+</div>
+
+<header>
+  <div class="sub-label">Daily Tracking</div>
+  <h1>Nutrition <em>Checklist</em></h1>
+  <div class="header-line"></div>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-text" id="pct">0%</div>
+  <div style="flex:1">
+    <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar"></div></div>
+    <div class="progress-label" style="margin-top:6px" id="pcount">0 of 0 completed</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">Reset</button>
+</div>
+
+<div class="main" id="main"></div>
+
+<script>
+const sections = [
+  { id:"s-macro", icon:"⚡️", title:"Macronutrients", items:[
+    {name:"Protein",detail:"Lean meat, eggs, fish, legumes",amount:"150-200g / day"},
+    {name:"Carbohydrates",detail:"Rice, oats, bread, vegetables",amount:"225-300g / day"},
+    {name:"Healthy Fats",detail:"Avocado, nuts, olive oil, fish",amount:"55-75g / day"},
+    {name:"Dietary Fiber",detail:"Vegetables, oats, legumes",amount:"25-38g / day"},
+  ]},
+  { id:"s-vitamins", icon:"🌿", title:"Fat-Soluble Vitamins", items:[
+    {name:"Vitamin A",detail:"Sweet potato, carrots, leafy greens",amount:"900 mcg"},
+    {name:"Vitamin D",detail:"Sunlight, fatty fish, fortified milk",amount:"1,500-2,000 IU"},
+    {name:"Vitamin E",detail:"Almonds, sunflower seeds, spinach",amount:"15 mg"},
+    {name:"Vitamin K",detail:"Kale, spinach, broccoli",amount:"120 mcg"},
+  ]},
+  { id:"s-vitamins-b", icon:"🧬", title:"Water-Soluble Vitamins", items:[
+    {name:"Vitamin C",detail:"Bell peppers, citrus, broccoli",amount:"90 mg"},
+    {name:"Vitamin B1 (Thiamine)",detail:"Whole grains, legumes",amount:"1.2 mg"},
+    {name:"Vitamin B2 (Riboflavin)",detail:"Eggs, dairy, lean meat",amount:"1.3 mg"},
+    {name:"Vitamin B3 (Niacin)",detail:"Chicken, tuna, mushrooms",amount:"16 mg"},
+    {name:"Vitamin B6",detail:"Poultry, banana, potatoes",amount:"1.7 mg"},
+    {name:"Vitamin B9 (Folate)",detail:"Leafy greens, beans",amount:"400 mcg"},
+    {name:"Vitamin B12",detail:"Meat, eggs, dairy, fish",amount:"2.4 mcg"},
+  ]},
+  { id:"s-minerals", icon:"💎", title:"Key Minerals", items:[
+    {name:"Magnesium",detail:"Pumpkin seeds, spinach, almonds",amount:"400-420 mg"},
+    {name:"Potassium",detail:"Banana, avocado, sweet potato",amount:"3,400 mg"},
+    {name:"Calcium",detail:"Dairy, broccoli, fortified foods",amount:"1,000 mg"},
+    {name:"Iron",detail:"Red meat, spinach, lentils",amount:"8 mg"},
+    {name:"Zinc",detail:"Beef, chicken, pumpkin seeds",amount:"11 mg"},
+    {name:"Selenium",detail:"Brazil nuts, tuna, eggs",amount:"55 mcg"},
+    {name:"Phosphorus",detail:"Meat, dairy, nuts, fish",amount:"700 mg"},
+    {name:"Manganese",detail:"Whole grains, nuts, leafy greens",amount:"2.3 mg"},
+  ]},
+  { id:"s-electrolytes", icon:"⚗️", title:"Electrolytes", items:[
+    {name:"Sodium",detail:"Moderate - avoid excess processed food",amount:"1,500-2,300 mg"},
+    {name:"Chloride",detail:"Salt, seaweed, tomatoes",amount:"1,800-2,300 mg"},
+    {name:"Bicarbonate",detail:"Naturally balanced via diet and kidneys",amount:"Balanced"},
+  ]},
+  { id:"s-extras", icon:"🔬", title:"Extras & Micronutrients", items:[
+    {name:"Omega-3 Fatty Acids",detail:"Salmon, walnuts, flaxseed, chia",amount:"1.6 g ALA / day"},
+    {name:"Choline",detail:"Eggs, beef liver, soybeans",amount:"550 mg"},
+    {name:"Iodine",detail:"Iodized salt, seafood, dairy",amount:"150 mcg"},
+    {name:"Chromium",detail:"Broccoli, whole grains, lean beef",amount:"35 mcg"},
+    {name:"Copper",detail:"Shellfish, nuts, seeds",amount:"900 mcg"},
+    {name:"Biotin (B7)",detail:"Eggs, nuts, salmon",amount:"30 mcg"},
+    {name:"Pantothenic Acid (B5)",detail:"Avocado, chicken, whole grains",amount:"5 mg"},
+  ]},
+  { id:"s-hydration", icon:"💧", title:"Hydration & Fiber", items:[
+    {name:"Water",detail:"Plain water throughout the day",amount:"3.7 L / day"},
+    {name:"Electrolyte Water",detail:"Post-workout or hot weather",amount:"1-2 glasses"},
+    {name:"K+Mg Shake",detail:"Banana, spinach, seeds, coconut water",amount:"1x daily"},
+    {name:"Green Vegetables",detail:"Broccoli, spinach, cauliflower",amount:"2-3 servings"},
+    {name:"Fruit",detail:"Banana, berries, mango, kiwi",amount:"2 servings"},
+  ]},
+];
+
+const STORAGE_KEY = 'nutrition-checklist-v1';
+const main = document.getElementById('main');
+let total = 0;
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch {}
+
+sections.forEach(sec => {
+  const div = document.createElement('div');
+  div.className = `section ${sec.id}`;
+  div.innerHTML = `
+    <div class="color-bar"></div>
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-icon">${sec.icon}</span>
+      <span class="section-title">${sec.title}</span>
+      <span class="section-count">${sec.items.length} items</span>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="items-list">
+      ${sec.items.map((item, i) => {
+        const id = sec.id + '-' + i;
+        const isChecked = saved[id] ? ' checked' : '';
+        return `
+        <div class="item${isChecked}" data-id="${id}" onclick="toggle(this)">
+          <div class="checkbox">
+            <svg width="12" height="9" viewBox="0 0 12 9" fill="none">
+              <path d="M1 4L4.5 7.5L11 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="item-info">
+            <div class="item-name">${item.name}</div>
+            <div class="item-detail">${item.detail}</div>
+          </div>
+          <div class="item-amount">${item.amount}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  main.appendChild(div);
+  total += sec.items.length;
+});
+
+updateProgress();
+
+function toggleSection(header) { header.closest('.section').classList.toggle('collapsed'); }
+
+function toggle(el) {
+  el.classList.toggle('checked');
+  saved[el.dataset.id] = el.classList.contains('checked');
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+  updateProgress();
+}
+
+function updateProgress() {
+  const checked = document.querySelectorAll('.item.checked').length;
+  const pct = total > 0 ? Math.round((checked / total) * 100) : 0;
+  document.getElementById('pct').textContent = pct + '%';
+  document.getElementById('bar').style.width = pct + '%';
+  document.getElementById('pcount').textContent = checked + ' of ' + total + ' completed';
+}
+
+function resetAll() {
+  document.querySelectorAll('.item.checked').forEach(el => {
+    el.classList.remove('checked');
+    saved[el.dataset.id] = false;
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+  updateProgress();
+}
+</script>
+</body>
+</html>
