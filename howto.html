@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How-To Guide | Diet Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0f0d0a;--surface:#1a1714;--card:#201d19;--border:#2e2a24;--accent:#c8922a;--green:#8fbe6b;--blue:#5b9bd5;--pink:#c86b8f;--purple:#9b7de8;--teal:#5bbfb5;--red:#e05c5c;--text:#f0ebe3;--muted:#7a7063}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(143,190,107,.04) 0%,transparent 50%)}
+  .nav-bar{max-width:1100px;margin:0 auto 32px;display:flex;gap:10px;flex-wrap:wrap}
+  .nav-link{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:20px;transition:all .2s}
+  .nav-link:hover,.nav-link.active{border-color:var(--accent);color:var(--accent)}
+  header{text-align:center;margin-bottom:40px}
+  .sub-label{font-size:11px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-.02em;line-height:1}
+  h1 em{color:var(--accent);font-style:italic}
+  .header-line{width:50px;height:2px;background:var(--accent);margin:16px auto 0;opacity:.5}
+  .tabs{max-width:1100px;margin:0 auto 28px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:16px}
+  .tab{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.15em;text-transform:uppercase;padding:7px 16px;border-radius:20px;cursor:pointer;transition:all .2s}
+  .tab:hover{border-color:var(--accent);color:var(--accent)}
+  .tab.active{border-color:var(--accent);color:var(--accent);background:rgba(200,146,42,.08)}
+  .section{max-width:1100px;margin:0 auto 40px;display:none}
+  .section.active{display:block}
+  .sec-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:6px}
+  .sec-desc{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:32px}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fill,minmax(460px,1fr));gap:16px;margin-bottom:32px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;animation:fadeUp .3s ease both;transition:border-color .2s,transform .2s}
+  .card:hover{border-color:#3e3a32;transform:translateY(-2px)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .card-stripe{height:3px}
+  .card-inner{padding:16px}
+  .card-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+  .card-sub{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .card-body{font-size:13px;color:#b0a898;line-height:1.6}
+  .card-list{list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:8px}
+  .card-list li{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:#b0a898;line-height:1.45}
+  .card-list li::before{content:'—';color:var(--accent);flex-shrink:0}
+  .card-list li.green::before{color:var(--green)}
+  .card-list li.blue::before{color:var(--blue)}
+  .card-list li.purple::before{color:var(--purple)}
+  .badge{font-size:10px;padding:3px 9px;border-radius:20px;border:1px solid;display:inline-block;margin-right:4px;margin-top:4px}
+  .b-green{border-color:rgba(143,190,107,.3);color:var(--green);background:rgba(143,190,107,.07)}
+  .b-blue{border-color:rgba(91,155,213,.3);color:var(--blue);background:rgba(91,155,213,.07)}
+  .b-accent{border-color:rgba(200,146,42,.3);color:var(--accent);background:rgba(200,146,42,.07)}
+  .b-purple{border-color:rgba(155,125,232,.3);color:var(--purple);background:rgba(155,125,232,.07)}
+  .b-teal{border-color:rgba(91,191,181,.3);color:var(--teal);background:rgba(91,191,181,.07)}
+  .b-pink{border-color:rgba(200,107,143,.3);color:var(--pink);background:rgba(200,107,143,.07)}
+  .b-red{border-color:rgba(224,92,92,.3);color:var(--red);background:rgba(224,92,92,.07)}
+  .subsec{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:12px;margin-top:28px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+  .table-wrap{overflow-x:auto;margin-bottom:28px;border:1px solid var(--border);border-radius:10px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead tr{background:var(--surface)}
+  th{padding:11px 16px;text-align:left;font-family:'Playfair Display',serif;font-weight:700;font-size:12px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+  td{padding:10px 16px;border-bottom:1px solid var(--border);color:#b0a898;vertical-align:top;line-height:1.5}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(255,255,255,.02)}
+  td:first-child{font-weight:500;color:var(--text)}
+  td.pct{font-weight:700;font-size:14px}
+  .bar-wrap{display:flex;align-items:center;gap:8px}
+  .mini-bar{height:8px;border-radius:4px;min-width:4px}
+  .note-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:8px;padding:14px 16px;font-size:12.5px;color:#b0a898;line-height:1.6;margin-top:16px}
+  .step{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+  .step-num{width:28px;height:28px;border-radius:50%;background:rgba(200,146,42,.15);border:1px solid rgba(200,146,42,.3);color:var(--accent);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .step-text{font-size:13px;color:#b0a898;line-height:1.55;padding-top:4px}
+  .step-title{font-weight:600;color:var(--text);display:block;margin-bottom:2px}
+  .recipe-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:16px;animation:fadeUp .3s ease both}
+  .recipe-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+  .recipe-sub{font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+  .recipe-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .recipe-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .ing-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+  .ing-list li{font-size:12.5px;color:#b0a898;display:flex;gap:6px}
+  .ing-list li::before{content:'·';color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <a href="/" class="nav-link">Diet Plan</a>
+  <a href="/nutrition" class="nav-link">Checklist</a>
+  <a href="/benefits" class="nav-link">Benefits</a>
+  <a href="/deficiencies" class="nav-link">Deficiencies</a>
+  <a href="/overview" class="nav-link">Overview</a>
+  <a href="/howto" class="nav-link active">How-To Guide</a>
+</div>
+
+<header>
+  <div class="sub-label">Practical Guide</div>
+  <h1>How-To <em>Reference</em></h1>
+  <div class="header-line"></div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('herbs')">Herbs & Spices</button>
+  <button class="tab" onclick="showTab('tinctures')">Tinctures</button>
+  <button class="tab" onclick="showTab('aroma')">Aromatherapy</button>
+  <button class="tab" onclick="showTab('neuro')">Neuro & Body Chemicals</button>
+  <button class="tab" onclick="showTab('shakes')">Shakes & Detox</button>
+  <button class="tab" onclick="showTab('macropct')">Macro Classification</button>
+</div>
+
+<!-- HERBS & SPICES -->
+<div class="section active" id="tab-herbs">
+  <div class="sec-title">Herbs & Spices — How to Use</div>
+  <div class="sec-desc">Methods of preparation, optimal dosing, and best uses for culinary and medicinal herbs and spices.</div>
+
+  <div class="subsec">Culinary Spices</div>
+  <div class="grid">
+    <div class="card"><div class="card-stripe" style="background:var(--accent)"></div><div class="card-inner">
+      <div class="card-title">Turmeric</div>
+      <div class="card-sub">Anti-inflammatory · Spice</div>
+      <div class="card-body">Add to curries, soups, golden milk, and smoothies. Always combine with black pepper (piperine) to increase absorption by 2,000%.</div>
+      <ul class="card-list"><li>Culinary: 1–3g / day (about 1/2 tsp)</li><li>Supplement: 500–1,000mg curcumin extract</li><li>Golden milk: 1 tsp turmeric + pinch black pepper + warm milk + honey</li></ul>
+      <div style="margin-top:10px"><span class="badge b-accent">Heat stable</span><span class="badge b-accent">Fat-soluble</span><span class="badge b-green">Pairs with black pepper</span></div>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--pink)"></div><div class="card-inner">
+      <div class="card-title">Cayenne Pepper</div>
+      <div class="card-sub">Metabolism · Spice</div>
+      <div class="card-body">Add to meals, sauces, or dissolve 1/8 tsp in warm lemon water on an empty stomach to stimulate circulation and metabolism.</div>
+      <ul class="card-list"><li>Capsaicin activates TRPV1 receptors — boosts thermogenesis</li><li>Start with tiny amounts — 1/16 tsp — and build up</li><li>Topical cream: 0.025–0.075% capsaicin for joint pain</li></ul>
+      <div style="margin-top:10px"><span class="badge b-pink">Stimulant</span><span class="badge b-accent">Metabolic</span></div>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--teal)"></div><div class="card-inner">
+      <div class="card-title">Cinnamon</div>
+      <div class="card-sub">Blood Sugar · Spice</div>
+      <div class="card-body">Add 1/2–1 tsp to oatmeal, coffee, smoothies, or yogurt. Ceylon cinnamon is safer for daily use than Cassia (lower coumarin).</div>
+      <ul class="card-list"><li>Take before carb-heavy meals to blunt blood sugar spike</li><li>Use Ceylon variety for daily supplementation</li><li>Dose: 1–6g / day for blood sugar effects</li></ul>
+      <div style="margin-top:10px"><span class="badge b-teal">Ceylon preferred</span><span class="badge b-green">Pre-meal</span></div>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--green)"></div><div class="card-inner">
+      <div class="card-title">Ginger</div>
+      <div class="card-sub">Digestion · Nausea · Anti-inflammatory</div>
+      <div class="card-body">Use fresh, powdered, or as tea. Grate fresh ginger into meals, teas, or juices. Dried ginger is 5–10x more concentrated in shogaols.</div>
+      <ul class="card-list"><li>Nausea: 1g fresh ginger or tea before travel</li><li>Anti-inflammatory: 2–3g/day fresh or 1g dried</li><li>Digestive: chew a small piece before meals</li><li>Pairs with lemon and honey in tea</li></ul>
+      <div style="margin-top:10px"><span class="badge b-green">Fresh or dried</span><span class="badge b-teal">Heat stable</span></div>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--purple)"></div><div class="card-inner">
+      <div class="card-title">Garlic</div>
+      <div class="card-sub">Antimicrobial · Cardiovascular</div>
+      <div class="card-body">Crush and let sit 10 minutes before cooking — this activates allicin. Eat raw for maximum benefit. Cooking reduces but doesn't eliminate benefits.</div>
+      <ul class="card-list"><li>Raw: 1–2 cloves / day for immune and cardiovascular effects</li><li>Aged garlic extract: 600–1,200mg if sensitive to raw</li><li>Crush → rest 10 min → cook for preserved allicin</li></ul>
+      <div style="margin-top:10px"><span class="badge b-purple">Crush first</span><span class="badge b-green">Raw is strongest</span></div>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--blue)"></div><div class="card-inner">
+      <div class="card-title">Sage, Thyme & Oregano</div>
+      <div class="card-sub">Antimicrobial · Antioxidant</div>
+      <div class="card-body">Use fresh or dried in cooking. Oil of oregano is a concentrated supplement — very different from culinary oregano.</div>
+      <ul class="card-list"><li>Sage tea: 2g dried sage in hot water — supports memory</li><li>Thyme tea: soothes cough and respiratory infections</li><li>Oil of oregano: 1–3 drops under tongue for antimicrobial use</li><li>Always dilute oil of oregano with carrier oil for topical use</li></ul>
+      <div style="margin-top:10px"><span class="badge b-blue">Culinary dose safe</span><span class="badge b-red">Oil = concentrated</span></div>
+    </div></div>
+  </div>
+
+  <div class="subsec">Medicinal Herbs (How to Prepare)</div>
+  <div class="grid">
+    <div class="card"><div class="card-stripe" style="background:var(--purple)"></div><div class="card-inner">
+      <div class="card-title">Ashwagandha</div>
+      <div class="card-sub">Adaptogen · Cortisol · Stress</div>
+      <ul class="card-list">
+        <li class="green">Powder: 1/2 tsp in warm milk (traditional Ayurvedic method — enhances absorption)</li>
+        <li class="green">Capsule: 300–600mg KSM-66 or Sensoril extract (standardized)</li>
+        <li class="blue">Take at night — supports sleep quality</li>
+        <li>Cycle: 8 weeks on, 2 weeks off recommended</li>
+        <li>Takes 4–8 weeks to feel full effect</li>
+      </ul>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--teal)"></div><div class="card-inner">
+      <div class="card-title">Holy Basil (Tulsi)</div>
+      <div class="card-sub">Adaptogen · Anxiety · Blood Sugar</div>
+      <ul class="card-list">
+        <li class="green">Tea: steep 5–7 fresh leaves or 1 tsp dried in hot water for 5 min</li>
+        <li class="green">Capsule: 300–600mg standardized extract</li>
+        <li class="blue">Drink 1–3 cups daily for stress and blood sugar support</li>
+        <li>Safe for daily long-term use — gentler than ashwagandha</li>
+      </ul>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--pink)"></div><div class="card-inner">
+      <div class="card-title">Milk Thistle</div>
+      <div class="card-sub">Liver Protection · Detox</div>
+      <ul class="card-list">
+        <li class="green">Capsule: 140–200mg silymarin (standardized to 70–80%)</li>
+        <li class="green">Tea: 1 tsp crushed seeds steeped 10 min — less potent than extract</li>
+        <li class="blue">Take 20 min before meals for best liver protection</li>
+        <li>Safe for long-term use — often taken for months during detox</li>
+      </ul>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--green)"></div><div class="card-inner">
+      <div class="card-title">Dandelion</div>
+      <div class="card-sub">Liver · Kidney · Digestion</div>
+      <ul class="card-list">
+        <li class="green">Root tea: roast and steep for liver support (2 tsp dried root / 8oz water)</li>
+        <li class="green">Leaf tea: diuretic, rich in vitamins (1 tbsp dried leaves)</li>
+        <li class="blue">Tincture: 2–8ml three times daily</li>
+        <li>Whole plant is usable — root, leaf, and flower</li>
+      </ul>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--blue)"></div><div class="card-inner">
+      <div class="card-title">Echinacea</div>
+      <div class="card-sub">Immune Boost · Antiviral</div>
+      <ul class="card-list">
+        <li class="green">Tea: 1–2 tsp dried herb steeped 15 min — drink 3x/day during illness</li>
+        <li class="green">Tincture: 2–3ml 3x/day at onset of cold</li>
+        <li class="blue">Capsule: 300–500mg dried extract 3x/day</li>
+        <li>Best taken at first sign of illness — not for continuous prevention</li>
+        <li>Cycle: use for max 10 days, break 3 days, repeat if needed</li>
+      </ul>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--accent)"></div><div class="card-inner">
+      <div class="card-title">Ginseng</div>
+      <div class="card-sub">Energy · Cognitive · Adaptogen</div>
+      <ul class="card-list">
+        <li class="green">Tea: 2–3g dried root simmered 15 min in 2 cups water</li>
+        <li class="green">Capsule: 200–400mg standardized extract (morning or early afternoon)</li>
+        <li class="blue">Tincture: 2–4ml 2x/day — Asian and American differ in effect</li>
+        <li>Asian ginseng: energizing. American ginseng: calming. Siberian: adaptogen</li>
+        <li>Avoid taking late in day — can affect sleep</li>
+      </ul>
+    </div></div>
+  </div>
+</div>
+
+<!-- TINCTURES -->
+<div class="section" id="tab-tinctures">
+  <div class="sec-title">Tinctures — What They Are & How to Make Them</div>
+  <div class="sec-desc">A tincture is a concentrated herbal extract made by soaking herbs in alcohol or glycerin. Far more potent than teas and lasts for years.</div>
+
+  <div class="subsec">How to Make a Basic Tincture</div>
+  <div class="note-box" style="margin-bottom:24px">Method: Folk method (ratio method) — ideal for home preparation. No precise measuring required.</div>
+
+  <div style="max-width:700px;margin-bottom:32px">
+    <div class="step"><div class="step-num">1</div><div class="step-text"><span class="step-title">Choose your herb</span>Fresh herbs: fill jar loosely. Dried herbs: fill jar 1/2 full. Roots/bark: coarsely chop and fill 1/3–1/2 jar.</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text"><span class="step-title">Choose your menstruum (solvent)</span>Alcohol (vodka or grain alcohol 40–60% ABV): best for most herbs. Glycerin: alcohol-free option — less potent, sweeter. Apple cider vinegar: mild — for culinary herbs.</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text"><span class="step-title">Combine</span>Fill jar with herbs. Pour menstruum until herbs are fully submerged with 1–2 inches of liquid above. Seal tightly with lid.</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-text"><span class="step-title">Macerate</span>Store in a cool dark place for 4–6 weeks. Shake daily if possible. Fresh herbs: 4 weeks. Dried herbs and roots: 6–8 weeks.</div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-text"><span class="step-title">Strain and bottle</span>Strain through cheesecloth or fine mesh. Press all liquid out of the plant material. Bottle in dark glass dropper bottles. Label with herb, date, and menstruum.</div></div>
+    <div class="step"><div class="step-num">6</div><div class="step-text"><span class="step-title">Store and use</span>Alcohol tinctures: 5–10 year shelf life. Glycerin: 1–3 years. Typical dose: 1–4ml (20–80 drops) in water, 1–3x daily. Always start with lowest dose.</div></div>
+  </div>
+
+  <div class="subsec">Popular Tinctures & Their Uses</div>
+  <div class="grid">
+    <div class="card"><div class="card-stripe" style="background:var(--purple)"></div><div class="card-inner">
+      <div class="card-title">Valerian Root</div>
+      <div class="card-sub">Sleep · Anxiety</div>
+      <div class="card-body">Strong sedative tincture. Strongly flavored — mix in juice or strong tea to mask taste.</div>
+      <ul class="card-list"><li>Dose: 2–4ml 30–60 min before bed</li><li>Works best after 2–4 weeks of consistent use</li><li>Do not combine with alcohol or sedative medications</li></ul>
+    </div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--blue)"></div><div class="card-inner">
+      <div class="card-title">Elderberry</div>
+      <div class="card-sub">Immune · Antiviral</div>
+      <div class="card-body">Elderberry tincture or syrup — one of the most effective natural antivirals for respiratory illness.</div>
+      <ul class="card-list"><li>Dose: 1–2ml 3–4x daily during illness</li><li>Prevention: 1ml daily during flu season</li><li>Syrup: 1 tbsp daily (easier for children)</li></ul>
+    </div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--green)"></div><div class="card-inner">
+      <div class="card-title">Licorice Root</div>
+      <div class="card-sub">Gut · Adrenal · Antiviral</div>
+      <div class="card-body">Soothing to gut lining. Supports adrenal function. Use DGL (deglycyrrhizinated) form if concerned about blood pressure.</div>
+      <ul class="card-list"><li>Dose: 1–3ml 3x daily before meals for gut issues</li><li>Short-term use: max 4–6 weeks without break</li><li>Avoid in high blood pressure unless using DGL form</li></ul>
+    </div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--teal)"></div><div class="card-inner">
+      <div class="card-title">Frankincense (Boswellia)</div>
+      <div class="card-sub">Inflammation · Joint Pain</div>
+      <div class="card-body">Available as resin, capsule, or tincture. Powerful for arthritis and inflammatory conditions.</div>
+      <ul class="card-list"><li>Tincture: 2–4ml 2x daily for joint pain</li><li>Standardized extract: 300–400mg 2–3x daily</li><li>Apply diluted resin oil topically for localized joint pain</li></ul>
+    </div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--pink)"></div><div class="card-inner">
+      <div class="card-title">Rhodiola Rosea</div>
+      <div class="card-sub">Energy · Fatigue · Adaptogen</div>
+      <div class="card-body">Best taken in the morning. Remarkable for mental and physical fatigue without stimulant side effects.</div>
+      <ul class="card-list"><li>Tincture: 1–2ml in morning, fasted</li><li>Capsule: 200–600mg standardized (3% rosavins, 1% salidroside)</li><li>Cycle: 6–12 weeks on, 2 weeks off</li></ul>
+    </div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--accent)"></div><div class="card-inner">
+      <div class="card-title">Reishi Mushroom</div>
+      <div class="card-sub">Immune · Sleep · Anti-cancer</div>
+      <div class="card-body">Dual-extract tincture (water + alcohol) captures both beta-glucans and triterpenes. Single extraction misses compounds.</div>
+      <ul class="card-list"><li>Tincture: 2–3ml 2x daily</li><li>Best taken in evening — calming and sleep-supportive</li><li>Look for dual-extract on label</li></ul>
+    </div></div>
+  </div>
+</div>
+
+<!-- AROMATHERAPY -->
+<div class="section" id="tab-aroma">
+  <div class="sec-title">Aromatherapy — How to Use Essential Oils</div>
+  <div class="sec-desc">Essential oils interact with the limbic system through the olfactory nerve — the only sense with direct brain access. Effects are fast (within 15 seconds of inhalation).</div>
+
+  <div class="subsec">Methods of Use</div>
+  <div class="grid">
+    <div class="card"><div class="card-stripe" style="background:var(--blue)"></div><div class="card-inner">
+      <div class="card-title">Diffusion</div>
+      <div class="card-sub">Most Common Method</div>
+      <div class="card-body">Add 5–15 drops to an ultrasonic diffuser with water. Run for 30–60 min, then break. Continuous diffusion reduces effectiveness.</div>
+      <ul class="card-list"><li>Best for mood, sleep, and respiratory effects</li><li>Diffuse lavender at night for sleep</li><li>Diffuse peppermint or rosemary in morning for focus</li><li>Citrus oils for energy and mood elevation</li></ul>
+    </div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--green)"></div><div class="card-inner">
+      <div class="card-title">Topical Application</div>
+      <div class="card-sub">Always Dilute First</div>
+      <div class="card-body">Never apply essential oils undiluted to skin. Always dilute in a carrier oil (coconut, jojoba, almond) before skin contact.</div>
+      <ul class="card-list"><li>Dilution ratio: 2% = 12 drops per 1 fl oz carrier oil</li><li>For children or sensitive skin: 0.5–1%</li><li>Apply to pulse points: wrists, temples, neck, behind ears</li><li>Test patch first — wait 24h for sensitivity reaction</li></ul>
+    </div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--purple)"></div><div class="card-inner">
+      <div class="card-title">Inhalation (Direct)</div>
+      <div class="card-sub">Fastest Effect</div>
+      <div class="card-body">Add 1–2 drops to palms, cup over nose and breathe deeply for 3–5 breaths. Or use an inhaler stick.</div>
+      <ul class="card-list"><li>Best for acute anxiety, nausea, headache</li><li>Peppermint: instant headache and nausea relief</li><li>Lavender: rapid anxiety reduction</li><li>Use inhaler sticks for on-the-go use</li></ul>
+    </div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--teal)"></div><div class="card-inner">
+      <div class="card-title">Bath & Steam</div>
+      <div class="card-sub">Full Body Absorption</div>
+      <div class="card-body">Mix 5–10 drops with a tablespoon of carrier oil or bath salts before adding to bath — never add directly to water (oils float and can irritate skin).</div>
+      <ul class="card-list"><li>Eucalyptus steam: 3–5 drops in bowl of hot water, cover head with towel</li><li>Bath: lavender + magnesium flakes for sleep and muscle recovery</li><li>Foot soak: 5 drops in warm water with Epsom salts</li></ul>
+    </div></div>
+  </div>
+
+  <div class="subsec">Essential Oils by Effect</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Oil</th><th>Primary Effect</th><th>Secondary Effect</th><th>How to Use</th></tr></thead>
+      <tbody>
+        <tr><td>Lavender</td><td>Calm / Sleep</td><td>Anxiety relief, wound healing</td><td>Diffuse at night, apply to temples diluted</td></tr>
+        <tr><td>Peppermint</td><td>Focus / Energy</td><td>Headache relief, digestion</td><td>Diffuse in morning, inhale for headaches</td></tr>
+        <tr><td>Rosemary</td><td>Memory / Focus</td><td>Hair growth, circulation</td><td>Diffuse while studying, diluted scalp massage</td></tr>
+        <tr><td>Eucalyptus</td><td>Respiratory</td><td>Antimicrobial, pain relief</td><td>Steam inhalation, chest rub diluted</td></tr>
+        <tr><td>Frankincense</td><td>Grounding / Spiritual</td><td>Anti-anxiety, anti-inflammatory</td><td>Diffuse for meditation, apply to forehead diluted</td></tr>
+        <tr><td>Lemon / Citrus</td><td>Energy / Mood</td><td>Antimicrobial, focus</td><td>Diffuse in morning or work space</td></tr>
+        <tr><td>Tea Tree</td><td>Antimicrobial</td><td>Acne, wound healing</td><td>Apply diluted to skin, diffuse for air purification</td></tr>
+        <tr><td>Bergamot</td><td>Anti-anxiety / Mood</td><td>Sleep support</td><td>Diffuse or diluted on skin — photosensitive, avoid sun</td></tr>
+        <tr><td>Ylang Ylang</td><td>Libido / Romance</td><td>Blood pressure reduction</td><td>Diffuse or diluted pulse points — use sparingly</td></tr>
+        <tr><td>Clary Sage</td><td>Hormone Balance</td><td>PMS relief, anxiety</td><td>Diluted abdomen massage, diffuse during cycle</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- NEURO & BODY CHEMICALS -->
+<div class="section" id="tab-neuro">
+  <div class="sec-title">Neuro & Body Chemicals — Food & Lifestyle Links</div>
+  <div class="sec-desc">Every mood, motivation, focus, and energy state is driven by specific chemicals. Here's how food and lifestyle directly influence each one.</div>
+
+  <div class="grid-2">
+    <div class="card"><div class="card-stripe" style="background:var(--blue)"></div><div class="card-inner">
+      <div class="card-title">Serotonin — Happiness & Calm</div>
+      <div class="card-sub">90% produced in gut · Mood · Sleep · Appetite</div>
+      <div class="card-body">Serotonin is the foundation of emotional stability, contentment, and sleep quality.</div>
+      <ul class="card-list">
+        <li class="green">Foods: tryptophan-rich foods — turkey, eggs, cheese, pumpkin seeds, salmon</li>
+        <li class="green">Gut health: 90% of serotonin is made in the gut — probiotics are essential</li>
+        <li class="green">Sunlight: natural serotonin synthesis — 20–30 min direct sun daily</li>
+        <li class="blue">Exercise: increases tryptophan crossing blood-brain barrier</li>
+        <li class="blue">Cofactors: B6, zinc, magnesium required for synthesis</li>
+        <li>Depleted by: chronic stress, alcohol, processed food, gut dysbiosis</li>
+      </ul>
+      <div style="margin-top:10px"><span class="badge b-blue">Tryptophan → 5-HTP → Serotonin</span></div>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--accent)"></div><div class="card-inner">
+      <div class="card-title">Dopamine — Motivation & Reward</div>
+      <div class="card-sub">Drive · Pleasure · Focus · Addiction</div>
+      <div class="card-body">Dopamine drives motivation, desire, and the reward cycle. Low dopamine = apathy, procrastination, and depression.</div>
+      <ul class="card-list">
+        <li class="green">Foods: tyrosine-rich — chicken, eggs, almonds, avocado, bananas</li>
+        <li class="green">Cold exposure: cold showers increase dopamine 250%</li>
+        <li class="green">Exercise: intense cardio significantly boosts dopamine</li>
+        <li class="blue">Mucuna pruriens: natural L-DOPA precursor supplement</li>
+        <li class="blue">Cofactors: iron, B6, vitamin C required for synthesis</li>
+        <li>Depleted by: sugar, social media dopamine loops, sleep deprivation</li>
+      </ul>
+      <div style="margin-top:10px"><span class="badge b-accent">Tyrosine → L-DOPA → Dopamine</span></div>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--pink)"></div><div class="card-inner">
+      <div class="card-title">Cortisol — Stress Hormone</div>
+      <div class="card-sub">Stress · Inflammation · Metabolism · Wakefulness</div>
+      <div class="card-body">Cortisol peaks in the morning (normal) and should decline through the day. Chronically elevated cortisol devastates health.</div>
+      <ul class="card-list">
+        <li class="green">Lower with: ashwagandha, rhodiola, holy basil, magnesium</li>
+        <li class="green">Lower with: meditation (reduces cortisol 20%), cold exposure, sleep</li>
+        <li class="blue">Vitamin C in high doses reduces post-exercise cortisol spike</li>
+        <li class="blue">Phosphatidylserine: 400mg reduces exercise-induced cortisol</li>
+        <li>Elevated by: caffeine (especially before sleep), chronic stress, poor sleep, inflammatory diet</li>
+      </ul>
+      <div style="margin-top:10px"><span class="badge b-pink">Adaptogens help</span><span class="badge b-blue">Sleep is key</span></div>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--green)"></div><div class="card-inner">
+      <div class="card-title">GABA — Calm & Relaxation</div>
+      <div class="card-sub">Anxiety relief · Inhibitory neurotransmitter · Sleep</div>
+      <div class="card-body">GABA is the brain's primary inhibitory (calming) neurotransmitter. Low GABA = anxiety, racing thoughts, and insomnia.</div>
+      <ul class="card-list">
+        <li class="green">Foods: fermented foods (increase GABA precursors), green tea (L-theanine)</li>
+        <li class="green">L-theanine: 200–400mg promotes GABA and alpha brain waves without sedation</li>
+        <li class="green">Magnesium: regulates GABA receptors — 400mg before bed</li>
+        <li class="blue">Valerian root: binds GABA receptors similarly to benzodiazepines</li>
+        <li>Depleted by: alcohol (short-term increases, long-term depletes), chronic stress</li>
+      </ul>
+      <div style="margin-top:10px"><span class="badge b-green">L-theanine</span><span class="badge b-blue">Magnesium glycinate</span></div>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--purple)"></div><div class="card-inner">
+      <div class="card-title">Melatonin — Sleep Hormone</div>
+      <div class="card-sub">Circadian rhythm · Sleep onset · Antioxidant</div>
+      <div class="card-body">Melatonin is produced from serotonin when darkness falls. Light exposure — especially blue light — suppresses production.</div>
+      <ul class="card-list">
+        <li class="green">Foods: tart cherry juice, walnuts, eggs, fatty fish — natural melatonin sources</li>
+        <li class="green">Block blue light 2 hours before bed (orange glasses)</li>
+        <li class="green">Keep bedroom completely dark — even small light sources disrupt production</li>
+        <li class="blue">Supplement: 0.5–1mg is often more effective than 5–10mg doses</li>
+        <li>Depleted by: blue light, night shift work, alcohol, caffeine late in day</li>
+      </ul>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--teal)"></div><div class="card-inner">
+      <div class="card-title">Oxytocin — Bonding & Trust</div>
+      <div class="card-sub">Connection · Love · Anti-anxiety · Wound healing</div>
+      <div class="card-body">Oxytocin is released through touch, eye contact, social bonding, and orgasm. It counters cortisol and promotes healing.</div>
+      <ul class="card-list">
+        <li class="green">Foods: magnesium and vitamin D support oxytocin signaling</li>
+        <li class="green">Physical touch: hugging for 20+ seconds triggers oxytocin release</li>
+        <li class="green">Eye contact, genuine conversation, petting animals all boost oxytocin</li>
+        <li class="blue">Exercise and cold water also stimulate release</li>
+        <li>Depleted by: social isolation, chronic stress, loneliness</li>
+      </ul>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--accent)"></div><div class="card-inner">
+      <div class="card-title">Insulin — Blood Sugar Regulation</div>
+      <div class="card-sub">Glucose metabolism · Fat storage · Inflammation</div>
+      <div class="card-body">Insulin sensitivity is one of the most important health markers. Insulin resistance drives obesity, diabetes, cardiovascular disease, and cognitive decline.</div>
+      <ul class="card-list">
+        <li class="green">Improve with: cinnamon, berberine, apple cider vinegar before meals</li>
+        <li class="green">Fasting: intermittent fasting dramatically improves insulin sensitivity</li>
+        <li class="green">Exercise: muscle contraction absorbs glucose without insulin (walk after meals)</li>
+        <li class="blue">Chromium and magnesium improve insulin signaling</li>
+        <li>Impaired by: sugar, refined carbs, seed oils, sedentary lifestyle, poor sleep</li>
+      </ul>
+    </div></div>
+
+    <div class="card"><div class="card-stripe" style="background:var(--red)"></div><div class="card-inner">
+      <div class="card-title">Adrenaline (Epinephrine) — Fight or Flight</div>
+      <div class="card-sub">Emergency response · Focus under stress · Heart rate</div>
+      <div class="card-body">Short-term adrenaline is normal and healthy. Chronically elevated adrenaline from stress, caffeine, or poor sleep damages health.</div>
+      <ul class="card-list">
+        <li class="green">Regulate with: adaptogens (ashwagandha, rhodiola), breath work (4-7-8 breathing)</li>
+        <li class="green">Cold exposure: brief cold triggers controlled adrenaline release for resilience</li>
+        <li class="blue">Magnesium: blunts excessive adrenaline response</li>
+        <li>Elevated by: caffeine, excessive exercise, chronic stress, processed sugar</li>
+      </ul>
+    </div></div>
+  </div>
+</div>
+
+<!-- SHAKES -->
+<div class="section" id="tab-shakes">
+  <div class="sec-title">Shakes — Recipes & Protocols</div>
+  <div class="sec-desc">Protein shakes, detox shakes, recovery shakes, and mineral shakes with exact ingredients and preparation steps.</div>
+
+  <div class="subsec">Protein Shakes</div>
+  <div class="recipe-card">
+    <div class="recipe-title">Classic Muscle Builder</div>
+    <div class="recipe-sub" style="color:var(--blue)">High Protein · Post-Workout · ~40g protein</div>
+    <div class="recipe-cols">
+      <div><div class="recipe-label">Ingredients</div><ul class="ing-list"><li>1 scoop whey or plant protein (25–30g protein)</li><li>1 cup whole milk or oat milk</li><li>1 frozen banana</li><li>1 tbsp almond butter</li><li>1 tsp creatine monohydrate</li><li>1/2 tsp vanilla extract</li><li>Ice to blend</li></ul></div>
+      <div><div class="recipe-label">Protocol</div><ul class="ing-list"><li>Consume within 30–60 min post-workout</li><li>Add leucine if using plant protein</li><li>Replace banana with berries for lower sugar</li><li>Add spinach (tasteless) for micronutrients</li></ul></div>
+    </div>
+  </div>
+
+  <div class="recipe-card">
+    <div class="recipe-title">Keto Protein Shake</div>
+    <div class="recipe-sub" style="color:var(--accent)">Low Carb · High Fat · ~35g protein</div>
+    <div class="recipe-cols">
+      <div><div class="recipe-label">Ingredients</div><ul class="ing-list"><li>1 scoop unflavored or vanilla whey</li><li>1 cup full-fat coconut milk</li><li>1 tbsp MCT oil</li><li>1 tbsp almond butter</li><li>1/2 avocado</li><li>Pinch of sea salt</li><li>Stevia to taste</li></ul></div>
+      <div><div class="recipe-label">Protocol</div><ul class="ing-list"><li>Keep carbs under 5g total</li><li>MCT oil promotes ketone production</li><li>Take in morning or post-workout</li><li>Add collagen peptides for joint support</li></ul></div>
+    </div>
+  </div>
+
+  <div class="subsec">Detox Shakes</div>
+  <div class="recipe-card">
+    <div class="recipe-title">Heavy Metal Detox Shake</div>
+    <div class="recipe-sub" style="color:var(--green)">Chlorophyll · Chelation · Morning Protocol</div>
+    <div class="recipe-cols">
+      <div><div class="recipe-label">Ingredients</div><ul class="ing-list"><li>1 cup wild blueberries (frozen)</li><li>1 tsp spirulina powder</li><li>1 tsp chlorella powder</li><li>1 cup coconut water</li><li>1 handful fresh cilantro</li><li>1 tbsp Atlantic dulse (seaweed)</li><li>1/2 cup water or ice</li></ul></div>
+      <div><div class="recipe-label">Protocol</div><ul class="ing-list"><li>Take on empty stomach in morning</li><li>Cilantro + chlorella chelate heavy metals</li><li>Spirulina binds and removes them from GI tract</li><li>Wild blueberries repair oxidative damage from metals</li><li>Cycle: 5 days on, 2 days off for 4–6 weeks</li></ul></div>
+    </div>
+  </div>
+
+  <div class="recipe-card">
+    <div class="recipe-title">Liver Detox Green Shake</div>
+    <div class="recipe-sub" style="color:var(--teal)">Liver Support · Anti-inflammatory · Daily Use</div>
+    <div class="recipe-cols">
+      <div><div class="recipe-label">Ingredients</div><ul class="ing-list"><li>2 cups spinach or kale</li><li>1 cucumber</li><li>1/2 lemon (juiced)</li><li>1 inch fresh ginger</li><li>1 inch fresh turmeric (or 1 tsp powder)</li><li>1 cup water or coconut water</li><li>1 green apple (optional sweetness)</li></ul></div>
+      <div><div class="recipe-label">Protocol</div><ul class="ing-list"><li>Drink on empty stomach 20 min before breakfast</li><li>Ginger and turmeric reduce liver inflammation</li><li>Lemon stimulates bile and liver enzyme production</li><li>Add milk thistle powder for enhanced liver protection</li></ul></div>
+    </div>
+  </div>
+
+  <div class="subsec">Mineral & Recovery Shakes</div>
+  <div class="recipe-card">
+    <div class="recipe-title">Potassium-Magnesium Electrolyte Shake</div>
+    <div class="recipe-sub" style="color:var(--blue)">Electrolytes · Muscle Recovery · Keto-Friendly</div>
+    <div class="recipe-cols">
+      <div><div class="recipe-label">Ingredients</div><ul class="ing-list"><li>1 frozen banana</li><li>2 cups spinach</li><li>1 cup coconut water</li><li>1 tbsp hemp seeds</li><li>1 tbsp pumpkin seeds</li><li>1/4 tsp Himalayan salt</li><li>Ice</li></ul></div>
+      <div><div class="recipe-label">Protocol</div><ul class="ing-list"><li>Post-workout or after sweating heavily</li><li>Provides natural potassium, magnesium, and sodium</li><li>Add 1/4 tsp magnesium glycinate powder for extra boost</li><li>Replaces most commercial electrolyte drinks</li></ul></div>
+    </div>
+  </div>
+
+  <div class="recipe-card">
+    <div class="recipe-title">Adaptogen Focus Shake</div>
+    <div class="recipe-sub" style="color:var(--purple)">Brain · Stress · Morning Energy</div>
+    <div class="recipe-cols">
+      <div><div class="recipe-label">Ingredients</div><ul class="ing-list"><li>1 cup oat milk or almond milk</li><li>1 tsp ashwagandha powder</li><li>1 tsp lion's mane mushroom powder</li><li>1 tbsp MCT oil or coconut oil</li><li>1 tsp cacao powder</li><li>1/2 tsp cinnamon</li><li>Honey or stevia to taste</li></ul></div>
+      <div><div class="recipe-label">Protocol</div><ul class="ing-list"><li>Take in morning as coffee replacement or addition</li><li>Lion's mane promotes NGF and cognitive function</li><li>Ashwagandha blunts cortisol spike from morning stress</li><li>MCT provides clean brain energy</li><li>Add collagen for joint and skin benefits</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- MACRO CLASSIFICATION -->
+<div class="section" id="tab-macropct">
+  <div class="sec-title">Macro Classification — Top Foods by Nutrient %</div>
+  <div class="sec-desc">Percentage of calories from protein, DHA/omega-3, and carbohydrates in the top 10 richest food sources. Helps you build precise macronutrient-targeted meals.</div>
+
+  <div class="subsec">Top 10 Protein-Rich Foods (by % of calories)</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Food</th><th>Protein %</th><th>Protein per 100g</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Spirulina (dried)</td><td class="pct" style="color:var(--blue)">57%</td><td>57g</td><td>Complete protein, all essential amino acids</td></tr>
+        <tr><td>Chicken breast (skinless)</td><td class="pct" style="color:var(--blue)">75%</td><td>31g</td><td>Lean, high-protein, low-fat</td></tr>
+        <tr><td>Tuna (canned in water)</td><td class="pct" style="color:var(--blue)">88%</td><td>29g</td><td>Highest protein-to-calorie ratio of common foods</td></tr>
+        <tr><td>Turkey breast</td><td class="pct" style="color:var(--blue)">74%</td><td>30g</td><td>Rich in tryptophan for serotonin</td></tr>
+        <tr><td>Shrimp</td><td class="pct" style="color:var(--blue)">84%</td><td>24g</td><td>Low fat, very high protein percentage</td></tr>
+        <tr><td>Cod (white fish)</td><td class="pct" style="color:var(--blue)">85%</td><td>23g</td><td>Extremely lean, high protein</td></tr>
+        <tr><td>Eggs (whole)</td><td class="pct" style="color:var(--blue)">35%</td><td>13g</td><td>Complete protein with all essential amino acids + healthy fat</td></tr>
+        <tr><td>Cottage cheese (low-fat)</td><td class="pct" style="color:var(--blue)">69%</td><td>12g</td><td>Casein protein — slow-digesting, ideal before bed</td></tr>
+        <tr><td>Lentils (cooked)</td><td class="pct" style="color:var(--blue)">27%</td><td>9g</td><td>Best plant protein source with fiber</td></tr>
+        <tr><td>Pumpkin seeds</td><td class="pct" style="color:var(--blue)">22%</td><td>19g</td><td>High zinc, magnesium, and complete amino acids</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsec">Top 10 DHA / Omega-3 Rich Foods</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Food</th><th>DHA + EPA (per 100g)</th><th>Type</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Mackerel</td><td class="pct" style="color:var(--teal)">5,134mg</td><td>DHA + EPA</td><td>Highest omega-3 of all common fish</td></tr>
+        <tr><td>Salmon (Atlantic)</td><td class="pct" style="color:var(--teal)">2,260mg</td><td>DHA + EPA</td><td>Also rich in vitamin D and B12</td></tr>
+        <tr><td>Sardines (canned)</td><td class="pct" style="color:var(--teal)">1,480mg</td><td>DHA + EPA</td><td>Affordable and sustainable — with bones for calcium</td></tr>
+        <tr><td>Herring</td><td class="pct" style="color:var(--teal)">2,366mg</td><td>DHA + EPA</td><td>Underrated source, high in B12</td></tr>
+        <tr><td>Oysters</td><td class="pct" style="color:var(--teal)">672mg</td><td>DHA + EPA</td><td>Also richest zinc source in nature</td></tr>
+        <tr><td>Cod liver oil</td><td class="pct" style="color:var(--teal)">19,000mg</td><td>DHA + EPA</td><td>Supplement — also very high in vitamin A and D</td></tr>
+        <tr><td>Flaxseed</td><td class="pct" style="color:var(--teal)">22,800mg</td><td>ALA only</td><td>Must convert to DHA/EPA — conversion is poor (&lt;5%)</td></tr>
+        <tr><td>Chia seeds</td><td class="pct" style="color:var(--teal)">17,550mg</td><td>ALA only</td><td>High ALA — best combined with fish sources</td></tr>
+        <tr><td>Walnuts</td><td class="pct" style="color:var(--teal)">9,080mg</td><td>ALA only</td><td>Best nut source — also rich in antioxidants</td></tr>
+        <tr><td>Algae oil</td><td class="pct" style="color:var(--teal)">400–500mg</td><td>DHA + EPA</td><td>Vegan DHA source — where fish get their omega-3 from</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsec">Top 10 Complex Carbohydrate Foods (Highest Quality Carbs)</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Food</th><th>Carbs per 100g</th><th>Fiber</th><th>Why It's Top-Tier</th></tr></thead>
+      <tbody>
+        <tr><td>Sweet potato</td><td class="pct" style="color:var(--accent)">20g</td><td>3g</td><td>High in beta-carotene, potassium, and slow-release energy</td></tr>
+        <tr><td>Oats (rolled)</td><td class="pct" style="color:var(--accent)">66g</td><td>10g</td><td>Beta-glucan fiber lowers cholesterol and feeds gut bacteria</td></tr>
+        <tr><td>Quinoa (cooked)</td><td class="pct" style="color:var(--accent)">21g</td><td>2.8g</td><td>Complete protein + complex carbs — unique combination</td></tr>
+        <tr><td>Lentils (cooked)</td><td class="pct" style="color:var(--accent)">20g</td><td>8g</td><td>High fiber slows digestion — excellent blood sugar stability</td></tr>
+        <tr><td>Brown rice</td><td class="pct" style="color:var(--accent)">77g</td><td>3.5g</td><td>Whole grain with B vitamins and manganese</td></tr>
+        <tr><td>Chickpeas</td><td class="pct" style="color:var(--accent)">27g</td><td>8g</td><td>Resistant starch feeds gut bacteria, slow energy release</td></tr>
+        <tr><td>Banana</td><td class="pct" style="color:var(--accent)">23g</td><td>2.6g</td><td>Potassium + natural sugars + resistant starch when underripe</td></tr>
+        <tr><td>Beets</td><td class="pct" style="color:var(--accent)">10g</td><td>2.8g</td><td>Nitrates improve athletic performance and blood flow</td></tr>
+        <tr><td>Barley (cooked)</td><td class="pct" style="color:var(--accent)">28g</td><td>6g</td><td>Highest fiber of all grains — powerful cholesterol lowering</td></tr>
+        <tr><td>Butternut squash</td><td class="pct" style="color:var(--accent)">12g</td><td>2g</td><td>Low glycemic, high in vitamin A and potassium</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note-box">⚠️ Protein percentages refer to % of total calories from protein. A food like tuna at 88% means nearly all its calories come from protein. For overall diet, aim for a macro split suited to your goals: standard (30/40/30 protein/carb/fat), keto (25/5/70), or athletic performance (30/50/20).</div>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
