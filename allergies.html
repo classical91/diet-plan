@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allergies & Intolerances | Diet Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0f0d0a;--surface:#1a1714;--card:#201d19;--border:#2e2a24;--accent:#c8922a;--green:#8fbe6b;--blue:#5b9bd5;--pink:#c86b8f;--purple:#9b7de8;--teal:#5bbfb5;--red:#e05c5c;--text:#f0ebe3;--muted:#7a7063}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(224,92,92,.04) 0%,transparent 50%)}
+  .nav-bar{max-width:1100px;margin:0 auto 32px;display:flex;gap:10px;flex-wrap:wrap}
+  .nav-link{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:20px;transition:all .2s}
+  .nav-link:hover,.nav-link.active{border-color:var(--accent);color:var(--accent)}
+  header{text-align:center;margin-bottom:40px}
+  .sub-label{font-size:11px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--red);margin-bottom:10px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-.02em;line-height:1}
+  h1 em{color:var(--accent);font-style:italic}
+  .header-line{width:50px;height:2px;background:var(--accent);margin:16px auto 0;opacity:.5}
+  .header-note{max-width:600px;margin:14px auto 0;font-size:13px;color:var(--muted);text-align:center;line-height:1.6}
+
+  .controls{max-width:1100px;margin:0 auto 24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .search-wrap{flex:1;min-width:200px;position:relative}
+  .search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 14px 10px 36px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border .2s}
+  .search-wrap input:focus{border-color:var(--accent)}
+  .search-wrap input::placeholder{color:var(--muted)}
+  .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
+  .cat-filters{display:flex;gap:8px;flex-wrap:wrap}
+  .cat-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:6px 12px;border-radius:20px;cursor:pointer;transition:all .2s}
+  .cat-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .cat-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(200,146,42,.08)}
+  .result-count{max-width:1100px;margin:0 auto 16px;font-size:12px;color:var(--muted);letter-spacing:.1em}
+
+  .grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;animation:fadeUp .3s ease both;cursor:pointer;transition:border-color .2s,transform .2s}
+  .card:hover{border-color:#3e3a32;transform:translateY(-2px)}
+  .card.expanded{border-color:var(--red)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .card-stripe{height:4px}
+  .card-header{padding:16px;display:flex;align-items:flex-start;gap:12px}
+  .card-icon{font-size:24px;flex-shrink:0}
+  .card-meta{flex:1}
+  .card-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:3px}
+  .card-tagline{font-size:12px;color:var(--muted);line-height:1.4;margin-bottom:6px}
+  .card-expand{color:var(--muted);flex-shrink:0;transition:transform .25s;margin-top:4px}
+  .card.expanded .card-expand{transform:rotate(180deg)}
+
+  .severity-row{display:flex;align-items:center;gap:8px;padding:0 16px 10px}
+  .sev-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .sev-chip{font-size:10px;padding:3px 10px;border-radius:20px;border:1px solid}
+  .sev-high{border-color:rgba(224,92,92,.35);color:var(--red);background:rgba(224,92,92,.08)}
+  .sev-med{border-color:rgba(200,146,42,.35);color:var(--accent);background:rgba(200,146,42,.08)}
+  .sev-low{border-color:rgba(143,190,107,.35);color:var(--green);background:rgba(143,190,107,.08)}
+
+  .tags-row{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px}
+  .tag{font-size:10px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);color:var(--muted)}
+
+  .card-body{display:none;padding:0 16px 16px;border-top:1px solid var(--border);padding-top:14px}
+  .card.expanded .card-body{display:block}
+  .sec-lbl{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:14px;margin-bottom:7px}
+  .body-text{font-size:13px;color:#b0a898;line-height:1.6}
+
+  .sym-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+  .sym-list li{font-size:12.5px;color:#b0a898;display:flex;gap:8px;line-height:1.4}
+  .sym-list li.severe::before{content:'⚠';color:var(--red);flex-shrink:0;font-size:11px}
+  .sym-list li.common::before{content:'—';color:var(--accent);flex-shrink:0}
+  .sym-list li.mild::before{content:'·';color:var(--muted);flex-shrink:0;font-size:16px;line-height:1}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+  .food-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+  .food-list li{font-size:12px;color:#b0a898;display:flex;gap:6px;line-height:1.4}
+  .food-list li.avoid::before{content:'✗';color:var(--red);flex-shrink:0;font-size:11px}
+  .food-list li.safe::before{content:'✓';color:var(--green);flex-shrink:0;font-size:11px}
+  .food-list li.hidden::before{content:'!';color:var(--accent);flex-shrink:0;font-size:11px;font-weight:700}
+
+  .note-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid;border-radius:6px;padding:10px 12px;font-size:12px;color:#b0a898;line-height:1.55;margin-top:12px}
+  .no-results{max-width:1100px;margin:40px auto;text-align:center;color:var(--muted);font-family:'Playfair Display',serif;font-size:18px}
+</style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <a href="/" class="nav-link">Diet Plan</a>
+  <a href="/nutrition" class="nav-link">Checklist</a>
+  <a href="/benefits" class="nav-link">Benefits</a>
+  <a href="/deficiencies" class="nav-link">Deficiencies</a>
+  <a href="/overview" class="nav-link">Overview</a>
+  <a href="/howto" class="nav-link">How-To</a>
+  <a href="/diets" class="nav-link">Diet Types</a>
+  <a href="/allergies" class="nav-link active">Allergies</a>
+</div>
+
+<header>
+  <div class="sub-label">Health Reference</div>
+  <h1>Allergies & <em>Intolerances</em></h1>
+  <div class="header-line"></div>
+  <p class="header-note">Common food allergies, intolerances, hidden sources, and safe alternatives. Not a substitute for medical diagnosis.</p>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search" placeholder="Search allergies or symptoms..." oninput="filter()">
+  </div>
+  <div class="cat-filters">
+    <button class="cat-btn active" data-cat="all" onclick="setCat('all')">All</button>
+    <button class="cat-btn" data-cat="top9" onclick="setCat('top9')">Top 9 Allergens</button>
+    <button class="cat-btn" data-cat="intolerance" onclick="setCat('intolerance')">Intolerances</button>
+    <button class="cat-btn" data-cat="meat" onclick="setCat('meat')">Meat</button>
+    <button class="cat-btn" data-cat="other" onclick="setCat('other')">Other</button>
+  </div>
+</div>
+
+<div class="result-count" id="count"></div>
+<div class="grid" id="grid"></div>
+<div class="no-results" id="noResults" style="display:none">No allergies found</div>
+
+<script>
+const DATA = [
+  {name:"Peanut Allergy",icon:"🥜",cat:"top9",color:"#c8922a",severity:"high",
+   tagline:"One of the most common and severe food allergies worldwide",
+   tags:["Top allergen","Anaphylaxis risk","Hidden in many foods"],
+   overview:"Peanut allergy is an immune response to peanut proteins (Ara h1, Ara h2, Ara h3). Unlike many childhood allergies, peanut allergy typically persists into adulthood. Even trace amounts can trigger severe reactions in sensitive individuals.",
+   symptoms:[
+     {s:"Anaphylaxis — throat closing, difficulty breathing, drop in blood pressure",l:"severe"},
+     {s:"Hives, skin flushing, and itching",l:"common"},
+     {s:"Swelling of lips, tongue, and throat",l:"severe"},
+     {s:"Vomiting, nausea, and stomach cramps",l:"common"},
+     {s:"Runny nose and watery eyes",l:"mild"},
+   ],
+   avoid:["Peanuts and peanut butter","Peanut oil (cold-pressed — refined is usually safe)","Mixed nuts","Trail mix","Many Asian sauces (satay, pad thai)","Some baked goods and candy bars"],
+   hidden:["African, Asian, and Mexican cuisines often use peanut","Lupin flour can cross-react","Some sunflower butters processed in peanut facilities","Certain pet foods"],
+   safe:["Tree nuts (if no cross-allergy)","Sunflower seed butter","Tahini (sesame seed butter)","Pumpkin seed butter"],
+   note:"Always carry an epinephrine auto-injector (EpiPen). Inform restaurants. Read all labels — peanut must be declared on food packaging.",
+   noteColor:"var(--red)"},
+
+  {name:"Tree Nut Allergy",icon:"🌰",cat:"top9",color:"#c8922a",severity:"high",
+   tagline:"Almonds, cashews, walnuts, pistachios and more",
+   tags:["Top allergen","Often lifelong","Cross-contamination risk"],
+   overview:"Tree nut allergy covers a range of nuts: almonds, walnuts, cashews, pistachios, hazelnuts, Brazil nuts, pecans, and macadamia. You may be allergic to one or all. Cross-contamination is a major concern in manufacturing.",
+   symptoms:[
+     {s:"Anaphylaxis in severe cases",l:"severe"},
+     {s:"Hives and skin reactions",l:"common"},
+     {s:"Oral allergy syndrome — tingling and itching in mouth",l:"mild"},
+     {s:"Vomiting and abdominal pain",l:"common"},
+     {s:"Swelling of face and throat",l:"severe"},
+   ],
+   avoid:["All tree nuts (almonds, walnuts, cashews, pistachios, hazelnuts, Brazil, pecan, macadamia)","Nut butters and nut oils","Marzipan (almond paste)","Pralines","Many granolas and trail mixes","Pesto (pine nuts)"],
+   hidden:["Natural flavors may include nut extracts","Some cheeses aged with nuts","Coconut (technically a tree nut — check with allergist)","Many Asian desserts","Amaretto liqueur (almond)"],
+   safe:["Peanut butter (unless also peanut allergic)","Seeds (sunflower, pumpkin, hemp)","Coconut (if cleared by allergist)"],
+   note:"Carry epinephrine. Even if allergic to only one tree nut, cross-contamination risk means avoiding all tree nut products in high-risk situations.",
+   noteColor:"var(--red)"},
+
+  {name:"Gluten Intolerance / Celiac",icon:"🌾",cat:"top9",color:"#e05c5c",severity:"high",
+   tagline:"Immune reaction to gluten — damages small intestine",
+   tags:["Celiac disease","NCGS","Autoimmune","Lifelong"],
+   overview:"Celiac disease is an autoimmune condition where gluten (found in wheat, barley, rye) triggers immune damage to the small intestinal lining. Non-celiac gluten sensitivity (NCGS) causes similar symptoms without autoimmune damage. Both require gluten elimination.",
+   symptoms:[
+     {s:"Celiac: intestinal damage causing nutrient malabsorption",l:"severe"},
+     {s:"Chronic diarrhea, constipation, and bloating",l:"common"},
+     {s:"Fatigue and brain fog from nutrient deficiency",l:"common"},
+     {s:"Skin rash (dermatitis herpetiformis) in celiac",l:"common"},
+     {s:"Joint pain, mouth ulcers, and headaches",l:"mild"},
+     {s:"Depression and anxiety — gut-brain connection",l:"common"},
+     {s:"Anemia from iron malabsorption",l:"common"},
+   ],
+   avoid:["Wheat (all varieties: spelt, kamut, farro, durum)","Barley","Rye","Triticale","Malt (from barley)","Most bread, pasta, and cereals","Beer (unless gluten-free)","Many sauces and soups (wheat as thickener)"],
+   hidden:["Soy sauce (contains wheat — use tamari)","Communion wafers","Some medications and supplements","Lipstick and lip balm","Oats (cross-contamination — use certified GF oats)","Deli meats and sausages"],
+   safe:["Rice and rice pasta","Quinoa","Corn and polenta","Potatoes and sweet potatoes","Certified gluten-free oats","Buckwheat (despite name, not wheat)","Amaranth and millet"],
+   note:"Celiac requires strict lifelong elimination — even trace amounts cause damage. Get tested before going gluten-free as elimination changes test accuracy.",
+   noteColor:"var(--red)"},
+
+  {name:"Dairy / Lactose",icon:"🥛",cat:"top9",color:"#5b9bd5",severity:"med",
+   tagline:"Lactose intolerance (enzyme) vs milk protein allergy (immune) — very different conditions",
+   tags:["Lactose intolerance","Milk allergy","Casein sensitivity","Very common"],
+   overview:"Two distinct conditions: Lactose intolerance is a digestive issue (missing lactase enzyme) causing GI symptoms. Milk allergy is an immune response to milk proteins (casein or whey) — can cause anaphylaxis. Know which you have — management differs significantly.",
+   symptoms:[
+     {s:"Milk allergy: hives, vomiting, anaphylaxis",l:"severe"},
+     {s:"Lactose intolerance: bloating, gas, diarrhea 30–120 min after dairy",l:"common"},
+     {s:"Eczema and skin reactions (especially in children)",l:"common"},
+     {s:"Mucus production and congestion",l:"mild"},
+     {s:"Abdominal cramping",l:"common"},
+   ],
+   avoid:["Milk, cream, butter, and ghee","Cheese (all types for allergy; hard cheeses often tolerated in intolerance)","Ice cream and yogurt","Whey and casein protein powders","Most baked goods","Many protein bars"],
+   hidden:["Lactose in medications and supplements (as filler)","Deli meats and hot dogs","Margarine (often contains dairy)","Caramel and chocolate","Non-dairy creamers (may contain casein)","Many sauces and soups"],
+   safe:["Lactase enzyme drops or tablets (for intolerance)","Aged hard cheeses (most lactose removed — often tolerated)","Coconut, almond, oat, soy milk","Dairy-free cheese and yogurt","Ghee (casein removed — often tolerated in intolerance)"],
+   note:"Lactose intolerance: lactase enzyme supplements before meals allow dairy consumption. Milk allergy: strict avoidance required — carry epinephrine if severe.",
+   noteColor:"var(--blue)"},
+
+  {name:"Egg Allergy",icon:"🥚",cat:"top9",color:"#c8922a",severity:"high",
+   tagline:"Common in children, often outgrown by adulthood",
+   tags:["Top allergen","Often outgrown","Baking challenge"],
+   overview:"Egg allergy is most common in children — about 70% outgrow it by age 16. Reactions can be to egg white proteins (albumin, ovalbumin) or egg yolk. White allergy is more common. Cooking partially denatures proteins, so some tolerate cooked eggs but not raw.",
+   symptoms:[
+     {s:"Skin reactions: hives, eczema, swelling",l:"common"},
+     {s:"Gastrointestinal: nausea, vomiting, cramps",l:"common"},
+     {s:"Respiratory: runny nose, asthma symptoms",l:"common"},
+     {s:"Anaphylaxis in severe cases",l:"severe"},
+   ],
+   avoid:["Eggs in any form","Mayonnaise","Meringue and custard","Most baked goods (cakes, cookies, muffins)","Egg noodles and pasta","Caesar dressing","Many breaded and battered foods","Albumin, globulin, lysozyme on labels"],
+   hidden:["Flu vaccines (grown in egg medium)","Some pasta (fresh, not dried)","Lecithin (soy lecithin is safe; egg lecithin is not)","Foam in coffee drinks (some cafes use egg white foam)","Many sauces including hollandaise and aioli"],
+   safe:["Flax egg (1 tbsp ground flax + 3 tbsp water)","Chia egg (same ratio)","Aquafaba (chickpea water — excellent egg white substitute)","Commercial egg replacers","Applesauce or banana in baking"],
+   note:"Check flu and yellow fever vaccine safety with your allergist. Many people with egg allergy can receive MMR vaccine (not grown in egg).",
+   noteColor:"var(--accent)"},
+
+  {name:"Shellfish Allergy",icon:"🦐",cat:"top9",color:"#9b7de8",severity:"high",
+   tagline:"Crustaceans (shrimp, crab, lobster) and molluscs (clams, oysters)",
+   tags:["Top allergen","Often adult-onset","Lifelong","Anaphylaxis risk"],
+   overview:"Shellfish allergy is one of the most common adult-onset allergies and rarely outgrown. Two categories: crustaceans (shrimp, crab, lobster, crayfish) and molluscs (clams, oysters, scallops, mussels, squid). You may react to one or both categories.",
+   symptoms:[
+     {s:"Anaphylaxis — often severe and rapid onset",l:"severe"},
+     {s:"Hives, itching, and skin flushing",l:"common"},
+     {s:"Vomiting, diarrhea, and stomach pain",l:"common"},
+     {s:"Swelling of lips, throat, and tongue",l:"severe"},
+     {s:"Wheezing and shortness of breath",l:"severe"},
+   ],
+   avoid:["Shrimp, crab, lobster, crayfish","Clams, oysters, mussels, scallops","Squid and octopus","Abalone","Fish sauce and oyster sauce","Worcestershire sauce (anchovies — not shellfish but often confused)"],
+   hidden:["Many Asian dishes and sauces","Caesar salad dressing (anchovies — different from shellfish)","Bouillabaisse and seafood soups","Restaurant cross-contamination from shared fryers","Glucosamine supplements (from shellfish shells)","Some calcium supplements"],
+   safe:["Fish (separate allergy — many shellfish allergic people tolerate fish)","Seaweed and algae","Plant-based seafood alternatives"],
+   note:"Shellfish allergy is often severe. Carry epinephrine. Be cautious at seafood restaurants even ordering non-shellfish — cross-contamination on grills and fryers is common.",
+   noteColor:"var(--purple)"},
+
+  {name:"Fish Allergy",icon:"🐟",cat:"top9",color:"#5bbfb5",severity:"high",
+   tagline:"Salmon, tuna, cod, halibut and other finfish",
+   tags:["Top allergen","Distinct from shellfish","Often lifelong"],
+   overview:"Fish allergy is separate from shellfish allergy — you may have one or both. Common culprit proteins include parvalbumin found in many species. You may be allergic to all fish or specific types. Often lifelong and can be severe.",
+   symptoms:[
+     {s:"Anaphylaxis in severe cases",l:"severe"},
+     {s:"Hives, itching, and skin reactions",l:"common"},
+     {s:"Nausea, vomiting, and GI distress",l:"common"},
+     {s:"Nasal symptoms and asthma from cooking fumes",l:"common"},
+     {s:"Oral allergy syndrome",l:"mild"},
+   ],
+   avoid:["Salmon, tuna, cod, halibut, tilapia, bass","Anchovies, sardines, herring","Fish sauce and Worcestershire sauce","Caesar dressing (anchovies)","Surimi (imitation crab — often made from fish)","Omega-3 fish oil supplements"],
+   hidden:["Bouillabaisse and seafood soups","Some Asian sauces and stocks","Cooking fumes from fish can trigger reactions in highly sensitive people","Some pet foods","Isinglass used in some beer and wine clarification"],
+   safe:["Shellfish (if not also allergic)","Algae-based omega-3 supplements (vegan DHA/EPA)","Seaweed and algae for iodine"],
+   note:"Algae-based omega-3 is the ideal alternative for fish-allergic people needing DHA and EPA. Get specific allergy testing to determine which fish species you react to.",
+   noteColor:"var(--teal)"},
+
+  {name:"Soy Allergy",icon:"🫘",cat:"top9",color:"#8fbe6b",severity:"med",
+   tagline:"Common in infants, often outgrown — soy is in nearly everything processed",
+   tags:["Top allergen","Often outgrown","Widespread in processed food"],
+   overview:"Soy allergy is an immune response to soy proteins. More common in infants and children — about 70% outgrow it. Soy is one of the most pervasive ingredients in the food supply — it appears in hundreds of processed foods under various names.",
+   symptoms:[
+     {s:"Anaphylaxis (less common than peanut/shellfish but possible)",l:"severe"},
+     {s:"Hives, eczema, and itching",l:"common"},
+     {s:"Vomiting, gas, and diarrhea",l:"common"},
+     {s:"Runny nose and asthma symptoms",l:"mild"},
+     {s:"Eczema in infants",l:"common"},
+   ],
+   avoid:["Soybeans and edamame","Tofu, tempeh, and miso","Soy sauce and tamari","Soy milk and soy yogurt","Soy protein isolate and concentrate","Textured vegetable protein (TVP)"],
+   hidden:["Soy lecithin (usually tolerated — protein level very low)","Vegetable broth and flavoring","Many protein bars and meal replacements","Some medications use soy oil","Asian cuisine broadly","Many deli meats and processed meats"],
+   safe:["Coconut aminos (soy sauce replacement)","Pea protein","Hemp seeds and hemp protein","Rice and oat milk"],
+   note:"Soy lecithin is usually safe even with soy allergy — highly refined with minimal protein. Confirm with your allergist. Highly refined soy oil is also often tolerated.",
+   noteColor:"var(--green)"},
+
+  {name:"Wheat Allergy",icon:"🍞",cat:"top9",color:"#c8922a",severity:"high",
+   tagline:"Immune response to wheat proteins — different from celiac disease",
+   tags:["Top allergen","Distinct from celiac","IgE-mediated"],
+   overview:"Wheat allergy is an IgE-mediated immune response to wheat proteins (not exclusively gluten). Unlike celiac (autoimmune), wheat allergy can cause anaphylaxis. Exercise-induced wheat allergy (WDEIA) is a unique form triggered by exercise after eating wheat.",
+   symptoms:[
+     {s:"Anaphylaxis — can be life-threatening",l:"severe"},
+     {s:"Hives, swelling, and skin reactions",l:"common"},
+     {s:"Vomiting and stomach cramps",l:"common"},
+     {s:"Asthma and respiratory symptoms",l:"common"},
+     {s:"Exercise-induced anaphylaxis after wheat consumption (WDEIA)",l:"severe"},
+   ],
+   avoid:["Wheat in all forms (bread, pasta, flour, crackers)","Spelt, kamut, farro, durum, semolina","Wheat starch and wheat bran","Many sauces and soups","Beer and malt beverages","Most baked goods"],
+   hidden:["Modified food starch (may be wheat)","Natural flavors","Surimi","Soy sauce (wheat-based)","Many Asian noodles","Licorice candy","Some medications"],
+   safe:["Rice and rice flour","Corn and cornmeal","Quinoa, amaranth, buckwheat","Oats (certified wheat-free — different from GF)","Potatoes and sweet potatoes","Bean flours"],
+   note:"Unlike celiac, some people with wheat allergy tolerate other gluten-containing grains (barley, rye). Get specific allergy testing to clarify exact triggers.",
+   noteColor:"var(--accent)"},
+
+  {name:"Sesame Allergy",icon:"🌱",cat:"top9",color:"#c86b8f",severity:"high",
+   tagline:"Now a top 9 US allergen — common in Middle Eastern and Asian foods",
+   tags:["Top 9 allergen (2023)","Growing prevalence","Hidden in many foods"],
+   overview:"Sesame became the 9th major allergen in the US in 2023. It is widely used in Middle Eastern, Asian, and health food cuisines. Reactions can be severe and anaphylaxis is possible. Cross-reactivity with nuts and seeds is common.",
+   symptoms:[
+     {s:"Anaphylaxis in severe cases",l:"severe"},
+     {s:"Hives, itching, and skin flushing",l:"common"},
+     {s:"Vomiting and GI distress",l:"common"},
+     {s:"Swelling of lips and throat",l:"severe"},
+   ],
+   avoid:["Sesame seeds (whole, ground, or hulled)","Tahini (sesame paste)","Sesame oil","Hummus (contains tahini)","Halvah","Gochujang (Korean paste)","Many Asian and Middle Eastern dishes"],
+   hidden:["Burger buns with sesame seeds","Breadsticks and crackers","Health bars and granola","Some supplements and vitamins","Cosmetics and skin care products","Falafel","Baba ganoush"],
+   safe:["Sunflower seed butter","Pumpkin seed butter","Hemp seeds (test carefully)","Coconut aminos"],
+   note:"As of 2023, sesame must be declared on US food labels. Check labels carefully as reformulation lags behind labeling requirements.",
+   noteColor:"var(--pink)"},
+
+  {name:"Pork Allergy & Intolerance",icon:"🐷",cat:"meat",color:"#e05c5c",severity:"med",
+   tagline:"Alpha-gal syndrome, pork-cat syndrome, and histamine sensitivity",
+   tags:["Alpha-gal","Pork-Cat syndrome","Tick-triggered","Histamine"],
+   overview:"Pork reactions can come from several different mechanisms: Alpha-gal syndrome (from tick bite), pork-cat syndrome (cross-reaction with cat dander), histamine intolerance, or fat intolerance. Identifying the mechanism determines management.",
+   symptoms:[
+     {s:"Alpha-gal: delayed anaphylaxis 2–6 hours after eating pork or red meat",l:"severe"},
+     {s:"Pork-cat: immediate oral allergy symptoms in cat-allergic people",l:"common"},
+     {s:"Histamine: flushing, headache, hives from processed pork",l:"common"},
+     {s:"Fat intolerance: nausea, bloating, slow digestion",l:"mild"},
+     {s:"Sulfite sensitivity (from cured meats): headache, breathing difficulty",l:"common"},
+   ],
+   avoid:["Pork and pork products for alpha-gal (also beef, lamb, venison)","All red meat for confirmed alpha-gal","Cured pork (bacon, ham, sausage) for histamine sensitivity","Processed pork for sulfite sensitivity"],
+   hidden:["Pork gelatin in capsules, gummies, and marshmallows","Lard in tortillas, refried beans, pastries","Pork enzymes in some cheeses","Pork-based broths and stocks","Collagen supplements (often pork-derived)"],
+   safe:["Poultry and fish (safe for alpha-gal)","Plant proteins (all safe for alpha-gal)","Fresh unprocessed pork (lower histamine)","Kosher or halal alternatives"],
+   note:"Alpha-gal syndrome is diagnosed with a specific blood test (alpha-gal IgE). Caused by Lone Star tick bite. Reactions are delayed — making it notoriously difficult to identify without testing.",
+   noteColor:"var(--red)"},
+
+  {name:"Chicken Allergy",icon:"🐔",cat:"meat",color:"#c8922a",severity:"med",
+   tagline:"Less common but can cross-react with egg and feather allergy",
+   tags:["Bird-egg syndrome","Cross-reactive","Less common"],
+   overview:"Chicken allergy is uncommon but can occur. Bird-egg syndrome occurs when people allergic to bird feathers (including parakeets, parrots) develop sensitivity to chicken and eggs due to cross-reacting serum albumin proteins.",
+   symptoms:[
+     {s:"Hives and skin reactions after eating chicken",l:"common"},
+     {s:"GI distress — nausea and stomach pain",l:"common"},
+     {s:"Respiratory symptoms in bird-feather sensitive people",l:"common"},
+     {s:"Anaphylaxis in severe cases",l:"severe"},
+   ],
+   avoid:["Chicken in all forms","Turkey (may cross-react)","Eggs (bird-egg syndrome)","Bone broth made from chicken","Chicken-based stock and soups"],
+   hidden:["Chicken broth in many soups and sauces","Chicken fat in some products","Hidden chicken powder in seasoning blends"],
+   safe:["Beef, pork, and lamb (unrelated proteins)","Fish and seafood","Plant proteins"],
+   note:"Bird-egg syndrome is the main mechanism linking chicken allergy to egg allergy and pet bird exposure. Test for both if you have respiratory symptoms around birds and reactions to chicken or eggs.",
+   noteColor:"var(--accent)"},
+
+  {name:"Lactose Intolerance",icon:"🧀",cat:"intolerance",color:"#5b9bd5",severity:"low",
+   tagline:"Missing lactase enzyme — not an allergy, but very common",
+   tags:["Not an allergy","Digestive","Very common","Manageable"],
+   overview:"Lactose intolerance is the inability to digest lactose (milk sugar) due to insufficient lactase enzyme. Extremely common — affects up to 68% of adults globally. Not dangerous, but causes significant discomfort. Different from milk protein allergy.",
+   symptoms:[
+     {s:"Bloating and gas within 30 minutes to 2 hours of dairy",l:"common"},
+     {s:"Diarrhea and loose stools",l:"common"},
+     {s:"Abdominal cramping and pain",l:"common"},
+     {s:"Nausea (less common)",l:"mild"},
+   ],
+   avoid:["Milk (whole, low-fat, skim)","Ice cream and soft-serve","Soft cheeses (ricotta, cottage cheese, cream cheese)","Yogurt (regular — Greek is lower lactose)","Cream soups and sauces"],
+   hidden:["Prescription medications (lactose as filler)","Deli meats (milk solids added)","Margarine and butter spreads","Instant mashed potatoes","Processed cereals","Some bread products"],
+   safe:["Hard aged cheeses (cheddar, parmesan, swiss — lactose mostly gone)","Lactase enzyme tablets before eating dairy","Lactose-free milk and dairy","Greek yogurt (lower lactose)","All plant milks"],
+   note:"Lactase enzyme supplements (Lactaid) allow most people with lactose intolerance to consume dairy without symptoms. Tolerance varies — experiment with quantities.",
+   noteColor:"var(--blue)"},
+
+  {name:"Histamine Intolerance",icon:"🍷",cat:"intolerance",color:"#9b7de8",severity:"med",
+   tagline:"Inability to break down histamine in food — mimics allergy symptoms",
+   tags:["Not a true allergy","DAO enzyme deficiency","Fermented foods","Often misdiagnosed"],
+   overview:"Histamine intolerance occurs when the body cannot break down dietary histamine fast enough, often due to low diamine oxidase (DAO) enzyme activity. Causes allergy-like symptoms but is not an IgE-mediated immune response. Often misdiagnosed as multiple food allergies.",
+   symptoms:[
+     {s:"Headaches and migraines — often after red wine or aged cheese",l:"common"},
+     {s:"Flushing, hives, and skin itching",l:"common"},
+     {s:"Runny nose and sneezing",l:"common"},
+     {s:"Irregular heartbeat and palpitations",l:"common"},
+     {s:"GI symptoms — diarrhea, nausea, stomach pain",l:"common"},
+     {s:"Fatigue and brain fog",l:"mild"},
+   ],
+   avoid:["Aged and fermented cheeses","Alcohol (especially red wine and beer)","Fermented foods (sauerkraut, kimchi, vinegar)","Cured and smoked meats (bacon, salami)","Canned fish (tuna, sardines, anchovies)","Leftovers (histamine increases as food sits)","Tomatoes, spinach, avocado, eggplant"],
+   hidden:["Vinegar in salad dressings","Soy sauce and Worcestershire sauce","Many sauces and condiments","Dried fruits","Chocolate and cocoa","Yeast and yeast extracts (Marmite)"],
+   safe:["Fresh meat (cook and eat immediately)","Fresh fish","Fresh vegetables (most)","Rice, oats, and quinoa","Coconut milk","Fresh herbs"],
+   note:"DAO enzyme supplements taken before meals can reduce histamine reactions. Vitamin C, B6, and copper support DAO activity. Keep a food diary to identify your personal trigger threshold.",
+   noteColor:"var(--purple)"},
+
+  {name:"FODMAP Sensitivity",icon:"🫁",cat:"intolerance",color:"#5bbfb5",severity:"med",
+   tagline:"Fermentable carbs trigger IBS symptoms — not an allergy",
+   tags:["IBS","SIBO","Digestive","Temporary elimination"],
+   overview:"FODMAP sensitivity means certain fermentable carbohydrates (fructose, lactose, fructans, galactans, polyols) are poorly absorbed and fermented by gut bacteria, causing gas, bloating, and pain. Common in people with IBS and SIBO.",
+   symptoms:[
+     {s:"Severe bloating and distension after eating",l:"common"},
+     {s:"Gas and flatulence",l:"common"},
+     {s:"Abdominal pain and cramping",l:"common"},
+     {s:"Alternating diarrhea and constipation",l:"common"},
+     {s:"Nausea in severe cases",l:"mild"},
+   ],
+   avoid:["Onion and garlic (fructans — very high FODMAP)","Wheat and rye","Apples, pears, peaches, mangoes","Most legumes (fructans and GOS)","Milk and soft cheeses (lactose)","Cauliflower, mushrooms, artichokes","Sugar alcohols (sorbitol, xylitol, mannitol)"],
+   hidden:["Garlic and onion powder in seasoning mixes","Inulin and chicory root in 'high fiber' products","Honey and agave (high fructose)","Many protein bars (use inulin as fiber)","Fruit juices concentrate"],
+   safe:["Rice, oats, quinoa","Chicken, fish, eggs, meat","Firm tofu","Low-FODMAP vegetables: carrots, cucumber, spinach, zucchini, bell pepper","Blueberries, strawberries, oranges","Lactose-free dairy","Aged cheeses"],
+   note:"The low-FODMAP diet is a 3-phase protocol (elimination, reintroduction, personalization). Best done with a dietitian. Most people identify specific trigger FODMAPs and don't need to avoid all of them permanently.",
+   noteColor:"var(--teal)"},
+
+  {name:"Nightshade Sensitivity",icon:"🍅",cat:"intolerance",color:"#e05c5c",severity:"low",
+   tagline:"Tomatoes, peppers, eggplant, potatoes — linked to inflammation",
+   tags:["Autoimmune","Inflammation","Not proven allergy","Joint pain"],
+   overview:"Nightshade sensitivity is not a clinically recognized allergy but many people — particularly those with autoimmune conditions like rheumatoid arthritis — report symptom improvement when avoiding nightshades. Alkaloids (solanine, capsaicin) are thought to be the trigger.",
+   symptoms:[
+     {s:"Joint pain and inflammation — particularly in autoimmune conditions",l:"common"},
+     {s:"Digestive upset and IBS-like symptoms",l:"mild"},
+     {s:"Skin flares in people with eczema or psoriasis",l:"mild"},
+     {s:"Heartburn and acid reflux (tomatoes)",l:"mild"},
+   ],
+   avoid:["Tomatoes and tomato products","Peppers (bell, chili, paprika)","Eggplant","White potatoes (sweet potatoes are fine)","Goji berries","Tobacco"],
+   hidden:["Paprika and cayenne in spice blends","Tomato paste and puree in many sauces","Potato starch as a thickener","Ketchup and hot sauce"],
+   safe:["Sweet potatoes and yams","All other vegetables","Citrus and other fruits","Mushrooms and brassicas"],
+   note:"Evidence for nightshade intolerance is anecdotal but strong in autoimmune communities. Try a 30-day elimination to assess personal response. Sweet potatoes are not nightshades despite the name.",
+   noteColor:"var(--red)"},
+
+  {name:"Sulfite Sensitivity",icon:"🍾",cat:"other",color:"#c8922a",severity:"med",
+   tagline:"Preservatives in wine, dried fruit, and processed food",
+   tags:["Asthma trigger","Wine sensitivity","Processed food","Not an allergy"],
+   overview:"Sulfite sensitivity is more common in people with asthma. Sulfites (sulfur dioxide, sodium bisulfite) are used as preservatives in wine, dried fruit, and processed foods. True allergy is rare — most reactions are intolerance or asthma-triggered.",
+   symptoms:[
+     {s:"Asthma attack or wheezing — most common reaction",l:"severe"},
+     {s:"Headache and flushing after red wine",l:"common"},
+     {s:"Hives and skin reactions",l:"common"},
+     {s:"Nausea and stomach upset",l:"mild"},
+   ],
+   avoid:["Dried fruits (highest sulfite levels)","Wine (especially white and rosé)","Beer","Vinegar","Canned vegetables","Shrimp and seafood (often treated with sulfites)","Processed meats","Bottled lemon and lime juice"],
+   hidden:["Restaurant salad bars (sulfites on lettuce)","Maraschino cherries","Grape juice","Fruit toppings on desserts","Some medications"],
+   safe:["Fresh fruits and vegetables","Fresh meat and fish","Organic wine (lower sulfite levels — not sulfite-free)","Homemade foods without preservatives"],
+   note:"Sulfites must be declared on food labels when present at 10 ppm or more. Molybdenum supplementation may help sulfite-sensitive individuals process sulfites more efficiently.",
+   noteColor:"var(--accent)"},
+
+  {name:"Fructose Malabsorption",icon:"🍎",cat:"intolerance",color:"#8fbe6b",severity:"low",
+   tagline:"Unable to absorb fructose efficiently — different from hereditary fructose intolerance",
+   tags:["IBS-linked","Fruit sensitivity","Sugar intolerance","Common"],
+   overview:"Fructose malabsorption is when the gut cannot absorb fructose quickly enough, leading to it reaching the colon and being fermented by bacteria. Very common and often overlaps with IBS. Different from hereditary fructose intolerance (a rare serious metabolic disorder).",
+   symptoms:[
+     {s:"Bloating and gas after fruit or sweet foods",l:"common"},
+     {s:"Diarrhea and loose stools",l:"common"},
+     {s:"Abdominal cramping",l:"common"},
+     {s:"Fatigue and brain fog (in some people)",l:"mild"},
+   ],
+   avoid:["High-fructose fruits: apples, pears, mangoes, watermelon, cherries","Honey and agave","High-fructose corn syrup","Dried fruits","Fruit juices"],
+   hidden:["Agave in health food products","Honey in many dressings and sauces","HFCS in sodas, condiments, and processed food","Sorbitol (converts to fructose in gut)"],
+   safe:["Lower-fructose fruits: berries, citrus, bananas (small), kiwi","Glucose-containing foods (glucose aids fructose absorption)","Vegetables","Whole grains"],
+   note:"Eating fructose together with glucose (equal or greater amounts) significantly improves absorption. Strawberries and table sugar (50/50 glucose-fructose) are better tolerated than pure fructose sources like apples.",
+   noteColor:"var(--green)"},
+];
+
+let activeCat = 'all';
+
+function severityClass(s) {
+  if (s==='high') return 'sev-high';
+  if (s==='med') return 'sev-med';
+  return 'sev-low';
+}
+function severityLabel(s) {
+  if (s==='high') return 'High Risk';
+  if (s==='med') return 'Moderate';
+  return 'Manageable';
+}
+
+function makeCard(d, i) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = (i*0.02)+'s';
+  card.innerHTML = `
+    <div class="card-stripe" style="background:${d.color}"></div>
+    <div class="card-header" onclick="this.closest('.card').classList.toggle('expanded')">
+      <span class="card-icon">${d.icon}</span>
+      <div class="card-meta">
+        <div class="card-name">${d.name}</div>
+        <div class="card-tagline">${d.tagline}</div>
+      </div>
+      <svg class="card-expand" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <div class="severity-row">
+      <span class="sev-label">Risk level:</span>
+      <span class="sev-chip ${severityClass(d.severity)}">${severityLabel(d.severity)}</span>
+    </div>
+    <div class="tags-row">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    <div class="card-body">
+      <div class="sec-lbl">Overview</div>
+      <div class="body-text">${d.overview}</div>
+      <div class="sec-lbl" style="color:var(--red)">Symptoms</div>
+      <ul class="sym-list">${d.symptoms.map(s=>`<li class="${s.l==='severe'?'severe':s.l==='common'?'common':'mild'}">${s.s}</li>`).join('')}</ul>
+      <div class="two-col" style="margin-top:14px">
+        <div>
+          <div class="sec-lbl" style="color:var(--red)">Avoid</div>
+          <ul class="food-list">${d.avoid.map(a=>`<li class="avoid">${a}</li>`).join('')}</ul>
+        </div>
+        <div>
+          <div class="sec-lbl" style="color:var(--green)">Safe Alternatives</div>
+          <ul class="food-list">${d.safe.map(s=>`<li class="safe">${s}</li>`).join('')}</ul>
+        </div>
+      </div>
+      <div class="sec-lbl" style="color:var(--accent)">Hidden Sources</div>
+      <ul class="food-list">${d.hidden.map(h=>`<li class="hidden">${h}</li>`).join('')}</ul>
+      <div class="note-box" style="border-left-color:${d.noteColor}">${d.note}</div>
+    </div>`;
+  return card;
+}
+
+function render(items) {
+  const grid = document.getElementById('grid');
+  const noR = document.getElementById('noResults');
+  grid.innerHTML='';
+  if (!items.length){noR.style.display='block';grid.style.display='none';return;}
+  noR.style.display='none';grid.style.display='grid';
+  document.getElementById('count').textContent=items.length+' item'+(items.length!==1?'s':'');
+  items.forEach((d,i)=>grid.appendChild(makeCard(d,i)));
+}
+
+function filter() {
+  const q=document.getElementById('search').value.toLowerCase();
+  const items=DATA.filter(d=>{
+    const mc=activeCat==='all'||d.cat===activeCat;
+    const mq=!q||d.name.toLowerCase().includes(q)||d.tagline.toLowerCase().includes(q)||d.overview.toLowerCase().includes(q)||d.tags.some(t=>t.toLowerCase().includes(q));
+    return mc&&mq;
+  });
+  render(items);
+}
+
+function setCat(cat) {
+  activeCat=cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat===cat));
+  filter();
+}
+
+render(DATA);
+</script>
+</body>
+</html>
