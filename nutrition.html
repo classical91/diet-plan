@@ -106,16 +106,108 @@
 </head>
 <body>
 
-<div class="nav-bar">
-  <a href="/" class="nav-link">Diet Plan</a>
-  <a href="/nutrition" class="nav-link active">Nutrition Checklist</a>
-  <a href="/benefits" class="nav-link">Food Benefits</a>
-  <a href="/deficiencies" class="nav-link">Deficiencies</a>
-  <a href="/overview" class="nav-link">Overview</a>
-  <a href="/allergies" class="nav-link">Allergies</a>
-  <a href="/diets" class="nav-link">Diet Types</a>
-  <a href="/howto" class="nav-link">How-To</a>
-</div>
+<style>
+.top-nav {
+  max-width: 1100px;
+  margin: 0 auto 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  position: relative;
+}
+.nav-logo-link {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.nav-links {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.nav-link {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 20px;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.nav-link:hover, .nav-link.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+@media (max-width: 760px) {
+  .nav-toggle { display: block; }
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px;
+    gap: 6px;
+    position: absolute;
+    top: 44px;
+    left: 0;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(0,0,0,.3);
+  }
+  .nav-links.open { display: flex; }
+  .nav-link { width: 100%; text-align: left; }
+}
+</style>
+<script>
+function toggleNav() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  const nav = document.getElementById('navLinks');
+  const toggle = document.querySelector('.nav-toggle');
+  if (nav && toggle && !nav.contains(e.target) && !toggle.contains(e.target)) {
+    nav.classList.remove('open');
+  }
+});
+</script>
+<nav class="top-nav">
+  <div class="nav-logo"><a href="/" class="nav-logo-link">🥗 Diet Plan</a></div>
+  <button class="nav-toggle" onclick="toggleNav()">☰ Menu</button>
+  <div class="nav-links" id="navLinks">
+    <a href="/" class="nav-link">Diet Plan</a>
+    <a href="/nutrition" class="nav-link active">Checklist</a>
+    <a href="/benefits" class="nav-link">Benefits</a>
+    <a href="/deficiencies" class="nav-link">Deficiencies</a>
+    <a href="/overview" class="nav-link">Overview</a>
+    <a href="/howto" class="nav-link">How-To</a>
+    <a href="/diets" class="nav-link">Diet Types</a>
+    <a href="/allergies" class="nav-link">Allergies</a>
+  </div>
+</nav>
+
+
 
 <header>
   <div class="sub-label">Daily Tracking</div>
