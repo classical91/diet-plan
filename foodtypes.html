@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Categories | Diet Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0f0d0a;--surface:#1a1714;--card:#201d19;--border:#2e2a24;--accent:#c8922a;--green:#8fbe6b;--blue:#5b9bd5;--pink:#c86b8f;--purple:#9b7de8;--teal:#5bbfb5;--red:#e05c5c;--text:#f0ebe3;--muted:#7a7063}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:0 0 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(143,190,107,.04) 0%,transparent 50%)}
+  .top-nav{max-width:1100px;margin:0 auto;padding:32px 20px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:relative}
+  .nav-logo-link{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;margin-right:8px}
+  .nav-toggle{display:none;background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 14px;border-radius:20px;cursor:pointer}
+  .nav-links{display:flex;gap:8px;flex-wrap:wrap}
+  .nav-link{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:20px;transition:all .2s;white-space:nowrap}
+  .nav-link:hover,.nav-link.active{border-color:var(--accent);color:var(--accent)}
+  @media(max-width:760px){.nav-toggle{display:block}.nav-links{display:none;flex-direction:column;width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;gap:6px;position:absolute;top:44px;left:0;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.3)}.nav-links.open{display:flex}.nav-link{width:100%;text-align:left}}
+
+  header{text-align:center;padding:40px 20px 0;margin-bottom:36px}
+  .sub-label{font-size:11px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-.02em;line-height:1}
+  h1 em{color:var(--accent);font-style:italic}
+  .header-line{width:50px;height:2px;background:var(--accent);margin:16px auto 0;opacity:.5}
+
+  /* Category selector */
+  .cat-selector{max-width:1100px;margin:0 auto 32px;padding:0 20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .cat-card{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:14px 18px;cursor:pointer;transition:all .2s;text-align:center;min-width:120px;flex:1;max-width:180px}
+  .cat-card:hover{border-color:#3e3a32;transform:translateY(-2px)}
+  .cat-card.active{border-color:var(--accent);background:rgba(200,146,42,.08)}
+  .cat-icon{font-size:24px;margin-bottom:6px}
+  .cat-name{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--text)}
+  .cat-count{font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:.1em}
+
+  /* Search */
+  .search-row{max-width:1100px;margin:0 auto 24px;padding:0 20px;position:relative}
+  .search-row input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:11px 16px 11px 40px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border .2s}
+  .search-row input:focus{border-color:var(--accent)}
+  .search-row input::placeholder{color:var(--muted)}
+  .search-icon{position:absolute;left:32px;top:50%;transform:translateY(-50%);color:var(--muted)}
+
+  .result-count{max-width:1100px;margin:0 auto 16px;padding:0 20px;font-size:12px;color:var(--muted);letter-spacing:.1em}
+
+  /* Food grid */
+  .food-grid{max-width:1100px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+
+  .food-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;animation:fadeUp .3s ease both;cursor:pointer;transition:border-color .2s,transform .2s}
+  .food-card:hover{border-color:#3e3a32;transform:translateY(-2px)}
+  .food-card.expanded{border-color:var(--accent)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+  .food-stripe{height:3px}
+  .food-header{padding:14px;display:flex;align-items:flex-start;gap:10px}
+  .food-icon{font-size:22px;flex-shrink:0}
+  .food-meta{flex:1}
+  .food-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px}
+  .food-sub{font-size:11px;color:var(--muted);line-height:1.4}
+  .food-expand{color:var(--muted);flex-shrink:0;transition:transform .25s;margin-top:3px}
+  .food-card.expanded .food-expand{transform:rotate(180deg)}
+
+  .food-body{display:none;padding:0 14px 14px;border-top:1px solid var(--border);padding-top:12px}
+  .food-card.expanded .food-body{display:block}
+  .f-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:10px;margin-bottom:6px}
+  .f-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+  .f-list li{font-size:12px;color:#b0a898;display:flex;gap:7px;line-height:1.4}
+  .f-list li::before{content:'—';color:var(--accent);flex-shrink:0}
+  .f-note{font-size:11.5px;color:#b0a898;line-height:1.55;margin-top:8px}
+  .f-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .f-tag{font-size:10px;padding:2px 9px;border-radius:20px;border:1px solid var(--border);color:var(--muted)}
+
+  .no-results{max-width:1100px;margin:40px auto;text-align:center;color:var(--muted);font-family:'Playfair Display',serif;font-size:18px;padding:0 20px}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div><a href="/" class="nav-logo-link">🥗 Diet Plan</a></div>
+  <button class="nav-toggle" onclick="document.getElementById('nl').classList.toggle('open')">☰ Menu</button>
+  <div class="nav-links" id="nl">
+    <a href="/" class="nav-link">Diet Plan</a>
+    <a href="/nutrition" class="nav-link">Checklist</a>
+    <a href="/benefits" class="nav-link">Benefits</a>
+    <a href="/deficiencies" class="nav-link">Deficiencies</a>
+    <a href="/overview" class="nav-link">Overview</a>
+    <a href="/howto" class="nav-link">How-To</a>
+    <a href="/diets" class="nav-link">Diet Types</a>
+    <a href="/allergies" class="nav-link">Allergies</a>
+    <a href="/foodtypes" class="nav-link active">Food Categories</a>
+  </div>
+</nav>
+
+<header>
+  <div class="sub-label">Food Reference</div>
+  <h1>Food <em>Categories</em></h1>
+  <div class="header-line"></div>
+</header>
+
+<div class="cat-selector" id="catSelector"></div>
+
+<div class="search-row">
+  <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+  <input type="text" id="search" placeholder="Search foods or benefits..." oninput="filterFoods()">
+</div>
+
+<div class="result-count" id="count"></div>
+<div class="food-grid" id="grid"></div>
+<div class="no-results" id="noResults" style="display:none">No foods found</div>
+
+<script>
+const CATEGORIES = [
+  {id:"all",icon:"🌍",name:"All Foods",color:"var(--accent)"},
+  {id:"superfoods",icon:"⚡",name:"Superfoods",color:"var(--green)"},
+  {id:"aphrodisiac",icon:"💋",name:"Aphrodisiacs",color:"var(--pink)"},
+  {id:"brain",icon:"🧠",name:"Brain & Neuro",color:"var(--purple)"},
+  {id:"heart",icon:"❤️",name:"Heart Health",color:"var(--red)"},
+  {id:"gut",icon:"🦠",name:"Gut & Digestion",color:"var(--teal)"},
+  {id:"immune",icon:"🛡️",name:"Immune Boost",color:"var(--green)"},
+  {id:"antiinflam",icon:"🔥",name:"Anti-Inflammatory",color:"var(--accent)"},
+  {id:"hormone",icon:"⚖️",name:"Hormone Balance",color:"var(--purple)"},
+  {id:"energy",icon:"☀️",name:"Energy & Stamina",color:"var(--accent)"},
+  {id:"detox",icon:"🌿",name:"Detox & Cleanse",color:"var(--teal)"},
+  {id:"skin",icon:"✨",name:"Skin & Beauty",color:"var(--pink)"},
+  {id:"bone",icon:"🦴",name:"Bone & Joint",color:"var(--blue)"},
+  {id:"longevity",icon:"⏳",name:"Longevity",color:"var(--purple)"},
+];
+
+const FOODS = [
+  // SUPERFOODS
+  {name:"Blueberries",icon:"🫐",cats:["superfoods","brain","antiinflam","longevity"],color:"#9b7de8",sub:"Antioxidant powerhouse",
+   benefits:["Anthocyanins protect brain cells from oxidative damage","Improves memory and delays cognitive aging","High ORAC antioxidant score among fruits","Anti-inflammatory and anti-cancer properties","Improves insulin sensitivity","Supports cardiovascular health"],
+   note:"Wild blueberries have 2x the antioxidants of cultivated. Frozen preserves nutrients. Daily consumption linked to reduced Alzheimer's risk.",tags:["ORAC champion","Brain protective","Low sugar"]},
+
+  {name:"Spirulina",icon:"🟢",cats:["superfoods","immune","detox","energy"],color:"#8fbe6b",sub:"Most nutrient-dense food on earth",
+   benefits:["Complete protein — 60–70% protein by dry weight","Phycocyanin is a potent anti-inflammatory and antioxidant","Rich in iron, B vitamins, and essential fatty acids","Heavy metal detoxification support","Boosts NK cell and antibody production","Reduces blood pressure and cholesterol"],
+   note:"1 tbsp provides significant nutrition. Mix in smoothies — strong taste. Choose tested brands to avoid contamination.",tags:["Complete protein","Iron-rich","Detox"]},
+
+  {name:"Chlorella",icon:"🌱",cats:["superfoods","detox","immune"],color:"#8fbe6b",sub:"Heavy metal chelator",
+   benefits:["Binds and removes heavy metals (mercury, lead, cadmium)","Complete protein with chlorophyll for blood health","Boosts immune function and NK cell activity","Supports liver detoxification","Rich in B12 (plant-sourced)","Growth factor (CGF) supports cellular repair"],
+   note:"Start with small doses — detox reactions possible. Take with cilantro for enhanced metal chelation.",tags:["Heavy metal detox","Chlorophyll","B12"]},
+
+  {name:"Moringa",icon:"🌿",cats:["superfoods","energy","antiinflam"],color:"#8fbe6b",sub:"Miracle tree — all parts edible",
+   benefits:["Gram for gram: more vitamin C than oranges, more calcium than milk","Complete protein source from a plant","Powerful anti-inflammatory isothiocyanates","Lowers blood sugar and cholesterol","Rich in iron, potassium, and folate","Antioxidant content comparable to matcha"],
+   note:"Leaf powder is most practical form. Add to smoothies or teas. Widely used in traditional medicine across Africa and Asia.",tags:["Nutrient dense","Complete protein","Anti-inflammatory"]},
+
+  {name:"Maca Root",icon:"🟤",cats:["superfoods","hormone","energy","aphrodisiac"],color:"#c8922a",sub:"Andean adaptogen for energy and libido",
+   benefits:["Increases energy and stamina without stimulants","Supports testosterone and estrogen balance","Improves sexual function and libido in men and women","Reduces menopause symptoms (hot flashes, mood)","Adaptogen that supports adrenal function","Rich in minerals — iron, copper, zinc, manganese"],
+   note:"Black maca for men (testosterone/sperm), red maca for women (estrogen), yellow maca general purpose. Gelatinized form easier to digest.",tags:["Adaptogen","Libido","Hormone support"]},
+
+  {name:"Acai Berry",icon:"🫐",cats:["superfoods","antiinflam","skin"],color:"#9b7de8",sub:"Amazonian antioxidant berry",
+   benefits:["Extremely high ORAC antioxidant score","Anthocyanins protect against cardiovascular disease","Oleic acid (same as olive oil) supports heart health","Fiber content supports gut health","Anti-inflammatory properties reduce cellular aging","Boosts collagen production for skin"],
+   note:"Frozen pulp is most nutrient-dense. Avoid sweetened products — naturally unsweetened acai is very tart.",tags:["ORAC","Skin health","Amazonian"]},
+
+  {name:"Cacao (Raw)",icon:"🍫",cats:["superfoods","brain","heart","mood"],color:"#c8922a",sub:"Unprocessed chocolate — nutritional powerhouse",
+   benefits:["Highest magnesium content of any food","Theobromine provides calm, sustained energy","Flavonoids improve blood flow and brain function","PEA (phenylethylamine) boosts mood and focus","Rich in iron and zinc","Anandamide — the 'bliss molecule' naturally found in cacao"],
+   note:"Raw cacao vs cocoa: raw retains more antioxidants. 70%+ dark chocolate retains most benefits. Mix raw cacao powder into smoothies.",tags:["Magnesium","Mood booster","Flavonoids"]},
+
+  // APHRODISIACS
+  {name:"Oysters",icon:"🦪",cats:["aphrodisiac","hormone","immune"],color:"#c86b8f",sub:"Classic aphrodisiac — richest zinc source",
+   benefits:["Richest zinc source in nature — critical for testosterone","Zinc deficiency directly reduces libido and sexual function","Rich in dopamine precursors","High in omega-3 for cardiovascular and hormone health","Contains D-aspartic acid — studied for testosterone elevation","Complete protein with all essential amino acids"],
+   note:"6 oysters provide the entire daily zinc requirement. Raw oysters have highest bioavailability. Cooked retain most benefits.",tags:["Zinc king","Testosterone","Classic aphrodisiac"]},
+
+  {name:"Avocado",icon:"🥑",cats:["aphrodisiac","heart","brain","hormone"],color:"#8fbe6b",sub:"Fertility fruit — named by Aztecs for its shape",
+   benefits:["High in vitamin E — important for reproductive health","Monounsaturated fats support hormone production","Folate essential for sperm and egg quality","Potassium supports cardiovascular health for sexual function","B6 supports sex hormone regulation","Glutathione precursor supports cellular health"],
+   note:"Aztecs called avocado 'ahuacuatl' meaning testicle tree due to its shape. High vitamin E supports fertility in both men and women.",tags:["Fertility","Vitamin E","Healthy fat"]},
+
+  {name:"Dark Chocolate",icon:"🍫",cats:["aphrodisiac","brain","heart","mood"],color:"#c8922a",sub:"Romance food — scientifically backed",
+   benefits:["PEA triggers release of endorphins and serotonin","Phenylethylamine mimics feelings of being in love","Flavonoids increase nitric oxide — improves blood flow","Theobromine enhances mood and energy gently","Magnesium reduces stress and anxiety","Antioxidants support cardiovascular health"],
+   note:"70%+ cacao content required for benefits. Milk chocolate dilutes the effect. 1–2 squares daily is optimal dose.",tags:["PEA","Mood","Nitric oxide"]},
+
+  {name:"Pomegranate",icon:"🍎",cats:["aphrodisiac","heart","antiinflam"],color:"#e05c5c",sub:"Ancient symbol of fertility and vitality",
+   benefits:["Ellagic acid increases testosterone levels in studies","Nitric oxide production improves blood flow","Powerful antioxidant — 3x the antioxidants of red wine","Reduces cortisol — the stress hormone that kills libido","Lowers blood pressure","Anti-cancer and anti-inflammatory properties"],
+   note:"Daily pomegranate juice shown to increase testosterone by 24% in one study. Seeds (arils) contain fiber. 100% juice without added sugar.",tags:["Testosterone","Fertility","Antioxidant"]},
+
+  {name:"Chili Peppers",icon:"🌶️",cats:["aphrodisiac","energy","antiinflam"],color:"#e05c5c",sub:"Capsaicin triggers endorphin rush",
+   benefits:["Capsaicin triggers endorphin release — natural euphoria","Increases heart rate and circulation — mirrors arousal physiologically","Boosts metabolism and thermogenesis","Anti-inflammatory for sexual health","Rich in vitamin C","Releases adrenaline which heightens physical sensations"],
+   note:"The endorphin rush from capsaicin creates a mild euphoric state. Jalapeños have the right potency — ghost peppers may be counterproductive.",tags:["Endorphins","Circulation","Metabolism"]},
+
+  {name:"Figs",icon:"🫐",cats:["aphrodisiac","hormone","energy"],color:"#9b7de8",sub:"Ancient fertility symbol",
+   benefits:["Rich in amino acids that increase libido and sexual stamina","High in iron supporting healthy blood and energy","Zinc and magnesium support testosterone","Fiber and antioxidants support gut and hormonal health","Phenols and antioxidants reduce oxidative stress","High potassium for cardiovascular function"],
+   note:"Figs were sacred to Dionysus in Greek mythology. Historically used as fertility symbol and aphrodisiac across cultures.",tags:["Fertility","Ancient","Iron-rich"]},
+
+  {name:"Saffron",icon:"🟡",cats:["aphrodisiac","brain","mood"],color:"#c8922a",sub:"Most expensive spice — proven aphrodisiac",
+   benefits:["Clinically shown to improve sexual function in both men and women","Antidepressant effect comparable to fluoxetine in studies","Crocin and safranal improve mood and reduce anxiety","Increases dopamine and serotonin levels","Aphrodisiac effects confirmed in multiple clinical trials","Anti-oxidant protection for brain cells"],
+   note:"Effective dose: 15–30mg (a pinch) daily. Steep in warm water before adding to recipes. One of few aphrodisiacs with genuine clinical evidence.",tags:["Clinical evidence","Antidepressant","Dopamine"]},
+
+  // BRAIN & NEURO
+  {name:"Fatty Fish (Salmon, Mackerel)",icon:"🐟",cats:["brain","heart","antiinflam"],color:"#5b9bd5",sub:"DHA is the brain's structural fat",
+   benefits:["DHA makes up 30% of brain grey matter — essential for function","Reduces risk of Alzheimer's and cognitive decline","EPA reduces neuroinflammation","Improves mood and reduces depression","Supports myelin sheath integrity for nerve signaling","Lowers triglycerides and cardiovascular inflammation"],
+   note:"2–3 servings per week provides adequate DHA/EPA. Wild-caught salmon has higher omega-3 than farmed. Sardines are affordable equivalent.",tags:["DHA","Neuroprotective","Depression"]},
+
+  {name:"Walnuts",icon:"🌰",cats:["brain","heart","antiinflam"],color:"#9b7de8",sub:"Brain-shaped for a reason",
+   benefits:["Highest ALA omega-3 of all nuts","Polyphenols reduce neuroinflammation","Improve memory and cognitive performance in older adults","Reduce blood pressure and cardiovascular risk","Rich in vitamin E protecting brain cell membranes","Melatonin for sleep supports brain consolidation"],
+   note:"1 ounce (28g) provides meaningful brain benefit. Shape similarity to brain is coincidental but memorable. Raw walnuts have highest polyphenol content.",tags:["ALA","Memory","Polyphenols"]},
+
+  {name:"Eggs",icon:"🥚",cats:["brain","hormone","energy"],color:"#c8922a",sub:"Choline powerhouse for memory",
+   benefits:["Richest dietary source of choline — acetylcholine precursor","Choline deficiency directly impairs memory and learning","Complete protein with all essential amino acids","Lutein and zeaxanthin protect against macular degeneration","B12 supports myelin and nerve function","Tyrosine supports dopamine and focus"],
+   note:"Egg yolk contains the choline — don't skip it. 2 eggs provide approximately 50% of daily choline needs.",tags:["Choline","Memory","Complete protein"]},
+
+  {name:"Matcha",icon:"🍵",cats:["brain","energy","antiinflam","longevity"],color:"#8fbe6b",sub:"L-theanine + caffeine = calm focus",
+   benefits:["L-theanine promotes alpha brain waves — calm alertness without jitters","Caffeine combination produces sustained focus without crash","EGCG is one of the most powerful antioxidants known","Chlorophyll from whole leaf supports detoxification","Boosts metabolism and fat oxidation","Neuroprotective effects against cognitive decline"],
+   note:"Ceremonial grade for drinking, culinary grade for cooking. Whisk with 70°C water — boiling water destroys L-theanine.",tags:["L-theanine","EGCG","Focus"]},
+
+  {name:"Lion's Mane Mushroom",icon:"🦁",cats:["brain","longevity","immune"],color:"#9b7de8",sub:"NGF stimulator — regrows brain cells",
+   benefits:["NGF (nerve growth factor) stimulation promotes neuroplasticity","Improves memory and cognition — studied for Alzheimer's","Reduces anxiety and depression through nervous system support","Myelin sheath repair supports nerve damage recovery","Gut-brain axis support through prebiotic beta-glucans","Anti-cancer and immune-modulating properties"],
+   note:"Powder form: 1–3g daily. Takes 4–8 weeks for cognitive effects. Best taken consistently — not as needed.",tags:["NGF","Neuroplasticity","Alzheimer's research"]},
+
+  {name:"Turmeric + Black Pepper",icon:"🟡",cats:["brain","antiinflam","longevity"],color:"#c8922a",sub:"Curcumin crosses blood-brain barrier with piperine",
+   benefits:["Curcumin reduces amyloid plaques — Alzheimer's marker","Crosses blood-brain barrier (with piperine) to reduce neuroinflammation","Boosts BDNF — brain-derived neurotrophic factor for new neurons","Powerful systemic anti-inflammatory","Antidepressant effects comparable to some medications","Anti-cancer properties through multiple pathways"],
+   note:"Black pepper (piperine) increases curcumin absorption by 2,000%. Fat-soluble — take with a meal. Combine with healthy fat for best absorption.",tags:["BDNF","Piperine","Anti-amyloid"]},
+
+  // HEART HEALTH
+  {name:"Olive Oil (Extra Virgin)",icon:"🫒",cats:["heart","brain","antiinflam","longevity"],color:"#8fbe6b",sub:"Cornerstone of the Mediterranean diet",
+   benefits:["Oleocanthal has anti-inflammatory activity similar to ibuprofen","Reduces LDL oxidation — most dangerous form of cholesterol","Monounsaturated fats lower cardiovascular disease risk","Polyphenols protect arterial walls","Improves HDL cholesterol function","Reduces blood pressure"],
+   note:"Extra virgin only — refined olive oil lacks polyphenols. Store in dark bottle away from heat. Robust peppery taste indicates high polyphenol content.",tags:["EVOO","Oleocanthal","Mediterranean"]},
+
+  {name:"Garlic",icon:"🧄",cats:["heart","immune","antiinflam","detox"],color:"#5b9bd5",sub:"Allicin — nature's most powerful antimicrobial",
+   benefits:["Allicin reduces LDL cholesterol and blood pressure","Reduces platelet aggregation — natural blood thinner","Antimicrobial against 23+ bacteria, viruses, and fungi","Detoxifies heavy metals — organosulfur compounds chelate lead","Reduces homocysteine — cardiovascular inflammation marker","Anti-cancer properties shown in multiple studies"],
+   note:"Crush and let sit 10 min before cooking to activate allicin. Raw is most potent. Aged black garlic has different but also significant benefits.",tags:["Allicin","Antimicrobial","Blood pressure"]},
+
+  {name:"Beets",icon:"🔴",cats:["heart","energy","antiinflam"],color:"#e05c5c",sub:"Nitrates convert to nitric oxide",
+   benefits:["Dietary nitrates convert to nitric oxide — dilates blood vessels","Reduces blood pressure by 4–10 mmHg in studies","Improves VO2 max and athletic endurance by 1–3%","Betalains are powerful anti-inflammatory antioxidants","Supports liver detoxification","Rich in folate for cardiovascular health"],
+   note:"Beet juice effects peak 2–3 hours after consumption. Ideal 2–3 hours before exercise or performance event. Red discoloration in urine (beeturia) is harmless.",tags:["Nitric oxide","Blood pressure","Athletic performance"]},
+
+  {name:"Berries (General)",icon:"🍓",cats:["heart","brain","antiinflam","longevity","skin"],color:"#c86b8f",sub:"Anthocyanins protect heart and brain",
+   benefits:["Anthocyanins reduce LDL oxidation and arterial inflammation","Improve endothelial function (arterial flexibility)","Polyphenols reduce blood pressure","High antioxidant content protects against aging","Fiber supports microbiome diversity","Low glycemic — good for blood sugar management"],
+   note:"Frozen berries retain equal or more antioxidants than fresh. Wild varieties are more potent. Rotate: blueberries, raspberries, blackberries, strawberries.",tags:["Anthocyanins","Low GI","Arterial health"]},
+
+  // GUT HEALTH
+  {name:"Sauerkraut & Kimchi",icon:"🫙",cats:["gut","immune","antiinflam"],color:"#5bbfb5",sub:"Live fermented foods — probiotic powerhouses",
+   benefits:["Billions of live Lactobacillus bacteria per serving","Vitamin C increases dramatically during fermentation","K2 produced by bacteria supports bone and heart health","Enzymes improve nutrient absorption across the gut","Diversity of probiotic strains supports microbiome balance","Anti-cancer compounds from fermentation process"],
+   note:"Refrigerated, unpasteurized only — heat kills probiotics. Start with 1–2 tbsp/day to avoid gas from microbiome shift.",tags:["Lactobacillus","K2","Live cultures"]},
+
+  {name:"Bone Broth",icon:"🍲",cats:["gut","bone","skin","immune"],color:"#c8922a",sub:"Collagen, gelatin, and gut-sealing glycine",
+   benefits:["Gelatin seals and heals gut lining (leaky gut support)","Glycine reduces inflammation in gut and throughout body","Collagen supports joint, skin, and bone health","Glutamine is the primary fuel for intestinal cells","Rich in minerals extracted from bones","Supports sleep and muscle recovery through glycine"],
+   note:"Simmer bones 12–24 hours for maximum collagen extraction. Add apple cider vinegar to extract more minerals. Slow cooker is easiest method.",tags:["Gelatin","Leaky gut","Collagen"]},
+
+  {name:"Kefir",icon:"🥛",cats:["gut","immune","bone"],color:"#5bbfb5",sub:"More probiotic than yogurt — fermented milk",
+   benefits:["Contains 30+ strains of beneficial bacteria and yeasts","Highly bioavailable protein and calcium","Can improve lactose tolerance — bacteria digest lactose","Reduces allergy and asthma symptoms","Powerful immune modulator","Antibacterial properties even against antibiotic-resistant bacteria"],
+   note:"Full-fat kefir is best. Coconut milk kefir is dairy-free alternative. Water kefir is another dairy-free option.",tags:["30+ strains","Lactose friendly","Antibacterial"]},
+
+  {name:"Ginger",icon:"🫚",cats:["gut","antiinflam","immune","energy"],color:"#c8922a",sub:"The universal digestive aid",
+   benefits:["Gingerols and shogaols reduce nausea effectively","Speeds gastric emptying — relieves indigestion","Reduces intestinal inflammation","Anti-nausea for pregnancy, chemotherapy, and motion sickness","Antimicrobial against H. pylori","Warming effect improves circulation throughout body"],
+   note:"Fresh ginger for acute nausea and digestion. Dried ginger is 5–10x more concentrated. Ginger tea: steep 1-inch piece for 10 min.",tags:["Anti-nausea","Gingerols","Gastric motility"]},
+
+  // IMMUNE
+  {name:"Elderberry",icon:"🫐",cats:["immune","antiinflam"],color:"#9b7de8",sub:"Most studied natural antiviral",
+   benefits:["Anthocyanins inhibit viral replication directly","Reduces duration of influenza by 2–4 days in studies","Stimulates cytokine production for immune signaling","Antioxidant protection from free radicals","Reduces upper respiratory infection symptoms","Anti-inflammatory properties"],
+   note:"Syrup or tincture. Most effective at first sign of illness — not for continuous prevention. Cooked elderberries only — raw contain toxic compounds.",tags:["Antiviral","Flu","Cytokins"]},
+
+  {name:"Propolis",icon:"🍯",cats:["immune","antiinflam","detox"],color:"#c8922a",sub:"Bee's antimicrobial resin",
+   benefits:["Broad-spectrum antimicrobial against bacteria, viruses, fungi","Flavonoids and phenolic acids are potent antioxidants","Speeds wound healing when applied topically","Protects liver from toxin damage","Anti-cancer properties from caffeic acid phenethyl ester","Supports gut health and reduces pathogenic bacteria"],
+   note:"Use as tincture (30–40% propolis). Start with small doses. Avoid if allergic to bee stings. One of the most complete antimicrobial natural compounds.",tags:["Antimicrobial","Bees","Wound healing"]},
+
+  // ANTI-INFLAMMATORY
+  {name:"Tart Cherry",icon:"🍒",cats:["antiinflam","energy","longevity","brain"],color:"#e05c5c",sub:"Recovery and sleep — two benefits in one",
+   benefits:["Anthocyanins reduce exercise-induced muscle inflammation","Melatonin content improves sleep onset and duration","Reduces gout flare frequency and uric acid levels","Antioxidant activity exceeds most berries","Reduces markers of oxidative stress after exercise","Anti-cancer properties from quercetin"],
+   note:"Tart cherry juice (not sweet/black cherry). 8–12oz before bed for sleep. 2x daily around training for recovery. Montmorency variety is most studied.",tags:["Recovery","Melatonin","Gout"]},
+
+  {name:"Flaxseed",icon:"🌰",cats:["antiinflam","hormone","heart","gut"],color:"#8fbe6b",sub:"Richest plant omega-3 and lignans",
+   benefits:["Richest plant source of ALA omega-3","Lignans have phytoestrogenic and anti-cancer properties","Mucilage (soluble fiber) reduces cholesterol","Reduces blood pressure in hypertensive individuals","Supports healthy hormone balance (estrogen metabolism)","Promotes gut motility and relieves constipation"],
+   note:"Ground flaxseed only — whole seeds pass through undigested. 2 tbsp/day. Store in freezer to prevent rancidity. Freshly grind for maximum benefit.",tags:["Lignans","ALA","Phytoestrogen"]},
+
+  // HORMONE
+  {name:"Brazil Nuts",icon:"🌰",cats:["hormone","immune","longevity"],color:"#c8922a",sub:"2–3 nuts = entire daily selenium",
+   benefits:["Selenium is essential for thyroid hormone T4 to T3 conversion","Supports testosterone production and male fertility","Glutathione peroxidase activity — master antioxidant cofactor","Reduces thyroid antibodies in Hashimoto's thyroiditis","Cardiovascular protection through selenium","Rich in magnesium and zinc for hormone support"],
+   note:"2–3 Brazil nuts daily is the optimal dose. More is not better — selenium toxicity (selenosis) occurs at high doses.",tags:["Selenium","Thyroid","2-3 nuts only"]},
+
+  {name:"Cruciferous Vegetables",icon:"🥦",cats:["hormone","detox","antiinflam","longevity"],color:"#8fbe6b",sub:"DIM and sulforaphane for hormone detox",
+   benefits:["DIM (diindolylmethane) supports healthy estrogen metabolism","Sulforaphane activates Phase 2 liver detox enzymes","Reduces excess estrogen — important for both men and women","Anti-cancer properties — glucosinolates converted to isothiocyanates","Supports liver detoxification pathways","Rich in folate, vitamin C, and vitamin K"],
+   note:"Lightly cook or steam — raw cruciferous may suppress thyroid in large quantities (goitrogens). Broccoli sprouts have 100x more sulforaphane than mature broccoli.",tags:["DIM","Sulforaphane","Estrogen metabolism"]},
+
+  // ENERGY & STAMINA
+  {name:"Beet Root",icon:"🔴",cats:["energy","heart","antiinflam"],color:"#e05c5c",sub:"Natural pre-workout — nitric oxide booster",
+   benefits:["Nitrates convert to nitric oxide — increases blood and oxygen delivery","Improves exercise efficiency — muscles need less oxygen for same output","Reduces muscle fatigue and post-exercise soreness","Natural ergogenic — no stimulants","Improves high-intensity interval performance","Supports brain blood flow and cognitive performance"],
+   note:"Peak effects 2–3 hours after consumption. Beet root powder or 250–500ml juice. Tested by professional athletes. Avoid mouthwash before — kills nitrate-converting bacteria.",tags:["Nitrates","Pre-workout","Ergogenic"]},
+
+  {name:"Ashwagandha",icon:"🌿",cats:["energy","hormone","brain","aphrodisiac"],color:"#9b7de8",sub:"King of adaptogens",
+   benefits:["Reduces cortisol up to 30% — lowers stress-induced fatigue","Improves VO2 max and cardiorespiratory endurance","Increases testosterone by 15–22% in deficient men","Improves thyroid function in subclinical hypothyroidism","Anti-anxiety effects comparable to lorazepam in some studies","Supports deep restful sleep through nervous system calming"],
+   note:"KSM-66 or Sensoril are the most studied standardized extracts. 300–600mg/day. Take at night — calming effect. 8 weeks for full effect.",tags:["Adaptogen","Cortisol","Testosterone"]},
+
+  // DETOX
+  {name:"Dandelion",icon:"🌼",cats:["detox","gut","liver"],color:"#c8922a",sub:"Liver tonic and diuretic",
+   benefits:["Stimulates bile production — essential for fat digestion and liver detox","Natural diuretic that supports kidney function without electrolyte loss","Prebiotic inulin feeds beneficial gut bacteria","Rich in vitamins A, C, K, and minerals","Liver protective — prevents oxidative stress in liver cells","Anti-inflammatory taraxacin reduces systemic inflammation"],
+   note:"All parts edible: leaves (salad), roots (tea/coffee alternative), flowers (wine). Root tea is most medicinal. Found everywhere — free food.",tags:["Liver tonic","Diuretic","Prebiotic"]},
+
+  {name:"Activated Charcoal",icon:"⬛",cats:["detox"],color:"#5b9bd5",sub:"Emergency toxin binder",
+   benefits:["Binds toxins, chemicals, and drugs in the GI tract","Used in emergency rooms for poisoning and overdose","Reduces gas and bloating from fermentation","May reduce cholesterol by binding bile acids","Reduces hangover symptoms from alcohol toxins","Kidney support by filtering urea"],
+   note:"Not for long-term use — binds nutrients and medications too. Take 2+ hours away from any medications or supplements. Emergency toxin exposure use.",tags:["Emergency use","Toxin binder","Short-term only"]},
+
+  {name:"Milk Thistle",icon:"🌸",cats:["detox","liver","immune"],color:"#c86b8f",sub:"Gold standard liver protector",
+   benefits:["Silymarin is the most studied hepatoprotective compound","Regenerates liver cells after toxin damage","Protects against alcohol, medication, and environmental liver damage","Anti-inflammatory and antioxidant within liver tissue","Reduces insulin resistance in people with fatty liver","Improves bile flow for digestion"],
+   note:"140–200mg silymarin standardized extract 3x daily. Used for decades in clinical settings. Safe for long-term use. Milk thistle tea is gentler than extract.",tags:["Silymarin","Hepatoprotective","Liver regeneration"]},
+
+  // SKIN & BEAUTY
+  {name:"Collagen-Rich Foods",icon:"💅",cats:["skin","bone","gut"],color:"#c86b8f",sub:"Building blocks of skin and connective tissue",
+   benefits:["Glycine, proline, and hydroxyproline form skin's structural matrix","Reduces wrinkle depth and improves skin elasticity","Supports joint cartilage and reduces arthritis pain","Gut lining repair through glutamine and glycine","Improves nail strength and hair thickness","Bone density support through collagen matrix"],
+   note:"Food sources: bone broth, chicken skin, pork rinds. Vitamin C is essential cofactor for collagen synthesis — pair together. Hydrolyzed collagen peptide supplements are bioavailable.",tags:["Skin structure","Joint health","Vitamin C synergy"]},
+
+  {name:"Aloe Vera",icon:"🌵",cats:["skin","gut","immune"],color:"#8fbe6b",sub:"Inside and out — healing plant",
+   benefits:["Acemannan polysaccharide supports immune function","Heals gut lining — used for IBS and acid reflux","Topical application accelerates wound and burn healing","Anti-inflammatory compounds reduce skin irritation","Antioxidant vitamins C and E support skin health","Antimicrobial properties against common skin bacteria"],
+   note:"Inner gel only — aloin (outer leaf) is a harsh laxative. Food-grade aloe vera juice for internal use. Widely available in Mexican markets.",tags:["Acemannan","Wound healing","Gut soothing"]},
+
+  // LONGEVITY
+  {name:"Green Tea (EGCG)",icon:"🍵",cats:["longevity","brain","antiinflam","detox"],color:"#8fbe6b",sub:"Most studied anti-aging beverage",
+   benefits:["EGCG activates AMPK — cellular energy sensor linked to longevity","Telomere-protective effects — reduces aging at cellular level","Reduces risk of multiple cancers through multiple pathways","Improves insulin sensitivity and metabolic health","L-theanine + caffeine for calm, sustained cognitive function","Reduces neuroinflammation and risk of Parkinson's and Alzheimer's"],
+   note:"3–5 cups daily for maximum benefit. Steep at 70–80°C — boiling destroys EGCG. Matcha provides whole leaf with 10x the EGCG.",tags:["EGCG","AMPK","Telomeres"]},
+
+  {name:"Fasting (Intermittent)",icon:"⏳",cats:["longevity","detox","brain","energy"],color:"#9b7de8",sub:"Autophagy — cellular self-cleaning",
+   benefits:["Autophagy: cellular cleaning process that removes damaged proteins and organelles","Activates sirtuins — longevity proteins","Improves insulin sensitivity and metabolic flexibility","Reduces IGF-1 — associated with slower aging","Neurogenesis: new brain cell growth during fasting periods","BDNF increase supports cognitive function and mood"],
+   note:"Autophagy peaks at 16–18 hours of fasting. Combine with resistance training to preserve muscle. Electrolytes (sodium, potassium, magnesium) during fasting prevent energy crashes.",tags:["Autophagy","Sirtuins","BDNF"]},
+
+  {name:"Resveratrol Foods",icon:"🍇",cats:["longevity","heart","antiinflam"],color:"#9b7de8",sub:"Activates SIRT1 longevity gene",
+   benefits:["Activates SIRT1 — the longevity sirtuin gene (same as caloric restriction)","Protects mitochondrial function and reduces mitochondrial aging","Anti-inflammatory and cardioprotective","Crosses blood-brain barrier — neuroprotective","Improves insulin sensitivity","May reduce tumor growth through multiple mechanisms"],
+   note:"Food sources: red grape skin, blueberries, dark chocolate, peanuts. Red wine contains resveratrol but alcohol negates most benefits. Trans-resveratrol supplements have higher bioavailability.",tags:["SIRT1","Mitochondria","Grapes"]},
+];
+
+let activeCat = 'all';
+
+// Build category selector
+const catSel = document.getElementById('catSelector');
+CATEGORIES.forEach(cat => {
+  const count = cat.id === 'all' ? FOODS.length : FOODS.filter(f => f.cats.includes(cat.id)).length;
+  const btn = document.createElement('div');
+  btn.className = 'cat-card' + (cat.id === 'all' ? ' active' : '');
+  btn.dataset.cat = cat.id;
+  btn.innerHTML = `<div class="cat-icon">${cat.icon}</div><div class="cat-name">${cat.name}</div><div class="cat-count">${count} foods</div>`;
+  btn.onclick = () => setCat(cat.id);
+  catSel.appendChild(btn);
+});
+
+function makeCard(food, i) {
+  const card = document.createElement('div');
+  card.className = 'food-card';
+  card.style.animationDelay = (i * 0.015) + 's';
+  card.innerHTML = `
+    <div class="food-stripe" style="background:${food.color}"></div>
+    <div class="food-header" onclick="this.closest('.food-card').classList.toggle('expanded')">
+      <span class="food-icon">${food.icon}</span>
+      <div class="food-meta">
+        <div class="food-name">${food.name}</div>
+        <div class="food-sub">${food.sub}</div>
+      </div>
+      <svg class="food-expand" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <div class="food-body">
+      <div class="f-label" style="color:${food.color}">Benefits</div>
+      <ul class="f-list">${food.benefits.map(b=>`<li>${b}</li>`).join('')}</ul>
+      <div class="f-note">${food.note}</div>
+      <div class="f-tags">${food.tags.map(t=>`<span class="f-tag">${t}</span>`).join('')}</div>
+    </div>`;
+  return card;
+}
+
+function render(items) {
+  const grid = document.getElementById('grid');
+  const noR = document.getElementById('noResults');
+  grid.innerHTML = '';
+  if (!items.length) { noR.style.display='block'; grid.style.display='none'; return; }
+  noR.style.display='none'; grid.style.display='grid';
+  document.getElementById('count').textContent = items.length + ' food' + (items.length!==1?'s':'');
+  items.forEach((f,i) => grid.appendChild(makeCard(f,i)));
+}
+
+function filterFoods() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const items = FOODS.filter(f => {
+    const mc = activeCat === 'all' || f.cats.includes(activeCat);
+    const mq = !q || f.name.toLowerCase().includes(q) || f.sub.toLowerCase().includes(q) || f.benefits.some(b=>b.toLowerCase().includes(q));
+    return mc && mq;
+  });
+  render(items);
+}
+
+function setCat(cat) {
+  activeCat = cat;
+  document.querySelectorAll('.cat-card').forEach(b => b.classList.toggle('active', b.dataset.cat===cat));
+  filterFoods();
+}
+
+render(FOODS);
+</script>
+</body>
+</html>
