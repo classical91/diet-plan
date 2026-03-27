@@ -98,6 +98,17 @@
   .tag-fungi { border-color: rgba(91,191,181,0.3); color: var(--teal); background: rgba(91,191,181,0.07); }
 
   
+
+  /* List view */
+  .grid.list-view { grid-template-columns: 1fr !important; }
+  .grid.list-view .card { display: flex; flex-direction: row; align-items: flex-start; gap: 0; padding: 0; }
+  .grid.list-view .card-header { flex: 0 0 240px; padding: 14px 16px; border-bottom: none; border-right: 1px solid var(--border); }
+  .grid.list-view .card.expanded .card-header { border-right-color: var(--accent); }
+  .grid.list-view .card-body { flex: 1; padding: 14px 16px; margin-top: 0; border-top: none; border-left: none; display: none; }
+  .grid.list-view .card.expanded .card-body { display: block; }
+  .grid.list-view .card-expand { display: none; }
+  .grid.list-view .card-header { cursor: pointer; }
+
   /* Subsections */
   .subsection { max-width: 900px; margin: 0 auto 8px; }
   .subsection-header {
@@ -164,7 +175,18 @@
   </div>
 </div>
 
-<div class="result-count" id="count"></div>
+<div style="max-width:900px;margin:0 auto 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+  <div class="result-count" id="count"></div>
+  <div style="display:flex;gap:6px;">
+    <button class="cat-btn active" id="viewGrid" onclick="setView('grid')" title="Grid view">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </button>
+    <button class="cat-btn" id="viewList" onclick="setView('list')" title="List view">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    </button>
+  </div>
+</div>
+<div class="result-count" id="count" style="display:none"></div>
 <div class="grid" id="grid"></div>
 <div class="no-results" id="noResults" style="display:none">No foods found</div>
 
@@ -244,6 +266,10 @@ const DATA = [
   {name:"Vitex (Chaste Tree)",icon:"🌸",cat:"herb",tags:["herb","supp"],benefits:["Supports female hormone balance by acting on pituitary gland","Reduces PMS symptoms including mood swings and breast tenderness","May support fertility by normalizing luteal phase","Reduces prolactin levels — helpful for certain hormonal conditions","Traditionally used for menopause symptom relief","Adaptogenic effects on reproductive hormones"]},
   {name:"Wheatgrass",icon:"🌱",cat:"food",tags:["food","supp"],benefits:["Extremely concentrated source of chlorophyll for blood oxygenation","Complete amino acid profile","Rich in enzymes that support digestion","High in iron, magnesium, and calcium","Supports liver detoxification and cleansing","Alkalizing effect balances body pH"]},
   {name:"Yerba Mate",icon:"🍵",cat:"drink",tags:["drink"],benefits:["Unique stimulant blend — caffeine + theobromine + theophylline","Produces energy without jitters, often compared to clean coffee","Rich in antioxidants — higher than green tea","Supports fat oxidation and weight management","Improves physical performance and reduces fatigue","Immune-boosting saponins and polyphenols"]},
+  {name:"Chia Seeds",icon:"⚫",cat:"food",tags:["food","supp"],benefits:["Richest plant source of omega-3 ALA — higher than flaxseed per gram","Complete protein containing all essential amino acids","Absorb 10x their weight in water — promotes sustained hydration and satiety","Excellent source of calcium — more per gram than dairy milk","Soluble fiber lowers LDL cholesterol and stabilizes blood sugar","Rich in antioxidants that prevent rancidity of the healthy fats"]},
+  {name:"Tuna",icon:"🐟",cat:"food",tags:["food"],benefits:["Exceptionally high protein — 25g per 100g with minimal fat","Richest food source of omega-3 DHA and EPA for brain and heart health","Complete amino acid profile supports muscle repair and growth","High in selenium — a critical antioxidant mineral for thyroid health","Rich in B12, B3, and B6 for energy and nervous system function","Low calorie, high satiety — excellent for weight management"]},
+  {name:"Yogurt",icon:"🥛",cat:"food",tags:["food","supp"],benefits:["Rich in live probiotics — Lactobacillus and Bifidobacterium strains","High in calcium and phosphorus for bone strength","Complete protein including casein which is slow-digesting for muscle repair","B12 and B2 support energy production and red blood cell formation","May reduce risk of type 2 diabetes and cardiovascular disease","Fermentation increases bioavailability of nutrients"]},
+  {name:"Alfalfa",icon:"🌱",cat:"herb",tags:["herb","food"],benefits:["One of the most nutrient-dense plants — contains vitamins A, C, E, K, and full B complex","High in plant estrogens (phytoestrogens) that support hormone balance","Rich in chlorophyll for blood oxygenation and detoxification","Natural diuretic that supports kidney and urinary tract health","Alkalizing effect helps balance body pH","Saponins may lower LDL cholesterol and support immune function"]},
 ];
 
 let activeCat = 'all';
@@ -339,6 +365,23 @@ function render(items) {
 }
 
 function toggleCard(card) { card.classList.toggle('expanded'); }
+
+
+let currentView = 'grid';
+function setView(v) {
+  currentView = v;
+  document.getElementById('viewGrid').classList.toggle('active', v === 'grid');
+  document.getElementById('viewList').classList.toggle('active', v === 'list');
+  const g = document.getElementById('grid');
+  if (v === 'list') {
+    g.classList.add('list-view');
+    // In list view, expand all cards
+    document.querySelectorAll('.card').forEach(c => c.classList.add('expanded'));
+  } else {
+    g.classList.remove('list-view');
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('expanded'));
+  }
+}
 
 function filterCards() {
   const q = document.getElementById('search').value.toLowerCase();
