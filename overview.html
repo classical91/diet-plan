@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vitamins & Minerals Overview | Diet Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0f0d0a;--surface:#1a1714;--card:#201d19;--border:#2e2a24;
+    --accent:#c8922a;--green:#8fbe6b;--blue:#5b9bd5;--pink:#c86b8f;
+    --purple:#9b7de8;--teal:#5bbfb5;--red:#e05c5c;--text:#f0ebe3;--muted:#7a7063;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(91,155,213,.05) 0%,transparent 50%)}
+  .nav-bar{max-width:1100px;margin:0 auto 32px;display:flex;gap:10px;flex-wrap:wrap}
+  .nav-link{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:20px;transition:all .2s}
+  .nav-link:hover,.nav-link.active{border-color:var(--accent);color:var(--accent)}
+
+  header{text-align:center;margin-bottom:40px}
+  .sub-label{font-size:11px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-.02em;line-height:1}
+  h1 em{color:var(--accent);font-style:italic}
+  .header-line{width:50px;height:2px;background:var(--accent);margin:16px auto 0;opacity:.5}
+
+  /* Tab nav */
+  .tabs{max-width:1100px;margin:0 auto 28px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:16px}
+  .tab{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.15em;text-transform:uppercase;padding:7px 16px;border-radius:20px;cursor:pointer;transition:all .2s}
+  .tab:hover{border-color:var(--accent);color:var(--accent)}
+  .tab.active{border-color:var(--accent);color:var(--accent);background:rgba(200,146,42,.08)}
+
+  /* Sections */
+  .section{max-width:1100px;margin:0 auto 40px;display:none}
+  .section.active{display:block}
+
+  .section-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:6px}
+  .section-desc{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+
+  /* Cards row */
+  .cards-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:32px}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s,transform .2s;animation:fadeUp .3s ease both}
+  .card:hover{border-color:#3e3a32;transform:translateY(-2px)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+  .card-stripe{height:3px}
+  .card-inner{padding:16px}
+  .card-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .card-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+  .card-amount{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:6px}
+  .card-desc{font-size:12px;color:#b0a898;line-height:1.5}
+  .card-note{font-size:11px;color:var(--muted);margin-top:6px;font-style:italic;line-height:1.4}
+  .card-source{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .pill{font-size:10px;padding:3px 9px;border-radius:20px;border:1px solid rgba(143,190,107,.2);color:var(--green);background:rgba(143,190,107,.07)}
+
+  /* Tables */
+  .table-wrap{overflow-x:auto;margin-bottom:32px;border:1px solid var(--border);border-radius:10px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead tr{background:var(--surface)}
+  th{padding:12px 16px;text-align:left;font-family:'Playfair Display',serif;font-weight:700;font-size:12px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+  td{padding:11px 16px;border-bottom:1px solid var(--border);color:#c8b89a;vertical-align:top;line-height:1.5}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(255,255,255,.02)}
+  td:first-child{font-weight:500;color:var(--text)}
+  td.amount{color:var(--accent);font-weight:600;white-space:nowrap}
+  td.fn{color:var(--green)}
+
+  /* Symptom guide */
+  .symptom-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:24px}
+  .sym-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;transition:border-color .2s}
+  .sym-card:hover{border-color:#3e3a32}
+  .sym-symptom{font-weight:500;font-size:13px;color:var(--text);margin-bottom:5px}
+  .sym-arrow{color:var(--muted);font-size:11px;margin-bottom:5px}
+  .def-pills{display:flex;flex-wrap:wrap;gap:5px}
+  .def-pill{font-size:10px;padding:3px 9px;border-radius:20px}
+  .def-vitamin{background:rgba(143,190,107,.08);border:1px solid rgba(143,190,107,.2);color:var(--green)}
+  .def-mineral{background:rgba(91,155,213,.08);border:1px solid rgba(91,155,213,.2);color:var(--blue)}
+  .def-other{background:rgba(200,146,42,.08);border:1px solid rgba(200,146,42,.2);color:var(--accent)}
+
+  /* Keto table accent */
+  .keto-badge{font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(91,191,181,.1);border:1px solid rgba(91,191,181,.2);color:var(--teal);white-space:nowrap}
+
+  /* Function bullets */
+  .fn-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+  .fn-list li{display:flex;gap:8px;font-size:12px;color:#b0a898;line-height:1.45}
+  .fn-list li::before{content:'—';color:var(--accent);flex-shrink:0}
+
+  /* Water soluble section */
+  .ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:24px}
+  .ws-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+  .ws-name{font-weight:600;font-size:13px;color:var(--text);margin-bottom:3px}
+  .ws-alias{font-size:11px;color:var(--muted);margin-bottom:4px}
+  .ws-fn{font-size:11px;color:var(--blue)}
+</style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <a href="/" class="nav-link">Diet Plan</a>
+  <a href="/nutrition" class="nav-link">Nutrition Checklist</a>
+  <a href="/benefits" class="nav-link">Food Benefits</a>
+  <a href="/deficiencies" class="nav-link">Deficiencies</a>
+  <a href="/overview" class="nav-link active">Overview</a>
+</div>
+
+<header>
+  <div class="sub-label">Reference Guide</div>
+  <h1>Vitamins & Minerals <em>Overview</em></h1>
+  <div class="header-line"></div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('macros')">Macros & Minerals</button>
+  <button class="tab" onclick="showTab('vitamins')">Vitamins</button>
+  <button class="tab" onclick="showTab('keto')">Keto Vitamins</button>
+  <button class="tab" onclick="showTab('tables')">Health Tables</button>
+  <button class="tab" onclick="showTab('water')">Water-Soluble</button>
+  <button class="tab" onclick="showTab('symptoms')">Symptom Guide</button>
+</div>
+
+<!-- MACROS & MINERALS -->
+<div class="section active" id="tab-macros">
+  <div class="section-title">Macronutrients & Key Minerals</div>
+  <div class="section-desc">Daily targets for core macronutrients, minerals, fiber, and hydration.</div>
+
+  <div class="section-title" style="font-size:16px;margin-bottom:14px;color:var(--accent)">Macronutrients</div>
+  <div class="cards-row" id="macroCards"></div>
+
+  <div class="section-title" style="font-size:16px;margin-bottom:14px;color:var(--blue)">Minerals</div>
+  <div class="cards-row" id="mineralCards"></div>
+
+  <div class="section-title" style="font-size:16px;margin-bottom:14px;color:var(--green)">Fiber & Hydration</div>
+  <div class="cards-row" id="fiberCards"></div>
+</div>
+
+<!-- VITAMINS -->
+<div class="section" id="tab-vitamins">
+  <div class="section-title">Vitamin Reference</div>
+  <div class="section-desc">Key vitamins, their functions, and what each one does for your body.</div>
+  <div class="cards-row" id="vitaminCards"></div>
+</div>
+
+<!-- KETO VITAMINS -->
+<div class="section" id="tab-keto">
+  <div class="section-title">Keto-Friendly Vitamin Sources</div>
+  <div class="section-desc">All food sources are low-carb and support ketosis. Ideal for anyone on a ketogenic or low-carb diet.</div>
+  <div class="table-wrap">
+    <table id="ketoTable"></table>
+  </div>
+</div>
+
+<!-- HEALTH TABLES -->
+<div class="section" id="tab-tables">
+  <div class="section-title">Health Tables</div>
+  <div class="section-desc">Reference tables for daily requirements and functions across minerals, vitamins, and other nutrients.</div>
+
+  <div class="section-title" style="font-size:16px;margin-bottom:14px;color:var(--blue)">Mineral Table</div>
+  <div class="table-wrap"><table id="mineralTable"></table></div>
+
+  <div class="section-title" style="font-size:16px;margin-bottom:14px;color:var(--green)">Vitamin Table</div>
+  <div class="table-wrap"><table id="vitaminTable"></table></div>
+
+  <div class="section-title" style="font-size:16px;margin-bottom:14px;color:var(--teal)">Other Nutrients</div>
+  <div class="table-wrap"><table id="otherTable"></table></div>
+</div>
+
+<!-- WATER-SOLUBLE -->
+<div class="section" id="tab-water">
+  <div class="section-title">Water-Soluble Vitamins</div>
+  <div class="section-desc">These vitamins dissolve in water and are not stored in the body — they must be replenished daily through diet.</div>
+  <div class="ws-grid" id="wsGrid"></div>
+</div>
+
+<!-- SYMPTOM GUIDE -->
+<div class="section" id="tab-symptoms">
+  <div class="section-title">Symptom Quick-Guide</div>
+  <div class="section-desc">Common symptoms and the possible nutrient deficiencies behind them. For general guidance — not a medical diagnosis.</div>
+  <div class="symptom-grid" id="symGrid"></div>
+
+  <div class="section-title" style="font-size:16px;margin-top:32px;margin-bottom:14px;color:var(--blue)">Key Minerals & Their Roles</div>
+  <div class="cards-row" id="mineralRoleCards"></div>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function makeCard(name, amount, desc, note, sources, stripe, label) {
+  return `<div class="card" style="animation-delay:${Math.random()*0.2}s">
+    <div class="card-stripe" style="background:${stripe}"></div>
+    <div class="card-inner">
+      ${label?`<div class="card-label">${label}</div>`:''}
+      <div class="card-name">${name}</div>
+      ${amount?`<div class="card-amount">${amount}</div>`:''}
+      <div class="card-desc">${desc}</div>
+      ${note?`<div class="card-note">${note}</div>`:''}
+      ${sources&&sources.length?`<div class="card-source">${sources.map(s=>`<span class="pill">${s}</span>`).join('')}</div>`:''}
+    </div>
+  </div>`;
+}
+
+function makeTable(headers, rows) {
+  return `<thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${i===1?'amount':i===2?'fn':''}">${c}</td>`).join('')}</tr>`).join('')}</tbody>`;
+}
+
+// MACROS
+document.getElementById('macroCards').innerHTML = [
+  ['Carbohydrates','20–50g (keto) / 225–300g (standard)','Primary energy source for brain and body. Reduced on keto forces fat burning.','Keto range promotes ketosis and metabolic flexibility.',['Rice','Oats','Vegetables','Fruit'],'var(--accent)','Macronutrient'],
+  ['Protein','90–120g / day','Builds and repairs muscle tissue, enzymes, and hormones. Essential for recovery.','Aim for 0.7–1g per lb of lean body mass.',['Meat','Eggs','Fish','Legumes'],'var(--blue)','Macronutrient'],
+  ['Fats','120–150g / day','Supports cell structure, hormone production, and fat-soluble vitamin absorption.','On keto, fats replace carbs as primary fuel.',['Avocado','Olive oil','Nuts','Fatty fish'],'var(--green)','Macronutrient'],
+  ['Sugar','0g (target)','Excess sugar drives insulin resistance, inflammation, and metabolic dysfunction.','Eliminate added sugars; natural fruit sugars in moderation.',[],'var(--red)','Target'],
+].map(a=>makeCard(...a)).join('');
+
+document.getElementById('mineralCards').innerHTML = [
+  ['Magnesium','400mg / day','Supports energy production, sleep regulation, muscle function, and bone health. Involved in 300+ enzyme reactions.','Deficiency causes cramps, insomnia, anxiety. Glycinate form absorbs best.',['Pumpkin seeds','Spinach','Dark chocolate','Almonds'],'var(--blue)','Mineral'],
+  ['Potassium','4,700mg / day','Regulates blood pressure, electrolyte balance, nerve signals, and muscle contractions.','97% of Americans are below adequate intake.',['Bananas','Avocado','Sweet potato','Salmon'],'var(--green)','Mineral'],
+  ['Sodium','3,000–5,000mg / day','Essential for hydration, nerve function, muscle contractions, and digestion.','Athletes and those on keto need higher sodium due to increased excretion.',['Sea salt','Broth','Pickles','Celery'],'var(--teal)','Mineral'],
+  ['Copper','~900mcg / day','Important for collagen formation, iron metabolism, and antioxidant defense.','Excess zinc depletes copper — balance both.',['Liver','Oysters','Dark chocolate','Nuts'],'var(--accent)','Mineral'],
+  ['Selenium','55mcg / day','Supports immune function, thyroid hormone conversion, and antioxidant protection.','2 Brazil nuts daily meets requirements. Do not over-supplement.',['Brazil nuts','Tuna','Eggs','Chicken'],'var(--purple)','Mineral'],
+  ['Chromium','35mcg / day','Helps regulate blood sugar levels and improves insulin sensitivity.','Particularly beneficial for blood sugar management.',['Broccoli','Whole grains','Lean beef','Green beans'],'var(--pink)','Mineral'],
+  ['Iodine','8–14mg / day','Crucial for thyroid hormone production and metabolic regulation.','Deficiency is the leading preventable cause of brain damage globally.',['Iodized salt','Seaweed','Seafood','Dairy'],'var(--accent)','Mineral'],
+  ['Iron','8–18mg / day','Necessary for oxygen transport in the blood via hemoglobin.','Most common deficiency worldwide. Heme iron from meat absorbs best.',['Red meat','Liver','Spinach','Lentils'],'var(--red)','Mineral'],
+  ['Manganese','2.3mg / day','Supports glucose metabolism, bone development, and antioxidant defenses.','Works alongside SOD as a mitochondrial antioxidant.',['Whole grains','Nuts','Leafy greens','Tea'],'var(--green)','Mineral'],
+  ['Calcium','1,000mg / day','Essential for muscle contraction, nerve transmission, and bone strength.','Requires vitamin D and K2 for proper absorption and bone deposition.',['Dairy','Sardines','Kale','Fortified milks'],'var(--blue)','Mineral'],
+  ['Zinc','10–12mg / day','Key for immune function, wound healing, enzyme activity, and testosterone.','Phytates in grains reduce absorption. Meat sources absorb 2-3x better.',['Oysters','Beef','Pumpkin seeds','Chickpeas'],'var(--purple)','Mineral'],
+].map(a=>makeCard(...a)).join('');
+
+document.getElementById('fiberCards').innerHTML = [
+  ['Fiber','15–25g / day','Aids digestion, regulates blood sugar, feeds beneficial gut bacteria, and lowers cholesterol.','Increase slowly to avoid gas. Psyllium husk is an effective supplement.',['Vegetables','Legumes','Chia seeds','Oats'],'var(--green)','Fiber'],
+  ['Water','12–14 cups / day','Maintains hydration, regulates temperature, supports digestion, and flushes toxins.','Add electrolytes (sodium, potassium, magnesium) for optimal hydration.',['Plain water','Electrolyte water','Herbal teas','Coconut water'],'var(--blue)','Hydration'],
+].map(a=>makeCard(...a)).join('');
+
+// VITAMINS
+document.getElementById('vitaminCards').innerHTML = [
+  ['Vitamin A','700–900mcg','Immunity, eye health, and cell growth. Essential for night vision and immune defense.','Preformed A from liver is readily absorbed; beta-carotene requires conversion.',['Beef liver','Sweet potato','Carrots','Eggs'],'var(--accent)','Fat-Soluble'],
+  ['Vitamin B1 (Thiamine)','1.1–1.2mg','Energy metabolism and nerve function. Converts carbohydrates into usable energy.','',['Sunflower seeds','Whole grains','Legumes','Pork'],'var(--blue)','Water-Soluble'],
+  ['Vitamin B2 (Riboflavin)','1.1–1.3mg','Energy production and antioxidant function. Required for FAD and FMN coenzymes.','',['Eggs','Almonds','Dairy','Lean meat'],'var(--blue)','Water-Soluble'],
+  ['Vitamin B3 (Niacin)','14–16mg','Energy metabolism, brain function, and DNA repair.','',['Chicken breast','Tuna','Mushrooms','Peanuts'],'var(--blue)','Water-Soluble'],
+  ['Vitamin B5 (Pantothenic Acid)','5mg','Hormone production, metabolism, and synthesis of CoA (coenzyme A).','',['Avocado','Chicken','Sweet potato','Eggs'],'var(--blue)','Water-Soluble'],
+  ['Vitamin B6 (Pyridoxine)','1.3–2mg','Neurotransmitter synthesis (serotonin, dopamine), red blood cell production.','',['Turkey','Salmon','Spinach','Bananas'],'var(--blue)','Water-Soluble'],
+  ['Vitamin B7 (Biotin)','30mcg','Hair and nail health, metabolism of fats, carbohydrates, and proteins.','Raw egg whites block biotin absorption.',['Egg yolks','Salmon','Nuts','Sweet potato'],'var(--blue)','Water-Soluble'],
+  ['Vitamin B9 (Folate)','400mcg','DNA synthesis and repair, cell division, and neural tube development in pregnancy.','Critical in first trimester. MTHFR variants affect metabolism.',['Leafy greens','Lentils','Asparagus','Avocado'],'var(--blue)','Water-Soluble'],
+  ['Vitamin B12 (Cobalamin)','2.4mcg','Red blood cell formation, nerve function, and DNA synthesis.','Vegans must supplement. Deficiency causes irreversible neurological damage.',['Salmon','Beef','Eggs','Dairy'],'var(--blue)','Water-Soluble'],
+  ['Vitamin C','75–90mg','Collagen production, immune support, antioxidant protection, and iron absorption.','Smokers need 35mg more. Stress rapidly depletes stores.',['Kale','Broccoli','Bell peppers','Citrus'],'var(--green)','Water-Soluble'],
+  ['Vitamin D','600–800 IU (15–20mcg)','Bone health, immunity, calcium absorption, and mood regulation.','Most people need 2,000–5,000 IU. Get blood levels tested.',['Sardines','Mackerel','Egg yolks','Sun exposure'],'var(--accent)','Fat-Soluble'],
+  ['Vitamin E','15mg','Antioxidant protection, skin and immune health, and cell membrane integrity.','',['Avocado','Almonds','Sunflower seeds','Spinach'],'var(--accent)','Fat-Soluble'],
+  ['Vitamin K2','90–120mcg','Bone health, prevents arterial calcification, directs calcium to bones not arteries.','Works synergistically with D3 and magnesium.',['Natto','Hard cheese','Gouda','Egg yolks'],'var(--accent)','Fat-Soluble'],
+].map(a=>makeCard(...a)).join('');
+
+// KETO TABLE
+document.getElementById('ketoTable').innerHTML = makeTable(
+  ['Vitamin','Intake','Keto-Friendly Source','Notes'],
+  [
+    ['Vitamin A','700–900 mcg','Beef liver','Extremely rich in preformed vitamin A'],
+    ['Vitamin B1','1.1–1.2 mg','Sunflower seeds','Great in moderation'],
+    ['Vitamin B2','1.1–1.3 mg','Eggs / Almonds','Both are solid keto staples'],
+    ['Vitamin B3','14–16 mg','Chicken breast / Tuna','Lean proteins, zero carbs'],
+    ['Vitamin B5','5 mg','Avocado','Excellent fat source'],
+    ['Vitamin B6','1.3–2 mg','Turkey / Salmon / Spinach','Low-carb and rich in B6'],
+    ['Vitamin B7','30 mcg','Egg yolks','Keto classic'],
+    ['Vitamin B12','2.4 mcg','Salmon / Beef / Eggs','High in fat and B12'],
+    ['Vitamin C','75–90 mg','Kale / Broccoli / Bell pepper (small amount)','Lower-carb veggies with vitamin C'],
+    ['Vitamin D','600–800 IU','Sardines / Mackerel / Egg yolks','Naturally high in D and fat'],
+    ['Vitamin E','15 mg','Avocado / Almonds / Sunflower seeds','Healthy fat sources'],
+    ['Vitamin K2','90–120 mcg','Natto / Hard cheeses (Gouda)','Excellent for K2 and keto-safe'],
+  ]
+);
+
+// HEALTH TABLES
+document.getElementById('mineralTable').innerHTML = makeTable(
+  ['Nutrient','Daily Requirement','Function / Benefit'],
+  [
+    ['Protein','56g','Muscle repair, enzymes, hormones'],
+    ['Carbohydrates','225g','Energy source, brain function'],
+    ['Fats','44g','Cell function, hormone production'],
+    ['Potassium','4,700mg','Nerve signals, muscle contractions, fluid balance'],
+    ['Zinc','6mg','Immune function, wound healing, DNA synthesis'],
+    ['Magnesium','400mg','Muscle & nerve function, energy production'],
+    ['Sodium','1,500mg','Fluid balance, nerve function, muscle contractions'],
+    ['Iron','14mg','Oxygen transport, energy production'],
+    ['Fiber','38g','Digestive health, regulates blood sugar'],
+    ['Water','13 cups','Hydration, temperature regulation, digestion'],
+  ]
+);
+
+document.getElementById('vitaminTable').innerHTML = makeTable(
+  ['Vitamin','Daily Requirement','Function / Benefit'],
+  [
+    ['Vitamin A','900mcg (men), 700mcg (women)','Immunity, eye health, cell growth'],
+    ['Vitamin B1 (Thiamine)','1.2mg (men), 1.1mg (women)','Energy metabolism, nerve function'],
+    ['Vitamin B2 (Riboflavin)','1.3mg (men), 1.1mg (women)','Energy production, antioxidant function'],
+    ['Vitamin B3 (Niacin)','16mg (men), 14mg (women)','Energy metabolism, brain function'],
+    ['Vitamin B5 (Pantothenic Acid)','5mg','Hormone production, metabolism'],
+    ['Vitamin B6 (Pyridoxine)','1.7mg (men), 1.5mg (women)','Neurotransmitters, red blood cell production'],
+    ['Vitamin B7 (Biotin)','30mcg','Hair & nail health, metabolism'],
+    ['Vitamin B12 (Cobalamin)','2.4mcg','Red blood cell formation, nerve function'],
+    ['Vitamin C','90mg (men), 75mg (women)','Collagen production, immune support, antioxidant'],
+    ['Vitamin D','600 IU (15mcg)','Bone health, immunity, calcium absorption'],
+    ['Vitamin E','15mg','Antioxidant, skin & immune health'],
+    ['Vitamin K2','120mcg (men), 90mcg (women)','Bone health, prevents arterial calcification'],
+  ]
+);
+
+document.getElementById('otherTable').innerHTML = makeTable(
+  ['Nutrient','Daily Requirement','Function / Benefit'],
+  [
+    ['Omega-3 Fatty Acids','1.6g (men), 1.1g (women)','Brain health, heart health, anti-inflammatory'],
+    ['Omega-6 Fatty Acids','17g (men), 12g (women)','Cell function, skin & hair health'],
+    ['Choline','550mg (men), 425mg (women)','Brain development, liver function, metabolism'],
+    ['Coenzyme Q10 (CoQ10)','30–200mg (no set RDA)','Antioxidant, heart health, energy production'],
+    ['Lutein & Zeaxanthin','6–10mg (no set RDA)','Eye health, reduces risk of macular degeneration'],
+    ['Probiotics','No set RDA','Gut health, digestion, immune support'],
+    ['Prebiotics','No set RDA','Feed good gut bacteria, improve digestion'],
+    ['Collagen','2.5–10g (no set RDA)','Skin health, joint support, muscle recovery'],
+    ['Creatine','3–5g (no set RDA)','Energy production, muscle performance'],
+    ['Carnitine','500–2,000mg (no set RDA)','Fat metabolism, brain function, energy production'],
+  ]
+);
+
+// WATER-SOLUBLE
+const wsData = [
+  {name:'Vitamin C',alias:'Ascorbic Acid',fn:'Collagen synthesis, immune support, antioxidant'},
+  {name:'Vitamin B1',alias:'Thiamine',fn:'Energy metabolism, nerve function'},
+  {name:'Vitamin B2',alias:'Riboflavin',fn:'Energy production, antioxidant (FAD, FMN)'},
+  {name:'Vitamin B3',alias:'Niacin',fn:'Energy metabolism, DNA repair, brain function'},
+  {name:'Vitamin B5',alias:'Pantothenic Acid',fn:'Coenzyme A synthesis, hormone production'},
+  {name:'Vitamin B6',alias:'Pyridoxine',fn:'Neurotransmitter synthesis, red blood cells'},
+  {name:'Vitamin B7',alias:'Biotin',fn:'Hair, nails, fat & carbohydrate metabolism'},
+  {name:'Vitamin B9',alias:'Folate / Folic Acid',fn:'DNA synthesis, cell division, neural tube development'},
+  {name:'Vitamin B12',alias:'Cobalamin',fn:'Nerve function, red blood cells, DNA synthesis'},
+];
+document.getElementById('wsGrid').innerHTML = wsData.map(w=>`
+  <div class="ws-card">
+    <div class="ws-name">${w.name}</div>
+    <div class="ws-alias">${w.alias}</div>
+    <div class="ws-fn">${w.fn}</div>
+  </div>`).join('');
+
+// SYMPTOM GUIDE
+const symptoms = [
+  {s:'Cracked Lips',d:['Iron','Vitamin C']},
+  {s:'Dandruff',d:['Biotin (B7)']},
+  {s:'Thinning Hair',d:['Iron','Vitamin C']},
+  {s:'Acne / Feeling Weak',d:['Zinc']},
+  {s:'Greasy Skin',d:['Zinc','Vitamin B2','Vitamin B6']},
+  {s:'Cold Hands / Feet',d:['Iron (anemia)']},
+  {s:'Psoriasis',d:['Zinc','Vitamin D']},
+  {s:'Itchy / Dry Skin',d:['Omega-6']},
+  {s:'Headaches',d:['Sodium','Magnesium','Vitamin B6','Vitamin B12']},
+  {s:'Bad Breath / Brittle Nails / Low Energy',d:['Iron']},
+  {s:'Mouth Ulcers',d:['Iron','Folic Acid','Vitamin B6','Vitamin B12']},
+  {s:'PMS',d:['Magnesium']},
+  {s:'Low Libido',d:['Vitamin D']},
+  {s:'Depression / Anxiety',d:['Magnesium','Calcium','B-vitamins','Vitamin D']},
+  {s:'Stress',d:['Magnesium','Zinc']},
+  {s:'Joint Pain',d:['Magnesium','Potassium','Sodium','Vitamin B1','Vitamin D']},
+  {s:"Can't Sleep",d:['Magnesium']},
+  {s:'Feeling Tired',d:['Potassium']},
+];
+const vitamins = new Set(['Vitamin C','Vitamin D','Biotin (B7)','Vitamin B2','Vitamin B6','Vitamin B12','B-vitamins','Folic Acid','Vitamin B1','Calcium']);
+const minerals = new Set(['Iron','Iron (anemia)','Zinc','Magnesium','Sodium','Potassium']);
+document.getElementById('symGrid').innerHTML = symptoms.map(s=>`
+  <div class="sym-card">
+    <div class="sym-symptom">${s.s}</div>
+    <div class="sym-arrow">Possible deficiency:</div>
+    <div class="def-pills">
+      ${s.d.map(d=>`<span class="def-pill ${vitamins.has(d)?'def-vitamin':minerals.has(d)?'def-mineral':'def-other'}">${d}</span>`).join('')}
+    </div>
+  </div>`).join('');
+
+document.getElementById('mineralRoleCards').innerHTML = [
+  ['Magnesium','400mg','Supports energy production, sleep regulation, and bone health.','',[],`var(--blue)`,'Mineral'],
+  ['Potassium','4,700mg','Helps regulate blood pressure and electrolyte balance.','',[],`var(--green)`,'Mineral'],
+  ['Sodium','3,000–5,000mg','Essential for hydration, nerve function, and digestion.','',[],`var(--teal)`,'Mineral'],
+  ['Copper','~900mcg','Important for collagen formation and iron metabolism.','',[],`var(--accent)`,'Mineral'],
+  ['Selenium','55mcg','Supports immune function and acts as an antioxidant.','',[],`var(--purple)`,'Mineral'],
+  ['Chromium','35mcg','Helps regulate blood sugar levels and insulin sensitivity.','',[],`var(--pink)`,'Mineral'],
+  ['Iodine','8–14mg','Crucial for thyroid hormone production and metabolic regulation.','',[],`var(--accent)`,'Mineral'],
+  ['Iron','8–18mg','Necessary for oxygen transport in the blood via hemoglobin.','',[],`var(--red)`,'Mineral'],
+  ['Manganese','2.3mg','Supports glucose metabolism, bone development, and antioxidant defenses.','',[],`var(--green)`,'Mineral'],
+  ['Calcium','1,000mg','Essential for muscle contraction, nerve transmission, and bone strength.','',[],`var(--blue)`,'Mineral'],
+  ['Zinc','10–12mg','Key for immune function, wound healing, and enzyme activity.','',[],`var(--purple)`,'Mineral'],
+].map(a=>makeCard(...a)).join('');
+</script>
+</body>
+</html>
