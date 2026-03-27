@@ -1,0 +1,18 @@
+/\.codex/
+/logs/
+
+# Leftover non-diet app files kept locally but not tracked in this repo
+/src/
+/styles.css
+/video-studio.html
+/shorts-studio.html
+/archive/
+/apps/home-sentinel/
+/apps/nullvault/
+/apps/photon-studio/
+/apps/report-studio/
+
+# Common generated files
+node_modules/
+output/
+*.log

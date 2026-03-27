@@ -1,0 +1,10 @@
+{
+  "name": "diet-plan",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "test": "npm --prefix apps/aegean-week test"
+  }
+}
