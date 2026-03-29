@@ -102,6 +102,7 @@
   .s-extras .color-bar{background:var(--purple)}.s-extras .section-header{border-left:3px solid var(--purple)}.s-extras .item.checked .checkbox{background:rgba(155,125,232,0.15);color:var(--purple)}
   .s-hydration .color-bar{background:var(--teal)}.s-hydration .section-header{border-left:3px solid var(--teal)}.s-hydration .item.checked .checkbox{background:rgba(91,191,181,0.15);color:var(--teal)}
   .s-vitamins-b .color-bar{background:var(--green)}.s-vitamins-b .section-header{border-left:3px solid var(--green)}.s-vitamins-b .item.checked .checkbox{background:rgba(143,190,107,0.15);color:var(--green)}
+  .s-reminders .color-bar{background:#ff5a5f}.s-reminders .section-header{border-left:3px solid #ff5a5f}.s-reminders .item.checked .checkbox{background:rgba(255,90,95,0.16);color:#ff5a5f}
 </style>
 <style>
 .top-nav{max-width:1100px;margin:0 auto;padding:32px 20px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:relative}
@@ -194,6 +195,13 @@ const sections = [
     {name:"Copper",detail:"Shellfish, nuts, seeds",amount:"900 mcg"},
     {name:"Biotin (B7)",detail:"Eggs, nuts, salmon",amount:"30 mcg"},
     {name:"Pantothenic Acid (B5)",detail:"Avocado, chicken, whole grains",amount:"5 mg"},
+  ]},
+  { id:"s-reminders", icon:"📝", title:"Reminders — Personal Grooming", items:[
+    {name:"Fade beard + mustache",detail:"Personal grooming",amount:"As needed"},
+    {name:"Clean toes",detail:"Personal grooming",amount:"Daily"},
+    {name:"Clean belly button",detail:"Personal grooming",amount:"Daily"},
+    {name:"Clean inner areas",detail:"Personal grooming",amount:"Daily"},
+    {name:"Cut nails",detail:"Personal grooming",amount:"Weekly"},
   ]},
   { id:"s-hydration", icon:"💧", title:"Hydration & Fiber", items:[
     {name:"Water",detail:"Plain water throughout the day",amount:"3.7 L / day"},
