@@ -95,6 +95,14 @@
   .item-detail { font-size: 11px; color: var(--muted); margin-top: 1px; }
   .item-amount { font-size: 11px; font-weight: 500; letter-spacing: 0.05em; color: var(--muted); white-space: nowrap; transition: color 0.2s; }
   .item.checked .item-amount { color: var(--muted); opacity: 0.5; }
+  .subsection-label {
+    padding: 10px 20px 6px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
   .s-macro .color-bar{background:var(--accent)}.s-macro .section-header{border-left:3px solid var(--accent)}.s-macro .item.checked .checkbox{background:rgba(200,146,42,0.15);color:var(--accent)}
   .s-vitamins .color-bar{background:var(--green)}.s-vitamins .section-header{border-left:3px solid var(--green)}.s-vitamins .item.checked .checkbox{background:rgba(143,190,107,0.15);color:var(--green)}
   .s-minerals .color-bar{background:var(--blue)}.s-minerals .section-header{border-left:3px solid var(--blue)}.s-minerals .item.checked .checkbox{background:rgba(91,155,213,0.15);color:var(--blue)}
@@ -121,6 +129,7 @@
   <div class="nav-links" id="navLinks">
     <a href="/" class="nav-link ">NutriMind</a>
     <a href="/nutrition" class="nav-link  active">Checklist</a>
+    <a href="/nutrition#s-reminders" class="nav-link ">Reminders</a>
     <a href="/benefits" class="nav-link ">Benefits</a>
     <a href="/deficiencies" class="nav-link ">Deficiencies</a>
     <a href="/overview" class="nav-link ">Overview</a>
@@ -196,7 +205,8 @@ const sections = [
     {name:"Biotin (B7)",detail:"Eggs, nuts, salmon",amount:"30 mcg"},
     {name:"Pantothenic Acid (B5)",detail:"Avocado, chicken, whole grains",amount:"5 mg"},
   ]},
-  { id:"s-reminders", icon:"📝", title:"Reminders — Personal Grooming", items:[
+  { id:"s-reminders", icon:"📝", title:"Reminders", items:[
+    {type:"subsection",name:"Personal grooming"},
     {name:"Fade beard + mustache",detail:"Personal grooming",amount:"As needed"},
     {name:"Clean toes",detail:"Personal grooming",amount:"Daily"},
     {name:"Clean belly button",detail:"Personal grooming",amount:"Daily"},
@@ -219,20 +229,25 @@ let saved = {};
 try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch {}
 
 sections.forEach(sec => {
+  const actionableItems = sec.items.filter(item => item.type !== 'subsection');
   const div = document.createElement('div');
   div.className = `section ${sec.id}`;
+  div.id = sec.id;
   div.innerHTML = `
     <div class="color-bar"></div>
     <div class="section-header" onclick="toggleSection(this)">
       <span class="section-icon">${sec.icon}</span>
       <span class="section-title">${sec.title}</span>
-      <span class="section-count">${sec.items.length} items</span>
+      <span class="section-count">${actionableItems.length} items</span>
       <svg class="chevron" viewBox="0 0 16 16" fill="none">
         <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
     <div class="items-list">
       ${sec.items.map((item, i) => {
+        if (item.type === 'subsection') {
+          return `<div class="subsection-label">${item.name}</div>`;
+        }
         const id = sec.id + '-' + i;
         const isChecked = saved[id] ? ' checked' : '';
         return `
@@ -251,7 +266,7 @@ sections.forEach(sec => {
       }).join('')}
     </div>`;
   main.appendChild(div);
-  total += sec.items.length;
+  total += actionableItems.length;
 });
 
 updateProgress();

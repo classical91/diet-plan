@@ -86,6 +86,19 @@ function render() {
   document.title = `Aegean Week | ${selectedDay.name}`;
   app.innerHTML = `
     <div class="app-shell">
+      <nav class="nav-bar" aria-label="Primary">
+        <a href="/" class="nav-link active">Diet Plan</a>
+        <a href="/nutrition" class="nav-link">Checklist</a>
+        <a href="/nutrition#s-reminders" class="nav-link">Reminders</a>
+        <a href="/benefits" class="nav-link">Benefits</a>
+        <a href="/deficiencies" class="nav-link">Deficiencies</a>
+        <a href="/overview" class="nav-link">Overview</a>
+        <a href="/howto" class="nav-link">How-To</a>
+        <a href="/diets" class="nav-link">Diet Types</a>
+        <a href="/allergies" class="nav-link">Allergies</a>
+        <a href="/foodtypes" class="nav-link">Food Categories</a>
+        <a href="https://workout-tracker-production-0ec7.up.railway.app" class="nav-link" target="_blank" rel="noreferrer">Workout</a>
+      </nav>
       <header class="masthead">
         <div class="masthead-copy">
           <p class="eyebrow">Weekly Mediterranean diet planner</p>
