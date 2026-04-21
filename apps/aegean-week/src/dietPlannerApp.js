@@ -4,6 +4,7 @@ import {
   countProteins,
   createMealLookup,
   formatMetric,
+  generateWeek,
   percentText,
   suggestBoosters,
   summarizeWeek
@@ -16,15 +17,50 @@ const app = document.querySelector("#app");
 const defaultPreset = goalPresets[0];
 const state = loadState();
 
+function defaultState() {
+  return {
+    selectedDayId: weeklyPlan[0].id,
+    presetId: defaultPreset.id,
+    goals: { potassium: defaultPreset.potassium, magnesium: defaultPreset.magnesium },
+    planOverride: null
+  };
+}
+
+function sanitizePlanOverride(value) {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+  const sanitized = {};
+  let hasEntry = false;
+  for (const day of weeklyPlan) {
+    const candidate = value[day.id];
+    if (!candidate || typeof candidate !== "object") {
+      continue;
+    }
+    const slots = {};
+    let slotsMatch = true;
+    for (const slotKey of Object.keys(day.meals)) {
+      const mealId = candidate[slotKey];
+      if (typeof mealId !== "string" || !mealLookup.has(mealId)) {
+        slotsMatch = false;
+        break;
+      }
+      slots[slotKey] = mealId;
+    }
+    if (!slotsMatch) {
+      continue;
+    }
+    sanitized[day.id] = slots;
+    hasEntry = true;
+  }
+  return hasEntry ? sanitized : null;
+}
+
 function loadState() {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      return {
-        selectedDayId: weeklyPlan[0].id,
-        presetId: defaultPreset.id,
-        goals: { potassium: defaultPreset.potassium, magnesium: defaultPreset.magnesium }
-      };
+      return defaultState();
     }
 
     const parsed = JSON.parse(raw);
@@ -34,19 +70,51 @@ function loadState() {
       goals: {
         potassium: clampGoal(parsed.goals?.potassium, defaultPreset.potassium),
         magnesium: clampGoal(parsed.goals?.magnesium, defaultPreset.magnesium)
-      }
+      },
+      planOverride: sanitizePlanOverride(parsed.planOverride)
     };
   } catch {
-    return {
-      selectedDayId: weeklyPlan[0].id,
-      presetId: defaultPreset.id,
-      goals: { potassium: defaultPreset.potassium, magnesium: defaultPreset.magnesium }
-    };
+    return defaultState();
   }
 }
 
 function saveState() {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function activeWeekPlan() {
+  if (!state.planOverride) {
+    return weeklyPlan;
+  }
+  return weeklyPlan.map((day) => ({
+    ...day,
+    meals: state.planOverride[day.id] ?? day.meals
+  }));
+}
+
+function extractPlanOverride(plan) {
+  const override = {};
+  for (const day of plan) {
+    override[day.id] = { ...day.meals };
+  }
+  return override;
+}
+
+function resetPlanner() {
+  window.localStorage.removeItem(STORAGE_KEY);
+  const fresh = defaultState();
+  state.selectedDayId = fresh.selectedDayId;
+  state.presetId = fresh.presetId;
+  state.goals = fresh.goals;
+  state.planOverride = fresh.planOverride;
+  render();
+}
+
+function regenerateWeek() {
+  const generated = generateWeek(weeklyPlan, mealLibrary);
+  state.planOverride = extractPlanOverride(generated);
+  saveState();
+  render();
 }
 
 function clampGoal(value, fallback) {
@@ -76,12 +144,14 @@ function statusTone(ratio) {
 }
 
 function render() {
-  const week = summarizeWeek(weeklyPlan, mealLookup, state.goals);
+  const plan = activeWeekPlan();
+  const week = summarizeWeek(plan, mealLookup, state.goals);
   const selectedDay = week.days.find((day) => day.id === state.selectedDayId) ?? week.days[0];
   const boosters = suggestBoosters(selectedDay, boosterFoods);
-  const staples = buildStaples(weeklyPlan, mealLookup);
-  const proteins = countProteins(weeklyPlan, mealLookup);
+  const staples = buildStaples(plan, mealLookup);
+  const proteins = countProteins(plan, mealLookup);
   const activePreset = getActivePreset();
+  const isCustomPlan = Boolean(state.planOverride);
 
   document.title = `Aegean Week | ${selectedDay.name}`;
   app.innerHTML = `
@@ -110,6 +180,11 @@ function render() {
             <span class="chip">Mediterranean leaning</span>
             <span class="chip">Fish / chicken / beef</span>
             <span class="chip">Potassium + magnesium first</span>
+            ${isCustomPlan ? '<span class="chip chip-accent">Regenerated week</span>' : ""}
+          </div>
+          <div class="planner-actions" role="group" aria-label="Planner actions">
+            <button type="button" class="reset-btn" data-action="regenerate">Regenerate week</button>
+            <button type="button" class="reset-btn" data-action="reset">Reset planner</button>
           </div>
         </div>
         <div class="masthead-stats">
@@ -380,12 +455,35 @@ function renderStaple(item) {
 }
 
 app.addEventListener("click", (event) => {
-  const button = event.target instanceof Element ? event.target.closest("[data-day]") : null;
-  if (!button) {
+  if (!(event.target instanceof Element)) {
     return;
   }
 
-  state.selectedDayId = button.dataset.day;
+  const actionButton = event.target.closest("[data-action]");
+  if (actionButton) {
+    const action = actionButton.dataset.action;
+    if (action === "regenerate") {
+      regenerateWeek();
+      return;
+    }
+    if (action === "reset") {
+      const confirmed =
+        typeof window.confirm === "function"
+          ? window.confirm("Reset the planner to defaults? This clears your saved goals and regenerated week.")
+          : true;
+      if (confirmed) {
+        resetPlanner();
+      }
+      return;
+    }
+  }
+
+  const dayButton = event.target.closest("[data-day]");
+  if (!dayButton) {
+    return;
+  }
+
+  state.selectedDayId = dayButton.dataset.day;
   saveState();
   render();
 });
