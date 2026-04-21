@@ -171,3 +171,53 @@ export function formatMetric(value) {
 export function percentText(value) {
   return `${Math.round(value * 100)}%`;
 }
+
+function groupMealsBySlot(mealLibrary) {
+  const grouped = new Map();
+  for (const meal of mealLibrary) {
+    if (!grouped.has(meal.slot)) {
+      grouped.set(meal.slot, []);
+    }
+    grouped.get(meal.slot).push(meal);
+  }
+  return grouped;
+}
+
+function shuffle(items, random) {
+  const copy = items.slice();
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+export function generateWeek(basePlan, mealLibrary, options = {}) {
+  const { random = Math.random } = options;
+  const mealLookup = createMealLookup(mealLibrary);
+  const grouped = groupMealsBySlot(mealLibrary);
+  const shuffledBySlot = new Map();
+
+  for (const [slotName, meals] of grouped) {
+    shuffledBySlot.set(slotName, shuffle(meals, random));
+  }
+
+  const cursors = new Map();
+
+  return basePlan.map((day) => {
+    const meals = {};
+    for (const [slotKey, mealId] of Object.entries(day.meals)) {
+      const original = mealLookup.get(mealId);
+      const slotName = original?.slot;
+      const pool = slotName ? shuffledBySlot.get(slotName) : null;
+      if (!pool || pool.length === 0) {
+        meals[slotKey] = mealId;
+        continue;
+      }
+      const cursor = cursors.get(slotName) ?? 0;
+      meals[slotKey] = pool[cursor % pool.length].id;
+      cursors.set(slotName, cursor + 1);
+    }
+    return { ...day, meals };
+  });
+}

@@ -151,8 +151,26 @@ body {
   padding: 6px 14px;
   border-radius: 20px;
   cursor: pointer;
+  font-family: inherit;
 }
 .reset-btn:hover { border-color: #c8922a; color: #c8922a; }
+.reset-btn:focus-visible {
+  outline: 2px solid rgba(200,146,42,0.4);
+  outline-offset: 2px;
+}
+
+.planner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.chip.chip-accent {
+  background: rgba(200,146,42,0.2) !important;
+  border-color: rgba(200,146,42,0.35) !important;
+  color: #c8922a !important;
+}
 
 /* Headline accent */
 .headline-stat strong { color: #c8922a !important; }

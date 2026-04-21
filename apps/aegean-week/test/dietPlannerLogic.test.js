@@ -6,6 +6,7 @@ import {
   buildStaples,
   countProteins,
   createMealLookup,
+  generateWeek,
   suggestBoosters,
   summarizeDay,
   summarizeWeek
@@ -57,4 +58,52 @@ test("countProteins tallies main animal proteins used in meals", () => {
   const counts = countProteins(weeklyPlan, mealLookup);
 
   assert.deepEqual(counts, { Fish: 6, Chicken: 5, Beef: 3 });
+});
+
+function seededRandom(seed) {
+  let value = seed >>> 0;
+  return () => {
+    value = (value * 1664525 + 1013904223) >>> 0;
+    return value / 0x100000000;
+  };
+}
+
+test("generateWeek preserves day metadata and keeps slot assignments valid", () => {
+  const generated = generateWeek(weeklyPlan, mealLibrary, { random: seededRandom(7) });
+
+  assert.equal(generated.length, weeklyPlan.length);
+
+  generated.forEach((day, index) => {
+    const base = weeklyPlan[index];
+    assert.equal(day.id, base.id);
+    assert.equal(day.name, base.name);
+    assert.equal(day.focus, base.focus);
+    assert.deepEqual(Object.keys(day.meals), Object.keys(base.meals));
+
+    for (const [slotKey, mealId] of Object.entries(day.meals)) {
+      const meal = mealLookup.get(mealId);
+      const originalMeal = mealLookup.get(base.meals[slotKey]);
+      assert.ok(meal, `meal id ${mealId} should resolve`);
+      assert.equal(meal.slot, originalMeal.slot);
+    }
+  });
+});
+
+test("generateWeek does not repeat a meal within the same week", () => {
+  const generated = generateWeek(weeklyPlan, mealLibrary, { random: seededRandom(42) });
+  const used = [];
+  for (const day of generated) {
+    for (const mealId of Object.values(day.meals)) {
+      used.push(mealId);
+    }
+  }
+  assert.equal(new Set(used).size, used.length);
+});
+
+test("generateWeek output still summarizes to full-week coverage", () => {
+  const generated = generateWeek(weeklyPlan, mealLibrary, { random: seededRandom(123) });
+  const summary = summarizeWeek(generated, mealLookup, goalPresets[0]);
+  assert.equal(summary.days.length, 7);
+  assert.ok(summary.averages.potassium > 0);
+  assert.ok(summary.averages.magnesium > 0);
 });
