@@ -771,6 +771,10 @@ button {
     width: calc(100vw - 20px);
   }
 
+  .nav-bar {
+    display: none;
+  }
+
   .masthead,
   .planner-panel,
   .inspector-panel {
@@ -937,6 +941,14 @@ button {
   padding: 3px 7px;
   border-radius: 999px;
   font-weight: 600;
+  font-family: inherit;
+  background: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.day-type-badge:hover {
+  opacity: 0.75;
 }
 
 .day-type-badge.work {
