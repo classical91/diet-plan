@@ -64,7 +64,7 @@ body {
   background: #201d19 !important;
 }
 
-.masthead h1, .section-heading h2, .day-identity h3, .meal-heading h4 {
+.masthead h1, .section-heading h2, .panel-title, .day-identity h3, .meal-heading h4 {
   font-family: 'Playfair Display', serif !important;
   color: #f0ebe3 !important;
 }
@@ -273,6 +273,7 @@ button {
 
 .masthead h1,
 .section-heading h2,
+.panel-title,
 .day-identity h3,
 .meal-heading h4 {
   margin: 0;
@@ -389,8 +390,10 @@ button {
   align-items: start;
 }
 
-.section-heading h2 {
+.section-heading h2,
+.panel-title {
   font-size: 2rem;
+  display: block;
 }
 
 .section-copy {
