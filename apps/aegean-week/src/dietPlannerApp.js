@@ -78,6 +78,7 @@ function saveState() {
 }
 
 const state = loadState();
+const collapsedPanels = new Set();
 
 // ── My Planner state ──────────────────────────────────────────────────────────
 
@@ -336,6 +337,24 @@ function renderMealCard(meal) {
   `;
 }
 
+function renderPanel(id, labelLine, heading, body, extraClass = "") {
+  const collapsed = collapsedPanels.has(id);
+  return `
+    <section class="inspector-panel ${id} ${extraClass} ${collapsed ? "is-collapsed" : ""}">
+      <div class="section-heading compact panel-toggle" data-panel-toggle="${id}">
+        <div>
+          <p class="label-line">${labelLine}</p>
+          <h2>${heading}</h2>
+        </div>
+        <span class="panel-chevron">${collapsed ? "+" : "−"}</span>
+      </div>
+      <div class="panel-body">
+        ${body}
+      </div>
+    </section>
+  `;
+}
+
 // ── Mediterranean view ────────────────────────────────────────────────────────
 
 function renderMediterraneanView() {
@@ -403,13 +422,7 @@ function renderMediterraneanView() {
       </section>
 
       <aside class="inspector">
-        <section class="inspector-panel goal-panel">
-          <div class="section-heading compact">
-            <div>
-              <p class="label-line">Targets</p>
-              <h2>Goal preset</h2>
-            </div>
-          </div>
+        ${renderPanel("goal-panel", "Targets", "Goal preset", `
           <label class="field">
             <span>Reference</span>
             <select name="presetId">${renderPresetOptions()}</select>
@@ -425,15 +438,8 @@ function renderMediterraneanView() {
             </label>
           </div>
           <p class="field-note">${activePreset.note}</p>
-        </section>
-
-        <section class="inspector-panel metrics-panel">
-          <div class="section-heading compact">
-            <div>
-              <p class="label-line">Today</p>
-              <h2>${selectedDay.name}</h2>
-            </div>
-          </div>
+        `)}
+        ${renderPanel("metrics-panel", "Today", selectedDay.name, `
           <div class="meter-grid">
             ${renderMeter("Potassium", selectedDay.totals.potassium, state.goals.potassium, "sea")}
             ${renderMeter("Magnesium", selectedDay.totals.magnesium, state.goals.magnesium, "copper")}
@@ -443,46 +449,25 @@ function renderMediterraneanView() {
             ${renderMicroStat("Fiber", `${formatMetric(selectedDay.totals.fiber)} g`)}
             ${renderMicroStat("Energy", `${formatMetric(selectedDay.totals.calories)} kcal`)}
           </div>
-        </section>
-
-        <section class="inspector-panel booster-panel">
-          <div class="section-heading compact">
-            <div>
-              <p class="label-line">Catch-up options</p>
-              <h2>Smart boosters</h2>
-            </div>
-          </div>
+        `)}
+        ${renderPanel("booster-panel", "Catch-up options", "Smart boosters", `
           <div class="booster-list">
             ${boosters.map((b) => renderBooster(b)).join("")}
           </div>
-        </section>
-
-        <section class="inspector-panel staples-panel">
-          <div class="section-heading compact">
-            <div>
-              <p class="label-line">Shopping rhythm</p>
-              <h2>Weekly staples</h2>
-            </div>
-          </div>
+        `)}
+        ${renderPanel("staples-panel", "Shopping rhythm", "Weekly staples", `
           <div class="staples-list">
             ${staples.map((item) => renderStaple(item)).join("")}
           </div>
-        </section>
-
-        <section class="inspector-panel source-panel">
-          <div class="section-heading compact">
-            <div>
-              <p class="label-line">Pattern</p>
-              <h2>Protein rotation</h2>
-            </div>
-          </div>
+        `)}
+        ${renderPanel("source-panel", "Pattern", "Protein rotation", `
           <div class="protein-grid">
             ${renderMicroStat("Fish meals", String(proteins.Fish))}
             ${renderMicroStat("Chicken meals", String(proteins.Chicken))}
             ${renderMicroStat("Beef meals", String(proteins.Beef))}
           </div>
           <p class="source-note">Meal values are directional estimates for planning. If you have kidney disease, blood pressure treatment, or supplement concerns, personalize targets with a clinician.</p>
-        </section>
+        `)}
       </aside>
     </main>
   `;
@@ -585,28 +570,15 @@ function renderMyPlannerView() {
         </section>
 
         <aside class="my-inspector">
-          <section class="inspector-panel my-grocery-panel">
-            <div class="section-heading compact">
-              <div>
-                <p class="label-line">This week</p>
-                <h2>Grocery List</h2>
-              </div>
-            </div>
+          ${renderPanel("my-grocery-panel", "This week", "Grocery List", `
             <div class="grocery-list">
               ${groceryList.map((group) => renderGroceryGroup(group)).join("")}
             </div>
-          </section>
-
-          <section class="inspector-panel usual-library-panel">
-            <div class="section-heading compact">
-              <div>
-                <p class="label-line">Your meals</p>
-                <h2>Usual Meals</h2>
-              </div>
-            </div>
+          `, "my-grocery-panel")}
+          ${renderPanel("usual-library-panel", "Your meals", "Usual Meals", `
             <p class="field-note">Tap "Replace" on any slot to pick from these.</p>
             ${renderUsualMealsLibrary()}
-          </section>
+          `, "usual-library-panel")}
         </aside>
       </div>
     </div>
@@ -722,6 +694,15 @@ app.addEventListener("click", (event) => {
       }
       return;
     }
+  }
+
+  // Collapsible panels
+  const panelToggle = event.target.closest("[data-panel-toggle]");
+  if (panelToggle) {
+    const id = panelToggle.dataset.panelToggle;
+    collapsedPanels.has(id) ? collapsedPanels.delete(id) : collapsedPanels.add(id);
+    render();
+    return;
   }
 
   // Mediterranean: day selection

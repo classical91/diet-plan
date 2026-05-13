@@ -809,6 +809,27 @@ button {
   }
 }
 
+/* ── Collapsible panels ───────────────────────────────────────────────────── */
+
+.panel-toggle {
+  cursor: pointer;
+  user-select: none;
+  align-items: center;
+}
+
+.panel-chevron {
+  font-size: 1.1rem;
+  color: #7a7063;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 18px;
+  text-align: center;
+}
+
+.is-collapsed .panel-body {
+  display: none;
+}
+
 /* ── View tabs ────────────────────────────────────────────────────────────── */
 
 .view-tabs {
