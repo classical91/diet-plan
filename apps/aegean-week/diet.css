@@ -771,6 +771,10 @@ button {
     width: calc(100vw - 20px);
   }
 
+  .nav-bar {
+    display: none;
+  }
+
   .masthead,
   .planner-panel,
   .inspector-panel {
