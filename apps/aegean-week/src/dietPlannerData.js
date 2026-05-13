@@ -490,6 +490,246 @@ export const mealLibrary = [
   }
 ];
 
+export const usualMealsLibrary = [
+  // Breakfast
+  {
+    id: "my-eggs-cheese",
+    slot: "Breakfast",
+    title: "Eggs with Cheese",
+    subtitle: "Scrambled or fried eggs with melted cheese.",
+    protein: "Vegetarian",
+    ingredients: [
+      { name: "Eggs", group: "Protein" },
+      { name: "Cheese", group: "Dairy" }
+    ],
+    nutrients: { potassium: 320, magnesium: 28, protein: 18, fiber: 0, calories: 280 }
+  },
+  {
+    id: "my-oatmeal-bowl",
+    slot: "Breakfast",
+    title: "Oatmeal Bowl",
+    subtitle: "Oats with fruit, nuts, and seeds.",
+    protein: "Vegetarian",
+    ingredients: [
+      { name: "Rolled oats", group: "Whole grain" },
+      { name: "Fruit", group: "Fruit" },
+      { name: "Nuts", group: "Nut" },
+      { name: "Seeds", group: "Seed" }
+    ],
+    nutrients: { potassium: 480, magnesium: 92, protein: 12, fiber: 8, calories: 380 }
+  },
+  {
+    id: "my-granola-yogurt",
+    slot: "Breakfast",
+    title: "Granola Yogurt Bowl",
+    subtitle: "Granola with yogurt and fresh fruit.",
+    protein: "Vegetarian",
+    ingredients: [
+      { name: "Granola", group: "Whole grain" },
+      { name: "Yogurt", group: "Dairy" },
+      { name: "Fruit", group: "Fruit" }
+    ],
+    nutrients: { potassium: 420, magnesium: 48, protein: 14, fiber: 4, calories: 340 }
+  },
+  // Lunch
+  {
+    id: "my-chicken-sandwich",
+    slot: "Lunch",
+    title: "Chicken Sandwich",
+    subtitle: "Grilled chicken with bread, lettuce, and sauce. Great work lunch.",
+    protein: "Chicken",
+    ingredients: [
+      { name: "Chicken", group: "Protein" },
+      { name: "Bread", group: "Whole grain" },
+      { name: "Lettuce", group: "Greens" },
+      { name: "Sauce", group: "Pantry" }
+    ],
+    nutrients: { potassium: 620, magnesium: 62, protein: 38, fiber: 4, calories: 520 }
+  },
+  {
+    id: "my-chicken-rice",
+    slot: "Lunch",
+    title: "Chicken Rice Bowl",
+    subtitle: "Chicken with rice and vegetables. Easy meal prep.",
+    protein: "Chicken",
+    ingredients: [
+      { name: "Chicken", group: "Protein" },
+      { name: "Rice", group: "Whole grain" },
+      { name: "Vegetables", group: "Vegetable" }
+    ],
+    nutrients: { potassium: 720, magnesium: 78, protein: 42, fiber: 5, calories: 560 }
+  },
+  {
+    id: "my-home-sandwich",
+    slot: "Lunch",
+    title: "Home Sandwich",
+    subtitle: "Sandwich with cheese and vegetables.",
+    protein: "Vegetarian",
+    ingredients: [
+      { name: "Bread", group: "Whole grain" },
+      { name: "Cheese", group: "Dairy" },
+      { name: "Vegetables", group: "Vegetable" }
+    ],
+    nutrients: { potassium: 380, magnesium: 42, protein: 16, fiber: 4, calories: 380 }
+  },
+  {
+    id: "my-green-smoothie",
+    slot: "Lunch",
+    title: "Green Smoothie",
+    subtitle: "Spinach, fruit, yogurt, and seeds blended together.",
+    protein: "Vegetarian",
+    ingredients: [
+      { name: "Spinach", group: "Greens" },
+      { name: "Fruit", group: "Fruit" },
+      { name: "Yogurt", group: "Dairy" },
+      { name: "Seeds", group: "Seed" }
+    ],
+    nutrients: { potassium: 680, magnesium: 72, protein: 18, fiber: 6, calories: 320 }
+  },
+  {
+    id: "my-leftovers",
+    slot: "Lunch",
+    title: "Leftovers",
+    subtitle: "Leftover dinner from the previous day.",
+    protein: "Chicken",
+    ingredients: [
+      { name: "Leftovers", group: "Various" }
+    ],
+    nutrients: { potassium: 600, magnesium: 60, protein: 30, fiber: 5, calories: 480 }
+  },
+  // Dinner
+  {
+    id: "my-chicken-rice-veggies",
+    slot: "Dinner",
+    title: "Chicken Rice Plate",
+    subtitle: "Chicken with rice and mixed vegetables.",
+    protein: "Chicken",
+    ingredients: [
+      { name: "Chicken", group: "Protein" },
+      { name: "Rice", group: "Whole grain" },
+      { name: "Mixed vegetables", group: "Vegetable" }
+    ],
+    nutrients: { potassium: 840, magnesium: 88, protein: 46, fiber: 8, calories: 620 }
+  },
+  {
+    id: "my-beef-potatoes-veggies",
+    slot: "Dinner",
+    title: "Beef Potato Plate",
+    subtitle: "Beef with potatoes and mixed vegetables.",
+    protein: "Beef",
+    ingredients: [
+      { name: "Beef", group: "Protein" },
+      { name: "Potatoes", group: "Vegetable" },
+      { name: "Mixed vegetables", group: "Vegetable" }
+    ],
+    nutrients: { potassium: 1020, magnesium: 82, protein: 44, fiber: 7, calories: 660 }
+  },
+  {
+    id: "my-fish-rice-veggies",
+    slot: "Dinner",
+    title: "Fish Rice Plate",
+    subtitle: "Fish fillet with rice and mixed vegetables.",
+    protein: "Fish",
+    ingredients: [
+      { name: "Fish", group: "Protein" },
+      { name: "Rice", group: "Whole grain" },
+      { name: "Mixed vegetables", group: "Vegetable" }
+    ],
+    nutrients: { potassium: 920, magnesium: 96, protein: 42, fiber: 6, calories: 560 }
+  },
+  {
+    id: "my-lentil-bowl",
+    slot: "Dinner",
+    title: "Lentil Dinner Bowl",
+    subtitle: "Lentils with rice or potatoes and vegetables.",
+    protein: "Vegetarian",
+    ingredients: [
+      { name: "Lentils", group: "Legume" },
+      { name: "Rice", group: "Whole grain" },
+      { name: "Vegetables", group: "Vegetable" }
+    ],
+    nutrients: { potassium: 880, magnesium: 112, protein: 28, fiber: 14, calories: 480 }
+  },
+  // Snacks
+  {
+    id: "my-fruit",
+    slot: "Snack",
+    title: "Fresh Fruit",
+    subtitle: "Seasonal fresh fruit.",
+    protein: "Vegetarian",
+    ingredients: [
+      { name: "Fruit", group: "Fruit" }
+    ],
+    nutrients: { potassium: 320, magnesium: 24, protein: 2, fiber: 4, calories: 120 }
+  },
+  {
+    id: "my-yogurt-seeds",
+    slot: "Snack",
+    title: "Yogurt with Seeds",
+    subtitle: "Plain yogurt with mixed seeds.",
+    protein: "Vegetarian",
+    ingredients: [
+      { name: "Yogurt", group: "Dairy" },
+      { name: "Seeds", group: "Seed" }
+    ],
+    nutrients: { potassium: 380, magnesium: 62, protein: 16, fiber: 2, calories: 200 }
+  },
+  {
+    id: "my-nuts",
+    slot: "Snack",
+    title: "Nuts Mix",
+    subtitle: "A handful of mixed nuts.",
+    protein: "Vegetarian",
+    ingredients: [
+      { name: "Nuts", group: "Nut" }
+    ],
+    nutrients: { potassium: 280, magnesium: 72, protein: 8, fiber: 3, calories: 180 }
+  },
+  {
+    id: "my-fruit-yogurt",
+    slot: "Snack",
+    title: "Fruit and Yogurt",
+    subtitle: "Fresh fruit with a side of yogurt.",
+    protein: "Vegetarian",
+    ingredients: [
+      { name: "Fruit", group: "Fruit" },
+      { name: "Yogurt", group: "Dairy" }
+    ],
+    nutrients: { potassium: 440, magnesium: 48, protein: 12, fiber: 4, calories: 200 }
+  }
+];
+
+export const myWeekTemplate = [
+  {
+    id: "mon", label: "Mon", name: "Monday", focus: "", prep: "", dayType: "work",
+    meals: { breakfast: "my-eggs-cheese", lunch: "my-chicken-sandwich", dinner: "my-chicken-rice-veggies", snack: "my-fruit" }
+  },
+  {
+    id: "tue", label: "Tue", name: "Tuesday", focus: "", prep: "", dayType: "work",
+    meals: { breakfast: "my-oatmeal-bowl", lunch: "my-chicken-rice", dinner: "my-beef-potatoes-veggies", snack: "my-nuts" }
+  },
+  {
+    id: "wed", label: "Wed", name: "Wednesday", focus: "", prep: "", dayType: "work",
+    meals: { breakfast: "my-granola-yogurt", lunch: "my-chicken-sandwich", dinner: "my-fish-rice-veggies", snack: "my-fruit" }
+  },
+  {
+    id: "thu", label: "Thu", name: "Thursday", focus: "", prep: "", dayType: "work",
+    meals: { breakfast: "my-eggs-cheese", lunch: "my-chicken-rice", dinner: "my-lentil-bowl", snack: "my-yogurt-seeds" }
+  },
+  {
+    id: "fri", label: "Fri", name: "Friday", focus: "", prep: "", dayType: "work",
+    meals: { breakfast: "my-oatmeal-bowl", lunch: "my-chicken-sandwich", dinner: "my-chicken-rice-veggies", snack: "my-nuts" }
+  },
+  {
+    id: "sat", label: "Sat", name: "Saturday", focus: "", prep: "", dayType: "home",
+    meals: { breakfast: "my-granola-yogurt", lunch: "my-green-smoothie", dinner: "my-beef-potatoes-veggies", snack: "my-fruit" }
+  },
+  {
+    id: "sun", label: "Sun", name: "Sunday", focus: "", prep: "", dayType: "home",
+    meals: { breakfast: "my-eggs-cheese", lunch: "my-leftovers", dinner: "my-chicken-rice-veggies", snack: "my-fruit-yogurt" }
+  }
+];
+
 export const weeklyPlan = [
   {
     id: "mon",

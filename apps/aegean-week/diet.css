@@ -804,3 +804,497 @@ button {
     scroll-behavior: auto !important;
   }
 }
+
+/* ── View tabs ────────────────────────────────────────────────────────────── */
+
+.view-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.view-tab {
+  background: none;
+  border: 1px solid #2e2a24;
+  color: #7a7063;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.view-tab.is-active {
+  border-color: #c8922a;
+  color: #c8922a;
+  background: rgba(200, 146, 42, 0.08);
+}
+
+.view-tab:hover:not(.is-active) {
+  border-color: #3e3a32;
+  color: #f0ebe3;
+}
+
+/* ── My Planner shell ─────────────────────────────────────────────────────── */
+
+.my-planner-shell {
+  animation: rise 650ms ease both;
+}
+
+.my-planner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding: 36px;
+  border: 1px solid #2e2a24;
+  border-radius: 30px;
+  background: linear-gradient(145deg, #1a1714, #201d19);
+}
+
+.my-planner-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3.2rem, 7vw, 5rem);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  margin: 8px 0 0;
+  color: #f0ebe3;
+}
+
+.my-header-actions {
+  flex-shrink: 0;
+}
+
+/* ── My workspace layout ──────────────────────────────────────────────────── */
+
+.my-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.75fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.my-inspector {
+  display: grid;
+  gap: 16px;
+}
+
+/* ── My Planner panel ─────────────────────────────────────────────────────── */
+
+.my-planner-panel {
+  background: #1a1714;
+  border: 1px solid #2e2a24;
+  border-radius: 26px;
+  padding: 24px;
+}
+
+/* ── Day tabs ─────────────────────────────────────────────────────────────── */
+
+.my-day-tabs {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.my-day-tab {
+  background: #1a1714;
+  border: 1px solid #2e2a24;
+  border-radius: 14px;
+  padding: 10px 6px;
+  cursor: pointer;
+  color: #f0ebe3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.my-day-tab.is-active {
+  border-color: #c8922a;
+  background: #252118;
+}
+
+.my-day-tab:hover:not(.is-active) {
+  background: #201d19;
+  border-color: #3e3a32;
+}
+
+.day-tab-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.day-type-badge {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.day-type-badge.work {
+  background: rgba(91, 155, 213, 0.15);
+  color: #5b9bd5;
+  border: 1px solid rgba(91, 155, 213, 0.2);
+}
+
+.day-type-badge.home {
+  background: rgba(143, 190, 107, 0.15);
+  color: #8fbe6b;
+  border: 1px solid rgba(143, 190, 107, 0.2);
+}
+
+/* ── Day view ─────────────────────────────────────────────────────────────── */
+
+.my-day-view {
+  border-top: 1px solid #2e2a24;
+  padding-top: 20px;
+}
+
+.my-day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.my-day-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  margin: 0 0 4px;
+  color: #f0ebe3;
+}
+
+.day-type-hint {
+  font-size: 0.84rem;
+  color: #7a7063;
+  margin: 0;
+}
+
+.day-type-toggle {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.day-type-btn {
+  background: none;
+  border: 1px solid #2e2a24;
+  color: #7a7063;
+  font-size: 12px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.day-type-btn.is-active {
+  border-color: #c8922a;
+  color: #c8922a;
+  background: rgba(200, 146, 42, 0.08);
+}
+
+.day-type-btn:hover:not(.is-active) {
+  border-color: #3e3a32;
+  color: #f0ebe3;
+}
+
+/* ── Meal slots grid ──────────────────────────────────────────────────────── */
+
+.my-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.my-meal-slot {
+  border: 1px solid #2e2a24;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #1a1714;
+  transition: border-color 0.2s;
+}
+
+.my-meal-slot.picker-open {
+  border-color: #c8922a;
+}
+
+.my-slot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 14px;
+  border-bottom: 1px solid #2e2a24;
+}
+
+.meal-slot-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #c8922a;
+  font-weight: 600;
+}
+
+.slot-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.slot-btn {
+  background: none;
+  border: 1px solid #2e2a24;
+  color: #7a7063;
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  letter-spacing: 0.05em;
+}
+
+.slot-btn:hover {
+  border-color: #c8922a;
+  color: #c8922a;
+}
+
+.slot-btn-reset:hover {
+  border-color: #5b9bd5;
+  color: #5b9bd5;
+}
+
+.my-meal-card {
+  padding: 14px;
+}
+
+.my-meal-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.my-meal-title strong {
+  font-size: 0.98rem;
+  color: #f0ebe3;
+  line-height: 1.3;
+}
+
+/* ── Meal Picker ──────────────────────────────────────────────────────────── */
+
+.meal-picker {
+  border-top: 1px solid #2e2a24;
+  padding: 14px;
+  background: #201d19;
+}
+
+.picker-label {
+  font-size: 10px;
+  color: #7a7063;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0 0 10px;
+}
+
+.picker-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.picker-meal-btn {
+  background: #1a1714;
+  border: 1px solid #2e2a24;
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  text-align: left;
+  color: #f0ebe3;
+  font-family: inherit;
+  transition: all 0.15s;
+  width: 100%;
+}
+
+.picker-meal-btn:hover,
+.picker-meal-btn.is-current {
+  border-color: #c8922a;
+  background: #252118;
+}
+
+.picker-meal-btn strong {
+  display: block;
+  font-size: 0.92rem;
+  margin-bottom: 3px;
+}
+
+.picker-meal-btn > span {
+  display: block;
+  font-size: 0.8rem;
+  color: #7a7063;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.picker-tags {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.picker-tags span {
+  background: rgba(200, 146, 42, 0.1);
+  color: #c8922a;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+
+/* ── Grocery list ─────────────────────────────────────────────────────────── */
+
+.my-grocery-panel,
+.usual-library-panel {
+  background: #1a1714 !important;
+  border-color: #2e2a24 !important;
+  color: #f0ebe3 !important;
+}
+
+.grocery-list {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.grocery-group {
+  border: 1px solid #2e2a24;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.grocery-category {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #c8922a;
+  margin: 0;
+  padding: 7px 12px;
+  background: rgba(200, 146, 42, 0.06);
+  border-bottom: 1px solid #2e2a24;
+  font-weight: 600;
+}
+
+.grocery-items {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+}
+
+.grocery-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 12px;
+  font-size: 0.88rem;
+}
+
+.grocery-item:not(:last-child) {
+  border-bottom: 1px solid rgba(46, 42, 36, 0.5);
+}
+
+.grocery-name {
+  color: #f0ebe3;
+}
+
+.grocery-count {
+  font-size: 0.8rem;
+  color: #7a7063;
+  font-weight: 600;
+}
+
+/* ── Usual Meals Library ──────────────────────────────────────────────────── */
+
+.library-group {
+  margin-top: 16px;
+}
+
+.library-slot-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #c8922a;
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+
+.library-meals {
+  display: grid;
+  gap: 6px;
+}
+
+.library-meal-item {
+  border: 1px solid #2e2a24;
+  border-radius: 10px;
+  padding: 9px 12px;
+  background: #201d19;
+}
+
+.library-meal-item strong {
+  display: block;
+  font-size: 0.88rem;
+  color: #f0ebe3;
+  margin-bottom: 3px;
+}
+
+.library-meal-item span {
+  font-size: 0.8rem;
+  color: #7a7063;
+}
+
+/* ── Responsive: My Planner ───────────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+  .my-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .my-day-tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .my-planner-header {
+    flex-direction: column;
+    align-items: start;
+  }
+}
+
+@media (max-width: 720px) {
+  .my-day-tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .my-slots-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .my-day-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .my-planner-header {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .my-planner-panel {
+    padding: 16px;
+  }
+}

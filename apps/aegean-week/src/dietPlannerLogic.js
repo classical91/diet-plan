@@ -172,6 +172,58 @@ export function percentText(value) {
   return `${Math.round(value * 100)}%`;
 }
 
+const GROCERY_CATEGORY_MAP = {
+  Protein: "Protein",
+  Legume: "Protein",
+  "Whole grain": "Carbs",
+  Vegetable: "Produce",
+  Greens: "Produce",
+  Fruit: "Produce",
+  Dairy: "Dairy",
+  Nut: "Snacks & Nuts",
+  Seed: "Snacks & Nuts",
+  Fat: "Pantry",
+  Herb: "Pantry",
+  Pantry: "Pantry",
+  Various: "Other"
+};
+
+const GROCERY_ORDER = ["Protein", "Carbs", "Produce", "Dairy", "Snacks & Nuts", "Pantry", "Other"];
+
+export function buildGroceryList(weekPlan, mealLookup) {
+  const items = new Map();
+  for (const day of weekPlan) {
+    for (const mealId of Object.values(day.meals)) {
+      const meal = mealLookup.get(mealId);
+      if (!meal) continue;
+      for (const ingredient of meal.ingredients) {
+        const key = ingredient.name.toLowerCase();
+        const entry = items.get(key) ?? {
+          name: ingredient.name,
+          group: ingredient.group,
+          category: GROCERY_CATEGORY_MAP[ingredient.group] ?? "Other",
+          count: 0
+        };
+        entry.count += 1;
+        items.set(key, entry);
+      }
+    }
+  }
+
+  const byCategory = new Map();
+  for (const item of items.values()) {
+    if (!byCategory.has(item.category)) byCategory.set(item.category, []);
+    byCategory.get(item.category).push(item);
+  }
+  for (const list of byCategory.values()) {
+    list.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  }
+
+  return GROCERY_ORDER
+    .filter((cat) => byCategory.has(cat))
+    .map((cat) => ({ category: cat, items: byCategory.get(cat) }));
+}
+
 function groupMealsBySlot(mealLibrary) {
   const grouped = new Map();
   for (const meal of mealLibrary) {
