@@ -510,7 +510,7 @@ function renderMyPlannerView() {
         data-my-day="${day.id}"
       >
         <span class="day-tab-label">${day.label}</span>
-        <span class="day-type-badge ${dt === "home" ? "home" : "work"}">${dt === "home" ? "Home" : "Work"}</span>
+        <button type="button" class="day-type-badge ${dt === "home" ? "home" : "work"}" data-my-toggle-type="${day.id}" title="Toggle work/home">${dt === "home" ? "Home" : "Work"}</button>
       </button>
     `;
   }).join("");
@@ -729,6 +729,17 @@ app.addEventListener("click", (event) => {
   if (dayButton) {
     state.selectedDayId = dayButton.dataset.day;
     saveState();
+    render();
+    return;
+  }
+
+  // My Planner: badge toggle (must come before day tab check to intercept)
+  const toggleBadge = event.target.closest("[data-my-toggle-type]");
+  if (toggleBadge) {
+    event.stopPropagation();
+    const dayId = toggleBadge.dataset.myToggleType;
+    myPlanner.dayTypes[dayId] = myPlanner.dayTypes[dayId] === "home" ? "work" : "home";
+    saveMyPlannerState();
     render();
     return;
   }
