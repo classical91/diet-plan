@@ -344,7 +344,7 @@ function renderPanel(id, labelLine, heading, body, extraClass = "") {
       <button class="section-heading compact panel-toggle" data-panel-toggle="${id}" type="button" aria-expanded="${!collapsed}">
         <div>
           <p class="label-line">${labelLine}</p>
-          <h2>${heading}</h2>
+          <span class="panel-title">${heading}</span>
         </div>
         <span class="panel-chevron">${collapsed ? "+" : "−"}</span>
       </button>
