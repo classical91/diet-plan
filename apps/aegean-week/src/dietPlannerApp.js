@@ -341,13 +341,13 @@ function renderPanel(id, labelLine, heading, body, extraClass = "") {
   const collapsed = collapsedPanels.has(id);
   return `
     <section class="inspector-panel ${id} ${extraClass} ${collapsed ? "is-collapsed" : ""}">
-      <div class="section-heading compact panel-toggle" data-panel-toggle="${id}">
+      <button class="section-heading compact panel-toggle" data-panel-toggle="${id}" type="button" aria-expanded="${!collapsed}">
         <div>
           <p class="label-line">${labelLine}</p>
           <h2>${heading}</h2>
         </div>
         <span class="panel-chevron">${collapsed ? "+" : "−"}</span>
-      </div>
+      </button>
       <div class="panel-body">
         ${body}
       </div>
