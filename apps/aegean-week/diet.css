@@ -1442,3 +1442,64 @@ button.panel-toggle {
     padding: 16px;
   }
 }
+
+/* Setup panel */
+.setup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.setup-textarea {
+  width: 100%;
+  min-height: 80px;
+  background: #201d19;
+  border: 1px solid #2e2a24;
+  border-radius: 6px;
+  color: #f0ebe3;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  padding: 10px 12px;
+  resize: vertical;
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+.setup-textarea:focus {
+  border-color: #c8922a;
+  outline: 2px solid rgba(200,146,42,0.15);
+  outline-offset: 0;
+}
+.setup-msg {
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  line-height: 1.4;
+}
+.setup-error {
+  background: rgba(220,50,50,0.08);
+  color: #e06060;
+  border: 1px solid rgba(220,50,50,0.2);
+}
+.setup-success {
+  background: rgba(143,190,107,0.08);
+  color: #8fbe6b;
+  border: 1px solid rgba(143,190,107,0.2);
+}
+.setup-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.setup-btn {
+  border-color: #c8922a !important;
+  color: #c8922a !important;
+}
+.setup-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.setup-active-note {
+  font-size: 11px;
+  color: #7a7063;
+  margin: 0;
+  line-height: 1.5;
+}

@@ -11,9 +11,44 @@ import {
 
 const STORAGE_KEY = "aegean-week-planner:v1";
 const MY_KEY = "my-weekly-planner:v1";
+const CUSTOM_MEALS_KEY = "my-meals-custom:v1";
+const API_KEY_KEY = "nutrimind-openai-key";
 
 const mealLookup = createMealLookup(mealLibrary);
-const allMealsLookup = createMealLookup([...mealLibrary, ...usualMealsLibrary]);
+
+function loadCustomMeals() {
+  try {
+    const raw = window.localStorage.getItem(CUSTOM_MEALS_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch { return null; }
+}
+
+function flattenCustomMeals(custom) {
+  if (!custom) return [];
+  const seen = new Set();
+  const result = [];
+  const slotNames = { breakfast: "Breakfast", lunch: "Lunch", dinner: "Dinner", snack: "Snack" };
+  for (const dayType of ["work", "home"]) {
+    for (const [slotKey, slotName] of Object.entries(slotNames)) {
+      for (const meal of (custom[dayType]?.[slotKey] ?? [])) {
+        if (!seen.has(meal.id)) {
+          seen.add(meal.id);
+          result.push({ ...meal, slot: slotName });
+        }
+      }
+    }
+  }
+  return result;
+}
+
+function buildAllMealsLookup() {
+  return createMealLookup([...mealLibrary, ...usualMealsLibrary, ...flattenCustomMeals(customMeals)]);
+}
+
+let customMeals = loadCustomMeals();
+let allMealsLookup = buildAllMealsLookup();
 
 const app = document.querySelector("#app");
 const DEFAULT_GOALS = { potassium: 4700, magnesium: 420 };
@@ -85,13 +120,36 @@ function defaultMyPlannerState() {
   return { plan, dayTypes, selectedDayId: myWeekTemplate[0].id, pickerSlot: null };
 }
 
-function generatedMyPlannerState() {
-  const generated = generateWeek(myWeekTemplate, usualMealsLibrary);
+function generateMyWeekFromCustomMeals(dayTypes) {
   const plan = {};
+  for (const day of myWeekTemplate) {
+    const dayType = dayTypes[day.id] ?? "work";
+    const pool = customMeals[dayType] ?? customMeals.work ?? {};
+    plan[day.id] = {};
+    for (const slotKey of ["breakfast", "lunch", "dinner", "snack"]) {
+      const options = pool[slotKey] ?? [];
+      if (options.length > 0) {
+        plan[day.id][slotKey] = options[Math.floor(Math.random() * options.length)].id;
+      } else {
+        plan[day.id][slotKey] = myWeekTemplate.find((d) => d.id === day.id)?.meals[slotKey] ?? "";
+      }
+    }
+  }
+  return plan;
+}
+
+function generatedMyPlannerState(currentDayTypes = null) {
   const dayTypes = {};
-  for (const day of generated) {
-    plan[day.id] = { ...day.meals };
-    dayTypes[day.id] = day.dayType ?? "work";
+  for (const day of myWeekTemplate) {
+    dayTypes[day.id] = currentDayTypes?.[day.id] ?? day.dayType ?? "work";
+  }
+  let plan;
+  if (customMeals) {
+    plan = generateMyWeekFromCustomMeals(dayTypes);
+  } else {
+    const generated = generateWeek(myWeekTemplate, usualMealsLibrary);
+    plan = {};
+    for (const day of generated) plan[day.id] = { ...day.meals };
   }
   return { plan, dayTypes, selectedDayId: myWeekTemplate[0].id, pickerSlot: null };
 }
@@ -168,10 +226,73 @@ function regenerateWeek() {
 }
 
 function regenerateMyWeek() {
-  const fresh = generatedMyPlannerState();
+  const fresh = generatedMyPlannerState(myPlanner.dayTypes);
   Object.assign(myPlanner, { plan: fresh.plan, pickerSlot: null });
   saveMyPlannerState();
   render();
+}
+
+// ── GPT meal setup ────────────────────────────────────────────────────────────
+
+const setupState = { loading: false, error: null, success: false, workText: "", homeText: "" };
+
+async function callGPT(apiKey, model, workText, homeText) {
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model,
+      response_format: { type: "json_object" },
+      messages: [
+        {
+          role: "system",
+          content: "You are a meal planning assistant. Convert meal descriptions into a structured JSON meal library. Return ONLY valid JSON."
+        },
+        {
+          role: "user",
+          content: `Create a meal library from these descriptions.\n\nWork day meals: ${workText}\nHome day meals: ${homeText}\n\nReturn a JSON object:\n{\n  "work": {\n    "breakfast": [{"id":"w-b-1","title":"Meal Name","subtitle":"Brief description","protein":"Chicken","ingredients":[{"name":"Chicken","group":"Protein"}],"nutrients":{"potassium":400,"magnesium":50,"protein":25,"fiber":3,"calories":350}}],\n    "lunch": [...], "dinner": [...], "snack": [...]\n  },\n  "home": { "breakfast": [...], "lunch": [...], "dinner": [...], "snack": [...] }\n}\n\nRules: 2-4 options per slot. protein must be one of: Chicken, Beef, Fish, Vegetarian. ingredient groups: Protein, Dairy, Fruit, Vegetable, Greens, Whole grain, Legume, Nut, Seed, Fat, Herb, Pantry, Various. Estimate nutrients realistically. IDs must be unique (w-b-1, w-l-1, h-b-1, etc.).`
+        }
+      ]
+    })
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error?.message ?? `API error ${response.status}`);
+  }
+  const data = await response.json();
+  return JSON.parse(data.choices[0].message.content);
+}
+
+async function handleGenerateMeals() {
+  const apiKey = document.getElementById("setupApiKey")?.value.trim() ?? "";
+  const model = document.getElementById("setupModel")?.value.trim() || "gpt-4o";
+  const workText = document.getElementById("setupWorkText")?.value.trim() ?? "";
+  const homeText = document.getElementById("setupHomeText")?.value.trim() ?? "";
+
+  if (!apiKey) { setupState.error = "Please enter your OpenAI API key."; render(); return; }
+  if (!workText && !homeText) { setupState.error = "Please describe at least one day type."; render(); return; }
+
+  window.localStorage.setItem(API_KEY_KEY, apiKey);
+  setupState.workText = workText;
+  setupState.homeText = homeText;
+  setupState.loading = true;
+  setupState.error = null;
+  setupState.success = false;
+  render();
+
+  try {
+    const result = await callGPT(apiKey, model, workText || homeText, homeText || workText);
+    customMeals = result;
+    window.localStorage.setItem(CUSTOM_MEALS_KEY, JSON.stringify(result));
+    allMealsLookup = buildAllMealsLookup();
+    setupState.success = true;
+    setupState.loading = false;
+    regenerateMyWeek();
+  } catch (err) {
+    setupState.error = err.message;
+    setupState.loading = false;
+    render();
+  }
 }
 
 // ── Shared render helpers ─────────────────────────────────────────────────────
@@ -523,6 +644,7 @@ function renderMyPlannerView() {
         </section>
 
         <aside class="my-inspector">
+          ${renderSetupPanel()}
           ${renderPanel("my-grocery-panel", "This week", "Grocery List", `
             <div class="grocery-list">
               ${groceryList.map((group) => renderGroceryGroup(group)).join("")}
@@ -536,6 +658,41 @@ function renderMyPlannerView() {
       </div>
     </div>
   `;
+}
+
+function renderSetupPanel() {
+  const savedApiKey = window.localStorage.getItem(API_KEY_KEY) ?? "";
+  const hasCustomMeals = Boolean(customMeals);
+  const body = `
+    <div class="setup-form">
+      <label class="field">
+        <span>OpenAI API Key</span>
+        <input type="password" id="setupApiKey" value="${savedApiKey}" placeholder="sk-…" autocomplete="off" />
+      </label>
+      <label class="field">
+        <span>Model</span>
+        <input type="text" id="setupModel" value="gpt-4o" placeholder="gpt-4o" />
+      </label>
+      <label class="field">
+        <span>Work day meals</span>
+        <textarea id="setupWorkText" class="setup-textarea" placeholder="e.g. Breakfast: eggs with toast or yogurt. Lunch: chicken sandwich, pasta. Dinner: chicken and rice, beef stir fry. Snacks: fruit, nuts.">${setupState.workText}</textarea>
+      </label>
+      <label class="field">
+        <span>Home day meals</span>
+        <textarea id="setupHomeText" class="setup-textarea" placeholder="e.g. Breakfast: full omelette, pancakes. Lunch: homemade soup, leftovers. Dinner: grilled fish, lamb chops. Snacks: yogurt, fruit.">${setupState.homeText}</textarea>
+      </label>
+      ${setupState.error ? `<p class="setup-msg setup-error">${setupState.error}</p>` : ""}
+      ${setupState.success ? `<p class="setup-msg setup-success">Done! Your week has been updated with your meals.</p>` : ""}
+      <div class="setup-actions">
+        <button type="button" class="reset-btn setup-btn" data-action="generate-meals" ${setupState.loading ? "disabled" : ""}>
+          ${setupState.loading ? "Generating…" : hasCustomMeals ? "Regenerate from description" : "Generate my meal plan"}
+        </button>
+        ${hasCustomMeals ? `<button type="button" class="reset-btn" data-action="clear-custom-meals">Clear</button>` : ""}
+      </div>
+      ${hasCustomMeals ? `<p class="setup-active-note">Using your custom meals. Work and home days get different meals based on your descriptions.</p>` : ""}
+    </div>
+  `;
+  return renderPanel("setup-panel", "GPT powered", "My Meals Setup", body);
 }
 
 function renderMealPicker(dayId, slotKey) {
@@ -629,6 +786,15 @@ app.addEventListener("click", (event) => {
     const action = actionButton.dataset.action;
     if (action === "regenerate") { regenerateWeek(); return; }
     if (action === "regenerate-my-planner") { regenerateMyWeek(); return; }
+    if (action === "generate-meals") { handleGenerateMeals(); return; }
+    if (action === "clear-custom-meals") {
+      customMeals = null;
+      window.localStorage.removeItem(CUSTOM_MEALS_KEY);
+      allMealsLookup = buildAllMealsLookup();
+      setupState.success = false;
+      regenerateMyWeek();
+      return;
+    }
     if (action === "reset") {
       const ok = typeof window.confirm === "function"
         ? window.confirm("Reset the planner to defaults? This clears your saved goals and regenerated week.")
@@ -750,6 +916,11 @@ app.addEventListener("keydown", (event) => {
     saveMyPlannerState();
     render();
   }
+});
+
+app.addEventListener("input", (event) => {
+  if (event.target.id === "setupWorkText") { setupState.workText = event.target.value; }
+  if (event.target.id === "setupHomeText") { setupState.homeText = event.target.value; }
 });
 
 render();
