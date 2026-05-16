@@ -425,17 +425,17 @@ function renderMealCard(meal) {
       <div class="meal-heading">
         <div>
           <p class="meal-slot">${meal.slot}</p>
+          <p class="meal-nutrient-line">
+            <span>${formatMetric(meal.nutrients.potassium)}mg Potassium</span>
+            <span>${formatMetric(meal.nutrients.magnesium)}mg Magnesium</span>
+            <span>${formatMetric(meal.nutrients.protein)}g Protein</span>
+            <span>${formatMetric(meal.nutrients.fiber)}g Fiber</span>
+          </p>
           <h4>${meal.title}</h4>
         </div>
         <span class="protein-pill">${meal.protein}</span>
       </div>
       <p class="meal-copy">${meal.subtitle}</p>
-      <div class="nutrient-tags">
-        <span>${formatMetric(meal.nutrients.potassium)} mg K</span>
-        <span>${formatMetric(meal.nutrients.magnesium)} mg Mg</span>
-        <span>${formatMetric(meal.nutrients.protein)} g protein</span>
-        <span>${formatMetric(meal.nutrients.fiber)} g fiber</span>
-      </div>
       <div class="ingredient-row">
         ${meal.ingredients.map((i) => `<span>${i.name}</span>`).join("")}
       </div>
