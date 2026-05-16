@@ -494,11 +494,6 @@ function renderPlannerView() {
           <button type="button" class="reset-btn" data-action="reset">Reset planner</button>
         </div>
       </div>
-      <div class="masthead-stats">
-        ${renderHeadlineStat("Both goals hit", `${week.hits.both}/7`, "days this week")}
-        ${renderHeadlineStat("Avg potassium", `${formatMetric(week.averages.potassium)} mg`, "per day")}
-        ${renderHeadlineStat("Avg magnesium", `${formatMetric(week.averages.magnesium)} mg`, "per day")}
-      </div>
     </header>
 
     <main class="my-workspace">
