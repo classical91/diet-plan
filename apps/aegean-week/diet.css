@@ -490,10 +490,7 @@ button {
 }
 
 .workspace {
-  display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(340px, 0.82fr);
-  gap: 20px;
-  align-items: start;
+  display: block;
 }
 
 .planner-panel,
