@@ -1,7 +1,6 @@
 import { mealLibrary, myWeekTemplate, usualMealsLibrary, weeklyPlan } from "./dietPlannerData.js";
 import {
   buildGroceryList,
-  buildStaples,
   createMealLookup,
   formatMetric,
   generateWeek,
@@ -406,17 +405,6 @@ function renderMicroStat(label, value) {
   `;
 }
 
-function renderStaple(item) {
-  return `
-    <article class="staple-item">
-      <div>
-        <strong>${item.name}</strong>
-        <span>${item.group}</span>
-      </div>
-      <span class="staple-count">${item.count} meals</span>
-    </article>
-  `;
-}
 
 function renderDayButton(day) {
   const potassiumTone = statusTone(day.coverage.potassium);
@@ -431,7 +419,6 @@ function renderDayButton(day) {
         <span>${day.label}</span>
         <span>${formatMetric(day.totals.calories)} kcal</span>
       </span>
-      <strong>${day.name}</strong>
       <span class="meter-track mini ${potassiumTone}">
         <span class="meter-fill sea" style="width:${Math.min(day.coverage.potassium * 100, 100)}%"></span>
       </span>
@@ -489,7 +476,6 @@ function renderMediterraneanView() {
   const plan = activeWeekPlan();
   const week = summarizeWeek(plan, mealLookup, state.goals);
   const selectedDay = week.days.find((d) => d.id === state.selectedDayId) ?? week.days[0];
-  const staples = buildStaples(plan, mealLookup);
   const isCustomPlan = Boolean(state.planOverride);
 
   return `
@@ -532,7 +518,6 @@ function renderMediterraneanView() {
           <div class="day-identity">
             <div>
               <p class="label-line">${selectedDay.label}</p>
-              <h3>${selectedDay.name}</h3>
               <p class="day-note">${selectedDay.focus}</p>
             </div>
             <div class="prep-note">
@@ -556,11 +541,6 @@ function renderMediterraneanView() {
             ${renderMicroStat("Protein", `${formatMetric(selectedDay.totals.protein)} g`)}
             ${renderMicroStat("Fiber", `${formatMetric(selectedDay.totals.fiber)} g`)}
             ${renderMicroStat("Energy", `${formatMetric(selectedDay.totals.calories)} kcal`)}
-          </div>
-        `)}
-        ${renderPanel("staples-panel", "Shopping rhythm", "Weekly staples", `
-          <div class="staples-list">
-            ${staples.map((item) => renderStaple(item)).join("")}
           </div>
         `)}
       </aside>
