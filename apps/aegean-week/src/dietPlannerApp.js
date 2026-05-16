@@ -92,10 +92,21 @@ function defaultMyPlannerState() {
   return { plan, dayTypes, selectedDayId: myWeekTemplate[0].id, pickerSlot: null };
 }
 
+function generatedMyPlannerState() {
+  const generated = generateWeek(myWeekTemplate, usualMealsLibrary);
+  const plan = {};
+  const dayTypes = {};
+  for (const day of generated) {
+    plan[day.id] = { ...day.meals };
+    dayTypes[day.id] = day.dayType ?? "work";
+  }
+  return { plan, dayTypes, selectedDayId: myWeekTemplate[0].id, pickerSlot: null };
+}
+
 function loadMyPlannerState() {
   try {
     const raw = window.localStorage.getItem(MY_KEY);
-    if (!raw) return defaultMyPlannerState();
+    if (!raw) return generatedMyPlannerState();
     const parsed = JSON.parse(raw);
     const base = defaultMyPlannerState();
     if (parsed.plan && typeof parsed.plan === "object") {
@@ -120,7 +131,7 @@ function loadMyPlannerState() {
     }
     return base;
   } catch {
-    return defaultMyPlannerState();
+    return generatedMyPlannerState();
   }
 }
 
@@ -172,6 +183,13 @@ function regenerateWeek() {
   const generated = generateWeek(weeklyPlan, mealLibrary);
   state.planOverride = extractPlanOverride(generated);
   saveState();
+  render();
+}
+
+function regenerateMyWeek() {
+  const fresh = generatedMyPlannerState();
+  Object.assign(myPlanner, { plan: fresh.plan, pickerSlot: null });
+  saveMyPlannerState();
   render();
 }
 
@@ -542,6 +560,7 @@ function renderMyPlannerView() {
           <p class="lead">Tap a day, swap meals from your usual library, generate a grocery list.</p>
         </div>
         <div class="my-header-actions">
+          <button type="button" class="reset-btn" data-action="regenerate-my-planner">Regenerate week</button>
           <button type="button" class="reset-btn" data-action="reset-my-planner">Reset to defaults</button>
         </div>
       </header>
@@ -675,6 +694,7 @@ app.addEventListener("click", (event) => {
   if (actionButton) {
     const action = actionButton.dataset.action;
     if (action === "regenerate") { regenerateWeek(); return; }
+    if (action === "regenerate-my-planner") { regenerateMyWeek(); return; }
     if (action === "reset") {
       const ok = typeof window.confirm === "function"
         ? window.confirm("Reset the planner to defaults? This clears your saved goals and regenerated week.")
