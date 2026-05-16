@@ -1,13 +1,11 @@
-import { boosterFoods, goalPresets, mealLibrary, myWeekTemplate, usualMealsLibrary, weeklyPlan } from "./dietPlannerData.js";
+import { mealLibrary, myWeekTemplate, usualMealsLibrary, weeklyPlan } from "./dietPlannerData.js";
 import {
   buildGroceryList,
   buildStaples,
-  countProteins,
   createMealLookup,
   formatMetric,
   generateWeek,
   percentText,
-  suggestBoosters,
   summarizeWeek
 } from "./dietPlannerLogic.js";
 
@@ -18,15 +16,14 @@ const mealLookup = createMealLookup(mealLibrary);
 const allMealsLookup = createMealLookup([...mealLibrary, ...usualMealsLibrary]);
 
 const app = document.querySelector("#app");
-const defaultPreset = goalPresets[0];
+const DEFAULT_GOALS = { potassium: 4700, magnesium: 420 };
 
 // ── Mediterranean planner state ───────────────────────────────────────────────
 
 function defaultState() {
   return {
     selectedDayId: weeklyPlan[0].id,
-    presetId: defaultPreset.id,
-    goals: { potassium: defaultPreset.potassium, magnesium: defaultPreset.magnesium },
+    goals: { ...DEFAULT_GOALS },
     planOverride: null,
     activeView: "mediterranean"
   };
@@ -60,11 +57,7 @@ function loadState() {
     const parsed = JSON.parse(raw);
     return {
       selectedDayId: weeklyPlan.some((d) => d.id === parsed.selectedDayId) ? parsed.selectedDayId : weeklyPlan[0].id,
-      presetId: typeof parsed.presetId === "string" ? parsed.presetId : defaultPreset.id,
-      goals: {
-        potassium: clampGoal(parsed.goals?.potassium, defaultPreset.potassium),
-        magnesium: clampGoal(parsed.goals?.magnesium, defaultPreset.magnesium)
-      },
+      goals: { ...DEFAULT_GOALS },
       planOverride: sanitizePlanOverride(parsed.planOverride),
       activeView: parsed.activeView === "my-planner" ? "my-planner" : "mediterranean"
     };
@@ -144,18 +137,6 @@ const myPlanner = loadMyPlannerState();
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function clampGoal(value, fallback) {
-  const n = Number(value);
-  if (!Number.isFinite(n) || n <= 0) return fallback;
-  return Math.round(n);
-}
-
-function getActivePreset() {
-  return goalPresets.find((p) => p.id === state.presetId) ?? {
-    id: "custom", label: "Custom targets", note: "Manual values let you personalize the plan."
-  };
-}
-
 function statusTone(ratio) {
   if (ratio >= 1) return "hit";
   if (ratio >= 0.9) return "near";
@@ -197,18 +178,34 @@ function regenerateMyWeek() {
 
 function renderNav() {
   return `
-    <nav class="nav-bar" aria-label="Primary">
-      <a href="/" class="nav-link active">Diet Plan</a>
-      <a href="/nutrition" class="nav-link">Checklist</a>
-      <a href="/nutrition#s-reminders" class="nav-link">Reminders</a>
-      <a href="/benefits" class="nav-link">Benefits</a>
-      <a href="/deficiencies" class="nav-link">Deficiencies</a>
-      <a href="/overview" class="nav-link">Overview</a>
-      <a href="/howto" class="nav-link">How-To</a>
-      <a href="/diets" class="nav-link">Diet Types</a>
-      <a href="/allergies" class="nav-link">Allergies</a>
-      <a href="/foodtypes" class="nav-link">Food Categories</a>
-      <a href="https://workout-tracker-production-0ec7.up.railway.app" class="nav-link" target="_blank" rel="noreferrer">Workout</a>
+    <nav class="top-nav" aria-label="Primary">
+      <div class="nav-inner">
+        <a href="/" class="nav-logo">NutriMind</a>
+        <div class="nav-items" id="navItems">
+          <a href="/" class="nav-item active">Diet Plan</a>
+          <div class="nav-item has-dropdown">
+            <span>Nutrition <span class="nav-chevron">▾</span></span>
+            <div class="nav-dropdown">
+              <a href="/nutrition" class="nav-dropdown-item">Checklist</a>
+              <a href="/nutrition#s-reminders" class="nav-dropdown-item">Reminders</a>
+              <a href="/benefits" class="nav-dropdown-item">Benefits</a>
+              <a href="/deficiencies" class="nav-dropdown-item">Deficiencies</a>
+              <a href="/overview" class="nav-dropdown-item">Overview</a>
+            </div>
+          </div>
+          <div class="nav-item has-dropdown">
+            <span>Reference <span class="nav-chevron">▾</span></span>
+            <div class="nav-dropdown">
+              <a href="/howto" class="nav-dropdown-item">How-To</a>
+              <a href="/diets" class="nav-dropdown-item">Diet Types</a>
+              <a href="/allergies" class="nav-dropdown-item">Allergies</a>
+              <a href="/foodtypes" class="nav-dropdown-item">Food Categories</a>
+            </div>
+          </div>
+          <a href="https://workout-tracker-production-0ec7.up.railway.app" class="nav-item" target="_blank" rel="noreferrer">Workout</a>
+        </div>
+        <button class="nav-mobile-btn" onclick="document.getElementById('navItems').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
+      </div>
     </nav>
   `;
 }
@@ -261,24 +258,6 @@ function renderMicroStat(label, value) {
   `;
 }
 
-function renderBooster(booster) {
-  return `
-    <article class="booster-card">
-      <div class="booster-head">
-        <strong>${booster.name}</strong>
-        <span>${booster.portion}</span>
-      </div>
-      <p>${booster.reason}</p>
-      <div class="nutrient-tags compact">
-        <span>${formatMetric(booster.nutrients.potassium)} mg K</span>
-        <span>${formatMetric(booster.nutrients.magnesium)} mg Mg</span>
-        <span>${formatMetric(booster.nutrients.calories)} kcal</span>
-      </div>
-      <small>${booster.note}</small>
-    </article>
-  `;
-}
-
 function renderStaple(item) {
   return `
     <article class="staple-item">
@@ -289,18 +268,6 @@ function renderStaple(item) {
       <span class="staple-count">${item.count} meals</span>
     </article>
   `;
-}
-
-function renderPresetOptions() {
-  const options = goalPresets.map(
-    (p) => `<option value="${p.id}" ${p.id === state.presetId ? "selected" : ""}>${p.label}</option>`
-  );
-  if (!goalPresets.some((p) => p.id === state.presetId)) {
-    options.push('<option value="custom" selected>Custom targets</option>');
-  } else {
-    options.push('<option value="custom">Custom targets</option>');
-  }
-  return options.join("");
 }
 
 function renderDayButton(day) {
@@ -379,10 +346,7 @@ function renderMediterraneanView() {
   const plan = activeWeekPlan();
   const week = summarizeWeek(plan, mealLookup, state.goals);
   const selectedDay = week.days.find((d) => d.id === state.selectedDayId) ?? week.days[0];
-  const boosters = suggestBoosters(selectedDay, boosterFoods);
   const staples = buildStaples(plan, mealLookup);
-  const proteins = countProteins(plan, mealLookup);
-  const activePreset = getActivePreset();
   const isCustomPlan = Boolean(state.planOverride);
 
   return `
@@ -440,23 +404,6 @@ function renderMediterraneanView() {
       </section>
 
       <aside class="inspector">
-        ${renderPanel("goal-panel", "Targets", "Goal preset", `
-          <label class="field">
-            <span>Reference</span>
-            <select name="presetId">${renderPresetOptions()}</select>
-          </label>
-          <div class="goal-grid">
-            <label class="field">
-              <span>Potassium goal (mg)</span>
-              <input type="number" min="1" step="50" name="potassium" value="${state.goals.potassium}" />
-            </label>
-            <label class="field">
-              <span>Magnesium goal (mg)</span>
-              <input type="number" min="1" step="10" name="magnesium" value="${state.goals.magnesium}" />
-            </label>
-          </div>
-          <p class="field-note">${activePreset.note}</p>
-        `)}
         ${renderPanel("metrics-panel", "Today", selectedDay.name, `
           <div class="meter-grid">
             ${renderMeter("Potassium", selectedDay.totals.potassium, state.goals.potassium, "sea")}
@@ -468,23 +415,10 @@ function renderMediterraneanView() {
             ${renderMicroStat("Energy", `${formatMetric(selectedDay.totals.calories)} kcal`)}
           </div>
         `)}
-        ${renderPanel("booster-panel", "Catch-up options", "Smart boosters", `
-          <div class="booster-list">
-            ${boosters.map((b) => renderBooster(b)).join("")}
-          </div>
-        `)}
         ${renderPanel("staples-panel", "Shopping rhythm", "Weekly staples", `
           <div class="staples-list">
             ${staples.map((item) => renderStaple(item)).join("")}
           </div>
-        `)}
-        ${renderPanel("source-panel", "Pattern", "Protein rotation", `
-          <div class="protein-grid">
-            ${renderMicroStat("Fish meals", String(proteins.Fish))}
-            ${renderMicroStat("Chicken meals", String(proteins.Chicken))}
-            ${renderMicroStat("Beef meals", String(proteins.Beef))}
-          </div>
-          <p class="source-note">Meal values are directional estimates for planning. If you have kidney disease, blood pressure treatment, or supplement concerns, personalize targets with a clinician.</p>
         `)}
       </aside>
     </main>
@@ -815,26 +749,6 @@ app.addEventListener("keydown", (event) => {
     myPlanner.dayTypes[dayId] = myPlanner.dayTypes[dayId] === "home" ? "work" : "home";
     saveMyPlannerState();
     render();
-  }
-});
-
-app.addEventListener("change", (event) => {
-  const target = event.target;
-  if (!(target instanceof HTMLInputElement || target instanceof HTMLSelectElement)) return;
-
-  if (target.name === "presetId") {
-    if (target.value === "custom") { state.presetId = "custom"; saveState(); render(); return; }
-    const preset = goalPresets.find((p) => p.id === target.value);
-    if (!preset) return;
-    state.presetId = preset.id;
-    state.goals = { potassium: preset.potassium, magnesium: preset.magnesium };
-    saveState(); render(); return;
-  }
-
-  if (target.name === "potassium" || target.name === "magnesium") {
-    state.presetId = "custom";
-    state.goals[target.name] = clampGoal(target.value, state.goals[target.name]);
-    saveState(); render();
   }
 });
 
