@@ -404,8 +404,7 @@ button {
   margin-top: 20px;
 }
 
-.chip,
-.protein-pill {
+.chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -415,6 +414,32 @@ button {
   background: rgba(255, 255, 255, 0.55);
   color: var(--text);
   font-size: 0.86rem;
+}
+
+.meal-slot-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.protein-pill {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.meal-title {
+  margin: 4px 0 6px;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-weight: 700;
 }
 
 .masthead-stats {

@@ -422,16 +422,14 @@ function renderDayButton(day) {
 function renderMealCard(meal) {
   return `
     <article class="meal-card">
-      <div class="meal-heading">
-        <div>
-          <p class="meal-slot">${meal.slot}</p>
-          <p class="meal-nutrient-line">
-            ${formatMetric(meal.nutrients.potassium)}mg Potassium · ${formatMetric(meal.nutrients.magnesium)}mg Magnesium · ${formatMetric(meal.nutrients.protein)}g Protein · ${formatMetric(meal.nutrients.fiber)}g Fiber
-          </p>
-          <h4>${meal.title}</h4>
-        </div>
+      <div class="meal-slot-row">
+        <p class="meal-slot">${meal.slot}</p>
         <span class="protein-pill">${meal.protein}</span>
       </div>
+      <p class="meal-nutrient-line">
+        ${formatMetric(meal.nutrients.potassium)}mg Potassium · ${formatMetric(meal.nutrients.magnesium)}mg Magnesium · ${formatMetric(meal.nutrients.protein)}g Protein · ${formatMetric(meal.nutrients.fiber)}g Fiber
+      </p>
+      <h4 class="meal-title">${meal.title}</h4>
       <p class="meal-copy">${meal.subtitle}</p>
       <div class="ingredient-row">
         ${meal.ingredients.map((i) => `<span>${i.name}</span>`).join("")}
