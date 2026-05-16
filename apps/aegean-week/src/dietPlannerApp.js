@@ -16,6 +16,33 @@ const API_KEY_KEY = "nutrimind-openai-key";
 
 const mealLookup = createMealLookup(mealLibrary);
 
+const PORTION_MAP = {
+  "Greek yogurt": "¾ cup", "Rolled oats": "½ cup", "Banana": "1 medium", "Chia seeds": "1 tbsp",
+  "Orange": "1 medium", "Eggs": "3 large", "Spinach": "1 cup", "Tomatoes": "½ cup",
+  "Feta": "2 tbsp", "Whole grain toast": "2 slices", "Kefir": "1 cup", "Figs": "2 medium",
+  "Walnuts": "¼ cup", "Berries": "½ cup", "Flaxseed": "1 tbsp", "Kiwi": "2 medium",
+  "Pumpkin seeds": "2 tbsp", "Cottage cheese": "½ cup", "Melon": "1 cup", "Cucumber": "½ cup",
+  "Olives": "¼ cup", "Avocado": "½ medium", "Sourdough": "2 slices", "Salmon": "150g",
+  "Farro": "½ cup", "Chickpeas": "½ cup", "Lean beef": "150g", "Lentils": "½ cup",
+  "Bell peppers": "1 medium", "Parsley": "2 tbsp", "Chicken breast": "150g", "Quinoa": "½ cup",
+  "Mint": "2 tbsp", "Tahini": "1 tbsp", "Sardines": "1 tin", "White beans": "½ cup",
+  "Arugula": "1 cup", "Bulgur": "½ cup", "Hummus": "3 tbsp", "Carrots": "½ cup",
+  "Grapes": "½ cup", "Romaine": "2 cups", "Pita": "1 piece", "Chicken thigh": "150g",
+  "Kale": "1 cup", "Garlic": "2 cloves", "Olive oil": "1 tbsp", "Cod": "180g",
+  "Fennel": "½ cup", "Rosemary": "1 tsp", "Tuna": "180g", "Potatoes": "2 medium",
+  "Green beans": "½ cup", "Capers": "1 tbsp", "Barley": "½ cup", "Mushrooms": "½ cup",
+  "Zucchini": "½ cup", "Eggplant": "½ cup", "Trout": "180g", "Swiss chard": "1 cup",
+  "Lemon": "½", "Dill": "1 tbsp", "Oregano": "1 tsp", "Sweet potato": "1 medium",
+  "Dates": "3 pieces", "Almond butter": "1 tbsp", "Cocoa": "1 tbsp", "Edamame": "½ cup",
+  "Cocoa nibs": "2 tbsp", "Skyr": "¾ cup", "Honey": "1 tsp", "Pistachios": "¼ cup",
+  "Dried apricots": "4 pieces", "Orange zest": "1 tsp", "Pear": "1 medium",
+  "Dark chocolate": "1 square", "Cheese": "2 slices", "Fruit": "½ cup", "Nuts": "¼ cup",
+  "Seeds": "1 tbsp", "Granola": "½ cup", "Yogurt": "¾ cup", "Chicken": "150g",
+  "Bread": "2 slices", "Lettuce": "2 leaves", "Sauce": "1 tbsp", "Rice": "½ cup",
+  "Vegetables": "½ cup", "Beef": "180g", "Fish": "180g", "Mixed vegetables": "1 cup",
+  "Leftovers": "1 portion"
+};
+
 function loadCustomMeals() {
   try {
     const raw = window.localStorage.getItem(CUSTOM_MEALS_KEY);
@@ -429,11 +456,11 @@ function renderMealCard(meal) {
       <h4 class="meal-title">${meal.title}</h4>
       <p class="meal-copy">${meal.subtitle}</p>
       <div class="ingredient-row">
-        ${meal.ingredients.map((i) => `<span>${i.name}</span>`).join("")}
+        ${meal.ingredients.map((i) => {
+          const portion = PORTION_MAP[i.name] ?? (i.portion ?? "");
+          return `<span>${i.name}${portion ? `<em class="ingredient-portion">${portion}</em>` : ""}</span>`;
+        }).join("")}
       </div>
-      <p class="meal-nutrient-line">
-        ${formatMetric(meal.nutrients.potassium)}mg Potassium · ${formatMetric(meal.nutrients.magnesium)}mg Magnesium · ${formatMetric(meal.nutrients.protein)}g Protein · ${formatMetric(meal.nutrients.fiber)}g Fiber
-      </p>
     </article>
   `;
 }
@@ -593,7 +620,10 @@ function renderMyPlannerView() {
           </div>
           <p class="meal-copy">${meal.subtitle}</p>
           <div class="ingredient-row">
-            ${meal.ingredients.map((i) => `<span>${i.name}</span>`).join("")}
+            ${meal.ingredients.map((i) => {
+              const portion = PORTION_MAP[i.name] ?? (i.portion ?? "");
+              return `<span>${i.name}${portion ? `<em class="ingredient-portion">${portion}</em>` : ""}</span>`;
+            }).join("")}
           </div>
         </div>
         ${isPickerOpen ? renderMealPicker(selectedDay.id, slotKey) : ""}

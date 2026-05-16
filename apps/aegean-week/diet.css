@@ -1468,6 +1468,15 @@ button.panel-toggle {
   }
 }
 
+/* Ingredient portion */
+.ingredient-portion {
+  font-style: normal;
+  font-size: 10px;
+  color: #7a7063;
+  margin-left: 5px;
+  font-weight: 400;
+}
+
 /* Meal card nutrient line */
 .meal-nutrient-line {
   font-family: 'DM Sans', sans-serif;
