@@ -532,7 +532,7 @@ function renderMediterraneanView() {
       </section>
 
       <aside class="inspector">
-        ${renderPanel("metrics-panel", "Today", selectedDay.name, `
+        ${renderPanel("metrics-panel", "Today", selectedDay.name.split(" ")[0], `
           <div class="meter-grid">
             ${renderMeter("Potassium", selectedDay.totals.potassium, state.goals.potassium, "sea")}
             ${renderMeter("Magnesium", selectedDay.totals.magnesium, state.goals.magnesium, "copper")}
