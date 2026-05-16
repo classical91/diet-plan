@@ -591,6 +591,10 @@ app.addEventListener("click", (event) => {
   if (dayButton) {
     planner.selectedDayId = dayButton.dataset.day;
     render();
+    if (window.innerWidth <= 768) {
+      const dayFocus = document.querySelector(".day-focus");
+      if (dayFocus) dayFocus.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
     return;
   }
 
