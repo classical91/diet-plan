@@ -380,32 +380,6 @@ function renderHeadlineStat(label, value, note) {
   `;
 }
 
-function renderMeter(label, value, goal, tone) {
-  const ratio = value / goal;
-  return `
-    <article class="meter-card ${statusTone(ratio)}">
-      <div class="meter-ring ${tone}" style="--progress:${Math.min(ratio * 100, 100)}">
-        <span>${percentText(ratio)}</span>
-      </div>
-      <div class="meter-copy">
-        <strong>${label}</strong>
-        <span>${formatMetric(value)} / ${formatMetric(goal)} mg</span>
-        <span class="meter-state">${ratio >= 1 ? "Goal covered" : `${formatMetric(goal - value)} mg still open`}</span>
-      </div>
-    </article>
-  `;
-}
-
-function renderMicroStat(label, value) {
-  return `
-    <div class="micro-stat">
-      <span>${label}</span>
-      <strong>${value}</strong>
-    </div>
-  `;
-}
-
-
 function renderDayButton(day) {
   const potassiumTone = statusTone(day.coverage.potassium);
   const magnesiumTone = statusTone(day.coverage.magnesium);
@@ -531,19 +505,6 @@ function renderMediterraneanView() {
         </div>
       </section>
 
-      <aside class="inspector">
-        ${renderPanel("metrics-panel", "Today", selectedDay.name.split(" ")[0], `
-          <div class="meter-grid">
-            ${renderMeter("Potassium", selectedDay.totals.potassium, state.goals.potassium, "sea")}
-            ${renderMeter("Magnesium", selectedDay.totals.magnesium, state.goals.magnesium, "copper")}
-          </div>
-          <div class="macro-strip">
-            ${renderMicroStat("Protein", `${formatMetric(selectedDay.totals.protein)} g`)}
-            ${renderMicroStat("Fiber", `${formatMetric(selectedDay.totals.fiber)} g`)}
-            ${renderMicroStat("Energy", `${formatMetric(selectedDay.totals.calories)} kcal`)}
-          </div>
-        `)}
-      </aside>
     </main>
   `;
 }
