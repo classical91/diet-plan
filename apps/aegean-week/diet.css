@@ -185,6 +185,15 @@ body {
   flex-direction: column;
   gap: 2px;
 }
+
+.nav-item.has-dropdown::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 8px;
+}
 .nav-item.has-dropdown:hover .nav-dropdown {
   display: flex;
 }
