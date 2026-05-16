@@ -426,10 +426,7 @@ function renderMealCard(meal) {
         <div>
           <p class="meal-slot">${meal.slot}</p>
           <p class="meal-nutrient-line">
-            <span>${formatMetric(meal.nutrients.potassium)}mg Potassium</span>
-            <span>${formatMetric(meal.nutrients.magnesium)}mg Magnesium</span>
-            <span>${formatMetric(meal.nutrients.protein)}g Protein</span>
-            <span>${formatMetric(meal.nutrients.fiber)}g Fiber</span>
+            ${formatMetric(meal.nutrients.potassium)}mg Potassium · ${formatMetric(meal.nutrients.magnesium)}mg Magnesium · ${formatMetric(meal.nutrients.protein)}g Protein · ${formatMetric(meal.nutrients.fiber)}g Fiber
           </p>
           <h4>${meal.title}</h4>
         </div>
