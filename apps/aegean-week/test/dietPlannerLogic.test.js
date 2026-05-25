@@ -3,10 +3,13 @@ import assert from "node:assert/strict";
 
 import { boosterFoods, goalPresets, mealLibrary, weeklyPlan } from "../src/dietPlannerData.js";
 import {
+  buildGroceryList,
   buildStaples,
   countProteins,
   createMealLookup,
+  formatGroceryListText,
   generateWeek,
+  normalizeCustomMeals,
   suggestBoosters,
   summarizeDay,
   summarizeWeek
@@ -106,4 +109,116 @@ test("generateWeek output still summarizes to full-week coverage", () => {
   assert.equal(summary.days.length, 7);
   assert.ok(summary.averages.potassium > 0);
   assert.ok(summary.averages.magnesium > 0);
+});
+
+test("buildGroceryList attaches portion text using the portion map", () => {
+  const list = buildGroceryList(weeklyPlan, mealLookup, { "Greek yogurt": "¾ cup" });
+  const produce = list.find((g) => g.category === "Dairy");
+  const yogurt = produce.items.find((i) => i.name === "Greek yogurt");
+  assert.ok(yogurt, "Greek yogurt should appear in dairy");
+  assert.ok(yogurt.count > 1);
+  assert.equal(yogurt.portionText, `${yogurt.count} × ¾ cup`);
+});
+
+test("buildGroceryList falls back to portion-count text when no map", () => {
+  const list = buildGroceryList(weeklyPlan, mealLookup);
+  const anyItem = list[0].items[0];
+  assert.match(anyItem.portionText, /portion/);
+});
+
+test("formatGroceryListText produces a plain-text shopping list", () => {
+  const list = buildGroceryList(weeklyPlan, mealLookup, { "Greek yogurt": "¾ cup" });
+  const text = formatGroceryListText(list);
+  assert.match(text, /Greek yogurt — \d+ × ¾ cup/);
+  assert.ok(text.includes("Protein") || text.includes("Produce"));
+});
+
+test("normalizeCustomMeals returns null for non-object input", () => {
+  assert.equal(normalizeCustomMeals(null), null);
+  assert.equal(normalizeCustomMeals("nope"), null);
+  assert.equal(normalizeCustomMeals(42), null);
+});
+
+test("normalizeCustomMeals returns null when no usable meals", () => {
+  assert.equal(normalizeCustomMeals({ work: {}, home: {} }), null);
+  assert.equal(normalizeCustomMeals({ work: { breakfast: [{ id: "x" }] } }), null);
+});
+
+test("normalizeCustomMeals keeps valid meals and coerces missing nutrients", () => {
+  const raw = {
+    work: {
+      breakfast: [
+        {
+          id: "w-b-1",
+          title: "Eggs and toast",
+          subtitle: "Quick",
+          protein: "Vegetarian",
+          ingredients: [{ name: "Eggs", group: "Protein" }],
+          nutrients: { potassium: 200, magnesium: 30, protein: 18 }
+        }
+      ],
+      lunch: [], dinner: [], snack: []
+    },
+    home: { breakfast: [], lunch: [], dinner: [], snack: [] }
+  };
+  const result = normalizeCustomMeals(raw);
+  assert.ok(result);
+  const meal = result.work.breakfast[0];
+  assert.equal(meal.id, "w-b-1");
+  assert.equal(meal.nutrients.calories, 0);
+  assert.equal(meal.nutrients.fiber, 0);
+  assert.equal(meal.nutrients.protein, 18);
+});
+
+test("normalizeCustomMeals drops meals with no valid ingredients", () => {
+  const raw = {
+    work: {
+      breakfast: [
+        { id: "ok", title: "Has ingredient", ingredients: [{ name: "Eggs", group: "Protein" }] },
+        { id: "bad", title: "No ingredients", ingredients: [] },
+        { id: "bad2", title: "Garbage", ingredients: [{ name: "", group: "Pantry" }] }
+      ],
+      lunch: [], dinner: [], snack: []
+    },
+    home: { breakfast: [], lunch: [], dinner: [], snack: [] }
+  };
+  const result = normalizeCustomMeals(raw);
+  assert.equal(result.work.breakfast.length, 1);
+  assert.equal(result.work.breakfast[0].id, "ok");
+});
+
+test("normalizeCustomMeals renames duplicate meal ids", () => {
+  const raw = {
+    work: {
+      breakfast: [
+        { id: "dup", title: "A", ingredients: [{ name: "Eggs", group: "Protein" }] },
+        { id: "dup", title: "B", ingredients: [{ name: "Eggs", group: "Protein" }] }
+      ],
+      lunch: [], dinner: [], snack: []
+    },
+    home: { breakfast: [], lunch: [], dinner: [], snack: [] }
+  };
+  const result = normalizeCustomMeals(raw);
+  const ids = result.work.breakfast.map((m) => m.id);
+  assert.equal(new Set(ids).size, ids.length);
+});
+
+test("normalizeCustomMeals coerces unknown protein and group to safe defaults", () => {
+  const raw = {
+    work: {
+      breakfast: [
+        {
+          id: "w-b-1",
+          title: "Mystery",
+          protein: "Alien",
+          ingredients: [{ name: "Unknown", group: "Spacefood" }]
+        }
+      ],
+      lunch: [], dinner: [], snack: []
+    },
+    home: { breakfast: [], lunch: [], dinner: [], snack: [] }
+  };
+  const result = normalizeCustomMeals(raw);
+  assert.equal(result.work.breakfast[0].protein, "Vegetarian");
+  assert.equal(result.work.breakfast[0].ingredients[0].group, "Various");
 });

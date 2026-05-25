@@ -190,7 +190,7 @@ const GROCERY_CATEGORY_MAP = {
 
 const GROCERY_ORDER = ["Protein", "Carbs", "Produce", "Dairy", "Snacks & Nuts", "Pantry", "Other"];
 
-export function buildGroceryList(weekPlan, mealLookup) {
+export function buildGroceryList(weekPlan, mealLookup, portionMap = null) {
   const items = new Map();
   for (const day of weekPlan) {
     for (const mealId of Object.values(day.meals)) {
@@ -202,12 +202,17 @@ export function buildGroceryList(weekPlan, mealLookup) {
           name: ingredient.name,
           group: ingredient.group,
           category: GROCERY_CATEGORY_MAP[ingredient.group] ?? "Other",
-          count: 0
+          count: 0,
+          portion: portionMap?.[ingredient.name] ?? ingredient.portion ?? null
         };
         entry.count += 1;
         items.set(key, entry);
       }
     }
+  }
+
+  for (const item of items.values()) {
+    item.portionText = formatPortionText(item.count, item.portion);
   }
 
   const byCategory = new Map();
@@ -222,6 +227,95 @@ export function buildGroceryList(weekPlan, mealLookup) {
   return GROCERY_ORDER
     .filter((cat) => byCategory.has(cat))
     .map((cat) => ({ category: cat, items: byCategory.get(cat) }));
+}
+
+function formatPortionText(count, portion) {
+  if (!portion) return count > 1 ? `${count} portions` : "1 portion";
+  if (count <= 1) return portion;
+  return `${count} × ${portion}`;
+}
+
+export function formatGroceryListText(groceryList) {
+  return groceryList
+    .map((group) => {
+      const lines = group.items.map((item) => `- ${item.name} — ${item.portionText}`);
+      return `${group.category}\n${lines.join("\n")}`;
+    })
+    .join("\n\n");
+}
+
+const ALLOWED_PROTEINS = new Set(["Chicken", "Beef", "Fish", "Vegetarian"]);
+const ALLOWED_GROUPS = new Set([
+  "Protein", "Dairy", "Fruit", "Vegetable", "Greens", "Whole grain",
+  "Legume", "Nut", "Seed", "Fat", "Herb", "Pantry", "Various"
+]);
+const SLOT_KEYS = ["breakfast", "lunch", "dinner", "snack"];
+const NUTRIENT_KEYS = ["potassium", "magnesium", "protein", "fiber", "calories"];
+
+function coerceNonNegativeNumber(value) {
+  const n = Number(value);
+  return Number.isFinite(n) && n >= 0 ? n : 0;
+}
+
+function normalizeIngredient(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  const name = typeof raw.name === "string" ? raw.name.trim() : "";
+  if (!name) return null;
+  const group = ALLOWED_GROUPS.has(raw.group) ? raw.group : "Various";
+  const ingredient = { name, group };
+  if (typeof raw.portion === "string" && raw.portion.trim()) {
+    ingredient.portion = raw.portion.trim();
+  }
+  return ingredient;
+}
+
+function normalizeMeal(raw, seenIds) {
+  if (!raw || typeof raw !== "object") return null;
+  const title = typeof raw.title === "string" ? raw.title.trim() : "";
+  if (!title) return null;
+  const ingredientsRaw = Array.isArray(raw.ingredients) ? raw.ingredients : [];
+  const ingredients = ingredientsRaw.map(normalizeIngredient).filter(Boolean);
+  if (ingredients.length === 0) return null;
+
+  let id = typeof raw.id === "string" && raw.id.trim() ? raw.id.trim() : `meal-${seenIds.size + 1}`;
+  if (seenIds.has(id)) {
+    let suffix = 2;
+    while (seenIds.has(`${id}-${suffix}`)) suffix += 1;
+    id = `${id}-${suffix}`;
+  }
+  seenIds.add(id);
+
+  const protein = ALLOWED_PROTEINS.has(raw.protein) ? raw.protein : "Vegetarian";
+  const subtitle = typeof raw.subtitle === "string" ? raw.subtitle.trim() : "";
+
+  const nutrientsRaw = raw.nutrients && typeof raw.nutrients === "object" ? raw.nutrients : {};
+  const nutrients = {};
+  for (const key of NUTRIENT_KEYS) {
+    nutrients[key] = coerceNonNegativeNumber(nutrientsRaw[key]);
+  }
+
+  return { id, title, subtitle, protein, ingredients, nutrients };
+}
+
+export function normalizeCustomMeals(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  const seenIds = new Set();
+  const result = {};
+  let totalMeals = 0;
+
+  for (const dayType of ["work", "home"]) {
+    const section = raw[dayType] && typeof raw[dayType] === "object" ? raw[dayType] : {};
+    result[dayType] = {};
+    for (const slotKey of SLOT_KEYS) {
+      const arr = Array.isArray(section[slotKey]) ? section[slotKey] : [];
+      const cleaned = arr.map((m) => normalizeMeal(m, seenIds)).filter(Boolean);
+      result[dayType][slotKey] = cleaned;
+      totalMeals += cleaned.length;
+    }
+  }
+
+  if (totalMeals === 0) return null;
+  return result;
 }
 
 function groupMealsBySlot(mealLibrary) {
