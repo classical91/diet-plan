@@ -2,8 +2,10 @@ import { mealLibrary, usualMealsLibrary, weeklyPlan } from "./dietPlannerData.js
 import {
   buildGroceryList,
   createMealLookup,
+  formatGroceryListText,
   formatMetric,
   generateWeek,
+  normalizeCustomMeals,
   percentText,
   summarizeWeek
 } from "./dietPlannerLogic.js";
@@ -12,7 +14,16 @@ const PLANNER_KEY = "planner:v2";
 const CUSTOM_MEALS_KEY = "my-meals-custom:v1";
 const API_KEY_KEY = "nutrimind-openai-key";
 
-const mealLookup = createMealLookup(mealLibrary);
+const SLOT_NAMES = { breakfast: "Breakfast", lunch: "Lunch", dinner: "Dinner", snack: "Snack" };
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
 
 const PORTION_MAP = {
   "Greek yogurt": "¾ cup", "Rolled oats": "½ cup", "Banana": "1 medium", "Chia seeds": "1 tbsp",
@@ -45,8 +56,7 @@ function loadCustomMeals() {
   try {
     const raw = window.localStorage.getItem(CUSTOM_MEALS_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    return parsed && typeof parsed === "object" ? parsed : null;
+    return normalizeCustomMeals(JSON.parse(raw));
   } catch { return null; }
 }
 
@@ -54,9 +64,8 @@ function flattenCustomMeals(custom) {
   if (!custom) return [];
   const seen = new Set();
   const result = [];
-  const slotNames = { breakfast: "Breakfast", lunch: "Lunch", dinner: "Dinner", snack: "Snack" };
   for (const dayType of ["work", "home"]) {
-    for (const [slotKey, slotName] of Object.entries(slotNames)) {
+    for (const [slotKey, slotName] of Object.entries(SLOT_NAMES)) {
       for (const meal of (custom[dayType]?.[slotKey] ?? [])) {
         if (!seen.has(meal.id)) {
           seen.add(meal.id);
@@ -196,6 +205,31 @@ function regenerateWeek() {
   render();
 }
 
+async function handleCopyGrocery(button) {
+  const plan = getActivePlan();
+  const groceryList = buildGroceryList(plan, allMealsLookup, PORTION_MAP);
+  const text = formatGroceryListText(groceryList);
+  const originalLabel = button.textContent;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
+    button.textContent = "Copied!";
+  } catch {
+    button.textContent = "Copy failed";
+  }
+  window.setTimeout(() => { button.textContent = originalLabel; }, 1500);
+}
+
 // ── GPT meal setup ────────────────────────────────────────────────────────────
 
 const setupState = { loading: false, error: null, success: false, workText: "", homeText: "" };
@@ -246,8 +280,15 @@ async function handleGenerateMeals() {
 
   try {
     const result = await callGPT(apiKey, model, workText || homeText, homeText || workText);
-    customMeals = result;
-    window.localStorage.setItem(CUSTOM_MEALS_KEY, JSON.stringify(result));
+    const normalized = normalizeCustomMeals(result);
+    if (!normalized) {
+      setupState.error = "GPT returned no usable meals. Please try again or rephrase your descriptions.";
+      setupState.loading = false;
+      render();
+      return;
+    }
+    customMeals = normalized;
+    window.localStorage.setItem(CUSTOM_MEALS_KEY, JSON.stringify(normalized));
     allMealsLookup = buildAllMealsLookup();
     setupState.success = true;
     setupState.loading = false;
@@ -261,27 +302,17 @@ async function handleGenerateMeals() {
 
 // ── Render helpers ────────────────────────────────────────────────────────────
 
-function renderHeadlineStat(label, value, note) {
-  return `
-    <div class="headline-stat">
-      <span class="headline-label">${label}</span>
-      <strong>${value}</strong>
-      <span class="headline-note">${note}</span>
-    </div>
-  `;
-}
-
 function renderDayButton(day) {
   const potassiumTone = statusTone(day.coverage.potassium);
   const magnesiumTone = statusTone(day.coverage.magnesium);
   return `
     <button
       class="day-button ${day.id === planner.selectedDayId ? "is-active" : ""}"
-      type="button" data-day="${day.id}"
+      type="button" data-day="${escapeHtml(day.id)}"
       role="tab" aria-selected="${day.id === planner.selectedDayId}"
     >
       <span class="day-topline">
-        <span>${day.label}</span>
+        <span>${escapeHtml(day.label)}</span>
         <span>${formatMetric(day.totals.calories)} kcal</span>
       </span>
       <span class="meter-track mini ${potassiumTone}">
@@ -298,32 +329,51 @@ function renderDayButton(day) {
   `;
 }
 
+function renderDayTotals(day) {
+  const stats = [
+    { label: "Calories", value: `${formatMetric(day.totals.calories)} kcal` },
+    { label: "Protein", value: `${formatMetric(day.totals.protein)}g` },
+    { label: "Fiber", value: `${formatMetric(day.totals.fiber)}g` },
+    { label: "Potassium", value: percentText(day.coverage.potassium) },
+    { label: "Magnesium", value: percentText(day.coverage.magnesium) }
+  ];
+  return `
+    <div class="day-totals-card" aria-label="Daily nutrition totals">
+      ${stats.map((s) => `
+        <div class="day-total-stat">
+          <span class="day-total-label">${s.label}</span>
+          <strong class="day-total-value">${escapeHtml(s.value)}</strong>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
 function renderMealSlot(entry, dayId) {
   const { slotKey, meal } = entry;
   const isPickerOpen = planner.pickerSlot === slotKey;
-  const slotLabels = { breakfast: "Breakfast", lunch: "Lunch", dinner: "Dinner", snack: "Snack" };
   const defaultMealId = weeklyPlan.find((d) => d.id === dayId)?.meals[slotKey];
   const isModified = planner.plan[dayId]?.[slotKey] !== defaultMealId;
 
   return `
     <div class="my-meal-slot ${isPickerOpen ? "picker-open" : ""}">
       <div class="my-slot-header">
-        <span class="meal-slot-label">${slotLabels[slotKey] ?? meal.slot}</span>
+        <span class="meal-slot-label">${escapeHtml(SLOT_NAMES[slotKey] ?? meal.slot)}</span>
         <div class="slot-actions">
-          <button type="button" class="slot-btn" data-my-replace="${slotKey}">Replace</button>
-          ${isModified ? `<button type="button" class="slot-btn slot-btn-reset" data-my-reset="${dayId}:${slotKey}">Reset</button>` : ""}
+          <button type="button" class="slot-btn" data-my-replace="${escapeHtml(slotKey)}">Replace</button>
+          ${isModified ? `<button type="button" class="slot-btn slot-btn-reset" data-my-reset="${escapeHtml(dayId)}:${escapeHtml(slotKey)}">Reset</button>` : ""}
         </div>
       </div>
       <div class="my-meal-card">
         <div class="my-meal-title">
-          <strong>${meal.title}</strong>
-          <span class="protein-pill">${meal.protein}</span>
+          <strong>${escapeHtml(meal.title)}</strong>
+          <span class="protein-pill">${escapeHtml(meal.protein)}</span>
         </div>
-        <p class="meal-copy">${meal.subtitle}</p>
+        <p class="meal-copy">${escapeHtml(meal.subtitle)}</p>
         <div class="ingredient-row">
           ${meal.ingredients.map((i) => {
             const portion = PORTION_MAP[i.name] ?? (i.portion ?? "");
-            return `<span>${i.name}${portion ? `<em class="ingredient-portion">${portion}</em>` : ""}</span>`;
+            return `<span>${escapeHtml(i.name)}${portion ? `<em class="ingredient-portion">${escapeHtml(portion)}</em>` : ""}</span>`;
           }).join("")}
         </div>
       </div>
@@ -333,7 +383,7 @@ function renderMealSlot(entry, dayId) {
 }
 
 function renderMealPicker(dayId, slotKey) {
-  const slotName = { breakfast: "Breakfast", lunch: "Lunch", dinner: "Dinner", snack: "Snack" }[slotKey];
+  const slotName = SLOT_NAMES[slotKey];
   const dayType = planner.dayTypes[dayId] ?? "work";
   const currentMealId = planner.plan[dayId]?.[slotKey];
 
@@ -354,14 +404,14 @@ function renderMealPicker(dayId, slotKey) {
 
   return `
     <div class="meal-picker">
-      <p class="picker-label">Pick a ${slotName.toLowerCase()}</p>
+      <p class="picker-label">Pick a ${escapeHtml(slotName.toLowerCase())}</p>
       <div class="picker-grid">
         ${available.map((meal) => `
-          <button type="button" class="picker-meal-btn ${meal.id === currentMealId ? "is-current" : ""}" data-my-pick="${dayId}:${slotKey}:${meal.id}">
-            <strong>${meal.title}</strong>
-            <span>${meal.subtitle}</span>
+          <button type="button" class="picker-meal-btn ${meal.id === currentMealId ? "is-current" : ""}" data-my-pick="${escapeHtml(dayId)}:${escapeHtml(slotKey)}:${escapeHtml(meal.id)}">
+            <strong>${escapeHtml(meal.title)}</strong>
+            <span>${escapeHtml(meal.subtitle)}</span>
             <div class="picker-tags">
-              ${meal.ingredients.slice(0, 3).map((i) => `<span>${i.name}</span>`).join("")}
+              ${meal.ingredients.slice(0, 3).map((i) => `<span>${escapeHtml(i.name)}</span>`).join("")}
             </div>
           </button>
         `).join("")}
@@ -374,12 +424,12 @@ function renderMealPicker(dayId, slotKey) {
 function renderGroceryGroup(group) {
   return `
     <div class="grocery-group">
-      <p class="grocery-category">${group.category}</p>
+      <p class="grocery-category">${escapeHtml(group.category)}</p>
       <ul class="grocery-items">
         ${group.items.map((item) => `
           <li class="grocery-item">
-            <span class="grocery-name">${item.name}</span>
-            ${item.count > 1 ? `<span class="grocery-count">×${item.count}</span>` : ""}
+            <span class="grocery-name">${escapeHtml(item.name)}</span>
+            <span class="grocery-count">${escapeHtml(item.portionText)}</span>
           </li>
         `).join("")}
       </ul>
@@ -412,7 +462,8 @@ function renderSetupPanel() {
     <div class="setup-form">
       <label class="field">
         <span>OpenAI API Key</span>
-        <input type="password" id="setupApiKey" value="${savedApiKey}" placeholder="sk-…" autocomplete="off" />
+        <input type="password" id="setupApiKey" value="${escapeHtml(savedApiKey)}" placeholder="sk-…" autocomplete="off" />
+        <small class="field-hint">Stored locally in this browser only.</small>
       </label>
       <label class="field">
         <span>Model</span>
@@ -420,13 +471,13 @@ function renderSetupPanel() {
       </label>
       <label class="field">
         <span>Work day meals</span>
-        <textarea id="setupWorkText" class="setup-textarea" placeholder="e.g. Breakfast: eggs with toast or yogurt. Lunch: chicken sandwich, pasta. Dinner: chicken and rice, beef stir fry. Snacks: fruit, nuts.">${setupState.workText}</textarea>
+        <textarea id="setupWorkText" class="setup-textarea" placeholder="e.g. Breakfast: eggs with toast or yogurt. Lunch: chicken sandwich, pasta. Dinner: chicken and rice, beef stir fry. Snacks: fruit, nuts.">${escapeHtml(setupState.workText)}</textarea>
       </label>
       <label class="field">
         <span>Home day meals</span>
-        <textarea id="setupHomeText" class="setup-textarea" placeholder="e.g. Breakfast: full omelette, pancakes. Lunch: homemade soup, leftovers. Dinner: grilled fish, lamb chops. Snacks: yogurt, fruit.">${setupState.homeText}</textarea>
+        <textarea id="setupHomeText" class="setup-textarea" placeholder="e.g. Breakfast: full omelette, pancakes. Lunch: homemade soup, leftovers. Dinner: grilled fish, lamb chops. Snacks: yogurt, fruit.">${escapeHtml(setupState.homeText)}</textarea>
       </label>
-      ${setupState.error ? `<p class="setup-msg setup-error">${setupState.error}</p>` : ""}
+      ${setupState.error ? `<p class="setup-msg setup-error">${escapeHtml(setupState.error)}</p>` : ""}
       ${setupState.success ? `<p class="setup-msg setup-success">Done! Your week has been updated with your meals.</p>` : ""}
       <div class="setup-actions">
         <button type="button" class="reset-btn setup-btn" data-action="generate-meals" ${setupState.loading ? "disabled" : ""}>
@@ -447,7 +498,7 @@ function renderPlannerView() {
   const week = summarizeWeek(plan, allMealsLookup, DEFAULT_GOALS);
   const selectedDay = week.days.find((d) => d.id === planner.selectedDayId) ?? week.days[0];
   const isHome = planner.dayTypes[selectedDay.id] === "home";
-  const groceryList = buildGroceryList(plan, allMealsLookup);
+  const groceryList = buildGroceryList(plan, allMealsLookup, PORTION_MAP);
 
   return `
     <header class="masthead">
@@ -477,22 +528,23 @@ function renderPlannerView() {
         <div class="day-focus">
           <div class="day-identity">
             <div>
-              <p class="label-line">${selectedDay.label} — ${selectedDay.name}</p>
-              <p class="day-note">${selectedDay.focus}</p>
+              <p class="label-line">${escapeHtml(selectedDay.label)} — ${escapeHtml(selectedDay.name)}</p>
+              <p class="day-note">${escapeHtml(selectedDay.focus)}</p>
             </div>
             <div>
               <div class="day-type-toggle" role="group" aria-label="Day type">
-                <button type="button" class="day-type-btn ${!isHome ? "is-active" : ""}" data-my-day-type="${selectedDay.id}:work">Work</button>
-                <button type="button" class="day-type-btn ${isHome ? "is-active" : ""}" data-my-day-type="${selectedDay.id}:home">Home</button>
+                <button type="button" class="day-type-btn ${!isHome ? "is-active" : ""}" data-my-day-type="${escapeHtml(selectedDay.id)}:work">Work</button>
+                <button type="button" class="day-type-btn ${isHome ? "is-active" : ""}" data-my-day-type="${escapeHtml(selectedDay.id)}:home">Home</button>
               </div>
               ${selectedDay.prep ? `
                 <div class="prep-note" style="margin-top:12px">
                   <span class="prep-label">Prep edge</span>
-                  <p>${selectedDay.prep}</p>
+                  <p>${escapeHtml(selectedDay.prep)}</p>
                 </div>
               ` : ""}
             </div>
           </div>
+          ${renderDayTotals(selectedDay)}
           <div class="my-slots-grid" style="margin-top:24px">
             ${selectedDay.slots.map((entry) => renderMealSlot(entry, selectedDay.id)).join("")}
           </div>
@@ -502,6 +554,9 @@ function renderPlannerView() {
       <aside class="my-inspector">
         ${renderSetupPanel()}
         ${renderPanel("grocery-panel", "This week", "Grocery List", `
+          <div class="grocery-actions">
+            <button type="button" class="reset-btn grocery-copy-btn" data-action="copy-grocery">Copy list</button>
+          </div>
           <div class="grocery-list">
             ${groceryList.map((group) => renderGroceryGroup(group)).join("")}
           </div>
@@ -541,6 +596,10 @@ app.addEventListener("click", (event) => {
         ? window.confirm("Reset the planner to defaults? This clears your saved meals and restores the original Mediterranean plan.")
         : true;
       if (ok) resetPlanner();
+      return;
+    }
+    if (action === "copy-grocery") {
+      handleCopyGrocery(actionButton);
       return;
     }
   }
