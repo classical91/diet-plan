@@ -9,6 +9,26 @@
   <body>
     <div id="app"></div>
     <script type="module" src="/apps/aegean-week/src/dietPlannerApp.js"></script>
-    <script type="module" src="/apps/aegean-week/src/referenceNav.js"></script>
+    <script>
+      function addSeasonalRotationReferenceLink() {
+        const referenceDropdown = Array.from(document.querySelectorAll('.nav-item.has-dropdown'))
+          .find((item) => (item.textContent || '').toLowerCase().includes('reference'))
+          ?.querySelector('.nav-dropdown');
+
+        if (!referenceDropdown || referenceDropdown.querySelector('a[href="/seasonal-rotation"]')) return;
+
+        const link = document.createElement('a');
+        link.href = '/seasonal-rotation';
+        link.className = 'nav-dropdown-item';
+        link.textContent = 'Seasonal Rotation';
+        referenceDropdown.appendChild(link);
+      }
+
+      addSeasonalRotationReferenceLink();
+      new MutationObserver(addSeasonalRotationReferenceLink).observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    </script>
   </body>
 </html>
