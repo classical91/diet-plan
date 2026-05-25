@@ -261,40 +261,6 @@ async function handleGenerateMeals() {
 
 // ── Render helpers ────────────────────────────────────────────────────────────
 
-function renderNav() {
-  return `
-    <nav class="top-nav" aria-label="Primary">
-      <div class="nav-inner">
-        <a href="/" class="nav-logo">NutriMind</a>
-        <div class="nav-items" id="navItems">
-          <a href="/" class="nav-item active">Diet Plan</a>
-          <div class="nav-item has-dropdown">
-            <span>Nutrition <span class="nav-chevron">▾</span></span>
-            <div class="nav-dropdown">
-              <a href="/nutrition" class="nav-dropdown-item">Checklist</a>
-              <a href="/nutrition#s-reminders" class="nav-dropdown-item">Reminders</a>
-              <a href="/benefits" class="nav-dropdown-item">Benefits</a>
-              <a href="/deficiencies" class="nav-dropdown-item">Deficiencies</a>
-              <a href="/overview" class="nav-dropdown-item">Overview</a>
-            </div>
-          </div>
-          <div class="nav-item has-dropdown">
-            <span>Reference <span class="nav-chevron">▾</span></span>
-            <div class="nav-dropdown">
-              <a href="/howto" class="nav-dropdown-item">How-To</a>
-              <a href="/diets" class="nav-dropdown-item">Diet Types</a>
-              <a href="/allergies" class="nav-dropdown-item">Allergies</a>
-              <a href="/foodtypes" class="nav-dropdown-item">Food Categories</a>
-            </div>
-          </div>
-          <a href="https://workout-tracker-production-0ec7.up.railway.app" class="nav-item" target="_blank" rel="noreferrer">Workout</a>
-        </div>
-        <button class="nav-mobile-btn" onclick="document.getElementById('navItems').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
-      </div>
-    </nav>
-  `;
-}
-
 function renderHeadlineStat(label, value, note) {
   return `
     <div class="headline-stat">
@@ -549,7 +515,7 @@ function renderPlannerView() {
 
 function render() {
   document.title = "Aegean Week";
-  app.innerHTML = `<div class="app-shell">${renderNav()}${renderPlannerView()}</div>`;
+  app.innerHTML = `<div class="app-shell">${renderPlannerView()}</div>`;
 }
 
 // ── Event handling ────────────────────────────────────────────────────────────
