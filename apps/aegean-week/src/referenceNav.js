@@ -1,5 +1,7 @@
-const SEASONAL_REFERENCE_HREF = "/seasonal-rotation";
-const SEASONAL_REFERENCE_LABEL = "Seasonal Rotation";
+const REFERENCE_LINKS = [
+  { href: "/adaptogens", label: "Adaptogens" },
+  { href: "/seasonal-rotation", label: "Seasonal Rotation" },
+];
 
 function findReferenceDropdown() {
   return Array.from(document.querySelectorAll(".nav-item.has-dropdown")).find((item) => {
@@ -8,18 +10,22 @@ function findReferenceDropdown() {
   })?.querySelector(".nav-dropdown");
 }
 
-function ensureSeasonalReferenceLink() {
+function ensureReferenceLinks() {
   const dropdown = findReferenceDropdown();
-  if (!dropdown || dropdown.querySelector(`a[href="${SEASONAL_REFERENCE_HREF}"]`)) return;
+  if (!dropdown) return;
 
-  const link = document.createElement("a");
-  link.href = SEASONAL_REFERENCE_HREF;
-  link.className = "nav-dropdown-item";
-  link.textContent = SEASONAL_REFERENCE_LABEL;
-  dropdown.appendChild(link);
+  for (const item of REFERENCE_LINKS) {
+    if (dropdown.querySelector(`a[href="${item.href}"]`)) continue;
+
+    const link = document.createElement("a");
+    link.href = item.href;
+    link.className = "nav-dropdown-item";
+    link.textContent = item.label;
+    dropdown.appendChild(link);
+  }
 }
 
-const observer = new MutationObserver(() => ensureSeasonalReferenceLink());
+const observer = new MutationObserver(() => ensureReferenceLinks());
 observer.observe(document.body, { childList: true, subtree: true });
 
-ensureSeasonalReferenceLink();
+ensureReferenceLinks();
