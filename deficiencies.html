@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Health Deficiencies | NutriMind</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/nav.css">
 <style>
   :root {
     --bg: #0f0d0a; --surface: #1a1714; --card: #201d19; --border: #2e2a24;
@@ -13,9 +14,6 @@
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; padding: 40px 20px 80px; background-image: radial-gradient(ellipse at 15% 10%, rgba(200,146,42,0.06) 0%, transparent 55%), radial-gradient(ellipse at 85% 90%, rgba(224,92,92,0.04) 0%, transparent 50%); }
-  .nav-bar { max-width: 1000px; margin: 0 auto 32px; display: flex; gap: 10px; flex-wrap: wrap; }
-  .nav-link { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; transition: all 0.2s; }
-  .nav-link:hover, .nav-link.active { border-color: var(--accent); color: var(--accent); }
   header { text-align: center; margin-bottom: 36px; }
   .sub-label { font-size: 11px; font-weight: 500; letter-spacing: 0.35em; text-transform: uppercase; color: var(--red); margin-bottom: 10px; }
   h1 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 5vw, 52px); font-weight: 900; letter-spacing: -0.02em; line-height: 1; }
@@ -92,35 +90,10 @@
   .prevalence-chip.common { background: rgba(200,146,42,0.1); border: 1px solid rgba(200,146,42,0.25); color: var(--accent); }
   .prevalence-chip.less-common { background: rgba(91,155,213,0.1); border: 1px solid rgba(91,155,213,0.25); color: var(--blue); }
 </style>
-<style>
-.top-nav{max-width:1100px;margin:0 auto;padding:32px 20px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:relative}
-.nav-logo-link{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;margin-right:8px}
-.nav-toggle{display:none;background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 14px;border-radius:20px;cursor:pointer}
-.nav-links{display:flex;gap:8px;flex-wrap:wrap}
-.nav-link{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:20px;transition:all .2s;white-space:nowrap}
-.nav-link:hover,.nav-link.active{border-color:var(--accent);color:var(--accent)}
-@media(max-width:900px){.nav-toggle{display:block}.nav-links{display:none;flex-direction:column;width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;gap:6px;position:absolute;top:44px;left:0;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.3)}.nav-links.open{display:flex}.nav-link{width:100%;text-align:left}}
-</style>
 </head>
 <body>
-<nav class="top-nav">
-  <div><a href="/" class="nav-logo-link">🥗 NutriMind</a></div>
-  <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">☰ Menu</button>
-  <div class="nav-links" id="navLinks">
-    <a href="/" class="nav-link">NutriMind</a>
-    <a href="/nutrition" class="nav-link">Checklist</a>
-    <a href="/benefits" class="nav-link">Benefits</a>
-    <a href="/deficiencies" class="nav-link active">Deficiencies</a>
-    <a href="/overview" class="nav-link">Overview</a>
-    <a href="/howto" class="nav-link">How-To</a>
-    <a href="/diets" class="nav-link">Diet Types</a>
-    <a href="/allergies" class="nav-link">Allergies</a>
-    <a href="/foodtypes" class="nav-link">Food Categories</a>
-    <a href="/adaptogens" class="nav-link">Adaptogens</a>
-    <a href="/seasonal-rotation" class="nav-link">Seasonal Rotation</a>
-    <a href="https://workout-tracker-production-0ec7.up.railway.app" class="nav-link" target="_blank" rel="noreferrer">💪 Workout</a>
-  </div>
-</nav>
+<nav class="top-nav" aria-label="Primary"></nav>
+<script src="/nav.js"></script>
 
 <header>
   <div class="sub-label">Health Reference</div>
