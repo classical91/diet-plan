@@ -240,7 +240,6 @@ body {
   }
   .nav-items.open { display: flex; }
   .nav-item { border-radius: 6px; }
-  .nav-item.has-dropdown:hover .nav-dropdown { display: none; }
   .nav-dropdown {
     display: flex;
     position: static;
