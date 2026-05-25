@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seasonal Rotation | NutriMind Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0f0d0a;--surface:#1a1714;--card:#201d19;--border:#2e2a24;--accent:#c8922a;--green:#8fbe6b;--blue:#5b9bd5;--pink:#c86b8f;--purple:#9b7de8;--teal:#5bbfb5;--red:#e05c5c;--text:#f0ebe3;--muted:#7a7063}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(143,190,107,.04) 0%,transparent 50%)}
+  .top-nav{max-width:1100px;margin:0 auto 32px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .nav-logo-link{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;margin-right:8px}
+  .nav-link{font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:20px;transition:all .2s;white-space:nowrap}
+  .nav-link:hover,.nav-link.active{border-color:var(--accent);color:var(--accent);background:rgba(200,146,42,.08)}
+  header{text-align:center;margin:18px auto 38px;max-width:900px}
+  .sub-label{font-size:11px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(34px,6vw,62px);font-weight:900;letter-spacing:-.03em;line-height:.95}
+  h1 em{color:var(--accent);font-style:italic}
+  .lead{color:#b0a898;font-size:15px;line-height:1.7;max-width:720px;margin:18px auto 0}
+  .header-line{width:54px;height:2px;background:var(--accent);margin:18px auto 0;opacity:.55}
+  .container{max-width:1100px;margin:0 auto}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin:18px 0 34px}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px;margin:18px 0 34px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s}
+  .card:hover{border-color:#3e3a32;transform:translateY(-2px)}
+  .stripe{height:3px;background:var(--accent)}
+  .inner{padding:18px}
+  h2{font-family:'Playfair Display',serif;font-size:25px;font-weight:700;margin:34px 0 8px}
+  h3{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:6px;color:var(--text)}
+  .sec-desc,.card p,.note{font-size:13px;color:#b0a898;line-height:1.65}
+  .label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  ul{list-style:none;display:grid;gap:8px;margin-top:12px}
+  li{font-size:13px;color:#b0a898;line-height:1.5;display:flex;gap:8px;align-items:flex-start}
+  li::before{content:'—';color:var(--accent);flex-shrink:0}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+  .tag{font-size:10px;padding:4px 9px;border-radius:20px;border:1px solid rgba(200,146,42,.28);color:var(--accent);background:rgba(200,146,42,.07)}
+  .tag.green{border-color:rgba(143,190,107,.28);color:var(--green);background:rgba(143,190,107,.07)}
+  .tag.blue{border-color:rgba(91,155,213,.28);color:var(--blue);background:rgba(91,155,213,.07)}
+  .tag.purple{border-color:rgba(155,125,232,.28);color:var(--purple);background:rgba(155,125,232,.07)}
+  .note-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:16px;margin:18px 0 32px}
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin:18px 0 32px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{padding:12px 14px;text-align:left;color:var(--accent);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:var(--surface);border-bottom:1px solid var(--border)}
+  td{padding:12px 14px;border-bottom:1px solid var(--border);color:#b0a898;line-height:1.55;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td:first-child{color:var(--text);font-weight:500}
+  .formula{font-family:'Playfair Display',serif;font-size:20px;color:var(--text);margin:0 0 8px}
+  @media(max-width:720px){body{padding:24px 12px 60px}.grid-2{grid-template-columns:1fr}.nav-link{width:100%;text-align:center}.top-nav{justify-content:center}}
+</style>
+</head>
+<body>
+<nav class="top-nav" aria-label="Reference navigation">
+  <a href="/" class="nav-logo-link">🥗 NutriMind</a>
+  <a href="/" class="nav-link">Diet Plan</a>
+  <a href="/nutrition" class="nav-link">Checklist</a>
+  <a href="/benefits" class="nav-link">Benefits</a>
+  <a href="/deficiencies" class="nav-link">Deficiencies</a>
+  <a href="/overview" class="nav-link">Overview</a>
+  <a href="/howto" class="nav-link">How-To</a>
+  <a href="/diets" class="nav-link">Diet Types</a>
+  <a href="/allergies" class="nav-link">Allergies</a>
+  <a href="/foodtypes" class="nav-link">Food Categories</a>
+  <a href="/seasonal-rotation" class="nav-link active">Seasonal Rotation</a>
+</nav>
+
+<header>
+  <div class="sub-label">Reference Guide</div>
+  <h1>Seasonal <em>Rotation</em></h1>
+  <p class="lead">A simple Ayurveda-inspired way to rotate teas, herbs, spices, foods, and routines with the season instead of using the same things all year.</p>
+  <div class="header-line"></div>
+</header>
+
+<main class="container">
+  <div class="note-box">
+    <div class="formula">Season changes → body needs change → rotate support.</div>
+    <p class="note">Teas are only one piece. The bigger idea is seasonal rotation: adjusting herbs, foods, drinks, spices, oils, meal heaviness, and daily routines to match climate, digestion, energy, and recovery needs.</p>
+  </div>
+
+  <h2>What Actually Rotates?</h2>
+  <p class="sec-desc">When people say “rotate seasonally,” they usually mean the whole pattern, not only one product category.</p>
+  <div class="grid">
+    <div class="card"><div class="stripe"></div><div class="inner">
+      <div class="label">Drinks</div><h3>Teas & Infusions</h3>
+      <p>Herbal teas are the easiest seasonal lever because they are simple to switch without changing your whole diet.</p>
+      <ul><li>Spring: ginger, nettle, dandelion, burdock</li><li>Summer: mint, hibiscus, rose, fennel</li><li>Fall/Winter: ginger, cinnamon, clove, turmeric</li></ul>
+    </div></div>
+    <div class="card"><div class="stripe" style="background:var(--green)"></div><div class="inner">
+      <div class="label">Food</div><h3>Meals & Texture</h3>
+      <p>Food rotation means shifting from lighter cleansing meals to cooling meals to warm grounding meals.</p>
+      <ul><li>More raw and bitter in spring if digestion feels heavy</li><li>More hydrating fruits and cooling herbs in summer</li><li>More soups, stews, roots, and cooked meals in cold months</li></ul>
+    </div></div>
+    <div class="card"><div class="stripe" style="background:var(--blue)"></div><div class="inner">
+      <div class="label">Herbs</div><h3>Spices & Botanicals</h3>
+      <p>Stronger herbs are usually used intentionally, while culinary spices can rotate more gently through food.</p>
+      <ul><li>Heating: ginger, cayenne, black pepper, clove</li><li>Cooling: mint, coriander, fennel, rose</li><li>Grounding: turmeric, cinnamon, nutmeg, warm oils</li></ul>
+    </div></div>
+    <div class="card"><div class="stripe" style="background:var(--purple)"></div><div class="inner">
+      <div class="label">Routine</div><h3>Daily Rhythm</h3>
+      <p>Ayurveda also looks at routines: sleep, movement, oiling, bathing, and timing of heavier meals.</p>
+      <ul><li>Spring: movement, decluttering, lighter meals</li><li>Summer: cooling, hydration, less overheating</li><li>Fall/Winter: warmth, consistency, earlier grounding routines</li></ul>
+    </div></div>
+  </div>
+
+  <h2>Season-by-Season Guide</h2>
+  <p class="sec-desc">Use this as a gentle reference, not a strict rulebook. Your digestion, climate, medications, and health conditions matter.</p>
+  <div class="grid-2">
+    <div class="card"><div class="stripe" style="background:var(--green)"></div><div class="inner">
+      <div class="label">Spring</div><h3>Lighter, cleansing, moving</h3>
+      <p>Spring is often treated as a time to reduce heaviness and support digestion, lymph flow, and fresh energy.</p>
+      <ul><li>Favor lighter meals, greens, legumes, herbs, and bitter foods</li><li>Useful teas: ginger, nettle, dandelion, burdock, lemon</li><li>Reduce overly heavy, oily, very sweet foods if you feel sluggish</li><li>Good routine: walking, sweating lightly, cleaning up the kitchen staples</li></ul>
+      <div class="tags"><span class="tag green">lighter</span><span class="tag">digestive</span><span class="tag blue">cleansing</span></div>
+    </div></div>
+
+    <div class="card"><div class="stripe" style="background:var(--teal)"></div><div class="inner">
+      <div class="label">Summer</div><h3>Cooling, hydrating, calming</h3>
+      <p>Summer rotation aims to cool heat, support hydration, and avoid stacking too many hot spices on top of hot weather.</p>
+      <ul><li>Favor cucumber, melon, leafy herbs, yogurt, citrus, coconut water</li><li>Useful teas: mint, hibiscus, rose, fennel, coriander</li><li>Go easier on cayenne, excess ginger, black pepper, and fried foods</li><li>Good routine: shade, hydration, lighter evening meals</li></ul>
+      <div class="tags"><span class="tag blue">cooling</span><span class="tag green">hydrating</span><span class="tag purple">calming</span></div>
+    </div></div>
+
+    <div class="card"><div class="stripe" style="background:var(--accent)"></div><div class="inner">
+      <div class="label">Fall</div><h3>Grounding, warming, steady</h3>
+      <p>Fall can feel dry, windy, and inconsistent. The rotation becomes warmer, more cooked, and more grounding.</p>
+      <ul><li>Favor soups, stews, oats, root vegetables, warm grains, olive oil</li><li>Useful teas: ginger, cinnamon, licorice, tulsi, turmeric</li><li>Reduce too much raw/cold food if digestion feels unstable</li><li>Good routine: consistent meals, earlier nights, warm showers</li></ul>
+      <div class="tags"><span class="tag">warming</span><span class="tag purple">grounding</span><span class="tag green">steady</span></div>
+    </div></div>
+
+    <div class="card"><div class="stripe" style="background:var(--pink)"></div><div class="inner">
+      <div class="label">Winter</div><h3>Deep nourishment, warmth, resilience</h3>
+      <p>Winter rotation supports warmth, minerals, immunity, and deeper nourishment without becoming too heavy.</p>
+      <ul><li>Favor stews, lentils, beans, fish, eggs, warm spices, cooked vegetables</li><li>Useful teas: ginger, clove, cinnamon, turmeric, cardamom</li><li>Add warming fats: olive oil, tahini, nuts, seeds, avocado</li><li>Good routine: strength training, warm breakfast, steady sleep</li></ul>
+      <div class="tags"><span class="tag">warming</span><span class="tag green">nourishing</span><span class="tag blue">mineral support</span></div>
+    </div></div>
+  </div>
+
+  <h2>Quick Rotation Table</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Season</th><th>Main Aim</th><th>Best Additions</th><th>Go Easier On</th></tr></thead>
+      <tbody>
+        <tr><td>Spring</td><td>Lighten, cleanse, move</td><td>Ginger, nettle, dandelion, burdock, greens, legumes</td><td>Heavy dairy, fried foods, excess sweets</td></tr>
+        <tr><td>Summer</td><td>Cool, hydrate, calm</td><td>Mint, hibiscus, cucumber, melon, fennel, coconut water</td><td>Too much cayenne, excess hot spices, overheating routines</td></tr>
+        <tr><td>Fall</td><td>Warm, ground, stabilize</td><td>Soups, oats, roots, turmeric, cinnamon, ginger, warm oils</td><td>Too much cold/raw food, skipped meals, erratic sleep</td></tr>
+        <tr><td>Winter</td><td>Nourish, warm, restore</td><td>Stews, lentils, eggs, fish, cloves, cinnamon, cooked vegetables</td><td>Cold drinks, under-eating, low-protein meals</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Simple Rule for Your App</h2>
+  <div class="grid">
+    <div class="card"><div class="stripe"></div><div class="inner"><h3>Keep the Mediterranean base</h3><p>Your Aegean Week base can stay the same: olive oil, legumes, fish, chicken, greens, yogurt, grains, fruit, nuts, and seeds.</p></div></div>
+    <div class="card"><div class="stripe" style="background:var(--green)"></div><div class="inner"><h3>Rotate the accent layer</h3><p>Instead of rebuilding the whole meal plan, rotate teas, spices, herbs, sides, and preparation style by season.</p></div></div>
+    <div class="card"><div class="stripe" style="background:var(--blue)"></div><div class="inner"><h3>Listen to the body</h3><p>If you feel too hot, cool things down. If you feel sluggish, lighten up. If you feel scattered or cold, warm and ground.</p></div></div>
+  </div>
+
+  <div class="note-box">
+    <p class="note"><strong style="color:var(--text)">Safety note:</strong> Herbs can interact with medications, health conditions, pregnancy, blood pressure, blood sugar, and blood thinners. Treat this as a food-and-wellness reference, not medical advice.</p>
+  </div>
+</main>
+</body>
+</html>
