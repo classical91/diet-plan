@@ -108,6 +108,86 @@
   cursor: pointer;
   margin-left: auto;
 }
+.nav-search {
+  position: relative;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.nav-search-input {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid #2e2a24;
+  color: #f0ebe3;
+  padding: 7px 12px;
+  border-radius: 6px;
+  width: 200px;
+  outline: none;
+  transition: border-color .15s, background .15s, width .15s;
+}
+.nav-search-input::placeholder { color: #7a7063; }
+.nav-search-input:focus {
+  border-color: #c8922a;
+  background: rgba(255,255,255,0.06);
+  width: 260px;
+}
+.nav-search-results {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #1a1714;
+  border: 1px solid #2e2a24;
+  border-radius: 10px;
+  padding: 6px;
+  width: 380px;
+  max-height: 70vh;
+  overflow-y: auto;
+  z-index: 300;
+  box-shadow: 0 12px 40px rgba(0,0,0,.5);
+}
+.nav-search-result {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #f0ebe3;
+  transition: background .15s;
+}
+.nav-search-result:hover { background: rgba(200,146,42,0.08); }
+.nav-search-result-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c8922a;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+.nav-search-result-hits {
+  font-size: 11px;
+  font-weight: 400;
+  color: #7a7063;
+}
+.nav-search-result-snippet {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: #a89e8d;
+  line-height: 1.45;
+  margin-top: 3px;
+}
+.nav-search-result-snippet mark {
+  background: rgba(200,146,42,0.25);
+  color: #f0ebe3;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+.nav-search-empty {
+  padding: 10px 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: #7a7063;
+}
 @media (max-width: 768px) {
   .nav-mobile-btn { display: block; }
   .nav-items {
@@ -135,5 +215,13 @@
     border-radius: 6px;
     padding: 4px;
     margin-top: 2px;
+  }
+  .nav-search { margin-left: auto; margin-right: 8px; }
+  .nav-search-input { width: 130px; }
+  .nav-search-input:focus { width: 150px; }
+  .nav-search-results {
+    width: calc(100vw - 32px);
+    right: -8px;
+    max-width: 380px;
   }
 }
