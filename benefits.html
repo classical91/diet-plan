@@ -141,6 +141,53 @@
   .subsection-body .grid { max-width: 100%; margin: 0; }
 
   .no-results { max-width: 900px; margin: 40px auto; text-align: center; color: var(--muted); font-family: 'Playfair Display', serif; font-size: 18px; }
+
+  /* Card title acts as a link to the detail page */
+  .card-title-link { color: inherit; text-decoration: none; }
+  .card-title-link:hover { color: var(--accent); }
+
+  /* Detail view */
+  .detail { max-width: 760px; margin: 0 auto; }
+  .detail-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--muted); text-decoration: none;
+    font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 24px;
+    transition: color 0.15s;
+  }
+  .detail-back:hover { color: var(--accent); }
+  .detail-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px;
+  }
+  .detail-head { display: flex; align-items: center; gap: 18px; margin-bottom: 8px; }
+  .detail-icon { font-size: 48px; line-height: 1; }
+  .detail-name { font-family: 'Playfair Display', serif; font-size: clamp(24px, 4vw, 36px); font-weight: 700; }
+  .detail-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .detail-section-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 24px 0 12px;
+  }
+  .detail-benefits { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .detail-benefits li { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; color: #c8b89a; line-height: 1.55; }
+  .detail-benefits li::before { content: '—'; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+  .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+  .related-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 13px;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .related-item:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .related-item-icon { font-size: 18px; }
 </style>
 </head>
 <body>
@@ -276,15 +323,20 @@ const SUBSECTIONS = {
   ]
 };
 
+function slugify(name) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
 function makeCard(item, i) {
   const card = document.createElement('div');
   card.className = 'card';
   card.style.animationDelay = (i * 0.02) + 's';
+  const slug = slugify(item.name);
   card.innerHTML = `
     <div class="card-header" onclick="toggleCard(this.closest('.card'))">
       <span class="card-icon">${item.icon}</span>
       <div>
-        <div class="card-title">${item.name}</div>
+        <a class="card-title-link" href="/benefits/${slug}" onclick="event.stopPropagation()"><div class="card-title">${item.name}</div></a>
         <div class="card-cat tag tag-${item.cat}">${item.cat}</div>
       </div>
       <svg class="card-expand" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
@@ -393,8 +445,67 @@ function setCat(cat) {
   filterCards();
 }
 
-render(DATA);
-document.getElementById('count').textContent = DATA.length + ' items';
+function renderDetail(item) {
+  document.title = `${item.name} | Food Benefits | NutriMind`;
+  document.querySelector('.controls').style.display = 'none';
+  const countRow = document.querySelector('.controls + div');
+  if (countRow) countRow.style.display = 'none';
+  grid.style.display = 'none';
+  noResults.style.display = 'none';
+
+  const related = DATA
+    .filter(d => d.name !== item.name && d.tags.some(t => item.tags.includes(t)) && d.cat === item.cat)
+    .slice(0, 6);
+
+  const detail = document.createElement('div');
+  detail.className = 'detail';
+  detail.innerHTML = `
+    <a class="detail-back" href="/benefits">← All benefits</a>
+    <article class="detail-card">
+      <div class="detail-head">
+        <span class="detail-icon">${item.icon}</span>
+        <h1 class="detail-name">${item.name}</h1>
+      </div>
+      <div class="detail-meta">
+        <span class="tag tag-${item.cat}">${item.cat}</span>
+        ${item.tags.map(t => `<span class="tag tag-${t}">${t}</span>`).join('')}
+      </div>
+      <div class="detail-section-label">Benefits</div>
+      <ul class="detail-benefits">
+        ${item.benefits.map(b => `<li>${b}</li>`).join('')}
+      </ul>
+      ${related.length ? `
+        <div class="detail-section-label">Related</div>
+        <div class="related-grid">
+          ${related.map(r => `
+            <a class="related-item" href="/benefits/${slugify(r.name)}">
+              <span class="related-item-icon">${r.icon}</span>
+              <span>${r.name}</span>
+            </a>`).join('')}
+        </div>` : ''}
+    </article>
+  `;
+  grid.parentNode.insertBefore(detail, grid);
+}
+
+const pathMatch = window.location.pathname.match(/^\/benefits\/(.+?)\/?$/);
+if (pathMatch) {
+  const slug = decodeURIComponent(pathMatch[1]).toLowerCase();
+  const item = DATA.find(d => slugify(d.name) === slug);
+  if (item) {
+    renderDetail(item);
+  } else {
+    document.querySelector('.controls').style.display = 'none';
+    const countRow = document.querySelector('.controls + div');
+    if (countRow) countRow.style.display = 'none';
+    grid.style.display = 'none';
+    noResults.style.display = 'block';
+    noResults.textContent = `No food found for "${slug}"`;
+  }
+} else {
+  render(DATA);
+  document.getElementById('count').textContent = DATA.length + ' items';
+}
 </script>
 </body>
 </html>

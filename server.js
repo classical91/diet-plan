@@ -32,6 +32,11 @@ const server = http.createServer(async (request, response) => {
     if (pathname === "/benefits" || pathname === "/benefits/") {
       pathname = "/benefits.html";
     }
+    // /benefits/<slug> also serves benefits.html; the page reads the slug
+    // from location.pathname and renders a per-food detail view.
+    if (pathname.startsWith("/benefits/") && pathname !== "/benefits/") {
+      pathname = "/benefits.html";
+    }
     if (pathname === "/deficiencies" || pathname === "/deficiencies/") {
       pathname = "/deficiencies.html";
     }
