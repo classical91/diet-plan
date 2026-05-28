@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parasite Detox · Herbs | NutriMind</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/nav.css" />
+  <link rel="stylesheet" href="/parasite-detox.css" />
+</head>
+<body>
+  <nav class="top-nav" aria-label="Primary"></nav>
+  <script src="/nav.js"></script>
+  <div class="grain"></div>
+  <main class="page">
+    <nav id="pd-subnav" aria-label="Parasite detox sections"></nav>
+
+    <section id="herbs">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Herb library</div>
+          <h2>Herbs people commonly use</h2>
+        </div>
+        <p>These are presented as traditional or supportive options. Most herbs have limited human evidence for clearing parasites, and some are risky. Food-level use is very different from high-dose extracts.</p>
+      </div>
+
+      <div class="herb-toolbar">
+        <input class="search" id="herbSearch" placeholder="Search herbs, risks, use cases..." />
+        <div class="tabs" id="herbFilters">
+          <button class="filter active" data-filter="all">All</button>
+          <button class="filter" data-filter="gentle">Gentle support</button>
+          <button class="filter" data-filter="strong">Strong / caution</button>
+          <button class="filter" data-filter="food">Food-based</button>
+        </div>
+      </div>
+
+      <div class="grid three" id="herbGrid"></div>
+    </section>
+
+    <p class="footer">Educational frontend only. Not medical advice. Do not use this page to diagnose yourself or replace professional care.</p>
+  </main>
+  <script src="/parasite-detox-nav.js"></script>
+  <script>
+    const herbs = [
+      {
+        name: "Garlic",
+        category: ["gentle", "food"],
+        evidence: "traditional",
+        summary: "Common food-based antimicrobial support. Best thought of as a culinary ally, not a parasite cure.",
+        bestFor: "Food-level gut support, immune support, meal plan foundation.",
+        cautions: "Can worsen reflux and may interact with blood-thinning medications at supplement-level doses."
+      },
+      {
+        name: "Pumpkin seed",
+        category: ["gentle", "food"],
+        evidence: "traditional",
+        summary: "Traditionally used around worms and digestion. Easy to use as food and generally gentler than strong tinctures.",
+        bestFor: "Food-based support, minerals, fiber, mild gut terrain support.",
+        cautions: "Not a guaranteed dewormer. Watch allergies and digestion tolerance."
+      },
+      {
+        name: "Papaya seed",
+        category: ["food", "strong"],
+        evidence: "moderate",
+        summary: "Has limited human pilot evidence and lots of traditional use. Bitter, peppery, and often overhyped online.",
+        bestFor: "Occasional food-based support when tolerated, not during pregnancy without clinician guidance.",
+        cautions: "Large amounts can upset the gut. Avoid careless use in pregnancy, latex allergy, or with sensitive digestion."
+      },
+      {
+        name: "Clove",
+        category: ["strong"],
+        evidence: "traditional",
+        summary: "Often included in parasite formulas because of aromatic compounds. Stronger as extract/oil than as culinary spice.",
+        bestFor: "Short-term culinary support or practitioner-guided formulas.",
+        cautions: "Clove oil is potent and can irritate tissues; supplement doses may interact with anticoagulants."
+      },
+      {
+        name: "Oregano / Thyme",
+        category: ["gentle", "food", "strong"],
+        evidence: "traditional",
+        summary: "Aromatic herbs used for digestive and antimicrobial support. Food use is much safer than essential oil use.",
+        bestFor: "Cooking, teas, general gut terrain support.",
+        cautions: "Do not ingest essential oils casually. Can irritate gut and interact with medications in concentrated forms."
+      },
+      {
+        name: "Ginger",
+        category: ["gentle", "food"],
+        evidence: "traditional",
+        summary: "Not a parasite killer, but useful for nausea, digestion comfort, and inflammation support in many people.",
+        bestFor: "Nausea, digestive comfort, tea, meals.",
+        cautions: "High doses can worsen reflux or interact with blood-thinning medications."
+      },
+      {
+        name: "Black walnut hull",
+        category: ["strong"],
+        evidence: "low",
+        summary: "Popular in parasite cleanse kits, but strong human evidence is limited. More caution than internet hype suggests.",
+        bestFor: "Only practitioner-guided use if chosen.",
+        cautions: "Avoid with tree nut allergy. Use caution in pregnancy, breastfeeding, children, liver/kidney issues, or medication use."
+      },
+      {
+        name: "Wormwood",
+        category: ["strong"],
+        evidence: "low",
+        summary: "Historically famous and heavily marketed. Also one of the herbs that deserves the most caution.",
+        bestFor: "Practitioner-guided use only, especially if using extracts.",
+        cautions: "Thujone-containing products can be risky. Avoid with pregnancy, breastfeeding, seizure disorders, kidney issues, and many medications."
+      },
+      {
+        name: "Neem",
+        category: ["strong"],
+        evidence: "traditional",
+        summary: "Traditional antimicrobial and skin-support herb. Internally, it is not a casual daily-cleanse herb.",
+        bestFor: "Practitioner-guided formulas, sometimes external skin use depending on product.",
+        cautions: "Avoid in pregnancy/trying to conceive unless supervised. Can be unsafe for children and with certain health conditions."
+      },
+      {
+        name: "Berberine herbs",
+        category: ["strong"],
+        evidence: "traditional",
+        summary: "Goldenseal/barberry/oregon grape contain berberine-like compounds often used for gut microbes, but not a universal parasite cure.",
+        bestFor: "Practitioner-guided gut support when appropriate.",
+        cautions: "Can interact with medications and is not for pregnancy, breastfeeding, infants, or complex medical situations."
+      },
+      {
+        name: "Probiotics + fermented foods",
+        category: ["gentle", "food"],
+        evidence: "traditional",
+        summary: "Not antiparasitic treatment, but may support gut recovery and resilience after digestive disruption.",
+        bestFor: "Recovery phase, digestion support, microbiome support.",
+        cautions: "Use caution if immunocompromised or if fermented foods worsen symptoms."
+      },
+      {
+        name: "Bitter greens",
+        category: ["gentle", "food"],
+        evidence: "traditional",
+        summary: "Dandelion greens, arugula, chicory, and other bitters can support digestion and bile flow for some people.",
+        bestFor: "Food-based digestive support and appetite rhythm.",
+        cautions: "Avoid if gallbladder issues, bile duct obstruction, or medication interactions are a concern."
+      }
+    ];
+
+    const herbGrid = document.getElementById("herbGrid");
+    const herbSearch = document.getElementById("herbSearch");
+    const herbFilters = document.getElementById("herbFilters");
+    let activeFilter = "all";
+
+    function renderHerbs() {
+      const q = herbSearch.value.toLowerCase().trim();
+      const filtered = herbs.filter(h => {
+        const matchesFilter = activeFilter === "all" || h.category.includes(activeFilter);
+        const haystack = `${h.name} ${h.summary} ${h.bestFor} ${h.cautions} ${h.evidence} ${h.category.join(' ')}`.toLowerCase();
+        return matchesFilter && haystack.includes(q);
+      });
+
+      herbGrid.innerHTML = filtered.map(h => `
+        <article class="card herb-card">
+          <div class="herb-top">
+            <div class="herb-name">${h.name}</div>
+            <span class="evidence ${h.evidence}">${h.evidence} evidence</span>
+          </div>
+          <div class="herb-body">
+            <p>${h.summary}</p>
+            <div class="mini"><b>Best used for</b><span>${h.bestFor}</span></div>
+            <div class="mini" style="margin-top:10px"><b>Cautions</b><span>${h.cautions}</span></div>
+            <div class="pill-row">${h.category.map(c => `<span class="pill ${c === 'strong' ? 'red' : c === 'food' ? 'green' : 'gold'}">${c}</span>`).join("")}</div>
+          </div>
+        </article>
+      `).join("") || `<div class="card"><h3>No herbs found</h3><p>Try a broader search term.</p></div>`;
+    }
+
+    herbFilters.addEventListener("click", (e) => {
+      if (!e.target.matches(".filter")) return;
+      document.querySelectorAll(".filter").forEach(btn => btn.classList.remove("active"));
+      e.target.classList.add("active");
+      activeFilter = e.target.dataset.filter;
+      renderHerbs();
+    });
+
+    herbSearch.addEventListener("input", renderHerbs);
+
+    renderHerbs();
+  </script>
+</body>
+</html>

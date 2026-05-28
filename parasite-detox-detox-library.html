@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parasite Detox · Detox Library | NutriMind</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/nav.css" />
+  <link rel="stylesheet" href="/parasite-detox.css" />
+</head>
+<body>
+  <nav class="top-nav" aria-label="Primary"></nav>
+  <script src="/nav.js"></script>
+  <div class="grain"></div>
+  <main class="page">
+    <nav id="pd-subnav" aria-label="Parasite detox sections"></nav>
+
+    <section id="detox-library">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Protocol selector</div>
+          <h2>Deep detox protocol selector</h2>
+        </div>
+        <p>A grounded protocol selector: targets, filters, cards, detail view, safety scores, evidence/gentleness meters, and a generated shopping list.</p>
+      </div>
+
+      <div class="detox-toolbar" id="detoxSelector">
+        <div class="detox-control">
+          <label for="detoxSearchInput">Search</label>
+          <input id="detoxSearchInput" placeholder="Search parasite, metal, mold, liver..." />
+        </div>
+        <div class="detox-control">
+          <label for="detoxTargetFilter">Target</label>
+          <select id="detoxTargetFilter">
+            <option value="All">All targets</option>
+            <option value="Metals">Heavy Metals</option>
+            <option value="Parasites">Parasites</option>
+            <option value="Mold">Mold / Mycotoxin</option>
+            <option value="Liver">Liver / Bile</option>
+            <option value="Gut">Gut / Fiber</option>
+            <option value="Lymph">Lymph / Fluid</option>
+            <option value="Inflammation">Inflammation</option>
+          </select>
+        </div>
+        <div class="detox-control">
+          <label for="detoxTypeFilter">Type</label>
+          <select id="detoxTypeFilter">
+            <option value="All">All types</option>
+            <option value="Food Protocol">Food Protocol</option>
+            <option value="Tea">Tea</option>
+            <option value="Smoothie">Smoothie</option>
+            <option value="Meal Bowl">Meal Bowl</option>
+            <option value="Hydration">Hydration</option>
+            <option value="Doctor-Led">Doctor-Led</option>
+            <option value="Environment">Environment</option>
+          </select>
+        </div>
+        <button class="btn secondary" onclick="selectRandomDetox()">Random</button>
+        <button class="btn" onclick="buildDetoxShoppingList()">Shopping List</button>
+      </div>
+
+      <div class="detox-layout">
+        <div class="card">
+          <div class="detox-panel-head">
+            <h3>Protocol Library</h3>
+            <span class="pill" id="detoxVisibleCount">0 visible</span>
+          </div>
+          <div class="detox-library-list" id="detoxCards"></div>
+          <div class="hero-actions"><button class="btn secondary" onclick="resetDetoxFilters()">Reset Filters</button></div>
+        </div>
+
+        <div class="card">
+          <div class="detox-detail-top">
+            <div>
+              <h3 id="detoxSelectedName">Select a protocol</h3>
+              <p id="detoxSelectedDesc">Pick a card to see exact ingredients, amounts, preparation, cautions, and evidence level.</p>
+            </div>
+            <div class="detox-score">
+              <strong id="detoxSelectedScore">--</strong>
+              <small>Safety Score</small>
+            </div>
+          </div>
+
+          <div class="detox-info-grid">
+            <div class="detox-info"><small>Target</small><strong id="detoxSelectedTarget">--</strong></div>
+            <div class="detox-info"><small>Type</small><strong id="detoxSelectedType">--</strong></div>
+            <div class="detox-info"><small>Time</small><strong id="detoxSelectedTime">--</strong></div>
+            <div class="detox-info"><small>Cycle</small><strong id="detoxSelectedCycle">--</strong></div>
+          </div>
+
+          <div class="detox-subsection">
+            <h3>Ingredients + Amounts</h3>
+            <div class="detox-ingredient-list" id="detoxIngredients"></div>
+          </div>
+
+          <div class="detox-subsection">
+            <h3>Steps</h3>
+            <div class="detox-steps" id="detoxSteps"></div>
+          </div>
+
+          <div class="detox-subsection">
+            <h3>Careful With</h3>
+            <div class="detox-cautions" id="detoxCautions"></div>
+          </div>
+
+          <div class="detox-meters">
+            <div class="detox-meter-box"><small>Evidence Grounding</small><div class="bar"><span id="detoxEvidenceBar" style="width:50%"></span></div></div>
+            <div class="detox-meter-box"><small>Gentleness</small><div class="bar"><span id="detoxGentleBar" style="width:50%"></span></div></div>
+            <div class="detox-meter-box"><small>Medical Oversight Need</small><div class="bar"><span id="detoxMedicalBar" style="width:50%"></span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <div class="detox-panel-head">
+          <h3>Generated Shopping List</h3>
+          <span class="pill">From visible cards</span>
+        </div>
+        <div class="detox-shopping-list" id="detoxShoppingList">
+          <div class="detox-shop-item"><span>Use filters, then click “Shopping List.”</span><b>Ready</b></div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">Educational frontend only. Not medical advice. Do not use this page to diagnose yourself or replace professional care.</p>
+  </main>
+  <script src="/parasite-detox-nav.js"></script>
+  <script>
+    const detoxProtocols = [
+      {
+        id: 1,
+        name: "Heavy Metal Exposure — Food Support Base",
+        target: "Metals",
+        type: "Food Protocol",
+        time: "Daily meal",
+        cycle: "2–4 weeks",
+        safety: 88,
+        evidence: 68,
+        gentle: 88,
+        medical: 42,
+        desc: "A fiber, mineral, and antioxidant-focused food plan. This is not chelation and does not treat heavy-metal poisoning.",
+        ingredients: [
+          ["Oats or barley", "1/2 cup dry", "Soluble fiber support"],
+          ["Ground flaxseed", "1 tbsp", "Fiber and bowel regularity"],
+          ["Blueberries", "1/2 cup", "Polyphenol-rich food"],
+          ["Cilantro", "2 tbsp chopped", "Culinary herb, not a chelator"],
+          ["Pumpkin seeds", "1 tbsp", "Minerals and protein"],
+          ["Broccoli sprouts or broccoli", "1/2 cup", "Cruciferous food support"],
+          ["Water", "2–3 cups with meal window", "Hydration for regular elimination"]
+        ],
+        steps: [
+          "Build a bowl with oats or barley as the base.",
+          "Add berries, flaxseed, pumpkin seeds, and chopped cilantro.",
+          "Add broccoli sprouts or cooked broccoli on the side.",
+          "Use this as a supportive meal, not a replacement for testing or treatment."
+        ],
+        cautions: [
+          "Do not use this as treatment for lead, mercury, arsenic, or cadmium poisoning.",
+          "If exposure is suspected, testing and a clinician-guided plan matter.",
+          "Avoid OTC chelation products unless prescribed or supervised."
+        ]
+      },
+      {
+        id: 2,
+        name: "Heavy Metals — Doctor-Led Chelation Placeholder",
+        target: "Metals",
+        type: "Doctor-Led",
+        time: "Medical setting",
+        cycle: "Clinician decides",
+        safety: 55,
+        evidence: 84,
+        gentle: 28,
+        medical: 98,
+        desc: "A UI card for real heavy-metal poisoning workflows. This is intentionally doctor-led because chelation can be risky.",
+        ingredients: [
+          ["Confirmed lab testing", "Required", "Blood, urine, hair, or other test depends on metal"],
+          ["Exposure history", "Required", "Work, water, fish, paint, supplements, environment"],
+          ["Medical chelator", "Prescription only", "Depends on metal and patient"],
+          ["Kidney/liver monitoring", "Clinician-guided", "Safety monitoring"]
+        ],
+        steps: ["Confirm actual exposure with appropriate testing.", "Identify and remove the source of exposure.", "Use chelation only under medical supervision.", "Monitor labs and symptoms during treatment."],
+        cautions: ["Do not buy unapproved chelation products online.", "Chelation can affect essential minerals and organs.", "This card is a medical workflow marker, not a self-treatment recipe."]
+      },
+      {
+        id: 3,
+        name: "Parasite Suspicion — Testing First Protocol",
+        target: "Parasites",
+        type: "Doctor-Led",
+        time: "Before herbs",
+        cycle: "Until diagnosis",
+        safety: 82,
+        evidence: 82,
+        gentle: 70,
+        medical: 90,
+        desc: "A grounded parasite workflow: symptoms, stool testing, travel/food history, then targeted treatment if needed.",
+        ingredients: [["Symptom log", "7–14 days", "Track stool, itching, cramps, fever, fatigue"], ["Food/travel history", "1 list", "Undercooked meat, untreated water, travel, pets"], ["Stool test request", "Clinician-guided", "Common for GI parasite symptoms"], ["Hydration", "2–3 liters/day as tolerated", "Support during diarrhea or loose stool"], ["Bland foods", "As needed", "Rice, banana, soup, toast, oats"]],
+        steps: ["Write down symptoms and timing.", "Note travel, food, water, and animal exposure.", "Ask a healthcare provider about stool testing or other parasite tests.", "Use targeted treatment only after diagnosis whenever possible."],
+        cautions: ["Do not assume every craving, fatigue spell, or vague symptom is parasites.", "Some parasite symptoms overlap with IBS, food intolerance, stress, infection, or inflammation.", "Seek care fast for fever, blood in stool, dehydration, severe pain, or unexplained weight loss."]
+      },
+      {
+        id: 4,
+        name: "Parasite Food-Support Bowl",
+        target: "Parasites",
+        type: "Meal Bowl",
+        time: "Lunch",
+        cycle: "1–2 weeks",
+        safety: 86,
+        evidence: 48,
+        gentle: 82,
+        medical: 45,
+        desc: "A food-based gut support bowl using seeds, garlic, herbs, and fiber. Not a parasite treatment.",
+        ingredients: [["Cooked quinoa", "3/4 cup", "Gentle fiber base"], ["Pumpkin seeds", "2 tbsp", "Traditional food used in gut protocols"], ["Carrot", "1 medium grated", "Fiber and texture"], ["Garlic", "1 small clove minced", "Culinary antimicrobial-style food"], ["Parsley or cilantro", "2 tbsp chopped", "Fresh culinary herbs"], ["Olive oil", "1 tbsp", "Fat for satiety"], ["Lemon juice", "1 tbsp", "Flavor and acidity"]],
+        steps: ["Add quinoa, grated carrot, and pumpkin seeds to a bowl.", "Mix olive oil, lemon juice, and minced garlic as dressing.", "Top with parsley or cilantro.", "Eat as a supportive meal, not as a cure."],
+        cautions: ["Raw garlic can irritate reflux or gastritis.", "Pumpkin seeds are food, not a guaranteed antiparasitic treatment.", "Persistent symptoms need testing."]
+      },
+      {
+        id: 5,
+        name: "Parasite Herbal Caution Card",
+        target: "Parasites",
+        type: "Tea",
+        time: "Do not self-dose",
+        cycle: "Clinician-guided",
+        safety: 40,
+        evidence: 38,
+        gentle: 30,
+        medical: 88,
+        desc: "A warning card for stronger herbs often used online: wormwood, black walnut, clove, neem, oregano oil.",
+        ingredients: [["Wormwood", "No self-dose listed", "Can be risky"], ["Black walnut hull", "No self-dose listed", "Allergy and toxicity concerns"], ["Clove oil / oregano oil", "No self-dose listed", "Can burn/irritate tissues"], ["Neem", "No self-dose listed", "Not for pregnancy; safety concerns"], ["Clinician guidance", "Required", "Especially with meds or health conditions"]],
+        steps: ["Use this card as a red-flag reminder.", "Do not stack multiple strong antiparasitic herbs casually.", "Get testing before aggressive protocols.", "Review medication interactions with a pharmacist or clinician."],
+        cautions: ["Strong herbs can interact with medications and irritate the gut.", "Avoid during pregnancy, breastfeeding, liver disease, kidney disease, or complex medical conditions unless supervised.", "Essential oils should not be swallowed casually."]
+      },
+      {
+        id: 6,
+        name: "Mold / Mycotoxin — Exposure Reduction",
+        target: "Mold",
+        type: "Environment",
+        time: "Home audit",
+        cycle: "Immediate",
+        safety: 90,
+        evidence: 78,
+        gentle: 92,
+        medical: 55,
+        desc: "The first mold protocol is not a supplement. It is finding and reducing the exposure source.",
+        ingredients: [["Moisture inspection", "1 full home check", "Look under sinks, windows, bathroom, basement"], ["Humidity target", "Below 50% if possible", "Reduce mold-friendly moisture"], ["HEPA vacuum/filter", "As available", "Particle reduction support"], ["Remove damaged porous material", "As needed", "Professional help for serious cases"], ["Protective mask/gloves", "For cleanup", "Avoid inhaling disturbed mold"]],
+        steps: ["Find moisture sources before buying supplements.", "Reduce humidity and repair leaks.", "Avoid disturbing large mold areas without protection.", "Consider professional remediation for major contamination."],
+        cautions: ["Do not rely on binders while staying in a moldy environment.", "Severe respiratory symptoms, asthma flares, or neurological symptoms need medical care.", "Major mold remediation should be handled carefully."]
+      },
+      {
+        id: 7,
+        name: "Mold Support — Fiber + Bile Meal",
+        target: "Mold",
+        type: "Meal Bowl",
+        time: "Lunch or dinner",
+        cycle: "2–4 weeks",
+        safety: 82,
+        evidence: 52,
+        gentle: 78,
+        medical: 50,
+        desc: "A food-based binder-style support meal using fiber and bitter greens. Not a cure for mold illness.",
+        ingredients: [["Cooked lentils", "1/2 cup", "Fiber and protein"], ["Brown rice", "1/2 cup cooked", "Gentle carb base"], ["Arugula or dandelion greens", "1 cup", "Bitter greens"], ["Ground flaxseed", "1 tbsp", "Soluble/insoluble fiber"], ["Olive oil", "1 tbsp", "Bile-flow meal support"], ["Lemon juice", "1 tbsp", "Flavor and acidity"], ["Water", "1–2 cups", "Fiber needs fluid"]],
+        steps: ["Build the bowl with rice, lentils, and greens.", "Add flaxseed, olive oil, and lemon.", "Drink water with the meal.", "Use alongside exposure reduction, not instead of it."],
+        cautions: ["Increase fiber slowly to avoid bloating.", "If using binders like charcoal or clay, separate them from medications and use clinician guidance.", "Do not use this as a replacement for mold remediation."]
+      },
+      {
+        id: 8,
+        name: "Liver / Bile Gentle Bitter Tea",
+        target: "Liver",
+        type: "Tea",
+        time: "Before meals",
+        cycle: "1–2 weeks",
+        safety: 74,
+        evidence: 45,
+        gentle: 70,
+        medical: 55,
+        desc: "A gentle bitter-tea style card for digestive support. Not a liver cleanse and not for gallbladder attacks.",
+        ingredients: [["Dandelion root tea", "1 tea bag or 1 tsp dried root", "Traditional bitter digestive tea"], ["Hot water", "300 ml", "Tea base"], ["Ginger", "2–3 thin slices", "Warming digestive support"], ["Lemon", "1 tsp juice", "Flavor"], ["Honey", "1 tsp optional", "Taste only"]],
+        steps: ["Steep dandelion root and ginger in hot water for 8–10 minutes.", "Add lemon after steeping.", "Sip before a meal if tolerated.", "Stop if it worsens reflux, pain, or nausea."],
+        cautions: ["Avoid with gallbladder blockage, bile duct issues, severe reflux, or allergy to ragweed-family plants.", "Check interactions if taking diuretics, lithium, blood thinners, or diabetes medication.", "Right upper abdominal pain after fatty meals should be medically checked."]
+      },
+      {
+        id: 9,
+        name: "Gut Reset — Soluble Fiber Smoothie",
+        target: "Gut",
+        type: "Smoothie",
+        time: "Breakfast",
+        cycle: "1–3 weeks",
+        safety: 90,
+        evidence: 72,
+        gentle: 88,
+        medical: 32,
+        desc: "A simple gut-support smoothie focused on bowel regularity, fiber, and stable energy.",
+        ingredients: [["Blueberries", "1 cup", "Polyphenols and fiber"], ["Banana", "1/2 medium", "Texture and potassium"], ["Chia seeds", "1 tsp to 1 tbsp", "Start low if sensitive"], ["Ground flaxseed", "1 tbsp", "Fiber"], ["Plain yogurt or kefir", "3/4 cup", "Fermented food option"], ["Water", "1/2 cup", "Blend texture"]],
+        steps: ["Start with 1 tsp chia if your gut is sensitive.", "Blend all ingredients until smooth.", "Drink slowly with extra water.", "Increase fiber gradually over several days."],
+        cautions: ["Too much fiber too fast can cause bloating, gas, or constipation.", "Use dairy-free yogurt if dairy bothers you.", "Persistent diarrhea, blood, or weight loss needs medical care."]
+      },
+      {
+        id: 10,
+        name: "Lymph / Fluid Movement Hydration",
+        target: "Lymph",
+        type: "Hydration",
+        time: "Morning",
+        cycle: "Daily",
+        safety: 92,
+        evidence: 50,
+        gentle: 94,
+        medical: 30,
+        desc: "A hydration and movement-based card for fluid support. Lymph flow is mostly supported by movement, breathing, and hydration.",
+        ingredients: [["Water", "750 ml", "Hydration base"], ["Lemon or lime", "1 tbsp juice", "Flavor"], ["Sea salt", "Tiny pinch optional", "Only if salt is appropriate for you"], ["Cucumber", "1/4 cucumber sliced", "Flavor and hydration"], ["Mint", "5 leaves", "Flavor"], ["Walking", "10–20 minutes", "Muscle pump support"]],
+        steps: ["Prepare infused water in the morning.", "Sip gradually rather than chugging.", "Walk for 10–20 minutes.", "Add gentle stretching or diaphragmatic breathing."],
+        cautions: ["Skip added salt if you are sodium-restricted or have blood-pressure/kidney concerns.", "Swollen lymph nodes, unexplained swelling, fever, or night sweats need medical attention.", "This is supportive, not a disease treatment."]
+      },
+      {
+        id: 11,
+        name: "Inflammation Load — Polyphenol Plate",
+        target: "Inflammation",
+        type: "Food Protocol",
+        time: "Lunch or dinner",
+        cycle: "2–4 weeks",
+        safety: 89,
+        evidence: 70,
+        gentle: 86,
+        medical: 35,
+        desc: "A whole-food plate with colorful plants, omega-style fats, and spices. Useful as a general anti-inflammatory meal pattern.",
+        ingredients: [["Salmon, sardines, tofu, or beans", "1 palm-size serving", "Protein base"], ["Leafy greens", "2 cups", "Micronutrient density"], ["Berries or pomegranate", "1/2 cup", "Polyphenol-rich food"], ["Extra virgin olive oil", "1 tbsp", "Main fat"], ["Turmeric", "1/4 tsp", "Spice"], ["Black pepper", "Tiny pinch", "Flavor and turmeric pairing"], ["Walnuts", "1 tbsp", "Fat and crunch"]],
+        steps: ["Choose one protein base.", "Add greens and colorful fruit or vegetables.", "Dress with olive oil, turmeric, and black pepper.", "Add walnuts for texture."],
+        cautions: ["Turmeric supplements are different from culinary turmeric and can interact with medications.", "Fish choices matter if you are concerned about mercury exposure.", "Food patterns help support health but do not replace treatment for inflammatory disease."]
+      },
+      {
+        id: 12,
+        name: "Kidney-Safe Hydration Reminder",
+        target: "Gut",
+        type: "Hydration",
+        time: "Throughout day",
+        cycle: "Daily",
+        safety: 86,
+        evidence: 75,
+        gentle: 88,
+        medical: 40,
+        desc: "A gentle hydration card with no extreme flushing. Your kidneys already filter blood; the goal is normal hydration.",
+        ingredients: [["Water", "2–3 liters/day as tolerated", "Adjust for body size, sweat, climate"], ["Electrolyte foods", "1–2 servings", "Fruit, soup, yogurt, potatoes"], ["Cucumber or citrus", "Optional", "Flavor"], ["Avoid alcohol excess", "Daily choice", "Reduce load"], ["Avoid megadose supplements", "Daily choice", "Kidney/liver safety"]],
+        steps: ["Drink enough that urine is usually pale yellow, not perfectly clear all day.", "Use food-based electrolytes if sweating.", "Avoid extreme water chugging.", "Treat hydration as a baseline, not a cleanse."],
+        cautions: ["Kidney disease, heart failure, or fluid restriction changes hydration advice.", "Too much water can be dangerous.", "Swelling, shortness of breath, or very low urine output needs medical attention."]
+      }
+    ];
+
+    let detoxSelectedId = 1;
+
+    function detoxTagClass(target) {
+      const map = { Metals: "metals", Parasites: "parasites", Mold: "mold", Liver: "liver", Gut: "", Lymph: "", Inflammation: "" };
+      return map[target] || "";
+    }
+
+    function getVisibleDetoxProtocols() {
+      const search = document.getElementById("detoxSearchInput");
+      const targetEl = document.getElementById("detoxTargetFilter");
+      const typeEl = document.getElementById("detoxTypeFilter");
+      if (!search || !targetEl || !typeEl) return detoxProtocols;
+      const q = search.value.trim().toLowerCase();
+      const target = targetEl.value;
+      const type = typeEl.value;
+      return detoxProtocols.filter(item => {
+        const haystack = [item.name, item.target, item.type, item.desc, ...item.ingredients.flat(), ...item.cautions].join(" ").toLowerCase();
+        return (!q || haystack.includes(q)) && (target === "All" || item.target === target) && (type === "All" || item.type === type);
+      });
+    }
+
+    function renderDetoxCards() {
+      const cardsEl = document.getElementById("detoxCards");
+      if (!cardsEl) return;
+      const visible = getVisibleDetoxProtocols();
+      if (visible.length && !visible.some(item => item.id === detoxSelectedId)) detoxSelectedId = visible[0].id;
+      document.getElementById("detoxVisibleCount").textContent = `${visible.length} visible`;
+      cardsEl.innerHTML = visible.map(item => `
+        <article class="detox-card ${item.id === detoxSelectedId ? "active" : ""}" onclick="selectDetoxProtocol(${item.id})">
+          <h3>${item.name}</h3>
+          <p>${item.desc}</p>
+          <div class="detox-tag-row">
+            <span class="detox-tag ${detoxTagClass(item.target)}">${item.target}</span>
+            <span class="detox-tag">${item.type}</span>
+            <span class="detox-tag">Safety ${item.safety}</span>
+            ${item.medical > 75 ? `<span class="detox-tag caution">Doctor-led</span>` : ``}
+          </div>
+        </article>
+      `).join("") || `<article class="detox-card"><h3>No protocols found</h3><p>Try a broader word like gut, fiber, mold, metal, parasite, or liver.</p></article>`;
+      renderDetoxSelected();
+    }
+
+    function selectDetoxProtocol(id) {
+      detoxSelectedId = id;
+      renderDetoxCards();
+    }
+
+    function renderDetoxSelected() {
+      const item = detoxProtocols.find(protocol => protocol.id === detoxSelectedId);
+      if (!item) return;
+      document.getElementById("detoxSelectedName").textContent = item.name;
+      document.getElementById("detoxSelectedDesc").textContent = item.desc;
+      document.getElementById("detoxSelectedScore").textContent = item.safety;
+      document.getElementById("detoxSelectedTarget").textContent = item.target;
+      document.getElementById("detoxSelectedType").textContent = item.type;
+      document.getElementById("detoxSelectedTime").textContent = item.time;
+      document.getElementById("detoxSelectedCycle").textContent = item.cycle;
+      document.getElementById("detoxIngredients").innerHTML = item.ingredients.map(([name, amount, purpose]) => `
+        <div class="detox-ingredient"><div><span>${name}</span><div class="detox-purpose">${purpose}</div></div><b>${amount}</b></div>
+      `).join("");
+      document.getElementById("detoxSteps").innerHTML = item.steps.map(step => `<div class="detox-step">${step}</div>`).join("");
+      document.getElementById("detoxCautions").innerHTML = item.cautions.map(caution => `<div class="detox-caution-box">${caution}</div>`).join("");
+      document.getElementById("detoxEvidenceBar").style.width = `${item.evidence}%`;
+      document.getElementById("detoxGentleBar").style.width = `${item.gentle}%`;
+      document.getElementById("detoxMedicalBar").style.width = `${item.medical}%`;
+    }
+
+    function buildDetoxShoppingList() {
+      const visible = getVisibleDetoxProtocols();
+      const map = new Map();
+      visible.forEach(protocol => {
+        protocol.ingredients.forEach(([name, amount]) => {
+          const lower = name.toLowerCase();
+          if (lower.includes("testing") || lower.includes("clinician") || lower.includes("medical") || lower.includes("history") || lower.includes("inspection") || lower.includes("walking") || lower.includes("avoid") || lower.includes("monitoring")) return;
+          if (!map.has(name)) map.set(name, []);
+          map.get(name).push(amount);
+        });
+      });
+      const html = [...map.entries()].map(([name, amounts]) => `<div class="detox-shop-item"><span>${name}</span><b>${[...new Set(amounts)].join(" / ")}</b></div>`).join("");
+      document.getElementById("detoxShoppingList").innerHTML = html || `<div class="detox-shop-item"><span>No shopping items from this filter. Try selecting food-based protocols.</span><b>Empty</b></div>`;
+    }
+
+    function selectRandomDetox() {
+      const visible = getVisibleDetoxProtocols();
+      const pool = visible.length ? visible : detoxProtocols;
+      detoxSelectedId = pool[Math.floor(Math.random() * pool.length)].id;
+      renderDetoxCards();
+      document.getElementById("detoxSelector").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function resetDetoxFilters() {
+      document.getElementById("detoxSearchInput").value = "";
+      document.getElementById("detoxTargetFilter").value = "All";
+      document.getElementById("detoxTypeFilter").value = "All";
+      detoxSelectedId = 1;
+      renderDetoxCards();
+    }
+
+    const detoxSearchEl = document.getElementById("detoxSearchInput");
+    const detoxTargetEl = document.getElementById("detoxTargetFilter");
+    const detoxTypeEl = document.getElementById("detoxTypeFilter");
+    if (detoxSearchEl && detoxTargetEl && detoxTypeEl) {
+      detoxSearchEl.addEventListener("input", renderDetoxCards);
+      detoxTargetEl.addEventListener("change", renderDetoxCards);
+      detoxTypeEl.addEventListener("change", renderDetoxCards);
+    }
+
+    renderDetoxCards();
+  </script>
+</body>
+</html>

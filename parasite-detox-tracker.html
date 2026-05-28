@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parasite Detox · Tracker | NutriMind</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/nav.css" />
+  <link rel="stylesheet" href="/parasite-detox.css" />
+</head>
+<body>
+  <nav class="top-nav" aria-label="Primary"></nav>
+  <script src="/nav.js"></script>
+  <div class="grain"></div>
+  <main class="page">
+    <nav id="pd-subnav" aria-label="Parasite detox sections"></nav>
+
+    <section id="tracker">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Personal tracker</div>
+          <h2>Track patterns without spiraling</h2>
+        </div>
+        <p>Save notes locally in your browser. Use it to bring clearer info to a practitioner instead of relying on memory.</p>
+      </div>
+
+      <div class="tracker">
+        <div class="card">
+          <h3>Symptoms + exposure notes</h3>
+          <p>Examples: diarrhea start date, food/water exposure, travel, pets, itching, stool changes, fever, weight change.</p>
+          <textarea id="symptomNotes" placeholder="Write your notes here..."></textarea>
+          <div class="hero-actions"><button class="btn" onclick="saveNotes()">Save notes</button><button class="btn secondary" onclick="clearNotes()">Clear</button></div>
+        </div>
+        <div class="card source-card">
+          <h3>Testing questions to ask</h3>
+          <ul>
+            <li>Should I do stool O&P, and should it be multiple samples?</li>
+            <li>Would antigen or PCR testing be better for Giardia, Crypto, or Cyclospora?</li>
+            <li>Do I need CBC/eosinophils, iron/ferritin, liver enzymes, or specific parasite blood tests?</li>
+            <li>Could this be food intolerance, IBS, infection, gallbladder, medication, or inflammation instead?</li>
+            <li>Which herbs or supplements are unsafe with my meds or health history?</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">Educational frontend only. Not medical advice. Do not use this page to diagnose yourself or replace professional care.</p>
+  </main>
+  <script src="/parasite-detox-nav.js"></script>
+  <script>
+    function saveNotes() {
+      const notes = document.getElementById("symptomNotes").value;
+      localStorage.setItem("parasiteHerbNotes", notes);
+      alert("Notes saved in this browser.");
+    }
+
+    function clearNotes() {
+      localStorage.removeItem("parasiteHerbNotes");
+      document.getElementById("symptomNotes").value = "";
+    }
+
+    document.getElementById("symptomNotes").value = localStorage.getItem("parasiteHerbNotes") || "";
+  </script>
+</body>
+</html>
