@@ -990,38 +990,6 @@ details p { color: var(--muted); line-height: 1.6; }
   padding-right: 4px;
 }
 
-/* Blend builder */
-.blend-add { padding: 8px 12px; font-size: 13px; white-space: nowrap; }
-.blend-add[disabled] { opacity: .5; cursor: default; filter: none; transform: none; }
-.blend-controls { display: flex; gap: 8px; align-items: center; }
-.blend-amount {
-  width: 120px;
-  padding: 8px 10px;
-  border-radius: 12px;
-  border: 1px solid var(--edge);
-  background: rgba(0,0,0,.2);
-  color: var(--text);
-  font: inherit;
-  font-size: 13px;
-  outline: none;
-}
-.blend-amount:focus { border-color: var(--green); }
-.blend-remove {
-  flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  border: 1px solid rgba(224,114,111,.3);
-  background: rgba(224,114,111,.1);
-  color: #ffb7b7;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
-}
-.blend-remove:hover { background: rgba(224,114,111,.2); }
-.blend-empty { color: var(--muted); font-size: 14px; line-height: 1.55; }
-.blend-export { min-height: 150px; margin-top: 12px; font-size: 13px; }
-
 @media (max-width: 920px) {
   .hero, .grid.two, .grid.three, .grid.four, .parasite-board, .tracker, .quick-map, .phase-flow, .builder-grid, .detox-toolbar, .detox-layout, .detox-info-grid, .detox-meters, .detox-detail-top { grid-template-columns: 1fr; }
   .detox-score { text-align: left; }

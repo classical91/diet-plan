@@ -1,14 +1,13 @@
 (function () {
   const SECTIONS = [
     { path: "/parasite-detox", label: "Overview" },
+    { path: "/parasite-detox/recommended", label: "Recommended" },
     { path: "/parasite-detox/effects", label: "Effects" },
     { path: "/parasite-detox/types", label: "Types" },
     { path: "/parasite-detox/herbs", label: "Herbs" },
     { path: "/parasite-detox/ingredient-stack", label: "Ingredient Stack" },
     { path: "/parasite-detox/eggs", label: "Egg Strategy" },
-    { path: "/parasite-detox/protocol-builder", label: "Protocol Builder" },
     { path: "/parasite-detox/detox-library", label: "Detox Library" },
-    { path: "/parasite-detox/blend-builder", label: "Blend Builder" },
     { path: "/parasite-detox/safe-plan", label: "Safe Plan" },
     { path: "/parasite-detox/tracker", label: "Tracker" },
     { path: "/parasite-detox/red-flags", label: "Red Flags" }
