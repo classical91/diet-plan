@@ -11,7 +11,7 @@
             <a href="/nutrition#s-reminders" class="nav-dropdown-item">Reminders</a>
             <a href="/benefits" class="nav-dropdown-item" data-path="/benefits">Benefits</a>
             <a href="/deficiencies" class="nav-dropdown-item" data-path="/deficiencies">Deficiencies</a>
-            <a href="/overview" class="nav-dropdown-item" data-path="/overview">Overview</a>
+            <a href="/overview" class="nav-dropdown-item" data-path="/overview">Vitamins &amp; Minerals</a>
           </div>
         </div>
         <div class="nav-item has-dropdown" data-group="reference">
@@ -42,7 +42,7 @@
     { path: "/nutrition", title: "Nutrition Checklist" },
     { path: "/benefits", title: "Food Benefits" },
     { path: "/deficiencies", title: "Deficiencies" },
-    { path: "/overview", title: "Overview" },
+    { path: "/overview", title: "Vitamins & Minerals" },
     { path: "/howto", title: "How-To" },
     { path: "/diets", title: "Diet Types" },
     { path: "/allergies", title: "Allergies" },
