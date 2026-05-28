@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parasite Detox · Types | NutriMind</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/nav.css" />
+  <link rel="stylesheet" href="/parasite-detox.css" />
+</head>
+<body>
+  <nav class="top-nav" aria-label="Primary"></nav>
+  <script src="/nav.js"></script>
+  <div class="grain"></div>
+  <main class="page">
+    <nav id="pd-subnav" aria-label="Parasite detox sections"></nav>
+
+    <section id="types">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Parasite map</div>
+          <h2>Know the category before choosing a path</h2>
+        </div>
+        <p>Different parasites need different tests and treatments. Click each group to see common clues, exposure patterns, testing ideas, and the herbal-support lane.</p>
+      </div>
+
+      <div class="parasite-board">
+        <div class="list-card" id="parasiteButtons"></div>
+        <div class="detail-card" id="parasiteDetail"></div>
+      </div>
+    </section>
+
+    <p class="footer">Educational frontend only. Not medical advice. Do not use this page to diagnose yourself or replace professional care.</p>
+  </main>
+  <script src="/parasite-detox-nav.js"></script>
+  <script>
+    const parasiteTypes = [
+      {
+        name: "Protozoa",
+        subtitle: "Giardia, Cryptosporidium, Cyclospora",
+        icon: "💧",
+        clues: ["Watery or greasy diarrhea", "Gas, cramps, bloating", "Often tied to water, food, daycare, travel"],
+        testing: "Stool antigen, PCR, microscopy, or targeted tests depending on organism.",
+        herb: "Gentle gut support only until confirmed: ginger, thyme/oregano as culinary herbs, hydration, electrolytes. Do not rely on cleanse kits for ongoing diarrhea."
+      },
+      {
+        name: "Intestinal worms",
+        subtitle: "Pinworm, roundworm, hookworm, whipworm",
+        icon: "🪱",
+        clues: ["Nighttime anal itching with pinworm", "Abdominal pain or appetite changes", "Anemia can happen with hookworm"],
+        testing: "Tape test for pinworm; stool ova/parasite testing for many worms; CBC/eosinophils may help context.",
+        herb: "Pumpkin seed and papaya seed are commonly discussed as food-based support, but confirmed worms usually need organism-specific care."
+      },
+      {
+        name: "Tissue parasites",
+        subtitle: "Trichinella, some larval infections",
+        icon: "🥩",
+        clues: ["Undercooked meat exposure", "Muscle pain, swelling, fever", "Gut symptoms followed by body symptoms"],
+        testing: "Blood tests, antibody testing, CBC/eosinophils, and clinician evaluation.",
+        herb: "Do not self-treat. Use herbs only as clinician-approved support because tissue infections can become serious."
+      },
+      {
+        name: "Blood parasites",
+        subtitle: "Malaria, babesiosis, filariasis",
+        icon: "🩸",
+        clues: ["Fever cycles, chills, sweats", "Travel or tick exposure", "Severe fatigue or anemia signs"],
+        testing: "Blood smear, rapid tests, serology, or PCR depending on suspicion.",
+        herb: "Not an herb-first category. This requires medical diagnosis and targeted treatment."
+      },
+      {
+        name: "Skin parasites",
+        subtitle: "Scabies, lice, cutaneous larvae",
+        icon: "🧴",
+        clues: ["Intense itching", "Rash or tracks", "Household spread"],
+        testing: "Visual exam, skin scraping, exposure history.",
+        herb: "Tea tree and neem are often discussed, but skin parasites can spread quickly. Confirm and treat properly to stop reinfection."
+      }
+    ];
+
+    const buttons = document.getElementById("parasiteButtons");
+    const detail = document.getElementById("parasiteDetail");
+
+    function renderParasites(active = 0) {
+      buttons.innerHTML = parasiteTypes.map((p, i) => `
+        <button class="parasite-btn ${i === active ? 'active' : ''}" onclick="renderParasites(${i})">
+          <strong>${p.icon} ${p.name}</strong>
+          <small>${p.subtitle}</small>
+        </button>
+      `).join("");
+
+      const p = parasiteTypes[active];
+      detail.innerHTML = `
+        <div class="pill-row"><span class="pill green">${p.icon} ${p.subtitle}</span></div>
+        <h3>${p.name}</h3>
+        <p>${p.name === 'Blood parasites' ? 'This category can be medically urgent. Do not use herbs as the primary plan.' : 'Use this as a category map before choosing herbs or testing.'}</p>
+        <div class="detail-grid">
+          <div class="mini"><b>Common clues</b><ul>${p.clues.map(c => `<li>${c}</li>`).join("")}</ul></div>
+          <div class="mini"><b>Testing path</b><span>${p.testing}</span></div>
+          <div class="mini" style="grid-column:1/-1"><b>Herbal-support lane</b><span>${p.herb}</span></div>
+        </div>
+      `;
+    }
+
+    renderParasites();
+  </script>
+</body>
+</html>

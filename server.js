@@ -63,6 +63,12 @@ const server = http.createServer(async (request, response) => {
     }
     if (pathname === "/parasite-detox" || pathname === "/parasite-detox/") {
       pathname = "/parasite-detox.html";
+    } else if (pathname.startsWith("/parasite-detox/")) {
+      // /parasite-detox/<slug> serves parasite-detox-<slug>.html
+      const slug = pathname.slice("/parasite-detox/".length).replace(/\/+$/, "");
+      if (/^[a-z0-9-]+$/.test(slug)) {
+        pathname = `/parasite-detox-${slug}.html`;
+      }
     }
 
     const clean = pathname === "/" ? "index.html" : pathname.replace(/^\/+/, "");

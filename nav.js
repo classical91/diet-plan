@@ -49,6 +49,16 @@
     { path: "/foodtypes", title: "Food Categories" },
     { path: "/adaptogens", title: "Adaptogens" },
     { path: "/parasite-detox", title: "Parasite Detox" },
+    { path: "/parasite-detox/effects", title: "Parasite Detox · Effects" },
+    { path: "/parasite-detox/types", title: "Parasite Detox · Types" },
+    { path: "/parasite-detox/herbs", title: "Parasite Detox · Herbs" },
+    { path: "/parasite-detox/ingredient-stack", title: "Parasite Detox · Ingredient Stack" },
+    { path: "/parasite-detox/eggs", title: "Parasite Detox · Egg Strategy" },
+    { path: "/parasite-detox/protocol-builder", title: "Parasite Detox · Protocol Builder" },
+    { path: "/parasite-detox/detox-library", title: "Parasite Detox · Detox Library" },
+    { path: "/parasite-detox/safe-plan", title: "Parasite Detox · Safe Plan" },
+    { path: "/parasite-detox/tracker", title: "Parasite Detox · Tracker" },
+    { path: "/parasite-detox/red-flags", title: "Parasite Detox · Red Flags" },
     { path: "/seasonal-rotation", title: "Seasonal Rotation" }
   ];
 
