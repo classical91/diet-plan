@@ -38,7 +38,13 @@
     </div>
   `;
 
-  const SEARCH_PAGES = [
+  // Item-level search entries are prebuilt into /search-index.json by
+  // scripts/build-search-index.mjs (run `npm run build:search`). Each entry is
+  // either a single card item — deep-linking to e.g. /benefits/pumpkin-seeds or
+  // /deficiencies#i-vitamin-d so the result opens that exact item — or a whole
+  // content page. If the manifest can't load we fall back to a flat page list
+  // so search still navigates somewhere useful.
+  const FALLBACK_PAGES = [
     { path: "/nutrition", title: "Nutrition Checklist" },
     { path: "/benefits", title: "Food Benefits" },
     { path: "/deficiencies", title: "Deficiencies" },
@@ -49,55 +55,33 @@
     { path: "/foodtypes", title: "Food Categories" },
     { path: "/adaptogens", title: "Adaptogens" },
     { path: "/parasite-detox", title: "Parasite Detox" },
-    { path: "/parasite-detox/recommended", title: "Parasite Detox · Recommended Blend" },
-    { path: "/parasite-detox/effects", title: "Parasite Detox · Effects" },
-    { path: "/parasite-detox/types", title: "Parasite Detox · Types" },
-    { path: "/parasite-detox/herbs", title: "Parasite Detox · Herbs" },
-    { path: "/parasite-detox/eggs", title: "Parasite Detox · Egg Strategy" },
-    { path: "/parasite-detox/detox-library", title: "Parasite Detox · Detox Library" },
-    { path: "/parasite-detox/safe-plan", title: "Parasite Detox · Safe Plan" },
-    { path: "/parasite-detox/tracker", title: "Parasite Detox · Tracker" },
-    { path: "/parasite-detox/red-flags", title: "Parasite Detox · Red Flags" },
     { path: "/seasonal-rotation", title: "Seasonal Rotation" }
   ];
 
   let searchIndex = null;
   let searchIndexPromise = null;
 
-  function extractText(html) {
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    doc.querySelectorAll("style, nav, link, meta").forEach((el) => el.remove());
-    // Keep <script> contents: many reference pages embed their card data
-    // as a JS object literal (e.g., benefits.html, foodtypes.html), and
-    // those terms should be searchable. Strip obvious JS punctuation so
-    // snippets read closer to prose.
-    const main = doc.querySelector("main") || doc.body;
-    return (main.textContent || "")
-      .replace(/[{}\[\];`]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
+  function toEntry(e) {
+    const title = e.title || "";
+    const text = e.text || "";
+    return {
+      path: e.path,
+      title,
+      context: e.context || "",
+      text,
+      // Matching considers title + body; snippet alignment needs body-only.
+      textLower: text.toLowerCase(),
+      lower: (title + " " + text).toLowerCase()
+    };
   }
 
-  async function buildIndex() {
-    if (searchIndex) return searchIndex;
+  function buildIndex() {
+    if (searchIndex) return Promise.resolve(searchIndex);
     if (searchIndexPromise) return searchIndexPromise;
-    searchIndexPromise = (async () => {
-      const entries = await Promise.all(
-        SEARCH_PAGES.map(async (page) => {
-          try {
-            const res = await fetch(page.path, { credentials: "same-origin" });
-            if (!res.ok) return { ...page, text: "", lower: "" };
-            const html = await res.text();
-            const text = extractText(html);
-            return { ...page, text, lower: text.toLowerCase() };
-          } catch {
-            return { ...page, text: "", lower: "" };
-          }
-        })
-      );
-      searchIndex = entries;
-      return entries;
-    })();
+    searchIndexPromise = fetch("/search-index.json", { credentials: "same-origin" })
+      .then((res) => { if (!res.ok) throw new Error("index " + res.status); return res.json(); })
+      .then((data) => { searchIndex = (data.entries || []).map(toEntry); return searchIndex; })
+      .catch(() => { searchIndex = FALLBACK_PAGES.map(toEntry); return searchIndex; });
     return searchIndexPromise;
   }
 
@@ -109,7 +93,11 @@
 
   function makeSnippet(text, lower, query) {
     const idx = lower.indexOf(query);
-    if (idx === -1) return "";
+    if (idx === -1) {
+      // Match was in the title only — show the start of the body for context.
+      const head = text.slice(0, 120);
+      return escapeHtml(head) + (text.length > 120 ? " …" : "");
+    }
     const radius = 60;
     const start = Math.max(0, idx - radius);
     const end = Math.min(text.length, idx + query.length + radius);
@@ -152,9 +140,10 @@
       <a class="nav-search-result" href="${entry.path}" role="option">
         <div class="nav-search-result-title">
           ${escapeHtml(entry.title)}
+          ${entry.context ? `<span class="nav-search-result-context">${escapeHtml(entry.context)}</span>` : ""}
           <span class="nav-search-result-hits">${hits} match${hits === 1 ? "" : "es"}</span>
         </div>
-        <div class="nav-search-result-snippet">${makeSnippet(entry.text, entry.lower, q)}</div>
+        <div class="nav-search-result-snippet">${makeSnippet(entry.text, entry.textLower, q)}</div>
       </a>
     `).join("");
   }

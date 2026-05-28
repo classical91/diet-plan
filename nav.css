@@ -164,10 +164,23 @@
   align-items: baseline;
   gap: 8px;
 }
+.nav-search-result-context {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #a89e8d;
+  background: rgba(200,146,42,0.12);
+  padding: 1px 6px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
 .nav-search-result-hits {
   font-size: 11px;
   font-weight: 400;
   color: #7a7063;
+  margin-left: auto;
 }
 .nav-search-result-snippet {
   font-family: 'DM Sans', sans-serif;
@@ -187,6 +200,16 @@
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   color: #7a7063;
+}
+
+/* Highlight a card when arrived at via a search deep link (e.g. #i-vitamin-d). */
+.search-deeplink-target {
+  animation: searchDeeplinkFlash 2.4s ease-out;
+  scroll-margin-top: 76px;
+}
+@keyframes searchDeeplinkFlash {
+  0%, 15% { box-shadow: 0 0 0 3px rgba(200,146,42,0.85); }
+  100% { box-shadow: 0 0 0 3px rgba(200,146,42,0); }
 }
 @media (max-width: 768px) {
   .nav-mobile-btn { display: block; }

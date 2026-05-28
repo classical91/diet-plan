@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node server.js",
+    "build:search": "node scripts/build-search-index.mjs",
     "test": "npm --prefix apps/aegean-week test",
     "start": "node server.js"
   },
