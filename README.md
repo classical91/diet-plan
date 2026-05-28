@@ -14,6 +14,18 @@ This workspace now opens the Mediterranean diet planner from the root.
 - [`apps/aegean-week`](./apps/aegean-week) contains the planner source, data, tests, and standalone app files.
 - `npm test` at the root runs the planner test suite from `apps/aegean-week`.
 
+## Search
+
+The top-nav search returns **item-level** results — searching e.g. "pumpkin"
+or "cucurbitin" links straight to that food's page (`/benefits/pumpkin-seeds`)
+or scrolls to and highlights the matching card (`/deficiencies#i-vitamin-d`).
+
+Results are served from `search-index.json`, generated from each card page's
+data by `npm run build:search`. **Re-run it whenever you edit a card page's
+data array** (the `DATA` / `FOODS` / `DIETS` / `ADAPTOGENS` lists in
+benefits, deficiencies, allergies, diets, foodtypes, adaptogens) so the search
+stays in sync.
+
 ## Notes
 
 - Older non-diet files from the copied workspace are still present, but the root app now points to the diet planner.

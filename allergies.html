@@ -425,6 +425,7 @@ function severityLabel(s) {
 function makeCard(d, i) {
   const card = document.createElement('div');
   card.className = 'card';
+  card.id = 'i-' + deeplinkSlug(d.name);
   card.style.animationDelay = (i*0.02)+'s';
   card.innerHTML = `
     <div class="card-stripe" style="background:${d.color}"></div>
@@ -490,6 +491,28 @@ function setCat(cat) {
 }
 
 render(DATA);
+
+// Search deep links arrive as #i-<slug> (see scripts/build-search-index.mjs).
+function deeplinkSlug(name) {
+  return String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+function focusDeepLink() {
+  if (!/^#i-/.test(location.hash)) return;
+  const id = location.hash.slice(1);
+  let el = document.getElementById(id);
+  if (!el) {
+    const s = document.getElementById('search'); if (s) { s.value = ''; }
+    const allBtn = document.querySelector('[data-cat="all"], [data-filter="all"]');
+    if (allBtn) allBtn.click();
+    el = document.getElementById(id);
+  }
+  if (!el) return;
+  el.classList.add('expanded', 'search-deeplink-target');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => el.classList.remove('search-deeplink-target'), 2600);
+}
+focusDeepLink();
+window.addEventListener('hashchange', focusDeepLink);
 </script>
 </body>
 </html>

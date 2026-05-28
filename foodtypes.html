@@ -310,6 +310,7 @@ CATEGORIES.forEach(cat => {
 function makeCard(food, i) {
   const card = document.createElement('div');
   card.className = 'food-card';
+  card.id = 'i-' + deeplinkSlug(food.name);
   card.style.animationDelay = (i * 0.015) + 's';
   card.innerHTML = `
     <div class="food-stripe" style="background:${food.color}"></div>
@@ -357,6 +358,28 @@ function setCat(cat) {
 }
 
 render(FOODS);
+
+// Search deep links arrive as #i-<slug> (see scripts/build-search-index.mjs).
+function deeplinkSlug(name) {
+  return String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+function focusDeepLink() {
+  if (!/^#i-/.test(location.hash)) return;
+  const id = location.hash.slice(1);
+  let el = document.getElementById(id);
+  if (!el) {
+    const s = document.getElementById('search'); if (s) { s.value = ''; }
+    const allBtn = document.querySelector('[data-cat="all"], [data-filter="all"]');
+    if (allBtn) allBtn.click();
+    el = document.getElementById(id);
+  }
+  if (!el) return;
+  el.classList.add('expanded', 'search-deeplink-target');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => el.classList.remove('search-deeplink-target'), 2600);
+}
+focusDeepLink();
+window.addEventListener('hashchange', focusDeepLink);
 </script>
 </body>
 </html>

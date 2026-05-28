@@ -467,6 +467,7 @@ function getRiskColor(level) {
 function makeCard(item, i) {
   const card = document.createElement('div');
   card.className = 'card';
+  card.id = 'i-' + deeplinkSlug(item.name);
   card.style.animationDelay = (i * 0.02) + 's';
   card.dataset.name = item.name.toLowerCase();
   card.dataset.symptoms = item.symptoms.map(s => s.s.toLowerCase()).join(' ');
@@ -529,6 +530,29 @@ function setCat(cat) {
 }
 
 render(DATA);
+
+// Search deep links arrive as #i-<slug> (see scripts/build-search-index.mjs).
+// Open and highlight the matching card so the result lands on the exact item.
+function deeplinkSlug(name) {
+  return String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+function focusDeepLink() {
+  if (!/^#i-/.test(location.hash)) return;
+  const id = location.hash.slice(1);
+  let el = document.getElementById(id);
+  if (!el) {
+    const s = document.getElementById('search'); if (s) { s.value = ''; }
+    const allBtn = document.querySelector('[data-cat="all"], [data-filter="all"]');
+    if (allBtn) allBtn.click();
+    el = document.getElementById(id);
+  }
+  if (!el) return;
+  el.classList.add('expanded', 'search-deeplink-target');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => el.classList.remove('search-deeplink-target'), 2600);
+}
+focusDeepLink();
+window.addEventListener('hashchange', focusDeepLink);
 </script>
 </body>
 </html>
