@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A grounded detox protocol selector with safety scores, evidence and gentleness meters, and a generated shopping list." />
   <title>Parasite Detox · Detox Library | NutriMind</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/nav.css" />
@@ -371,7 +372,7 @@
       if (visible.length && !visible.some(item => item.id === detoxSelectedId)) detoxSelectedId = visible[0].id;
       document.getElementById("detoxVisibleCount").textContent = `${visible.length} visible`;
       cardsEl.innerHTML = visible.map(item => `
-        <article class="detox-card ${item.id === detoxSelectedId ? "active" : ""}" onclick="selectDetoxProtocol(${item.id})">
+        <article class="detox-card ${item.id === detoxSelectedId ? "active" : ""}" role="button" tabindex="0" aria-pressed="${item.id === detoxSelectedId}" onclick="selectDetoxProtocol(${item.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectDetoxProtocol(${item.id})}">
           <h3>${item.name}</h3>
           <p>${item.desc}</p>
           <div class="detox-tag-row">

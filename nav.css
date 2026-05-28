@@ -216,12 +216,15 @@
     padding: 4px;
     margin-top: 2px;
   }
-  .nav-search { margin-left: auto; margin-right: 8px; }
+  .nav-search { position: static; margin-left: auto; margin-right: 8px; }
   .nav-search-input { width: 130px; }
   .nav-search-input:focus { width: 150px; }
+  /* Span the nav width (anchored to .top-nav) instead of the centered search
+     box, so the panel doesn't overflow off the left edge on mobile. */
   .nav-search-results {
-    width: calc(100vw - 32px);
-    right: -8px;
-    max-width: 380px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-width: none;
   }
 }
