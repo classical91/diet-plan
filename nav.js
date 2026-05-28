@@ -53,7 +53,6 @@
     { path: "/parasite-detox/effects", title: "Parasite Detox · Effects" },
     { path: "/parasite-detox/types", title: "Parasite Detox · Types" },
     { path: "/parasite-detox/herbs", title: "Parasite Detox · Herbs" },
-    { path: "/parasite-detox/ingredient-stack", title: "Parasite Detox · Ingredient Stack" },
     { path: "/parasite-detox/eggs", title: "Parasite Detox · Egg Strategy" },
     { path: "/parasite-detox/detox-library", title: "Parasite Detox · Detox Library" },
     { path: "/parasite-detox/safe-plan", title: "Parasite Detox · Safe Plan" },

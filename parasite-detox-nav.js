@@ -5,7 +5,6 @@
     { path: "/parasite-detox/effects", label: "Effects" },
     { path: "/parasite-detox/types", label: "Types" },
     { path: "/parasite-detox/herbs", label: "Herbs" },
-    { path: "/parasite-detox/ingredient-stack", label: "Ingredient Stack" },
     { path: "/parasite-detox/eggs", label: "Egg Strategy" },
     { path: "/parasite-detox/detox-library", label: "Detox Library" },
     { path: "/parasite-detox/safe-plan", label: "Safe Plan" },
