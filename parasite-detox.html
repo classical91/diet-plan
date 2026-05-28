@@ -1,0 +1,2105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parasite Detox | NutriMind</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/nav.css" />
+  <style>
+    :root {
+      --bg: #0f0d0a;
+      --bg2: #1a1714;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.1);
+      --text: #f0ebe3;
+      --muted: #a89e8c;
+      --soft: #d8cdb8;
+      --green: #8fbe6b;
+      --green2: #6fa050;
+      --gold: #c8922a;
+      --orange: #d9914e;
+      --red: #e0726f;
+      --blue: #5b9bd5;
+      --edge: #2e2a24;
+      --shadow: 0 24px 80px rgba(0,0,0,.45);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-weight: 300;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 15% 8%, rgba(200,146,42,.10), transparent 45%),
+        radial-gradient(ellipse at 88% 4%, rgba(143,190,107,.07), transparent 40%),
+        radial-gradient(ellipse at 50% 96%, rgba(91,155,213,.05), transparent 45%),
+        linear-gradient(135deg, #0c0a08 0%, var(--bg) 50%, #15110c 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; }
+
+    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .06;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 64px;
+    }
+
+    .nav {
+      position: sticky;
+      top: 68px;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      border: 1px solid var(--edge);
+      border-radius: 999px;
+      background: rgba(19,17,14,.82);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 14px 50px rgba(0,0,0,.3);
+    }
+
+    .brand {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #07130e;
+      background: linear-gradient(135deg, var(--green), var(--gold));
+      box-shadow: 0 0 30px rgba(143,190,107,.28);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav-links::-webkit-scrollbar { display:none; }
+
+    .nav a {
+      text-decoration: none;
+      font-size: 13px;
+      color: var(--muted);
+      padding: 9px 12px;
+      border-radius: 999px;
+      transition: .2s ease;
+      white-space: nowrap;
+    }
+
+    .nav a:hover { color: var(--text); background: rgba(255,255,255,.08); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.07fr .93fr;
+      gap: 24px;
+      align-items: stretch;
+      padding: 64px 0 34px;
+    }
+
+    .hero-card, .glass-card {
+      border: 1px solid var(--edge);
+      background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.055));
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero-card {
+      padding: clamp(28px, 4vw, 52px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-card:before {
+      content: "";
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(143,190,107,.17), transparent 65%);
+      right: -110px;
+      top: -110px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 9px;
+      align-items: center;
+      padding: 8px 12px;
+      border: 1px solid rgba(143,190,107,.26);
+      color: var(--green);
+      background: rgba(143,190,107,.09);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 750;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(42px, 7vw, 84px);
+      letter-spacing: -.07em;
+      line-height: .9;
+      max-width: 760px;
+    }
+
+    .hero p {
+      color: var(--soft);
+      font-size: clamp(16px, 1.8vw, 20px);
+      line-height: 1.6;
+      max-width: 760px;
+      margin: 22px 0 0;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .btn {
+      border: 0;
+      color: #08120d;
+      background: linear-gradient(135deg, var(--green), var(--gold));
+      padding: 13px 16px;
+      border-radius: 999px;
+      font-weight: 850;
+      cursor: pointer;
+      box-shadow: 0 16px 40px rgba(143,190,107,.2);
+      transition: transform .2s ease, filter .2s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+
+    .btn.secondary {
+      color: var(--text);
+      background: rgba(255,255,255,.08);
+      border: 1px solid var(--edge);
+      box-shadow: none;
+    }
+
+    .vital-card {
+      padding: 24px;
+      display: grid;
+      gap: 14px;
+      align-content: stretch;
+    }
+
+    .meter {
+      border-radius: 22px;
+      padding: 18px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid var(--edge);
+    }
+
+    .meter-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 11px;
+    }
+
+    .meter-label { color: var(--muted); font-size: 13px; }
+    .meter-value { font-weight: 850; color: var(--green); }
+
+    .bar {
+      height: 10px;
+      border-radius: 99px;
+      overflow: hidden;
+      background: rgba(255,255,255,.1);
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--green), var(--gold));
+    }
+
+    .warning-box {
+      border: 1px solid rgba(224,114,111,.35);
+      background: rgba(224,114,111,.09);
+      border-radius: 22px;
+      padding: 18px;
+    }
+
+    .warning-box strong { color: #ffd7d7; }
+    .warning-box p { margin: 8px 0 0; color: #ffdede; font-size: 14px; line-height: 1.55; }
+
+    section { padding: 34px 0; }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .kicker {
+      color: var(--green);
+      font-weight: 850;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 48px);
+      letter-spacing: -.045em;
+      line-height: 1;
+    }
+
+    .section-head p {
+      max-width: 520px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .grid { display: grid; gap: 16px; }
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .card {
+      border: 1px solid var(--edge);
+      border-radius: 22px;
+      background: rgba(255,255,255,.07);
+      padding: 20px;
+      min-height: 100%;
+      box-shadow: 0 16px 50px rgba(0,0,0,.16);
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(143,190,107,.34);
+      background: rgba(255,255,255,.095);
+    }
+
+    .icon {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: rgba(143,190,107,.12);
+      border: 1px solid rgba(143,190,107,.18);
+      font-size: 23px;
+      margin-bottom: 14px;
+    }
+
+    h3 { margin: 0 0 10px; font-size: 19px; letter-spacing: -.02em; }
+    .card p { color: var(--muted); line-height: 1.55; margin: 0; font-size: 14.5px; }
+
+    .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+    .pill {
+      font-size: 12px;
+      color: var(--soft);
+      border: 1px solid var(--edge);
+      border-radius: 999px;
+      padding: 6px 9px;
+      background: rgba(0,0,0,.12);
+    }
+    .pill.green { color: var(--green); border-color: rgba(143,190,107,.25); background: rgba(143,190,107,.08); }
+    .pill.gold { color: var(--gold); border-color: rgba(200,146,42,.25); background: rgba(200,146,42,.08); }
+    .pill.red { color: #ffb7b7; border-color: rgba(224,114,111,.25); background: rgba(224,114,111,.08); }
+    .pill.blue { color: var(--blue); border-color: rgba(91,155,213,.25); background: rgba(91,155,213,.08); }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .tab, .filter {
+      border: 1px solid var(--edge);
+      background: rgba(255,255,255,.07);
+      color: var(--muted);
+      padding: 10px 13px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 750;
+      transition: .2s ease;
+    }
+
+    .tab.active, .filter.active {
+      color: #07130e;
+      background: linear-gradient(135deg, var(--green), var(--gold));
+      border-color: transparent;
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .parasite-board {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .list-card {
+      display: grid;
+      gap: 10px;
+      border: 1px solid var(--edge);
+      border-radius: 22px;
+      padding: 12px;
+      background: rgba(255,255,255,.06);
+    }
+
+    .parasite-btn {
+      width: 100%;
+      border: 1px solid transparent;
+      background: rgba(255,255,255,.065);
+      color: var(--text);
+      text-align: left;
+      padding: 14px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .parasite-btn small { color: var(--muted); display: block; margin-top: 4px; }
+    .parasite-btn.active { background: rgba(143,190,107,.12); border-color: rgba(143,190,107,.32); }
+
+    .detail-card {
+      border: 1px solid var(--edge);
+      border-radius: 22px;
+      padding: 24px;
+      background: rgba(255,255,255,.07);
+      min-height: 360px;
+    }
+
+    .detail-card h3 { font-size: 30px; letter-spacing: -.04em; }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .mini {
+      border: 1px solid var(--edge);
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(0,0,0,.15);
+    }
+    .mini b { display: block; margin-bottom: 6px; }
+    .mini span, .mini li { color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .mini ul { padding-left: 18px; margin: 0; }
+
+    .herb-toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .search {
+      min-width: min(100%, 320px);
+      flex: 1;
+      padding: 13px 15px;
+      border-radius: 999px;
+      border: 1px solid var(--edge);
+      background: rgba(255,255,255,.07);
+      color: var(--text);
+      outline: none;
+    }
+
+    .herb-card { position: relative; overflow: hidden; }
+    .herb-card:after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -60px auto;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(143,190,107,.08);
+    }
+
+    .herb-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .herb-name { font-size: 21px; font-weight: 900; letter-spacing: -.03em; }
+    .evidence {
+      font-size: 12px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      white-space: nowrap;
+      border: 1px solid var(--edge);
+      background: rgba(0,0,0,.16);
+    }
+    .evidence.low { color: #ffb7b7; border-color: rgba(224,114,111,.25); }
+    .evidence.traditional { color: var(--gold); border-color: rgba(200,146,42,.25); }
+    .evidence.moderate { color: var(--green); border-color: rgba(143,190,107,.25); }
+
+    .herb-body { position: relative; z-index: 1; margin-top: 12px; }
+    .herb-body p { margin-bottom: 12px; }
+
+    .stepper {
+      counter-reset: step;
+      display: grid;
+      gap: 14px;
+    }
+
+    .step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 14px;
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid var(--edge);
+      background: rgba(255,255,255,.07);
+    }
+
+    .step-num {
+      width: 48px;
+      height: 48px;
+      border-radius: 17px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(143,190,107,.9), rgba(200,146,42,.95));
+      color: #07130e;
+      font-weight: 950;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .check {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 10px;
+      color: var(--soft);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .check input { accent-color: var(--green2); transform: translateY(2px); }
+
+    .tracker {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 170px;
+      resize: vertical;
+      padding: 16px;
+      border-radius: 20px;
+      border: 1px solid var(--edge);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      outline: none;
+      line-height: 1.5;
+    }
+
+    .red-flags {
+      border: 1px solid rgba(224,114,111,.28);
+      background: linear-gradient(180deg, rgba(224,114,111,.12), rgba(224,114,111,.06));
+    }
+
+    .red-flags li, .source-card li {
+      color: var(--soft);
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+
+    .accordion { display: grid; gap: 10px; }
+    details {
+      border: 1px solid var(--edge);
+      border-radius: 18px;
+      padding: 15px 16px;
+      background: rgba(255,255,255,.06);
+    }
+    summary { cursor: pointer; font-weight: 850; }
+    details p { color: var(--muted); line-height: 1.6; }
+
+    .footer {
+      margin-top: 36px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .quick-map {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .map-item {
+      border: 1px solid var(--edge);
+      background: rgba(0,0,0,.16);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .map-item b { display: block; margin-bottom: 5px; }
+    .map-item span { color: var(--muted); font-size: 13px; line-height: 1.45; }
+
+    .phase-flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .phase {
+      position: relative;
+      border: 1px solid var(--edge);
+      border-radius: 18px;
+      padding: 15px;
+      background: rgba(255,255,255,.06);
+    }
+
+    .phase:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--green);
+      font-weight: 900;
+    }
+
+    .phase small {
+      display: block;
+      color: var(--muted);
+      margin-top: 5px;
+      line-height: 1.45;
+    }
+
+    .optimizer-card {
+      border: 1px solid rgba(143,190,107,.22);
+      background: linear-gradient(180deg, rgba(143,190,107,.1), rgba(255,255,255,.055));
+    }
+
+    .builder-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .select-box label {
+      display: block;
+      color: var(--soft);
+      font-weight: 850;
+      margin-bottom: 8px;
+    }
+
+    .select-box select {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--edge);
+      background: rgba(0,0,0,.2);
+      color: var(--text);
+      outline: none;
+    }
+
+    .result-box {
+      margin-top: 16px;
+      border: 1px solid var(--edge);
+      border-radius: 22px;
+      padding: 18px;
+      background: rgba(0,0,0,.18);
+    }
+
+    .result-box h3 { font-size: 24px; }
+
+    .result-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .result-row {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 10px;
+      align-items: start;
+      color: var(--soft);
+      line-height: 1.45;
+    }
+
+    .result-row span:first-child {
+      width: 30px;
+      height: 30px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      background: rgba(143,190,107,.12);
+      border: 1px solid rgba(143,190,107,.2);
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid var(--edge);
+      margin-top: 16px;
+    }
+
+    .compare-table th, .compare-table td {
+      text-align: left;
+      padding: 13px;
+      border-bottom: 1px solid var(--edge);
+      color: var(--soft);
+      vertical-align: top;
+      line-height: 1.45;
+    }
+
+    .compare-table th {
+      color: var(--green);
+      background: rgba(143,190,107,.08);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .compare-table tr:last-child td { border-bottom: 0; }
+
+    .detox-toolbar {
+      display: grid;
+      grid-template-columns: 1.1fr .8fr .8fr auto auto;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .detox-control {
+      border: 1px solid var(--edge);
+      background: rgba(255,255,255,.065);
+      border-radius: 18px;
+      padding: 13px;
+    }
+
+    .detox-control label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 8px;
+    }
+
+    .detox-control input,
+    .detox-control select {
+      width: 100%;
+      color: var(--text);
+      background: transparent;
+      border: 0;
+      outline: 0;
+      font: inherit;
+      font-weight: 750;
+    }
+
+    .detox-control option,
+    .select-box option { color: #101a13; }
+
+    .detox-layout {
+      display: grid;
+      grid-template-columns: .92fr 1.08fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .detox-library-list {
+      display: grid;
+      gap: 12px;
+      max-height: 760px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .detox-card {
+      cursor: pointer;
+      border: 1px solid var(--edge);
+      background: rgba(255,255,255,.06);
+      border-radius: 20px;
+      padding: 17px;
+      transition: .2s ease;
+    }
+
+    .detox-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(143,190,107,.34);
+      background: rgba(255,255,255,.085);
+    }
+
+    .detox-card.active {
+      border-color: rgba(143,190,107,.72);
+      box-shadow: 0 0 0 3px rgba(143,190,107,.08);
+    }
+
+    .detox-card h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      letter-spacing: -.025em;
+    }
+
+    .detox-card p {
+      color: var(--muted);
+      line-height: 1.55;
+      margin: 0 0 12px;
+      font-size: 14px;
+    }
+
+    .detox-tag-row {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .detox-tag {
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 11px;
+      font-weight: 900;
+      border: 1px solid rgba(143,190,107,.24);
+      background: rgba(143,190,107,.08);
+      color: var(--green);
+    }
+
+    .detox-tag.metals { color: var(--blue); border-color: rgba(91,155,213,.3); background: rgba(91,155,213,.08); }
+    .detox-tag.parasites { color: var(--orange); border-color: rgba(217,145,78,.3); background: rgba(217,145,78,.08); }
+    .detox-tag.mold { color: #b9a2ff; border-color: rgba(155,125,232,.3); background: rgba(155,125,232,.08); }
+    .detox-tag.liver { color: var(--gold); border-color: rgba(200,146,42,.3); background: rgba(200,146,42,.08); }
+    .detox-tag.caution { color: #ffb7b7; border-color: rgba(224,114,111,.3); background: rgba(224,114,111,.08); }
+
+    .detox-panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .detox-detail-top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 16px;
+    }
+
+    .detox-detail-top h3 {
+      font-size: clamp(26px, 4vw, 42px);
+      line-height: .98;
+      letter-spacing: -.045em;
+      margin-bottom: 10px;
+    }
+
+    .detox-score {
+      min-width: 110px;
+      text-align: center;
+      border: 1px solid rgba(143,190,107,.25);
+      background: linear-gradient(135deg, rgba(143,190,107,.14), rgba(200,146,42,.08));
+      border-radius: 22px;
+      padding: 16px;
+    }
+
+    .detox-score strong {
+      display: block;
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .detox-score small {
+      display: block;
+      color: var(--muted);
+      font-weight: 900;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-top: 4px;
+    }
+
+    .detox-info-grid,
+    .detox-meters {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .detox-info,
+    .detox-meter-box {
+      border: 1px solid var(--edge);
+      background: rgba(0,0,0,.15);
+      border-radius: 17px;
+      padding: 13px;
+    }
+
+    .detox-info small,
+    .detox-meter-box small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 7px;
+    }
+
+    .detox-info strong { color: var(--soft); font-size: 14px; }
+
+    .detox-subsection { margin-top: 17px; }
+    .detox-subsection h3 { margin-bottom: 10px; }
+
+    .detox-ingredient-list,
+    .detox-steps,
+    .detox-cautions,
+    .detox-shopping-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .detox-ingredient,
+    .detox-shop-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--edge);
+      background: rgba(255,255,255,.05);
+      border-radius: 16px;
+      padding: 13px;
+    }
+
+    .detox-ingredient span,
+    .detox-shop-item span {
+      color: var(--soft);
+      font-weight: 780;
+    }
+
+    .detox-ingredient b,
+    .detox-shop-item b {
+      color: var(--green);
+      font-size: 13px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .detox-purpose {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      margin-top: 4px;
+    }
+
+    .detox-steps { counter-reset: detoxStep; }
+
+    .detox-step {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 11px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .detox-step::before {
+      counter-increment: detoxStep;
+      content: counter(detoxStep);
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      color: #07130e;
+      background: var(--green);
+      font-weight: 950;
+    }
+
+    .detox-caution-box {
+      border: 1px solid rgba(224,114,111,.26);
+      background: rgba(224,114,111,.07);
+      color: #ffd6d6;
+      border-radius: 16px;
+      padding: 13px;
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .detox-meters { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 16px; }
+    .detox-meter-box .bar { margin-top: 8px; }
+
+    .detox-shopping-list {
+      max-height: 420px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    @media (max-width: 920px) {
+      .hero, .grid.two, .grid.three, .grid.four, .parasite-board, .tracker, .quick-map, .phase-flow, .builder-grid, .detox-toolbar, .detox-layout, .detox-info-grid, .detox-meters, .detox-detail-top { grid-template-columns: 1fr; }
+      .detox-score { text-align: left; }
+      .phase:not(:last-child)::after { content: "↓"; right: 50%; top: auto; bottom: -15px; transform: translateX(50%); }
+      .section-head { display: grid; align-items: start; }
+      .nav { align-items: start; border-radius: 24px; }
+      .nav-links { width: 100%; }
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      .nav { position: static; flex-direction: column; }
+      .hero { padding-top: 34px; }
+      .hero-actions .btn { width: 100%; }
+      .page { width: min(100% - 20px, 1180px); }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav" aria-label="Primary"></nav>
+  <script src="/nav.js"></script>
+  <div class="grain"></div>
+  <main class="page">
+    <nav class="nav">
+      <div class="brand"><span class="brand-mark">🌿</span> Parasite / Herb Desk</div>
+      <div class="nav-links">
+        <a href="#effects">Effects</a>
+        <a href="#types">Types</a>
+        <a href="#herbs">Herbs</a>
+        <a href="#stack">Ingredient Stack</a>
+        <a href="#eggs">Egg Strategy</a>
+        <a href="#optimizer">Protocol Builder</a>
+        <a href="#detox-library">Detox Library</a>
+        <a href="#plan">Safe Plan</a>
+        <a href="#tracker">Tracker</a>
+        <a href="#redflags">Red Flags</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="hero-card">
+        <span class="eyebrow">🌱 Herb-forward • evidence-aware • not fear-based</span>
+        <h1>Parasites: how they affect us + herbal support paths.</h1>
+        <p>
+          A calm dashboard for understanding parasites, the body systems they can affect,
+          common signs, testing, hygiene, and herb-based support options. The main rule:
+          herbs can support the terrain, but confirmed infections still need the right diagnosis.
+        </p>
+        <div class="hero-actions">
+          <button class="btn" onclick="document.querySelector('#herbs').scrollIntoView({behavior:'smooth'})">Explore herbs</button>
+          <button class="btn secondary" onclick="document.querySelector('#plan').scrollIntoView({behavior:'smooth'})">Build safe plan</button>
+        </div>
+      </div>
+
+      <aside class="vital-card glass-card">
+        <div class="meter">
+          <div class="meter-top"><span class="meter-label">Best first move</span><span class="meter-value">Test</span></div>
+          <div class="bar"><span style="width: 92%"></span></div>
+        </div>
+        <div class="meter">
+          <div class="meter-top"><span class="meter-label">Herbs as support</span><span class="meter-value">Useful, but limited proof</span></div>
+          <div class="bar"><span style="width: 58%"></span></div>
+        </div>
+        <div class="meter">
+          <div class="meter-top"><span class="meter-label">Risk of random cleanse</span><span class="meter-value" style="color:var(--orange)">Moderate to high</span></div>
+          <div class="bar"><span style="width: 76%; background:linear-gradient(90deg,var(--orange),var(--red))"></span></div>
+        </div>
+        <div class="warning-box">
+          <strong>Important:</strong>
+          <p>
+            This page is educational. It is not a diagnosis or treatment prescription.
+            Avoid intense parasite cleanses if pregnant, breastfeeding, immunocompromised,
+            on medication, or dealing with liver, kidney, seizure, or bleeding disorders.
+          </p>
+        </div>
+        <div class="quick-map">
+          <div class="map-item"><b>1. Identify</b><span>Parasite type, exposure, testing.</span></div>
+          <div class="map-item"><b>2. Target</b><span>Adult stage / organism-specific lane.</span></div>
+          <div class="map-item"><b>3. Interrupt</b><span>Egg cycle + reinfection control.</span></div>
+          <div class="map-item"><b>4. Support</b><span>Binders, hydration, bowel flow.</span></div>
+        </div>
+      </aside>
+    </header>
+
+    <section id="effects">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Body systems</div>
+          <h2>How parasites can affect us</h2>
+        </div>
+        <p>Parasites do not all act the same. Some live mostly in the gut, some affect blood, skin, liver, lungs, or tissue. Symptoms can overlap with many non-parasite issues, so this section is for orientation, not self-diagnosis.</p>
+      </div>
+
+      <div class="grid three">
+        <article class="card"><div class="icon">🌀</div><h3>Gut irritation</h3><p>Diarrhea, gas, bloating, cramps, nausea, appetite changes, greasy stool, or alternating constipation can show up with some intestinal infections.</p><div class="pill-row"><span class="pill green">common clue</span><span class="pill">not specific</span></div></article>
+        <article class="card"><div class="icon">🩸</div><h3>Nutrient drain</h3><p>Some worms may contribute to iron loss, anemia, weakness, pallor, poor growth in children, or low energy when infections are chronic or heavy.</p><div class="pill-row"><span class="pill gold">check labs</span><span class="pill">iron / CBC</span></div></article>
+        <article class="card"><div class="icon">🛡️</div><h3>Immune reaction</h3><p>Parasites may trigger eosinophils, rashes, itching, hives, inflammation, cough, or strange allergic-type reactions depending on the organism.</p><div class="pill-row"><span class="pill blue">immune clue</span><span class="pill">varies</span></div></article>
+        <article class="card"><div class="icon">😴</div><h3>Energy + sleep</h3><p>Fatigue, restlessness, poor sleep, or nighttime itching can happen, but these are broad symptoms. Do not assume parasites from fatigue alone.</p><div class="pill-row"><span class="pill gold">track pattern</span></div></article>
+        <article class="card"><div class="icon">🌎</div><h3>Exposure history</h3><p>Travel, contaminated water, undercooked meat or fish, poor sanitation, pets, soil contact, daycare, or household spread can raise suspicion.</p><div class="pill-row"><span class="pill green">context matters</span></div></article>
+        <article class="card"><div class="icon">🧠</div><h3>Mood + focus</h3><p>Being sick can affect mood, focus, and anxiety. Direct “parasite mind control” claims are usually overstated unless a specific infection is proven.</p><div class="pill-row"><span class="pill red">avoid fear loops</span></div></article>
+      </div>
+    </section>
+
+    <section id="types">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Parasite map</div>
+          <h2>Know the category before choosing a path</h2>
+        </div>
+        <p>Different parasites need different tests and treatments. Click each group to see common clues, exposure patterns, testing ideas, and the herbal-support lane.</p>
+      </div>
+
+      <div class="parasite-board">
+        <div class="list-card" id="parasiteButtons"></div>
+        <div class="detail-card" id="parasiteDetail"></div>
+      </div>
+    </section>
+
+    <section id="herbs">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Herb library</div>
+          <h2>Herbs people commonly use</h2>
+        </div>
+        <p>These are presented as traditional or supportive options. Most herbs have limited human evidence for clearing parasites, and some are risky. Food-level use is very different from high-dose extracts.</p>
+      </div>
+
+      <div class="herb-toolbar">
+        <input class="search" id="herbSearch" placeholder="Search herbs, risks, use cases..." />
+        <div class="tabs" id="herbFilters">
+          <button class="filter active" data-filter="all">All</button>
+          <button class="filter" data-filter="gentle">Gentle support</button>
+          <button class="filter" data-filter="strong">Strong / caution</button>
+          <button class="filter" data-filter="food">Food-based</button>
+        </div>
+      </div>
+
+      <div class="grid three" id="herbGrid"></div>
+    </section>
+
+    <section id="stack">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Ingredient stack</div>
+          <h2>What those ingredients are usually for</h2>
+        </div>
+        <p>This breaks down the common parasite-cleanse formula pattern: antiparasitic herbs first, binders second. The herbs are the “active cleanse” side; the binders are more like gut adsorbents, not parasite killers.</p>
+      </div>
+
+      <div class="grid two">
+        <article class="card">
+          <div class="icon">🌿</div>
+          <h3>Antiparasitic herb trio</h3>
+          <p>Clove, wormwood, and black walnut hull are the classic herbal-cleanse stack. They are commonly marketed for worms, eggs, microbes, and digestive cleansing, but human evidence varies and strong extracts need caution.</p>
+          <div class="detail-grid">
+            <div class="mini"><b>Clove</b><span>Aromatic spice. Often used in formulas because of strong plant compounds. Food-level clove is different from clove oil or high-dose capsules.</span></div>
+            <div class="mini"><b>Wormwood</b><span>Traditional bitter herb. Stronger and more caution-heavy. Not casual for pregnancy, seizure history, kidney/liver issues, or medication use.</span></div>
+            <div class="mini" style="grid-column:1/-1"><b>Black walnut hull</b><span>Traditional cleansing herb. Avoid with tree-nut allergy. Better treated as practitioner-guided rather than random daily use.</span></div>
+          </div>
+          <div class="pill-row"><span class="pill red">strong / caution</span><span class="pill gold">traditional use</span><span class="pill">not a universal cure</span></div>
+        </article>
+
+        <article class="card">
+          <div class="icon">🧲</div>
+          <h3>Binder trio</h3>
+          <p>Zeolite, bentonite clay, and activated charcoal are usually used as binders. They may adsorb substances in the gut, but they do not “hunt parasites.” The main concern is that they can also bind helpful things.</p>
+          <div class="detail-grid">
+            <div class="mini"><b>Activated charcoal</b><span>Powerful adsorbent. Can reduce absorption of medications and supplements, so timing matters.</span></div>
+            <div class="mini"><b>Bentonite clay</b><span>Clay binder. Main concerns: constipation, contamination risk, and taking it too close to medicines or nutrients.</span></div>
+            <div class="mini" style="grid-column:1/-1"><b>Zeolite</b><span>Mineral binder. Often marketed for heavy metals/toxins, but product purity and proof matter. Look for third-party testing.</span></div>
+          </div>
+          <div class="pill-row"><span class="pill blue">binder</span><span class="pill red">medication spacing</span><span class="pill gold">quality matters</span></div>
+        </article>
+      </div>
+
+      <div class="grid three" style="margin-top:16px">
+        <article class="card"><div class="icon">1</div><h3>Cleanse herbs</h3><p>These are the active herb side. In the frontend, they belong under “strong / caution,” not gentle daily support.</p></article>
+        <article class="card"><div class="icon">2</div><h3>Binder support</h3><p>Binders are usually taken away from medications, supplements, and meals because they can reduce absorption.</p></article>
+        <article class="card"><div class="icon">3</div><h3>Exit route</h3><p>Hydration, bowel regularity, and electrolytes matter. A binder stack can backfire if it causes constipation.</p></article>
+      </div>
+    </section>
+
+    <section id="eggs">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Egg strategy</div>
+          <h2>How to think about parasite eggs</h2>
+        </div>
+        <p>Eggs are not handled the same way as adult parasites. A safe strategy is less about “melting eggs” and more about breaking the life cycle: identify the organism, prevent reinfection, time treatment correctly, and clean the environment when eggs spread outside the body.</p>
+      </div>
+
+      <div class="grid three">
+        <article class="card">
+          <div class="icon">🥚</div>
+          <h3>1. Eggs are a life-cycle stage</h3>
+          <p>Some medicines and herbs may affect adult worms more than eggs. That means symptoms can return if eggs hatch later and the cycle is not interrupted.</p>
+          <div class="pill-row"><span class="pill gold">life cycle</span><span class="pill">not one-and-done</span></div>
+        </article>
+        <article class="card">
+          <div class="icon">⏱️</div>
+          <h3>2. Timing matters</h3>
+          <p>For pinworm, the medical model uses a second treatment later because treatment kills worms but not eggs. The idea is to catch newly hatched worms before the cycle continues.</p>
+          <div class="pill-row"><span class="pill blue">repeat window</span><span class="pill red">clinician-guided</span></div>
+        </article>
+        <article class="card">
+          <div class="icon">🧼</div>
+          <h3>3. Reinfection control</h3>
+          <p>Egg control often means hygiene: handwashing, short nails, morning showers, washing underwear/bedding/towels, and cleaning shared surfaces when pinworm-like spread is suspected.</p>
+          <div class="pill-row"><span class="pill green">prevention</span><span class="pill">household loop</span></div>
+        </article>
+      </div>
+
+      <div class="grid two" style="margin-top:16px">
+        <article class="card">
+          <div class="icon">🌿</div>
+          <h3>Where clove fits</h3>
+          <p>Clove is often marketed as the “egg herb” in cleanse formulas. A safer frontend explanation is: clove has strong aromatic compounds and traditional use, but it should not be presented as proven to destroy parasite eggs in humans.</p>
+          <div class="detail-grid">
+            <div class="mini"><b>Good wording</b><span>“Traditionally used in parasite formulas, especially where egg/life-cycle support is claimed.”</span></div>
+            <div class="mini"><b>Avoid wording</b><span>“Kills all parasite eggs” or “guaranteed egg destroyer.”</span></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="icon">🧲</div>
+          <h3>Where binders fit</h3>
+          <p>Binders do not attack eggs. They are more like gut adsorbents. In the page logic, binders belong after “active herbs” as support, while egg strategy belongs under timing, testing, hygiene, and reinfection control.</p>
+          <div class="detail-grid">
+            <div class="mini"><b>Binders</b><span>Activated charcoal, clay, zeolite: adsorption support, not egg-killing treatment.</span></div>
+            <div class="mini"><b>Exit support</b><span>Hydration and bowel regularity matter because constipation can make a cleanse feel worse.</span></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="phase-flow">
+        <div class="phase"><b>Exposure</b><small>Water, food, soil, pets, travel, household spread.</small></div>
+        <div class="phase"><b>Adult stage</b><small>Main treatment target for many worm strategies.</small></div>
+        <div class="phase"><b>Egg stage</b><small>Not always killed directly; timing matters.</small></div>
+        <div class="phase"><b>Reinfection</b><small>Hands, bedding, towels, surfaces, shared spaces.</small></div>
+        <div class="phase"><b>Break cycle</b><small>Hygiene + repeat window + correct treatment lane.</small></div>
+      </div>
+
+      <div class="stepper" style="margin-top:16px">
+        <div class="step"><div class="step-num">A</div><div><h3>Identify the parasite</h3><p>Eggs may be found on stool ova-and-parasite testing or specific tests, depending on the organism. Do not assume every parasite has the same egg strategy.</p></div></div>
+        <div class="step"><div class="step-num">B</div><div><h3>Interrupt the hatch-and-return cycle</h3><p>The key concept is not just attacking adults. It is preventing eggs from becoming the next wave of adult parasites through correct timing and reinfection control.</p></div></div>
+        <div class="step"><div class="step-num">C</div><div><h3>Clean the environment when relevant</h3><p>For parasites like pinworm, eggs can spread by hands, bedding, clothing, and surfaces. This is where hygiene becomes part of the treatment strategy.</p></div></div>
+      </div>
+    </section>
+
+    <section id="optimizer">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Optimization</div>
+          <h2>Protocol builder, without pretending to diagnose</h2>
+        </div>
+        <p>This turns the frontend from a demo page into a practical decision tool. It does not tell the user “you have parasites.” It tells them the safest next lane based on symptom severity, suspicion type, and herb intensity.</p>
+      </div>
+
+      <div class="card optimizer-card">
+        <h3>Choose a lane</h3>
+        <p>Use this to guide the page experience: food support, test-first, urgent medical, or practitioner-guided cleanse.</p>
+        <div class="builder-grid">
+          <div class="select-box">
+            <label for="suspectType">Main suspicion</label>
+            <select id="suspectType">
+              <option value="gut">Gut symptoms / possible intestinal</option>
+              <option value="pinworm">Pinworm-like itching / household spread</option>
+              <option value="travel">Travel, unsafe water, or undercooked food</option>
+              <option value="blood">Fever cycles, chills, severe fatigue</option>
+              <option value="skin">Skin itching, rash, possible scabies/lice</option>
+            </select>
+          </div>
+          <div class="select-box">
+            <label for="severity">Severity</label>
+            <select id="severity">
+              <option value="mild">Mild / annoying but stable</option>
+              <option value="moderate">Moderate / recurring or over 7 days</option>
+              <option value="severe">Severe / fever, blood, dehydration, weight loss</option>
+            </select>
+          </div>
+          <div class="select-box">
+            <label for="herbIntensity">Herb preference</label>
+            <select id="herbIntensity">
+              <option value="food">Food-level herbs only</option>
+              <option value="gentle">Gentle support</option>
+              <option value="strong">Strong cleanse herbs</option>
+            </select>
+          </div>
+        </div>
+        <div class="hero-actions"><button class="btn" onclick="buildProtocol()">Generate safe lane</button></div>
+        <div class="result-box" id="protocolResult">
+          <h3>Suggested lane will appear here</h3>
+          <p>Pick the options above, then generate a grounded path.</p>
+        </div>
+      </div>
+
+      <table class="compare-table">
+        <thead><tr><th>Ingredient role</th><th>Examples</th><th>What to say in the frontend</th><th>What not to claim</th></tr></thead>
+        <tbody>
+          <tr><td>Active cleanse herbs</td><td>Clove, wormwood, black walnut</td><td>Traditional parasite-formula herbs with stronger caution needs.</td><td>Guaranteed parasite cure or egg destroyer.</td></tr>
+          <tr><td>Food-level support</td><td>Garlic, ginger, pumpkin seed, bitter greens</td><td>Gentler terrain support for digestion and resilience.</td><td>Replacement for diagnosis or proven treatment.</td></tr>
+          <tr><td>Binders</td><td>Activated charcoal, bentonite clay, zeolite</td><td>Adsorption support; separate from medications/supplements.</td><td>Parasite killers or egg attackers.</td></tr>
+          <tr><td>Reinfection control</td><td>Handwashing, laundry, nails, cleaning</td><td>Essential for egg/life-cycle interruption when relevant.</td><td>Optional afterthought.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="detox-library">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Merged script</div>
+          <h2>Deep detox protocol selector</h2>
+        </div>
+        <p>This merges your protocol-selector script into the parasite frontend: targets, filters, cards, detail view, safety scores, evidence/gentleness meters, and a generated shopping list.</p>
+      </div>
+
+      <div class="detox-toolbar" id="detoxSelector">
+        <div class="detox-control">
+          <label for="detoxSearchInput">Search</label>
+          <input id="detoxSearchInput" placeholder="Search parasite, metal, mold, liver..." />
+        </div>
+        <div class="detox-control">
+          <label for="detoxTargetFilter">Target</label>
+          <select id="detoxTargetFilter">
+            <option value="All">All targets</option>
+            <option value="Metals">Heavy Metals</option>
+            <option value="Parasites">Parasites</option>
+            <option value="Mold">Mold / Mycotoxin</option>
+            <option value="Liver">Liver / Bile</option>
+            <option value="Gut">Gut / Fiber</option>
+            <option value="Lymph">Lymph / Fluid</option>
+            <option value="Inflammation">Inflammation</option>
+          </select>
+        </div>
+        <div class="detox-control">
+          <label for="detoxTypeFilter">Type</label>
+          <select id="detoxTypeFilter">
+            <option value="All">All types</option>
+            <option value="Food Protocol">Food Protocol</option>
+            <option value="Tea">Tea</option>
+            <option value="Smoothie">Smoothie</option>
+            <option value="Meal Bowl">Meal Bowl</option>
+            <option value="Hydration">Hydration</option>
+            <option value="Doctor-Led">Doctor-Led</option>
+            <option value="Environment">Environment</option>
+          </select>
+        </div>
+        <button class="btn secondary" onclick="selectRandomDetox()">Random</button>
+        <button class="btn" onclick="buildDetoxShoppingList()">Shopping List</button>
+      </div>
+
+      <div class="detox-layout">
+        <div class="card">
+          <div class="detox-panel-head">
+            <h3>Protocol Library</h3>
+            <span class="pill" id="detoxVisibleCount">0 visible</span>
+          </div>
+          <div class="detox-library-list" id="detoxCards"></div>
+          <div class="hero-actions"><button class="btn secondary" onclick="resetDetoxFilters()">Reset Filters</button></div>
+        </div>
+
+        <div class="card">
+          <div class="detox-detail-top">
+            <div>
+              <h3 id="detoxSelectedName">Select a protocol</h3>
+              <p id="detoxSelectedDesc">Pick a card to see exact ingredients, amounts, preparation, cautions, and evidence level.</p>
+            </div>
+            <div class="detox-score">
+              <strong id="detoxSelectedScore">--</strong>
+              <small>Safety Score</small>
+            </div>
+          </div>
+
+          <div class="detox-info-grid">
+            <div class="detox-info"><small>Target</small><strong id="detoxSelectedTarget">--</strong></div>
+            <div class="detox-info"><small>Type</small><strong id="detoxSelectedType">--</strong></div>
+            <div class="detox-info"><small>Time</small><strong id="detoxSelectedTime">--</strong></div>
+            <div class="detox-info"><small>Cycle</small><strong id="detoxSelectedCycle">--</strong></div>
+          </div>
+
+          <div class="detox-subsection">
+            <h3>Ingredients + Amounts</h3>
+            <div class="detox-ingredient-list" id="detoxIngredients"></div>
+          </div>
+
+          <div class="detox-subsection">
+            <h3>Steps</h3>
+            <div class="detox-steps" id="detoxSteps"></div>
+          </div>
+
+          <div class="detox-subsection">
+            <h3>Careful With</h3>
+            <div class="detox-cautions" id="detoxCautions"></div>
+          </div>
+
+          <div class="detox-meters">
+            <div class="detox-meter-box"><small>Evidence Grounding</small><div class="bar"><span id="detoxEvidenceBar" style="width:50%"></span></div></div>
+            <div class="detox-meter-box"><small>Gentleness</small><div class="bar"><span id="detoxGentleBar" style="width:50%"></span></div></div>
+            <div class="detox-meter-box"><small>Medical Oversight Need</small><div class="bar"><span id="detoxMedicalBar" style="width:50%"></span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <div class="detox-panel-head">
+          <h3>Generated Shopping List</h3>
+          <span class="pill">From visible cards</span>
+        </div>
+        <div class="detox-shopping-list" id="detoxShoppingList">
+          <div class="detox-shop-item"><span>Use filters, then click “Shopping List.”</span><b>Ready</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="plan">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Treatment path</div>
+          <h2>A safe herb-first framework</h2>
+        </div>
+        <p>This keeps the page aligned with natural support while avoiding the biggest mistake: treating blindly for the wrong organism, or treating when the real issue is something else.</p>
+      </div>
+
+      <div class="stepper">
+        <div class="step"><div class="step-num">1</div><div><h3>Confirm the suspicion</h3><p>Use exposure history + symptom pattern. A clinician may order stool ova/parasite testing, antigen/PCR tests, blood work, or imaging depending on symptoms.</p><div class="checklist"><label class="check"><input type="checkbox"> Symptoms lasting over 7 days or recurring</label><label class="check"><input type="checkbox"> Travel, water, soil, pets, undercooked food, or household exposure</label><label class="check"><input type="checkbox"> Weight loss, blood, anemia, fever, or severe fatigue present</label></div></div></div>
+        <div class="step"><div class="step-num">2</div><div><h3>Choose your lane</h3><p>If testing is negative and symptoms are mild, focus on digestion, hygiene, sleep, and food-based herbs. If infection is confirmed, discuss proven antiparasitic treatment and ask which herbs are safe with it.</p><div class="pill-row"><span class="pill green">mild support</span><span class="pill gold">test-and-treat</span><span class="pill red">urgent care if severe</span></div></div></div>
+        <div class="step"><div class="step-num">3</div><div><h3>Support the terrain</h3><p>Use simple foundations: fluids, electrolytes if diarrhea, adequate protein, gentle fiber if tolerated, handwashing, laundry/cleaning if pinworm is suspected, and avoid sharing towels.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div><h3>Herbal support, not chaos</h3><p>Pick one cautious lane at a time. Avoid stacking many strong tinctures, oils, and cleanse kits. Track reactions. Stop if you get rash, severe cramps, vomiting, dizziness, confusion, or allergic signs.</p></div></div>
+        <div class="step"><div class="step-num">5</div><div><h3>Retest or reassess</h3><p>If symptoms persist, do not keep escalating herbs. Recheck diagnosis, reinfection sources, diet triggers, inflammatory bowel issues, gallbladder/pancreas, thyroid, anemia, or medication side effects.</p></div></div>
+      </div>
+    </section>
+
+    <section id="tracker">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Personal tracker</div>
+          <h2>Track patterns without spiraling</h2>
+        </div>
+        <p>Save notes locally in your browser. Use it to bring clearer info to a practitioner instead of relying on memory.</p>
+      </div>
+
+      <div class="tracker">
+        <div class="card">
+          <h3>Symptoms + exposure notes</h3>
+          <p>Examples: diarrhea start date, food/water exposure, travel, pets, itching, stool changes, fever, weight change.</p>
+          <textarea id="symptomNotes" placeholder="Write your notes here..."></textarea>
+          <div class="hero-actions"><button class="btn" onclick="saveNotes()">Save notes</button><button class="btn secondary" onclick="clearNotes()">Clear</button></div>
+        </div>
+        <div class="card source-card">
+          <h3>Testing questions to ask</h3>
+          <ul>
+            <li>Should I do stool O&P, and should it be multiple samples?</li>
+            <li>Would antigen or PCR testing be better for Giardia, Crypto, or Cyclospora?</li>
+            <li>Do I need CBC/eosinophils, iron/ferritin, liver enzymes, or specific parasite blood tests?</li>
+            <li>Could this be food intolerance, IBS, infection, gallbladder, medication, or inflammation instead?</li>
+            <li>Which herbs or supplements are unsafe with my meds or health history?</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="redflags">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Safety</div>
+          <h2>Do not self-treat these signs</h2>
+        </div>
+        <p>If any of these are present, skip the cleanse mentality and get medical help. Parasite symptoms can overlap with serious non-parasite conditions too.</p>
+      </div>
+
+      <div class="grid two">
+        <div class="card red-flags">
+          <h3>Red flags</h3>
+          <ul>
+            <li>Blood in stool, black stool, or severe dehydration</li>
+            <li>High fever, severe abdominal pain, confusion, stiff neck, seizures</li>
+            <li>Unexplained weight loss, persistent vomiting, fainting</li>
+            <li>Pregnancy, young child, older adult, immunocompromised status</li>
+            <li>Known liver, kidney, seizure, bleeding disorder, or complex medications</li>
+            <li>Symptoms after travel to areas with malaria, schistosomiasis, or other high-risk infections</li>
+          </ul>
+        </div>
+        <div class="card source-card">
+          <h3>Myth buster</h3>
+          <div class="accordion">
+            <details open><summary>“If I crave sugar, I have parasites.”</summary><p>Not enough. Sugar cravings can come from stress, poor sleep, low protein, blood sugar swings, habits, restriction, or many other reasons.</p></details>
+            <details><summary>“A cleanse proves parasites if weird stuff comes out.”</summary><p>Not necessarily. Fiber, mucus, food residue, biofilm-like stool changes, and supplement effects can look dramatic without proving parasites.</p></details>
+            <details><summary>“Herbs are always safer than medicine.”</summary><p>No. Concentrated herbs can interact with medications, irritate the gut, affect liver enzymes, trigger allergy, or be unsafe in pregnancy.</p></details>
+            <details><summary>“One parasite formula treats everything.”</summary><p>Different parasites need different strategies. Protozoa, worms, blood parasites, and tissue parasites are not the same problem.</p></details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <div class="kicker">Source notes</div>
+          <h2>Evidence stance used in this page</h2>
+        </div>
+        <p>Built from a conservative health approach: diagnose first, use proven treatment when infection is confirmed, and treat herbs as support unless strong human evidence exists.</p>
+      </div>
+      <div class="grid three">
+        <div class="card"><div class="icon">🏥</div><h3>Medical testing matters</h3><p>Stool tests, blood tests, imaging, or endoscopy may be needed depending on the parasite and symptoms. Multiple stool samples can improve detection.</p></div>
+        <div class="card"><div class="icon">🌿</div><h3>Herbal evidence varies</h3><p>Some herbs show lab, animal, traditional, or limited human data. That does not automatically equal a reliable cure in real human infections.</p></div>
+        <div class="card"><div class="icon">🧼</div><h3>Prevention is treatment support</h3><p>Handwashing, safe water, proper cooking, cleaning surfaces, laundering bedding, and treating household reinfection loops matter.</p></div>
+      </div>
+    </section>
+
+    <p class="footer">Educational frontend only. Not medical advice. Do not use this page to diagnose yourself or replace professional care.</p>
+  </main>
+
+  <script>
+    const parasiteTypes = [
+      {
+        name: "Protozoa",
+        subtitle: "Giardia, Cryptosporidium, Cyclospora",
+        icon: "💧",
+        clues: ["Watery or greasy diarrhea", "Gas, cramps, bloating", "Often tied to water, food, daycare, travel"],
+        testing: "Stool antigen, PCR, microscopy, or targeted tests depending on organism.",
+        herb: "Gentle gut support only until confirmed: ginger, thyme/oregano as culinary herbs, hydration, electrolytes. Do not rely on cleanse kits for ongoing diarrhea."
+      },
+      {
+        name: "Intestinal worms",
+        subtitle: "Pinworm, roundworm, hookworm, whipworm",
+        icon: "🪱",
+        clues: ["Nighttime anal itching with pinworm", "Abdominal pain or appetite changes", "Anemia can happen with hookworm"],
+        testing: "Tape test for pinworm; stool ova/parasite testing for many worms; CBC/eosinophils may help context.",
+        herb: "Pumpkin seed and papaya seed are commonly discussed as food-based support, but confirmed worms usually need organism-specific care."
+      },
+      {
+        name: "Tissue parasites",
+        subtitle: "Trichinella, some larval infections",
+        icon: "🥩",
+        clues: ["Undercooked meat exposure", "Muscle pain, swelling, fever", "Gut symptoms followed by body symptoms"],
+        testing: "Blood tests, antibody testing, CBC/eosinophils, and clinician evaluation.",
+        herb: "Do not self-treat. Use herbs only as clinician-approved support because tissue infections can become serious."
+      },
+      {
+        name: "Blood parasites",
+        subtitle: "Malaria, babesiosis, filariasis",
+        icon: "🩸",
+        clues: ["Fever cycles, chills, sweats", "Travel or tick exposure", "Severe fatigue or anemia signs"],
+        testing: "Blood smear, rapid tests, serology, or PCR depending on suspicion.",
+        herb: "Not an herb-first category. This requires medical diagnosis and targeted treatment."
+      },
+      {
+        name: "Skin parasites",
+        subtitle: "Scabies, lice, cutaneous larvae",
+        icon: "🧴",
+        clues: ["Intense itching", "Rash or tracks", "Household spread"],
+        testing: "Visual exam, skin scraping, exposure history.",
+        herb: "Tea tree and neem are often discussed, but skin parasites can spread quickly. Confirm and treat properly to stop reinfection."
+      }
+    ];
+
+    const herbs = [
+      {
+        name: "Garlic",
+        category: ["gentle", "food"],
+        evidence: "traditional",
+        summary: "Common food-based antimicrobial support. Best thought of as a culinary ally, not a parasite cure.",
+        bestFor: "Food-level gut support, immune support, meal plan foundation.",
+        cautions: "Can worsen reflux and may interact with blood-thinning medications at supplement-level doses."
+      },
+      {
+        name: "Pumpkin seed",
+        category: ["gentle", "food"],
+        evidence: "traditional",
+        summary: "Traditionally used around worms and digestion. Easy to use as food and generally gentler than strong tinctures.",
+        bestFor: "Food-based support, minerals, fiber, mild gut terrain support.",
+        cautions: "Not a guaranteed dewormer. Watch allergies and digestion tolerance."
+      },
+      {
+        name: "Papaya seed",
+        category: ["food", "strong"],
+        evidence: "moderate",
+        summary: "Has limited human pilot evidence and lots of traditional use. Bitter, peppery, and often overhyped online.",
+        bestFor: "Occasional food-based support when tolerated, not during pregnancy without clinician guidance.",
+        cautions: "Large amounts can upset the gut. Avoid careless use in pregnancy, latex allergy, or with sensitive digestion."
+      },
+      {
+        name: "Clove",
+        category: ["strong"],
+        evidence: "traditional",
+        summary: "Often included in parasite formulas because of aromatic compounds. Stronger as extract/oil than as culinary spice.",
+        bestFor: "Short-term culinary support or practitioner-guided formulas.",
+        cautions: "Clove oil is potent and can irritate tissues; supplement doses may interact with anticoagulants."
+      },
+      {
+        name: "Oregano / Thyme",
+        category: ["gentle", "food", "strong"],
+        evidence: "traditional",
+        summary: "Aromatic herbs used for digestive and antimicrobial support. Food use is much safer than essential oil use.",
+        bestFor: "Cooking, teas, general gut terrain support.",
+        cautions: "Do not ingest essential oils casually. Can irritate gut and interact with medications in concentrated forms."
+      },
+      {
+        name: "Ginger",
+        category: ["gentle", "food"],
+        evidence: "traditional",
+        summary: "Not a parasite killer, but useful for nausea, digestion comfort, and inflammation support in many people.",
+        bestFor: "Nausea, digestive comfort, tea, meals.",
+        cautions: "High doses can worsen reflux or interact with blood-thinning medications."
+      },
+      {
+        name: "Black walnut hull",
+        category: ["strong"],
+        evidence: "low",
+        summary: "Popular in parasite cleanse kits, but strong human evidence is limited. More caution than internet hype suggests.",
+        bestFor: "Only practitioner-guided use if chosen.",
+        cautions: "Avoid with tree nut allergy. Use caution in pregnancy, breastfeeding, children, liver/kidney issues, or medication use."
+      },
+      {
+        name: "Wormwood",
+        category: ["strong"],
+        evidence: "low",
+        summary: "Historically famous and heavily marketed. Also one of the herbs that deserves the most caution.",
+        bestFor: "Practitioner-guided use only, especially if using extracts.",
+        cautions: "Thujone-containing products can be risky. Avoid with pregnancy, breastfeeding, seizure disorders, kidney issues, and many medications."
+      },
+      {
+        name: "Neem",
+        category: ["strong"],
+        evidence: "traditional",
+        summary: "Traditional antimicrobial and skin-support herb. Internally, it is not a casual daily-cleanse herb.",
+        bestFor: "Practitioner-guided formulas, sometimes external skin use depending on product.",
+        cautions: "Avoid in pregnancy/trying to conceive unless supervised. Can be unsafe for children and with certain health conditions."
+      },
+      {
+        name: "Berberine herbs",
+        category: ["strong"],
+        evidence: "traditional",
+        summary: "Goldenseal/barberry/oregon grape contain berberine-like compounds often used for gut microbes, but not a universal parasite cure.",
+        bestFor: "Practitioner-guided gut support when appropriate.",
+        cautions: "Can interact with medications and is not for pregnancy, breastfeeding, infants, or complex medical situations."
+      },
+      {
+        name: "Probiotics + fermented foods",
+        category: ["gentle", "food"],
+        evidence: "traditional",
+        summary: "Not antiparasitic treatment, but may support gut recovery and resilience after digestive disruption.",
+        bestFor: "Recovery phase, digestion support, microbiome support.",
+        cautions: "Use caution if immunocompromised or if fermented foods worsen symptoms."
+      },
+      {
+        name: "Bitter greens",
+        category: ["gentle", "food"],
+        evidence: "traditional",
+        summary: "Dandelion greens, arugula, chicory, and other bitters can support digestion and bile flow for some people.",
+        bestFor: "Food-based digestive support and appetite rhythm.",
+        cautions: "Avoid if gallbladder issues, bile duct obstruction, or medication interactions are a concern."
+      }
+    ];
+
+    const buttons = document.getElementById("parasiteButtons");
+    const detail = document.getElementById("parasiteDetail");
+
+    function renderParasites(active = 0) {
+      buttons.innerHTML = parasiteTypes.map((p, i) => `
+        <button class="parasite-btn ${i === active ? 'active' : ''}" onclick="renderParasites(${i})">
+          <strong>${p.icon} ${p.name}</strong>
+          <small>${p.subtitle}</small>
+        </button>
+      `).join("");
+
+      const p = parasiteTypes[active];
+      detail.innerHTML = `
+        <div class="pill-row"><span class="pill green">${p.icon} ${p.subtitle}</span></div>
+        <h3>${p.name}</h3>
+        <p>${p.name === 'Blood parasites' ? 'This category can be medically urgent. Do not use herbs as the primary plan.' : 'Use this as a category map before choosing herbs or testing.'}</p>
+        <div class="detail-grid">
+          <div class="mini"><b>Common clues</b><ul>${p.clues.map(c => `<li>${c}</li>`).join("")}</ul></div>
+          <div class="mini"><b>Testing path</b><span>${p.testing}</span></div>
+          <div class="mini" style="grid-column:1/-1"><b>Herbal-support lane</b><span>${p.herb}</span></div>
+        </div>
+      `;
+    }
+
+    const herbGrid = document.getElementById("herbGrid");
+    const herbSearch = document.getElementById("herbSearch");
+    const herbFilters = document.getElementById("herbFilters");
+    let activeFilter = "all";
+
+    function renderHerbs() {
+      const q = herbSearch.value.toLowerCase().trim();
+      const filtered = herbs.filter(h => {
+        const matchesFilter = activeFilter === "all" || h.category.includes(activeFilter);
+        const haystack = `${h.name} ${h.summary} ${h.bestFor} ${h.cautions} ${h.evidence} ${h.category.join(' ')}`.toLowerCase();
+        return matchesFilter && haystack.includes(q);
+      });
+
+      herbGrid.innerHTML = filtered.map(h => `
+        <article class="card herb-card">
+          <div class="herb-top">
+            <div class="herb-name">${h.name}</div>
+            <span class="evidence ${h.evidence}">${h.evidence} evidence</span>
+          </div>
+          <div class="herb-body">
+            <p>${h.summary}</p>
+            <div class="mini"><b>Best used for</b><span>${h.bestFor}</span></div>
+            <div class="mini" style="margin-top:10px"><b>Cautions</b><span>${h.cautions}</span></div>
+            <div class="pill-row">${h.category.map(c => `<span class="pill ${c === 'strong' ? 'red' : c === 'food' ? 'green' : 'gold'}">${c}</span>`).join("")}</div>
+          </div>
+        </article>
+      `).join("") || `<div class="card"><h3>No herbs found</h3><p>Try a broader search term.</p></div>`;
+    }
+
+    herbFilters.addEventListener("click", (e) => {
+      if (!e.target.matches(".filter")) return;
+      document.querySelectorAll(".filter").forEach(btn => btn.classList.remove("active"));
+      e.target.classList.add("active");
+      activeFilter = e.target.dataset.filter;
+      renderHerbs();
+    });
+
+    herbSearch.addEventListener("input", renderHerbs);
+
+    function buildProtocol() {
+      const type = document.getElementById("suspectType").value;
+      const severity = document.getElementById("severity").value;
+      const intensity = document.getElementById("herbIntensity").value;
+      const result = document.getElementById("protocolResult");
+
+      const urgent = severity === "severe" || type === "blood";
+      const pinworm = type === "pinworm";
+      const strong = intensity === "strong";
+
+      let title = "Food-level support lane";
+      let rows = [
+        ["🧪", "Start with exposure history and testing if symptoms persist or recur."],
+        ["🌿", "Use food-level supports first: ginger, garlic in meals, pumpkin seed, hydration, and simple meals."],
+        ["🧼", "Add hygiene and prevention basics so the cycle does not keep repeating."]
+      ];
+
+      if (urgent) {
+        title = "Medical-first lane";
+        rows = [
+          ["🚩", "Do not run a cleanse for severe symptoms, blood-parasite suspicion, fever cycles, dehydration, blood in stool, confusion, or major weight loss."],
+          ["🏥", "Use the page as a symptom/exposure tracker and seek medical evaluation."],
+          ["🌿", "Herbs and binders should wait until safety, diagnosis, and medication interactions are clear."]
+        ];
+      } else if (pinworm) {
+        title = "Egg-cycle interruption lane";
+        rows = [
+          ["🥚", "Focus on life-cycle control: timing, household hygiene, morning showers, short nails, and laundering bedding/towels."],
+          ["⏱️", "Do not frame this as one-and-done. Egg strategies often require a repeat window because eggs can hatch later."],
+          ["🌿", strong ? "Clove can be discussed as traditional egg/life-cycle support, but not as a guaranteed egg killer." : "Keep herbs gentle unless a clinician confirms the organism and the correct treatment lane."]
+        ];
+      } else if (severity === "moderate" || type === "travel") {
+        title = "Test-first + support lane";
+        rows = [
+          ["🧪", "Testing matters more here, especially with travel, unsafe water, undercooked food, or symptoms over 7 days."],
+          ["🌿", strong ? "Avoid stacking strong herbs blindly. If using clove/wormwood/black walnut, treat them as practitioner-guided." : "Use gentle digestive support while waiting for clarity."],
+          ["🧲", "Binders are optional support and should be spaced away from medications and supplements."]
+        ];
+      } else if (strong) {
+        title = "Practitioner-guided strong-herb lane";
+        rows = [
+          ["⚠️", "Strong herbs like wormwood, black walnut, clove oil/extracts, neem, and berberine herbs deserve caution."],
+          ["🧪", "Confirm the suspicion first. Strong formulas should not be used to guess what is wrong."],
+          ["🧲", "If binders are used, separate them from medications/supplements and avoid constipation."]
+        ];
+      }
+
+      result.innerHTML = `
+        <h3>${title}</h3>
+        <div class="result-list">
+          ${rows.map(([icon, text]) => `<div class="result-row"><span>${icon}</span><div>${text}</div></div>`).join("")}
+        </div>
+      `;
+    }
+
+    const detoxProtocols = [
+      {
+        id: 1,
+        name: "Heavy Metal Exposure — Food Support Base",
+        target: "Metals",
+        type: "Food Protocol",
+        time: "Daily meal",
+        cycle: "2–4 weeks",
+        safety: 88,
+        evidence: 68,
+        gentle: 88,
+        medical: 42,
+        desc: "A fiber, mineral, and antioxidant-focused food plan. This is not chelation and does not treat heavy-metal poisoning.",
+        ingredients: [
+          ["Oats or barley", "1/2 cup dry", "Soluble fiber support"],
+          ["Ground flaxseed", "1 tbsp", "Fiber and bowel regularity"],
+          ["Blueberries", "1/2 cup", "Polyphenol-rich food"],
+          ["Cilantro", "2 tbsp chopped", "Culinary herb, not a chelator"],
+          ["Pumpkin seeds", "1 tbsp", "Minerals and protein"],
+          ["Broccoli sprouts or broccoli", "1/2 cup", "Cruciferous food support"],
+          ["Water", "2–3 cups with meal window", "Hydration for regular elimination"]
+        ],
+        steps: [
+          "Build a bowl with oats or barley as the base.",
+          "Add berries, flaxseed, pumpkin seeds, and chopped cilantro.",
+          "Add broccoli sprouts or cooked broccoli on the side.",
+          "Use this as a supportive meal, not a replacement for testing or treatment."
+        ],
+        cautions: [
+          "Do not use this as treatment for lead, mercury, arsenic, or cadmium poisoning.",
+          "If exposure is suspected, testing and a clinician-guided plan matter.",
+          "Avoid OTC chelation products unless prescribed or supervised."
+        ]
+      },
+      {
+        id: 2,
+        name: "Heavy Metals — Doctor-Led Chelation Placeholder",
+        target: "Metals",
+        type: "Doctor-Led",
+        time: "Medical setting",
+        cycle: "Clinician decides",
+        safety: 55,
+        evidence: 84,
+        gentle: 28,
+        medical: 98,
+        desc: "A UI card for real heavy-metal poisoning workflows. This is intentionally doctor-led because chelation can be risky.",
+        ingredients: [
+          ["Confirmed lab testing", "Required", "Blood, urine, hair, or other test depends on metal"],
+          ["Exposure history", "Required", "Work, water, fish, paint, supplements, environment"],
+          ["Medical chelator", "Prescription only", "Depends on metal and patient"],
+          ["Kidney/liver monitoring", "Clinician-guided", "Safety monitoring"]
+        ],
+        steps: ["Confirm actual exposure with appropriate testing.", "Identify and remove the source of exposure.", "Use chelation only under medical supervision.", "Monitor labs and symptoms during treatment."],
+        cautions: ["Do not buy unapproved chelation products online.", "Chelation can affect essential minerals and organs.", "This card is a medical workflow marker, not a self-treatment recipe."]
+      },
+      {
+        id: 3,
+        name: "Parasite Suspicion — Testing First Protocol",
+        target: "Parasites",
+        type: "Doctor-Led",
+        time: "Before herbs",
+        cycle: "Until diagnosis",
+        safety: 82,
+        evidence: 82,
+        gentle: 70,
+        medical: 90,
+        desc: "A grounded parasite workflow: symptoms, stool testing, travel/food history, then targeted treatment if needed.",
+        ingredients: [["Symptom log", "7–14 days", "Track stool, itching, cramps, fever, fatigue"], ["Food/travel history", "1 list", "Undercooked meat, untreated water, travel, pets"], ["Stool test request", "Clinician-guided", "Common for GI parasite symptoms"], ["Hydration", "2–3 liters/day as tolerated", "Support during diarrhea or loose stool"], ["Bland foods", "As needed", "Rice, banana, soup, toast, oats"]],
+        steps: ["Write down symptoms and timing.", "Note travel, food, water, and animal exposure.", "Ask a healthcare provider about stool testing or other parasite tests.", "Use targeted treatment only after diagnosis whenever possible."],
+        cautions: ["Do not assume every craving, fatigue spell, or vague symptom is parasites.", "Some parasite symptoms overlap with IBS, food intolerance, stress, infection, or inflammation.", "Seek care fast for fever, blood in stool, dehydration, severe pain, or unexplained weight loss."]
+      },
+      {
+        id: 4,
+        name: "Parasite Food-Support Bowl",
+        target: "Parasites",
+        type: "Meal Bowl",
+        time: "Lunch",
+        cycle: "1–2 weeks",
+        safety: 86,
+        evidence: 48,
+        gentle: 82,
+        medical: 45,
+        desc: "A food-based gut support bowl using seeds, garlic, herbs, and fiber. Not a parasite treatment.",
+        ingredients: [["Cooked quinoa", "3/4 cup", "Gentle fiber base"], ["Pumpkin seeds", "2 tbsp", "Traditional food used in gut protocols"], ["Carrot", "1 medium grated", "Fiber and texture"], ["Garlic", "1 small clove minced", "Culinary antimicrobial-style food"], ["Parsley or cilantro", "2 tbsp chopped", "Fresh culinary herbs"], ["Olive oil", "1 tbsp", "Fat for satiety"], ["Lemon juice", "1 tbsp", "Flavor and acidity"]],
+        steps: ["Add quinoa, grated carrot, and pumpkin seeds to a bowl.", "Mix olive oil, lemon juice, and minced garlic as dressing.", "Top with parsley or cilantro.", "Eat as a supportive meal, not as a cure."],
+        cautions: ["Raw garlic can irritate reflux or gastritis.", "Pumpkin seeds are food, not a guaranteed antiparasitic treatment.", "Persistent symptoms need testing."]
+      },
+      {
+        id: 5,
+        name: "Parasite Herbal Caution Card",
+        target: "Parasites",
+        type: "Tea",
+        time: "Do not self-dose",
+        cycle: "Clinician-guided",
+        safety: 40,
+        evidence: 38,
+        gentle: 30,
+        medical: 88,
+        desc: "A warning card for stronger herbs often used online: wormwood, black walnut, clove, neem, oregano oil.",
+        ingredients: [["Wormwood", "No self-dose listed", "Can be risky"], ["Black walnut hull", "No self-dose listed", "Allergy and toxicity concerns"], ["Clove oil / oregano oil", "No self-dose listed", "Can burn/irritate tissues"], ["Neem", "No self-dose listed", "Not for pregnancy; safety concerns"], ["Clinician guidance", "Required", "Especially with meds or health conditions"]],
+        steps: ["Use this card as a red-flag reminder.", "Do not stack multiple strong antiparasitic herbs casually.", "Get testing before aggressive protocols.", "Review medication interactions with a pharmacist or clinician."],
+        cautions: ["Strong herbs can interact with medications and irritate the gut.", "Avoid during pregnancy, breastfeeding, liver disease, kidney disease, or complex medical conditions unless supervised.", "Essential oils should not be swallowed casually."]
+      },
+      {
+        id: 6,
+        name: "Mold / Mycotoxin — Exposure Reduction",
+        target: "Mold",
+        type: "Environment",
+        time: "Home audit",
+        cycle: "Immediate",
+        safety: 90,
+        evidence: 78,
+        gentle: 92,
+        medical: 55,
+        desc: "The first mold protocol is not a supplement. It is finding and reducing the exposure source.",
+        ingredients: [["Moisture inspection", "1 full home check", "Look under sinks, windows, bathroom, basement"], ["Humidity target", "Below 50% if possible", "Reduce mold-friendly moisture"], ["HEPA vacuum/filter", "As available", "Particle reduction support"], ["Remove damaged porous material", "As needed", "Professional help for serious cases"], ["Protective mask/gloves", "For cleanup", "Avoid inhaling disturbed mold"]],
+        steps: ["Find moisture sources before buying supplements.", "Reduce humidity and repair leaks.", "Avoid disturbing large mold areas without protection.", "Consider professional remediation for major contamination."],
+        cautions: ["Do not rely on binders while staying in a moldy environment.", "Severe respiratory symptoms, asthma flares, or neurological symptoms need medical care.", "Major mold remediation should be handled carefully."]
+      },
+      {
+        id: 7,
+        name: "Mold Support — Fiber + Bile Meal",
+        target: "Mold",
+        type: "Meal Bowl",
+        time: "Lunch or dinner",
+        cycle: "2–4 weeks",
+        safety: 82,
+        evidence: 52,
+        gentle: 78,
+        medical: 50,
+        desc: "A food-based binder-style support meal using fiber and bitter greens. Not a cure for mold illness.",
+        ingredients: [["Cooked lentils", "1/2 cup", "Fiber and protein"], ["Brown rice", "1/2 cup cooked", "Gentle carb base"], ["Arugula or dandelion greens", "1 cup", "Bitter greens"], ["Ground flaxseed", "1 tbsp", "Soluble/insoluble fiber"], ["Olive oil", "1 tbsp", "Bile-flow meal support"], ["Lemon juice", "1 tbsp", "Flavor and acidity"], ["Water", "1–2 cups", "Fiber needs fluid"]],
+        steps: ["Build the bowl with rice, lentils, and greens.", "Add flaxseed, olive oil, and lemon.", "Drink water with the meal.", "Use alongside exposure reduction, not instead of it."],
+        cautions: ["Increase fiber slowly to avoid bloating.", "If using binders like charcoal or clay, separate them from medications and use clinician guidance.", "Do not use this as a replacement for mold remediation."]
+      },
+      {
+        id: 8,
+        name: "Liver / Bile Gentle Bitter Tea",
+        target: "Liver",
+        type: "Tea",
+        time: "Before meals",
+        cycle: "1–2 weeks",
+        safety: 74,
+        evidence: 45,
+        gentle: 70,
+        medical: 55,
+        desc: "A gentle bitter-tea style card for digestive support. Not a liver cleanse and not for gallbladder attacks.",
+        ingredients: [["Dandelion root tea", "1 tea bag or 1 tsp dried root", "Traditional bitter digestive tea"], ["Hot water", "300 ml", "Tea base"], ["Ginger", "2–3 thin slices", "Warming digestive support"], ["Lemon", "1 tsp juice", "Flavor"], ["Honey", "1 tsp optional", "Taste only"]],
+        steps: ["Steep dandelion root and ginger in hot water for 8–10 minutes.", "Add lemon after steeping.", "Sip before a meal if tolerated.", "Stop if it worsens reflux, pain, or nausea."],
+        cautions: ["Avoid with gallbladder blockage, bile duct issues, severe reflux, or allergy to ragweed-family plants.", "Check interactions if taking diuretics, lithium, blood thinners, or diabetes medication.", "Right upper abdominal pain after fatty meals should be medically checked."]
+      },
+      {
+        id: 9,
+        name: "Gut Reset — Soluble Fiber Smoothie",
+        target: "Gut",
+        type: "Smoothie",
+        time: "Breakfast",
+        cycle: "1–3 weeks",
+        safety: 90,
+        evidence: 72,
+        gentle: 88,
+        medical: 32,
+        desc: "A simple gut-support smoothie focused on bowel regularity, fiber, and stable energy.",
+        ingredients: [["Blueberries", "1 cup", "Polyphenols and fiber"], ["Banana", "1/2 medium", "Texture and potassium"], ["Chia seeds", "1 tsp to 1 tbsp", "Start low if sensitive"], ["Ground flaxseed", "1 tbsp", "Fiber"], ["Plain yogurt or kefir", "3/4 cup", "Fermented food option"], ["Water", "1/2 cup", "Blend texture"]],
+        steps: ["Start with 1 tsp chia if your gut is sensitive.", "Blend all ingredients until smooth.", "Drink slowly with extra water.", "Increase fiber gradually over several days."],
+        cautions: ["Too much fiber too fast can cause bloating, gas, or constipation.", "Use dairy-free yogurt if dairy bothers you.", "Persistent diarrhea, blood, or weight loss needs medical care."]
+      },
+      {
+        id: 10,
+        name: "Lymph / Fluid Movement Hydration",
+        target: "Lymph",
+        type: "Hydration",
+        time: "Morning",
+        cycle: "Daily",
+        safety: 92,
+        evidence: 50,
+        gentle: 94,
+        medical: 30,
+        desc: "A hydration and movement-based card for fluid support. Lymph flow is mostly supported by movement, breathing, and hydration.",
+        ingredients: [["Water", "750 ml", "Hydration base"], ["Lemon or lime", "1 tbsp juice", "Flavor"], ["Sea salt", "Tiny pinch optional", "Only if salt is appropriate for you"], ["Cucumber", "1/4 cucumber sliced", "Flavor and hydration"], ["Mint", "5 leaves", "Flavor"], ["Walking", "10–20 minutes", "Muscle pump support"]],
+        steps: ["Prepare infused water in the morning.", "Sip gradually rather than chugging.", "Walk for 10–20 minutes.", "Add gentle stretching or diaphragmatic breathing."],
+        cautions: ["Skip added salt if you are sodium-restricted or have blood-pressure/kidney concerns.", "Swollen lymph nodes, unexplained swelling, fever, or night sweats need medical attention.", "This is supportive, not a disease treatment."]
+      },
+      {
+        id: 11,
+        name: "Inflammation Load — Polyphenol Plate",
+        target: "Inflammation",
+        type: "Food Protocol",
+        time: "Lunch or dinner",
+        cycle: "2–4 weeks",
+        safety: 89,
+        evidence: 70,
+        gentle: 86,
+        medical: 35,
+        desc: "A whole-food plate with colorful plants, omega-style fats, and spices. Useful as a general anti-inflammatory meal pattern.",
+        ingredients: [["Salmon, sardines, tofu, or beans", "1 palm-size serving", "Protein base"], ["Leafy greens", "2 cups", "Micronutrient density"], ["Berries or pomegranate", "1/2 cup", "Polyphenol-rich food"], ["Extra virgin olive oil", "1 tbsp", "Main fat"], ["Turmeric", "1/4 tsp", "Spice"], ["Black pepper", "Tiny pinch", "Flavor and turmeric pairing"], ["Walnuts", "1 tbsp", "Fat and crunch"]],
+        steps: ["Choose one protein base.", "Add greens and colorful fruit or vegetables.", "Dress with olive oil, turmeric, and black pepper.", "Add walnuts for texture."],
+        cautions: ["Turmeric supplements are different from culinary turmeric and can interact with medications.", "Fish choices matter if you are concerned about mercury exposure.", "Food patterns help support health but do not replace treatment for inflammatory disease."]
+      },
+      {
+        id: 12,
+        name: "Kidney-Safe Hydration Reminder",
+        target: "Gut",
+        type: "Hydration",
+        time: "Throughout day",
+        cycle: "Daily",
+        safety: 86,
+        evidence: 75,
+        gentle: 88,
+        medical: 40,
+        desc: "A gentle hydration card with no extreme flushing. Your kidneys already filter blood; the goal is normal hydration.",
+        ingredients: [["Water", "2–3 liters/day as tolerated", "Adjust for body size, sweat, climate"], ["Electrolyte foods", "1–2 servings", "Fruit, soup, yogurt, potatoes"], ["Cucumber or citrus", "Optional", "Flavor"], ["Avoid alcohol excess", "Daily choice", "Reduce load"], ["Avoid megadose supplements", "Daily choice", "Kidney/liver safety"]],
+        steps: ["Drink enough that urine is usually pale yellow, not perfectly clear all day.", "Use food-based electrolytes if sweating.", "Avoid extreme water chugging.", "Treat hydration as a baseline, not a cleanse."],
+        cautions: ["Kidney disease, heart failure, or fluid restriction changes hydration advice.", "Too much water can be dangerous.", "Swelling, shortness of breath, or very low urine output needs medical attention."]
+      }
+    ];
+
+    let detoxSelectedId = 1;
+
+    function detoxTagClass(target) {
+      const map = { Metals: "metals", Parasites: "parasites", Mold: "mold", Liver: "liver", Gut: "", Lymph: "", Inflammation: "" };
+      return map[target] || "";
+    }
+
+    function getVisibleDetoxProtocols() {
+      const search = document.getElementById("detoxSearchInput");
+      const targetEl = document.getElementById("detoxTargetFilter");
+      const typeEl = document.getElementById("detoxTypeFilter");
+      if (!search || !targetEl || !typeEl) return detoxProtocols;
+      const q = search.value.trim().toLowerCase();
+      const target = targetEl.value;
+      const type = typeEl.value;
+      return detoxProtocols.filter(item => {
+        const haystack = [item.name, item.target, item.type, item.desc, ...item.ingredients.flat(), ...item.cautions].join(" ").toLowerCase();
+        return (!q || haystack.includes(q)) && (target === "All" || item.target === target) && (type === "All" || item.type === type);
+      });
+    }
+
+    function renderDetoxCards() {
+      const cardsEl = document.getElementById("detoxCards");
+      if (!cardsEl) return;
+      const visible = getVisibleDetoxProtocols();
+      if (visible.length && !visible.some(item => item.id === detoxSelectedId)) detoxSelectedId = visible[0].id;
+      document.getElementById("detoxVisibleCount").textContent = `${visible.length} visible`;
+      cardsEl.innerHTML = visible.map(item => `
+        <article class="detox-card ${item.id === detoxSelectedId ? "active" : ""}" onclick="selectDetoxProtocol(${item.id})">
+          <h3>${item.name}</h3>
+          <p>${item.desc}</p>
+          <div class="detox-tag-row">
+            <span class="detox-tag ${detoxTagClass(item.target)}">${item.target}</span>
+            <span class="detox-tag">${item.type}</span>
+            <span class="detox-tag">Safety ${item.safety}</span>
+            ${item.medical > 75 ? `<span class="detox-tag caution">Doctor-led</span>` : ``}
+          </div>
+        </article>
+      `).join("") || `<article class="detox-card"><h3>No protocols found</h3><p>Try a broader word like gut, fiber, mold, metal, parasite, or liver.</p></article>`;
+      renderDetoxSelected();
+    }
+
+    function selectDetoxProtocol(id) {
+      detoxSelectedId = id;
+      renderDetoxCards();
+    }
+
+    function renderDetoxSelected() {
+      const item = detoxProtocols.find(protocol => protocol.id === detoxSelectedId);
+      if (!item) return;
+      document.getElementById("detoxSelectedName").textContent = item.name;
+      document.getElementById("detoxSelectedDesc").textContent = item.desc;
+      document.getElementById("detoxSelectedScore").textContent = item.safety;
+      document.getElementById("detoxSelectedTarget").textContent = item.target;
+      document.getElementById("detoxSelectedType").textContent = item.type;
+      document.getElementById("detoxSelectedTime").textContent = item.time;
+      document.getElementById("detoxSelectedCycle").textContent = item.cycle;
+      document.getElementById("detoxIngredients").innerHTML = item.ingredients.map(([name, amount, purpose]) => `
+        <div class="detox-ingredient"><div><span>${name}</span><div class="detox-purpose">${purpose}</div></div><b>${amount}</b></div>
+      `).join("");
+      document.getElementById("detoxSteps").innerHTML = item.steps.map(step => `<div class="detox-step">${step}</div>`).join("");
+      document.getElementById("detoxCautions").innerHTML = item.cautions.map(caution => `<div class="detox-caution-box">${caution}</div>`).join("");
+      document.getElementById("detoxEvidenceBar").style.width = `${item.evidence}%`;
+      document.getElementById("detoxGentleBar").style.width = `${item.gentle}%`;
+      document.getElementById("detoxMedicalBar").style.width = `${item.medical}%`;
+    }
+
+    function buildDetoxShoppingList() {
+      const visible = getVisibleDetoxProtocols();
+      const map = new Map();
+      visible.forEach(protocol => {
+        protocol.ingredients.forEach(([name, amount]) => {
+          const lower = name.toLowerCase();
+          if (lower.includes("testing") || lower.includes("clinician") || lower.includes("medical") || lower.includes("history") || lower.includes("inspection") || lower.includes("walking") || lower.includes("avoid") || lower.includes("monitoring")) return;
+          if (!map.has(name)) map.set(name, []);
+          map.get(name).push(amount);
+        });
+      });
+      const html = [...map.entries()].map(([name, amounts]) => `<div class="detox-shop-item"><span>${name}</span><b>${[...new Set(amounts)].join(" / ")}</b></div>`).join("");
+      document.getElementById("detoxShoppingList").innerHTML = html || `<div class="detox-shop-item"><span>No shopping items from this filter. Try selecting food-based protocols.</span><b>Empty</b></div>`;
+    }
+
+    function selectRandomDetox() {
+      const visible = getVisibleDetoxProtocols();
+      const pool = visible.length ? visible : detoxProtocols;
+      detoxSelectedId = pool[Math.floor(Math.random() * pool.length)].id;
+      renderDetoxCards();
+      document.getElementById("detoxSelector").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function resetDetoxFilters() {
+      document.getElementById("detoxSearchInput").value = "";
+      document.getElementById("detoxTargetFilter").value = "All";
+      document.getElementById("detoxTypeFilter").value = "All";
+      detoxSelectedId = 1;
+      renderDetoxCards();
+    }
+
+    function saveNotes() {
+      const notes = document.getElementById("symptomNotes").value;
+      localStorage.setItem("parasiteHerbNotes", notes);
+      alert("Notes saved in this browser.");
+    }
+
+    function clearNotes() {
+      localStorage.removeItem("parasiteHerbNotes");
+      document.getElementById("symptomNotes").value = "";
+    }
+
+    const detoxSearchEl = document.getElementById("detoxSearchInput");
+    const detoxTargetEl = document.getElementById("detoxTargetFilter");
+    const detoxTypeEl = document.getElementById("detoxTypeFilter");
+    if (detoxSearchEl && detoxTargetEl && detoxTypeEl) {
+      detoxSearchEl.addEventListener("input", renderDetoxCards);
+      detoxTargetEl.addEventListener("change", renderDetoxCards);
+      detoxTypeEl.addEventListener("change", renderDetoxCards);
+    }
+
+    document.getElementById("symptomNotes").value = localStorage.getItem("parasiteHerbNotes") || "";
+    renderParasites();
+    renderHerbs();
+    renderDetoxCards();
+  </script>
+</body>
+</html>
