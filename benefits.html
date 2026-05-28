@@ -144,14 +144,38 @@
   .detail-icon { font-size: 48px; line-height: 1; }
   .detail-name { font-family: 'Playfair Display', serif; font-size: clamp(24px, 4vw, 36px); font-weight: 700; }
   .detail-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .detail-summary {
+    font-size: 16px; color: #d6c8ad; line-height: 1.6;
+    padding: 16px 18px; border-left: 2px solid var(--accent);
+    background: rgba(200,146,42,0.04); border-radius: 0 6px 6px 0;
+    margin: 0 0 8px;
+  }
   .detail-section-label {
     font-size: 11px; font-weight: 500; letter-spacing: 0.25em;
     text-transform: uppercase; color: var(--accent);
-    margin: 24px 0 12px;
+    margin: 28px 0 12px;
+    display: flex; align-items: center; gap: 8px;
   }
-  .detail-benefits { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-  .detail-benefits li { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; color: #c8b89a; line-height: 1.55; }
+  .detail-section-label .label-icon { font-size: 14px; opacity: 0.85; }
+  .detail-benefits, .detail-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .detail-benefits li, .detail-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; color: #c8b89a; line-height: 1.55; }
   .detail-benefits li::before { content: '—'; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+  .detail-list.mechanisms li::before { content: '⚛'; color: var(--blue); flex-shrink: 0; font-size: 13px; margin-top: 3px; }
+  .detail-list.forms li::before { content: '◆'; color: var(--teal); flex-shrink: 0; font-size: 11px; margin-top: 5px; }
+  .detail-list.pairings li::before { content: '+'; color: var(--green); flex-shrink: 0; font-weight: 600; margin-top: 1px; }
+  .detail-list.cautions li::before { content: '!'; color: var(--pink); flex-shrink: 0; font-weight: 700; margin-top: 1px; }
+  .detail-dosage {
+    font-size: 15px; color: #c8b89a; line-height: 1.6;
+    padding: 14px 16px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  .detail-dosage strong { color: var(--text); font-weight: 500; }
+  .detail-disclaimer {
+    margin-top: 28px; padding: 12px 14px;
+    font-size: 12px; color: var(--muted); line-height: 1.5;
+    border-top: 1px solid var(--border);
+    font-style: italic;
+  }
   .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
   .related-item {
     display: flex; align-items: center; gap: 10px;
@@ -202,84 +226,776 @@
 
 <script>
 const DATA = [
-  {name:"Apple Cider",icon:"🍎",cat:"drink",tags:["drink","food"],benefits:["Rich in antioxidants and polyphenols that protect cells from oxidative stress","Supports digestion when consumed before meals","Natural source of potassium which supports heart and muscle function","Contains malic acid which may support energy production","Anti-inflammatory properties from flavonoids"]},
-  {name:"Apple Cider Vinegar",icon:"🫙",cat:"food",tags:["food","supp"],benefits:["Helps regulate blood sugar and improve insulin sensitivity","Supports weight management by increasing satiety","Antimicrobial properties help fight harmful bacteria","May lower cholesterol and triglyceride levels","Supports digestive health and reduces bloating","Can improve skin pH when diluted and applied topically"]},
-  {name:"Artichoke",icon:"🌱",cat:"food",tags:["food","herb"],benefits:["High in cynarin which supports bile production and liver detox","One of the richest plant sources of antioxidants","Supports gut health and acts as a prebiotic fiber","May lower LDL cholesterol significantly","Supports kidney function and reduces bloating","Rich in folate, vitamin C, and magnesium"]},
-  {name:"Ashwagandha",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["Adaptogen that reduces cortisol and stress hormones","Improves testosterone levels and reproductive health in men","Boosts endurance, stamina, and VO2 max","Supports thyroid hormone balance","Reduces anxiety and improves sleep quality","Anti-inflammatory and antioxidant properties from withanolides"]},
-  {name:"Astragalus",icon:"🌾",cat:"herb",tags:["herb","supp"],benefits:["Powerful immune booster used in traditional Chinese medicine","Contains polysaccharides that stimulate white blood cell production","Adaptogen that helps the body resist physical and mental stress","May slow cellular aging through telomere support","Anti-inflammatory and antiviral properties","Supports heart health and may lower blood pressure"]},
-  {name:"Bananas",icon:"🍌",cat:"food",tags:["food"],benefits:["Excellent source of potassium for heart and muscle function","Provides quick natural energy from natural sugars and carbohydrates","Rich in vitamin B6 which supports brain health and mood","Contains pectin and resistant starch that moderate blood sugar","High in dopamine and catechins with antioxidant effects","Supports digestive health and relieves constipation"]},
-  {name:"Barley",icon:"🌾",cat:"food",tags:["food"],benefits:["Beta-glucan fiber powerfully lowers LDL cholesterol","Regulates blood sugar and improves insulin sensitivity","High in fiber which feeds beneficial gut bacteria","Rich in selenium, manganese, and B vitamins","Promotes satiety and supports weight management","May reduce risk of colon cancer"]},
-  {name:"Bean Sprouts",icon:"🫘",cat:"food",tags:["food"],benefits:["Low calorie and nutrient-dense — rich in vitamins C and K","Enzyme-rich due to sprouting process which aids digestion","High in folate, magnesium, and phosphorus","Antioxidants protect against cellular damage","Supports bone health and blood clotting","Easy to digest protein source"]},
-  {name:"Beets",icon:"🫀",cat:"food",tags:["food"],benefits:["High in nitrates that convert to nitric oxide, improving blood flow","Enhances athletic performance and endurance significantly","Supports liver detoxification through betalains","Reduces blood pressure naturally","Rich in folate supporting DNA synthesis and repair","Anti-inflammatory effects from betaine"]},
-  {name:"Broccoli",icon:"🥦",cat:"food",tags:["food"],benefits:["Sulforaphane activates cancer-fighting enzymes","High in vitamin C, K, and folate","Supports gut microbiome with prebiotic fiber","Indole-3-carbinol supports estrogen metabolism and hormone balance","Powerful anti-inflammatory and antioxidant properties","Supports bone density and eye health"]},
-  {name:"Cayenne Pepper",icon:"🌶️",cat:"spice",tags:["spice"],benefits:["Capsaicin boosts metabolism and promotes fat burning","Natural pain reliever when applied topically or consumed","Reduces appetite and increases satiety","Supports cardiovascular health and blood flow","Anti-inflammatory and antioxidant properties","Clears congestion and supports respiratory health"]},
-  {name:"Celery",icon:"🥬",cat:"food",tags:["food"],benefits:["Natural anti-inflammatory through polyacetylenes and luteolin","Supports digestion and reduces bloating","High water content supports hydration","Contains phthalides that may lower blood pressure","Rich in vitamin K, folate, and potassium","Antioxidants protect against oxidative stress"]},
-  {name:"Chlorella",icon:"🌿",cat:"supp",tags:["supp","herb"],benefits:["Detoxifies heavy metals and environmental toxins from the body","Complete protein containing all essential amino acids","Rich in chlorophyll which supports blood oxygenation","Boosts immune system function","High in iron, vitamin B12, and omega-3s","Supports gut health and digestion"]},
-  {name:"Cinnamon",icon:"🪵",cat:"spice",tags:["spice"],benefits:["Powerfully lowers blood sugar and improves insulin sensitivity","Anti-inflammatory and antioxidant properties from cinnamaldehyde","Antibacterial and antifungal properties","May lower LDL cholesterol and triglycerides","Supports brain function and may protect against neurodegenerative disease","Natural preservative due to antimicrobial effects"]},
-  {name:"Citrus Peel",icon:"🍊",cat:"food",tags:["food","herb"],benefits:["High concentration of flavonoids not found in juice or flesh","D-limonene supports liver detoxification and cancer prevention","Rich in pectin fiber that lowers cholesterol","Hesperidin reduces inflammation and supports blood vessel health","Contains more vitamin C per gram than the juice","Antifungal and antimicrobial properties"]},
-  {name:"Coconut",icon:"🥥",cat:"food",tags:["food"],benefits:["Medium-chain triglycerides (MCTs) provide quick brain and body energy","Lauric acid has antimicrobial and antiviral properties","Supports thyroid function and metabolism","Rich in manganese for bone health and enzyme function","Antioxidant phenolic compounds protect against oxidative damage","Supports satiety and may aid weight management"]},
-  {name:"Coconut Water",icon:"🥤",cat:"drink",tags:["drink"],benefits:["Natural electrolyte drink — rich in potassium, magnesium, sodium","Excellent hydration after exercise or illness","Cytokinins may have anti-aging effects on cells","Low in calories compared to sports drinks","Supports kidney health and may prevent kidney stones","Contains antioxidants that neutralize free radicals"]},
-  {name:"Coffee",icon:"☕",cat:"drink",tags:["drink"],benefits:["Caffeine significantly enhances focus, alertness, and physical performance","Rich in antioxidants — one of the largest antioxidant sources in Western diet","May reduce risk of Parkinson's, Alzheimer's, and type 2 diabetes","Increases metabolic rate and fat oxidation","Chlorogenic acids support blood sugar regulation","Protective effect on liver health"]},
-  {name:"Cordyceps",icon:"🍄",cat:"fungi",tags:["fungi","supp"],benefits:["Increases ATP production for enhanced cellular energy","Improves VO2 max and endurance in athletes","Adaptogen that supports adrenal and lung function","Anti-aging properties through antioxidant effects","Supports immune modulation and anti-tumor activity","May improve libido and testosterone levels"]},
-  {name:"Dandelion",icon:"🌼",cat:"herb",tags:["herb"],benefits:["Powerful liver tonic — stimulates bile production and liver detox","Natural diuretic that supports kidney function","Rich in vitamins A, C, K and minerals including iron and calcium","Prebiotic fiber supports beneficial gut bacteria","Anti-inflammatory properties from taraxerol and luteolin","May help regulate blood sugar"]},
-  {name:"Distilled Water",icon:"💧",cat:"drink",tags:["drink"],benefits:["Purest form of water — free from contaminants, chlorine, fluoride","Acts as a solvent that may help pull toxins from the body","Ideal for short-term detox protocols","Reduces exposure to pharmaceutical residues in tap water","May be gentler on kidneys for those with sensitivity","Best used alongside mineral-rich foods to maintain electrolyte balance"]},
-  {name:"Echinacea",icon:"🌸",cat:"herb",tags:["herb","supp"],benefits:["Stimulates immune system — shortens duration of colds","Rich in alkylamides and polysaccharides that activate white blood cells","Anti-inflammatory properties","Antiviral effects particularly against respiratory viruses","Antioxidant protection from flavonoids","Wound healing properties when applied topically"]},
-  {name:"Eden Beans",icon:"🫘",cat:"food",tags:["food"],benefits:["Organic and prepared to reduce phytic acid and improve digestibility","Rich in plant-based protein and complex carbohydrates","High in iron, folate, and magnesium","Soluble fiber supports heart health and blood sugar","Prebiotic that feeds beneficial gut bacteria","BPA-free packaging preserves nutritional integrity"]},
-  {name:"Flaxseed",icon:"🌰",cat:"food",tags:["food","supp"],benefits:["Richest plant source of omega-3 fatty acid ALA","Lignans act as phytoestrogens and have anti-cancer properties","High in both soluble and insoluble fiber","Reduces LDL cholesterol and supports heart health","Supports hormone balance particularly in women","Reduces inflammation and blood pressure"]},
-  {name:"Frankincense",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["Boswellic acids powerfully inhibit inflammatory pathways","May protect against certain cancers through apoptosis induction","Supports joint health and reduces arthritis pain","Improves brain function and may protect against neurodegeneration","Supports gut health and reduces IBS symptoms","Antifungal and antibacterial properties"]},
-  {name:"Garlic",icon:"🧄",cat:"food",tags:["food","herb"],benefits:["Allicin is a potent antimicrobial, antiviral, and antifungal compound","Significantly lowers blood pressure and cholesterol","Boosts immune system function","Reduces risk of cardiovascular disease","Detoxifies heavy metals from the body","Anti-cancer properties shown in multiple studies"]},
-  {name:"Ginseng",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["Adaptogen that improves energy, focus, and stress resilience","Ginsenosides have anti-inflammatory and antioxidant effects","Supports immune function and reduces infection risk","Improves erectile function and libido","May improve blood sugar regulation","Supports cognitive function and memory"]},
-  {name:"Green Tea vs Coffee",icon:"🍵",cat:"drink",tags:["drink"],benefits:["Green tea: L-theanine + caffeine = calm focus without jitteriness","Coffee: higher caffeine, faster onset, stronger performance boost","Green tea: EGCG is a powerful cancer-fighting antioxidant","Coffee: larger antioxidant load overall for most Western diets","Green tea: gentler on adrenals and better for anxiety-prone individuals","Coffee: better for athletic performance; green tea better for longevity"]},
-  {name:"Ground Beef",icon:"🥩",cat:"food",tags:["food"],benefits:["Complete protein with all essential amino acids","Rich in heme iron — most bioavailable form for preventing anemia","High in zinc, selenium, and B12","Creatine supports muscle function and brain energy","CLA (conjugated linoleic acid) from grass-fed beef supports fat metabolism","Carnosine is an antioxidant that supports muscle and brain health"]},
-  {name:"Hemp Seed",icon:"🌿",cat:"food",tags:["food","supp"],benefits:["Complete protein with all essential amino acids — rare for a plant","Optimal omega-6 to omega-3 ratio (3:1) reduces inflammation","Rich in GLA (gamma-linolenic acid) which supports hormone balance","High in magnesium, zinc, and iron","Supports heart health and reduces blood pressure","Easy to digest protein source — no phytic acid"]},
-  {name:"Holy Basil (Tulsi)",icon:"🌿",cat:"herb",tags:["herb"],benefits:["Adaptogen that reduces cortisol and stress response","Antibacterial, antiviral, and antifungal properties","Supports blood sugar regulation","Anti-inflammatory eugenol reduces pain and inflammation","Protects liver and supports detoxification","Supports respiratory health and clears congestion"]},
-  {name:"Honey",icon:"🍯",cat:"food",tags:["food"],benefits:["Antimicrobial — inhibits bacterial growth through hydrogen peroxide","Rich in antioxidants including phenolic compounds","Soothes cough and throat irritation better than some OTC drugs","Prebiotic that feeds beneficial gut bacteria","Promotes wound healing when applied topically","Natural energy source with trace minerals and enzymes"]},
-  {name:"Hummus",icon:"🫙",cat:"food",tags:["food"],benefits:["Plant-based protein from chickpeas supports muscle maintenance","High in fiber for digestive health and blood sugar regulation","Rich in iron, folate, and B vitamins","Tahini adds calcium and healthy monounsaturated fats","Prebiotic fiber feeds beneficial gut bacteria","Supports heart health by lowering LDL cholesterol"]},
-  {name:"Jalapeños",icon:"🌶️",cat:"spice",tags:["spice","food"],benefits:["Capsaicin boosts metabolism and thermogenesis","Rich in vitamin C — one jalapeño provides significant daily needs","Anti-inflammatory and antioxidant properties","May inhibit growth of certain cancer cells","Supports cardiovascular health","Natural decongestant and pain reliever"]},
-  {name:"Kale",icon:"🥬",cat:"food",tags:["food"],benefits:["One of the most nutrient-dense foods on earth","Exceptional source of vitamins K, A, and C","Glucosinolates support liver detox and cancer prevention","High in lutein and zeaxanthin for eye health","Supports bone density through calcium and vitamin K","Bile acid sequestrants lower cholesterol naturally"]},
-  {name:"Kombucha",icon:"🫙",cat:"drink",tags:["drink","supp"],benefits:["Rich in beneficial probiotics that support gut microbiome","Contains organic acids that may support liver detoxification","B vitamins support energy and nervous system function","Antioxidants from tea base protect against oxidative stress","May support immune function through gut-immune connection","Enzymes aid in digestion and nutrient absorption"]},
-  {name:"Lavender",icon:"💜",cat:"herb",tags:["herb"],benefits:["Potent anxiolytic — reduces anxiety as effectively as some medications in studies","Promotes sleep quality and duration","Anti-inflammatory and analgesic when applied topically","Antimicrobial properties against bacteria and fungi","Supports digestive health and reduces bloating","Neuroprotective effects against cognitive decline"]},
-  {name:"Lemon Lime Water",icon:"🍋",cat:"drink",tags:["drink"],benefits:["Alkalizing effect supports optimal body pH","Vitamin C boosts immune function and collagen synthesis","Flavonoids from both fruits have anti-inflammatory effects","Stimulates digestive enzymes and bile production","Supports kidney health and reduces kidney stone risk","Natural electrolytes support hydration"]},
-  {name:"Lemon Water",icon:"🍋",cat:"drink",tags:["drink"],benefits:["Boosts liver function and bile production for fat digestion","High in vitamin C for immune support and skin health","Alkalizing despite being acidic externally","Supports weight management by increasing satiety","D-limonene has anti-cancer and detox properties","Antibacterial properties in the mouth reduce bad bacteria"]},
-  {name:"Licorice Root",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["Glycyrrhizin has powerful anti-inflammatory and antiviral properties","Soothes gastrointestinal issues including GERD and ulcers","Supports adrenal function and cortisol regulation","Antimicrobial against H. pylori, a common stomach bacteria","Expectorant that loosens mucus in respiratory conditions","Supports liver health and has hepatoprotective effects"]},
-  {name:"Matcha",icon:"🍵",cat:"drink",tags:["drink"],benefits:["Highest concentration of EGCG among all teas","L-theanine + caffeine combination produces calm sustained focus","Chlorophyll from whole leaf supports detoxification","Thermogenic effect supports fat oxidation","Exceptional antioxidant ORAC score — higher than most foods","Supports immune function and reduces inflammation"]},
-  {name:"MCT Oil",icon:"🫙",cat:"supp",tags:["supp","food"],benefits:["Rapidly converted to ketones for immediate brain energy","Supports ketosis and fat burning even without full keto diet","Antimicrobial medium-chain fatty acids — especially C8 caprylic acid","Improves cognitive function and mental clarity","Supports gut health by reducing harmful bacteria","Increases satiety and supports weight management"]},
-  {name:"Milk Thistle",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["Silymarin is one of the most potent liver-protective compounds known","Regenerates liver cells and protects against toxin damage","Anti-inflammatory and antioxidant throughout the liver","May reduce insulin resistance in people with liver disease","Supports healthy bile production for fat digestion","May reduce LDL cholesterol"]},
-  {name:"Mint",icon:"🌿",cat:"herb",tags:["herb","spice"],benefits:["Menthol relieves digestive spasms and reduces IBS symptoms","Antimicrobial properties fight bacteria in mouth and gut","Natural decongestant that opens airways","Reduces nausea effectively","Antioxidant properties protect cells from damage","Cooling effect reduces pain when applied topically"]},
-  {name:"Mushrooms",icon:"🍄",cat:"fungi",tags:["fungi","food"],benefits:["Only plant-based source of vitamin D when exposed to sunlight","Beta-glucans powerfully modulate and enhance immune function","Rich in B vitamins including B12 precursors","Ergothioneine — a unique antioxidant concentrated in brain and organs","Anti-cancer properties shown in lion's mane, reishi, and turkey tail","Prebiotic fiber feeds beneficial gut bacteria"]},
-  {name:"Myrrh",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["Potent antimicrobial against bacteria, fungi, and parasites","Anti-inflammatory terpenoids reduce pain and swelling","Supports oral health — inhibits bacteria that cause gum disease","Antioxidant protection against free radical damage","May lower blood sugar and support insulin function","Wound healing and skin regeneration properties"]},
-  {name:"Nutritional Yeast",icon:"🧀",cat:"food",tags:["food","supp"],benefits:["Complete protein with all 9 essential amino acids","Fortified form provides B12 — essential for vegans","Rich in beta-glucans that support immune function","High in zinc, selenium, and manganese","Contains glutathione — master antioxidant of the body","Supports energy metabolism through B vitamin complex"]},
-  {name:"Oil of Oregano",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["Carvacrol and thymol are among the most powerful antimicrobials in nature","Effective against antibiotic-resistant bacteria","Antifungal — especially effective against Candida","Anti-inflammatory and antioxidant protection","Supports gut health by reducing harmful bacteria","Antiviral properties against multiple viruses"]},
-  {name:"Oranges",icon:"🍊",cat:"food",tags:["food"],benefits:["Exceptionally high in vitamin C for immune function and collagen","Flavonoids including hesperidin support cardiovascular health","Folate supports DNA synthesis and nervous system health","Soluble pectin fiber lowers LDL cholesterol","Antioxidants protect skin and reduce aging","Potassium supports heart rhythm and blood pressure"]},
-  {name:"Oregano Oil",icon:"🌿",cat:"herb",tags:["herb","supp"],benefits:["High-concentration antimicrobial — effective against 23+ bacteria strains","Anti-parasitic properties useful in gut cleansing protocols","Rich in rosmarinic acid — a potent antioxidant","Reduces inflammation throughout the body","Supports respiratory health and clears mucus","Antifungal against Candida and mold species"]},
-  {name:"Ormus",icon:"✨",cat:"supp",tags:["supp"],benefits:["Monoatomic elements claimed to support cellular regeneration","Traditionally used to support pineal gland function","Anecdotally reported to improve mental clarity and focus","High mineral content depending on source quality","Used in spiritual traditions for consciousness enhancement","Research is limited — choose reputable sources"]},
-  {name:"Probiotics",icon:"🦠",cat:"supp",tags:["supp"],benefits:["Restore and maintain beneficial gut microbiome balance","Boost immune function — 70% of immune system is in the gut","Reduce anxiety and depression through gut-brain axis","Improve digestion, reduce bloating, and relieve IBS","Reduce antibiotic-associated diarrhea","Support nutrient absorption, especially B vitamins and minerals"]},
-  {name:"Psyllium Husk",icon:"🌾",cat:"supp",tags:["supp","food"],benefits:["Most powerful soluble fiber supplement available","Lowers LDL cholesterol significantly through bile acid binding","Regulates blood sugar by slowing carbohydrate absorption","Relieves both constipation and diarrhea","Prebiotic that feeds beneficial bacteria","Supports weight management through satiety"]},
-  {name:"Pumpkin Seeds",icon:"🎃",cat:"food",tags:["food"],benefits:["Highest plant source of zinc — critical for immune and hormone function","Rich in magnesium which most people are deficient in","Contains tryptophan which converts to serotonin and melatonin","Antioxidant vitamin E in multiple forms","Anti-parasitic properties in cucurbitin compound","Supports prostate health and urinary function"]},
-  {name:"Radishes",icon:"🌸",cat:"food",tags:["food"],benefits:["Glucosinolates support liver detoxification pathways","Isothiocyanates have anti-cancer properties","Natural diuretic that supports kidney health","Rich in vitamin C and folate","Anti-inflammatory properties","Supports digestion and bile flow"]},
-
-  {name:"Lion's Mane",icon:"🦁",cat:"fungi",tags:["fungi","supp"],benefits:["NGF (nerve growth factor) stimulation — promotes brain cell regeneration and neuroplasticity","Improves memory, focus, and cognitive function — studied for Alzheimer's and dementia","Reduces anxiety and depression through nervous system support","Supports myelin sheath repair — benefits nerve damage and MS research","Antimicrobial and anti-inflammatory properties","Supports gut health through prebiotic beta-glucans"]},
-  {name:"Chaga",icon:"🍄",cat:"fungi",tags:["fungi","supp"],benefits:["Highest ORAC antioxidant score of any food — superoxide dismutase (SOD) content","Powerful immune modulator — activates NK cells and macrophages","Betulinic acid has anti-cancer and anti-viral properties","Reduces inflammation throughout the body","Supports healthy blood sugar regulation","Adaptogenic — helps the body resist physical and mental stress"]},
-  {name:"Shiitake",icon:"🍄",cat:"fungi",tags:["fungi","food"],benefits:["Lentinan is a beta-glucan used in cancer therapy in Japan","Rich in eritadenine which lowers LDL cholesterol","Contains all essential amino acids — rare for a mushroom","High in B vitamins including B5, B6, and folate","Immune-boosting polysaccharides activate white blood cells","Supports cardiovascular health and reduces inflammation"]},
-  {name:"Turkey Tail",icon:"🍄",cat:"fungi",tags:["fungi","supp"],benefits:["PSK (polysaccharide-K) is an approved cancer adjunct therapy in Japan","Most researched mushroom for immune modulation and cancer support","Powerful prebiotic — feeds Bifidobacterium and Lactobacillus","Supports gut microbiome diversity more than most foods","Anti-viral properties against HPV and other viruses","Rich in phenolic antioxidants that reduce oxidative stress"]},
-  {name:"Oyster Mushroom",icon:"🍄",cat:"fungi",tags:["fungi","food"],benefits:["Rich in beta-glucans that activate innate immune response","Contains statins (lovastatin) that naturally lower cholesterol","High in ergothioneine — a unique antioxidant protective for organs and brain","Good source of B12 precursors — beneficial for plant-based diets","Anti-inflammatory and antioxidant polyphenols","Supports healthy blood pressure through potassium and fiber"]},
-  {name:"Maitake",icon:"🍄",cat:"fungi",tags:["fungi","supp"],benefits:["D-fraction extract is among the most studied anti-cancer mushroom compounds","Powerfully regulates blood sugar — used in type 2 diabetes management","Stimulates NK cells and T-cells for immune defense","Supports weight management through metabolic effects","Lowers blood pressure and LDL cholesterol","Adaptogenic properties reduce stress-related hormonal imbalance"]},
-  {name:"Reishi Mushroom",icon:"🍄",cat:"fungi",tags:["fungi","supp"],benefits:["Triterpenes have powerful anti-cancer and immune-modulating properties","Reduces stress and anxiety — natural adaptogen","Supports liver detoxification and protection","Improves sleep quality through nervous system calming","Anti-inflammatory throughout the body","Supports cardiovascular health by lowering blood pressure"]},
-  {name:"Rhodiola Rosea",icon:"🌸",cat:"herb",tags:["herb","supp"],benefits:["Adaptogen that reduces physical and mental fatigue dramatically","Increases resistance to stress without sedation","Improves cognitive function and memory under stress","May increase ATP synthesis in mitochondria","Anti-depressant effects comparable to some pharmaceuticals in studies","Supports athletic performance and recovery"]},
-  {name:"Sage",icon:"🌿",cat:"herb",tags:["herb","spice"],benefits:["Improves memory and cognitive function — studied in Alzheimer's research","Rosmarinic acid is a potent anti-inflammatory and antioxidant","Antimicrobial against bacteria and fungi","Supports hormone balance — used traditionally for menopause symptoms","Reduces excessive sweating","Antidiabetic effects through enzyme inhibition"]},
-  {name:"Sauerkraut",icon:"🫙",cat:"food",tags:["food","supp"],benefits:["One of the richest natural sources of probiotics","Vitamin C levels increase through fermentation","Supports gut microbiome diversity","K2 produced by fermentation bacteria supports bone and cardiovascular health","Supports immune function through gut-immune connection","Digestive enzymes improve overall nutrient absorption"]},
-  {name:"Schisandra",icon:"🌸",cat:"herb",tags:["herb","supp"],benefits:["Adaptogen that improves physical performance and endurance","Supports liver health and detoxification through schisandrin compounds","Improves mental focus and reduces anxiety simultaneously","Anti-aging antioxidant properties","Supports adrenal function and stress resilience","Traditional use for skin health and beautification"]},
-  {name:"Stevia",icon:"🌿",cat:"herb",tags:["herb","food"],benefits:["Zero calorie natural sweetener 200-300x sweeter than sugar","Does not spike blood sugar — safe for diabetics","May slightly lower blood pressure","Antioxidant properties from stevioside","Anti-inflammatory effects","Does not contribute to tooth decay unlike sugar"]},
-  {name:"Strawberries",icon:"🍓",cat:"food",tags:["food"],benefits:["Exceptionally high in vitamin C — one cup provides full daily value","Anthocyanins reduce inflammation and oxidative stress","Ellagic acid has anti-cancer properties","Improves insulin sensitivity and blood sugar response","Supports heart health by lowering LDL and blood pressure","High in folate for DNA repair and cell growth"]},
-  {name:"Thyme",icon:"🌿",cat:"herb",tags:["herb","spice"],benefits:["Thymol is a powerful antimicrobial against bacteria and fungi","Supports respiratory health — used for bronchitis and cough","Rich in antioxidants including vitamin C and A","Anti-inflammatory properties reduce inflammation","Supports digestion and reduces bloating","Antifungal properties helpful for Candida"]},
-  {name:"Turmeric",icon:"🟡",cat:"spice",tags:["spice","herb"],benefits:["Curcumin is one of the most studied anti-inflammatory compounds","Reduces joint pain and stiffness comparable to some NSAIDs","Powerful antioxidant that stimulates the body's own antioxidant enzymes","May reverse early Alzheimer's pathology in research models","Supports liver health and detoxification","Anti-cancer properties through multiple mechanisms — best absorbed with black pepper"]},
-  {name:"Vitex (Chaste Tree)",icon:"🌸",cat:"herb",tags:["herb","supp"],benefits:["Supports female hormone balance by acting on pituitary gland","Reduces PMS symptoms including mood swings and breast tenderness","May support fertility by normalizing luteal phase","Reduces prolactin levels — helpful for certain hormonal conditions","Traditionally used for menopause symptom relief","Adaptogenic effects on reproductive hormones"]},
-  {name:"Wheatgrass",icon:"🌱",cat:"food",tags:["food","supp"],benefits:["Extremely concentrated source of chlorophyll for blood oxygenation","Complete amino acid profile","Rich in enzymes that support digestion","High in iron, magnesium, and calcium","Supports liver detoxification and cleansing","Alkalizing effect balances body pH"]},
-  {name:"Yerba Mate",icon:"🍵",cat:"drink",tags:["drink"],benefits:["Unique stimulant blend — caffeine + theobromine + theophylline","Produces energy without jitters, often compared to clean coffee","Rich in antioxidants — higher than green tea","Supports fat oxidation and weight management","Improves physical performance and reduces fatigue","Immune-boosting saponins and polyphenols"]},
-  {name:"Chia Seeds",icon:"⚫",cat:"food",tags:["food","supp"],benefits:["Richest plant source of omega-3 ALA — higher than flaxseed per gram","Complete protein containing all essential amino acids","Absorb 10x their weight in water — promotes sustained hydration and satiety","Excellent source of calcium — more per gram than dairy milk","Soluble fiber lowers LDL cholesterol and stabilizes blood sugar","Rich in antioxidants that prevent rancidity of the healthy fats"]},
-  {name:"Tuna",icon:"🐟",cat:"food",tags:["food"],benefits:["Exceptionally high protein — 25g per 100g with minimal fat","Richest food source of omega-3 DHA and EPA for brain and heart health","Complete amino acid profile supports muscle repair and growth","High in selenium — a critical antioxidant mineral for thyroid health","Rich in B12, B3, and B6 for energy and nervous system function","Low calorie, high satiety — excellent for weight management"]},
-  {name:"Yogurt",icon:"🥛",cat:"food",tags:["food","supp"],benefits:["Rich in live probiotics — Lactobacillus and Bifidobacterium strains","High in calcium and phosphorus for bone strength","Complete protein including casein which is slow-digesting for muscle repair","B12 and B2 support energy production and red blood cell formation","May reduce risk of type 2 diabetes and cardiovascular disease","Fermentation increases bioavailability of nutrients"]},
-  {name:"Alfalfa",icon:"🌱",cat:"herb",tags:["herb","food"],benefits:["One of the most nutrient-dense plants — contains vitamins A, C, E, K, and full B complex","High in plant estrogens (phytoestrogens) that support hormone balance","Rich in chlorophyll for blood oxygenation and detoxification","Natural diuretic that supports kidney and urinary tract health","Alkalizing effect helps balance body pH","Saponins may lower LDL cholesterol and support immune function"]},
+  {
+    name:"Apple Cider",icon:"🍎",cat:"drink",tags:["drink","food"],
+    summary:"Pressed unfiltered apple juice — a polyphenol-rich autumn drink that supports digestion when sipped before meals and delivers natural potassium and malic acid for cellular energy.",
+    benefits:["Rich in antioxidants and polyphenols that protect cells from oxidative stress","Supports digestion when consumed before meals","Natural source of potassium which supports heart and muscle function","Contains malic acid which may support energy production","Anti-inflammatory properties from flavonoids"],
+    mechanisms:["Quercetin and chlorogenic acid scavenge free radicals and modulate inflammatory cytokines","Malic acid enters the Krebs cycle to support ATP production","Soluble pectin slows gastric emptying and stabilizes blood sugar"],
+    bestForms:["Raw, unfiltered (cloudy) cider — heat pasteurization preserves polyphenols better than UV","Organic to avoid pesticide residue concentrated in apple skins","Cold-pressed within the last few weeks for highest enzyme activity"],
+    pairings:["Cinnamon stick or fresh ginger — amplifies thermogenic and blood-sugar effects","A pinch of sea salt — replaces electrolytes lost to its mild diuretic effect","Warmed with cloves — better tolerance for cold-sensitive digestion"],
+    cautions:["Higher natural sugar (~25g per cup) — moderate if managing blood glucose","Erosive to tooth enamel — rinse with water after drinking","Unpasteurized cider carries small risk for pregnant, immunocompromised, or very young drinkers"],
+    dosage:"4–8 oz (120–240 ml) once daily, ideally with or before a meal. Dilute 1:1 with sparkling water for lower sugar load."
+  },
+  {
+    name:"Apple Cider Vinegar",icon:"🫙",cat:"food",tags:["food","supp"],
+    summary:"Fermented apple juice with acetic acid as the active compound — best known for blunting post-meal blood sugar spikes and supporting digestive acid in those who run low.",
+    benefits:["Helps regulate blood sugar and improve insulin sensitivity","Supports weight management by increasing satiety","Antimicrobial properties help fight harmful bacteria","May lower cholesterol and triglyceride levels","Supports digestive health and reduces bloating","Can improve skin pH when diluted and applied topically"],
+    mechanisms:["Acetic acid inhibits disaccharidase enzymes, slowing carbohydrate absorption","Lowers gastric emptying rate, prolonging satiety signals","The 'mother' contains acetobacter and beneficial yeasts that produce short-chain fatty acids"],
+    bestForms:["Raw, unfiltered, with visible 'mother' (cobweb-like sediment)","Glass bottles only — vinegar leaches plastic","Refrigeration not required but extends shelf life of unpasteurized varieties"],
+    pairings:["Olive oil + herbs as a salad dressing — fat absorption of fat-soluble vitamins","With a high-carb meal — strongest glucose-lowering effect","Honey and warm water — buffers acidity and adds antibacterial synergy"],
+    cautions:["Erodes tooth enamel — drink through a straw and rinse mouth after","Can lower potassium with chronic high doses (>4 tbsp/day)","Interacts with insulin, diuretics, and digoxin — consult a clinician if on these","Avoid undiluted — esophageal burns possible"],
+    dosage:"1–2 tsp (5–10 ml) diluted in 8 oz water, 1–2x daily before meals. Build tolerance gradually."
+  },
+  {
+    name:"Artichoke",icon:"🌱",cat:"food",tags:["food","herb"],
+    summary:"A bitter thistle exceptional for liver and gallbladder function — cynarin stimulates bile flow, while inulin fiber feeds the gut microbiome more efficiently than most vegetables.",
+    benefits:["High in cynarin which supports bile production and liver detox","One of the richest plant sources of antioxidants","Supports gut health and acts as a prebiotic fiber","May lower LDL cholesterol significantly","Supports kidney function and reduces bloating","Rich in folate, vitamin C, and magnesium"],
+    mechanisms:["Cynarin and silymarin-like compounds upregulate bile acid synthesis in hepatocytes","Inulin selectively feeds Bifidobacterium, increasing short-chain fatty acid production","Luteolin inhibits HMG-CoA reductase, the same target as statin drugs"],
+    bestForms:["Fresh whole artichokes, steamed 30–40 min until leaves pull easily","Frozen hearts retain most cynarin — packaged hearts in oil less so","Standardized leaf extract (320 mg with ≥5% cynarin) for therapeutic liver support"],
+    pairings:["Lemon juice — vitamin C boosts iron absorption from the leaves","Garlic and olive oil dip — synergistic liver and lipid effects","With fatty meals — bile stimulation aids fat digestion"],
+    cautions:["Bile duct obstruction or gallstones — can trigger painful gallbladder contractions","Ragweed/marigold allergy — cross-reactive (Asteraceae family)","Inulin may cause gas/bloating in those with SIBO or FODMAP sensitivity"],
+    dosage:"1 whole medium artichoke 2–4x weekly, or 320–640 mg standardized extract daily for liver support."
+  },
+  {
+    name:"Ashwagandha",icon:"🌿",cat:"herb",tags:["herb","supp"],
+    summary:"Ayurveda's premier adaptogen — withanolides modulate the HPA axis to lower cortisol, with the strongest research base for stress, sleep, and anabolic markers like testosterone and strength.",
+    benefits:["Adaptogen that reduces cortisol and stress hormones","Improves testosterone levels and reproductive health in men","Boosts endurance, stamina, and VO2 max","Supports thyroid hormone balance","Reduces anxiety and improves sleep quality","Anti-inflammatory and antioxidant properties from withanolides"],
+    mechanisms:["Withanolides downregulate HPA-axis cortisol output and modulate GABA-A receptors","Increases T3 and T4 via TSH stimulation — supports underactive thyroid","Upregulates eNOS for nitric oxide and blood flow"],
+    bestForms:["KSM-66 (root only, 5% withanolides) — most-studied extract for stress and testosterone","Sensoril (root + leaf, 10% withanolides) — stronger for anxiety and sleep","Avoid raw root powder for therapeutic dosing — concentration varies widely"],
+    pairings:["Warm milk + cinnamon + honey at night — traditional 'Ashwagandha Ksheerapaka' for sleep","Rhodiola or holy basil — complementary adaptogen stack","With protein and resistance training — enhances strength adaptations"],
+    cautions:["Hyperthyroidism or on thyroid medication — can push T3/T4 too high","Nightshade family — rare reactions in sensitive individuals","Pregnancy (may be abortifacient at high doses), autoimmune flares (immune-stimulating)","Sedating with alcohol or benzodiazepines"],
+    dosage:"300–600 mg KSM-66 daily, taken with food. For sleep, the full dose 1 hr before bed. Cycle 8 weeks on / 2 weeks off."
+  },
+  {
+    name:"Astragalus",icon:"🌾",cat:"herb",tags:["herb","supp"],
+    summary:"Chinese 'huang qi' — a foundational immune-tonifying root that builds defensive 'wei qi' over weeks, best for prevention rather than treating acute infection.",
+    benefits:["Powerful immune booster used in traditional Chinese medicine","Contains polysaccharides that stimulate white blood cell production","Adaptogen that helps the body resist physical and mental stress","May slow cellular aging through telomere support","Anti-inflammatory and antiviral properties","Supports heart health and may lower blood pressure"],
+    mechanisms:["Astragalosides activate macrophages, T-cells, and NK cell cytotoxicity","Cycloastragenol activates telomerase, slowing telomere shortening","Saponins protect endothelial cells and improve cardiac contractility"],
+    bestForms:["Sliced dried root for decoction (long simmer) — traditional 'tongue depressor' slices","Standardized extract with ≥0.4% astragalosides for capsules","TA-65 supplement — concentrated cycloastragenol (expensive)"],
+    pairings:["Codonopsis or ginseng — classic immune-building combinations","Reishi or maitake — broader immune modulation","Add to bone broths and soups — simmer 2–4 hours"],
+    cautions:["Autoimmune disease — immune stimulation can worsen Hashimoto's, lupus, MS","Avoid during acute febrile infection (TCM contraindication)","Interacts with immunosuppressants (cyclosporine, tacrolimus)","Lithium — may reduce excretion"],
+    dosage:"500–1000 mg standardized extract daily, or 9–30 g dried root simmered in broth. Best taken in 3-month cycles."
+  },
+  {
+    name:"Bananas",icon:"🍌",cat:"food",tags:["food"],
+    summary:"Convenient potassium delivery and the world's most-traveled prebiotic — the ripeness dramatically changes the metabolic effect, from resistant starch (green) to quick glucose (spotted).",
+    benefits:["Excellent source of potassium for heart and muscle function","Provides quick natural energy from natural sugars and carbohydrates","Rich in vitamin B6 which supports brain health and mood","Contains pectin and resistant starch that moderate blood sugar","High in dopamine and catechins with antioxidant effects","Supports digestive health and relieves constipation"],
+    mechanisms:["422 mg potassium activates Na/K-ATPase, regulating membrane potential in heart and nerves","B6 (PLP) is a cofactor for serotonin, dopamine, and GABA synthesis","Resistant starch ferments to butyrate, fueling colonocytes"],
+    bestForms:["Green-tipped: highest resistant starch (12–14 g) — better for blood sugar and gut","Yellow with brown spots: peak antioxidants and digestibility","Frozen and blended — 'nice cream' base; resistant starch partially preserved"],
+    pairings:["Nut butter — protein/fat slows sugar absorption and adds satiety","Cinnamon — further blood-sugar moderation","Milk or yogurt — completes magnesium + tryptophan profile for sleep"],
+    cautions:["Higher glycemic load when very ripe — pair with protein/fat if diabetic","Latex-fruit syndrome — cross-reactive in latex allergy","High potassium load can be problematic in chronic kidney disease"],
+    dosage:"1 medium banana (~118 g) provides 105 cal, 27 g carbs, 422 mg potassium. 1–2 daily for most adults."
+  },
+  {
+    name:"Barley",icon:"🌾",cat:"food",tags:["food"],
+    summary:"An ancient grain with the highest beta-glucan content of any cereal — clinically proven to lower LDL cholesterol and one of the most satiating whole grains available.",
+    benefits:["Beta-glucan fiber powerfully lowers LDL cholesterol","Regulates blood sugar and improves insulin sensitivity","High in fiber which feeds beneficial gut bacteria","Rich in selenium, manganese, and B vitamins","Promotes satiety and supports weight management","May reduce risk of colon cancer"],
+    mechanisms:["Beta-glucan binds bile acids in the gut, forcing the liver to use blood cholesterol to make more","Forms a viscous gel that slows glucose and lipid absorption","Ferments to propionate and butyrate, inhibiting hepatic cholesterol synthesis"],
+    bestForms:["Hulled barley (whole grain, not pearled) — retains bran and most beta-glucan","Sprouted barley flour for baking — improved digestibility","Barley grass juice — different profile (chlorophyll-rich, low in beta-glucan)"],
+    pairings:["Mushroom soup or stew — slow simmer extracts the beta-glucan","Lemon and parsley — brightens earthy flavor and adds vitamin C","Beans + barley — complementary amino acids for a complete protein"],
+    cautions:["Contains gluten — not suitable for celiac or non-celiac gluten sensitivity","High FODMAP — may aggravate IBS","Phytic acid blocks mineral absorption — soak overnight or sprout to reduce"],
+    dosage:"½ cup cooked daily provides ~3 g beta-glucan — the FDA-recognized threshold for cholesterol-lowering claims."
+  },
+  {
+    name:"Bean Sprouts",icon:"🫘",cat:"food",tags:["food"],
+    summary:"Living food at peak nutritional density — germination unlocks enzymes, multiplies vitamins, and breaks down anti-nutrients that whole beans contain.",
+    benefits:["Low calorie and nutrient-dense — rich in vitamins C and K","Enzyme-rich due to sprouting process which aids digestion","High in folate, magnesium, and phosphorus","Antioxidants protect against cellular damage","Supports bone health and blood clotting","Easy to digest protein source"],
+    mechanisms:["Sprouting activates phytase, neutralizing phytic acid and freeing minerals","Increases free amino acids 30–100% over dormant seeds","Vitamin C synthesized de novo during germination (absent in dry beans)"],
+    bestForms:["Home-sprouted in a jar with rinsing 2x daily — freshest and safest","Mung bean and adzuki sprouts — most digestible, lowest in lectins","Eat within 3–5 days of harvest; refrigerate immediately"],
+    pairings:["Stir-fries with garlic and ginger — light cooking reduces bacterial risk","Vietnamese pho — added at the table preserves enzymes","Avocado and lime — fat-soluble nutrient absorption"],
+    cautions:["Raw sprouts can harbor Salmonella, Listeria, E. coli — high-risk for pregnant, elderly, immunocompromised","Briefly blanch or stir-fry if at risk","Alfalfa sprouts contain canavanine — avoid with autoimmune conditions"],
+    dosage:"½–1 cup fresh sprouts per serving, 3–5x weekly. Light cooking (60+ seconds) for safety in vulnerable populations."
+  },
+  {
+    name:"Beets",icon:"🫀",cat:"food",tags:["food"],
+    summary:"A nitrate powerhouse — dietary nitrate converts to nitric oxide, lowering blood pressure within hours and boosting endurance enough to be standard in elite sports nutrition.",
+    benefits:["High in nitrates that convert to nitric oxide, improving blood flow","Enhances athletic performance and endurance significantly","Supports liver detoxification through betalains","Reduces blood pressure naturally","Rich in folate supporting DNA synthesis and repair","Anti-inflammatory effects from betaine"],
+    mechanisms:["Oral bacteria reduce nitrate (NO₃⁻) → nitrite (NO₂⁻) → nitric oxide (NO), which vasodilates","NO improves mitochondrial efficiency, reducing the oxygen cost of exercise by ~5%","Betaine donates methyl groups, supporting homocysteine recycling and liver methylation"],
+    bestForms:["Raw juice — highest nitrate retention; drink 2–3 hr pre-workout","Roasted whole (skin on) — concentrates flavor and preserves more nitrate than boiling","Fermented beet kvass — adds probiotic benefit"],
+    pairings:["Lemon or apple cider vinegar — preserves betalains and increases iron absorption","Goat cheese, walnuts, arugula — classic flavor and absorption synergy","Avoid pairing with antibacterial mouthwash — kills nitrate-reducing oral bacteria"],
+    cautions:["Beeturia (pink urine/stool) — harmless but can indicate low stomach acid","Oxalate content — caution with calcium-oxalate kidney stones","Drops blood pressure — caution if already on antihypertensives","Spikes blood sugar (high glycemic when juiced)"],
+    dosage:"For performance: 500 ml beet juice or 6–8 mmol nitrate (~1–2 whole beets) 2–3 hr before exercise. Daily for BP: 1 small beet."
+  },
+  {
+    name:"Broccoli",icon:"🥦",cat:"food",tags:["food"],
+    summary:"The cruciferous gold standard — sulforaphane activates the body's master antioxidant pathway (Nrf2), and just a few servings per week is associated with lower cancer and all-cause mortality.",
+    benefits:["Sulforaphane activates cancer-fighting enzymes","High in vitamin C, K, and folate","Supports gut microbiome with prebiotic fiber","Indole-3-carbinol supports estrogen metabolism and hormone balance","Powerful anti-inflammatory and antioxidant properties","Supports bone density and eye health"],
+    mechanisms:["Glucoraphanin + myrosinase enzyme → sulforaphane, which activates Nrf2 and upregulates ~200 antioxidant genes","Indole-3-carbinol shifts estrogen metabolism toward the protective 2-hydroxy pathway","Sulforaphane crosses the blood-brain barrier — neuroprotective in research"],
+    bestForms:["Broccoli sprouts (3-day-old) — 10–100x the sulforaphane of mature broccoli","Lightly steamed 3–4 min — preserves myrosinase enzyme","Chop and let sit 40 minutes before cooking — completes sulforaphane formation"],
+    pairings:["Mustard seed powder sprinkled on cooked broccoli — restores myrosinase if overcooked","Fat (olive oil, butter) — improves carotenoid and vitamin K absorption","Garlic + lemon — synergistic anti-cancer compounds"],
+    cautions:["Goitrogens — high raw intake may suppress thyroid function in iodine-deficient individuals","FODMAPs in large servings — gas/bloating in IBS","Blood thinners (warfarin) — high vitamin K affects INR; keep intake consistent"],
+    dosage:"1–2 cups (90–180 g) cooked 4–5x weekly; or 1 tbsp broccoli sprouts daily for therapeutic sulforaphane."
+  },
+  {
+    name:"Cayenne Pepper",icon:"🌶️",cat:"spice",tags:["spice"],
+    summary:"Capsaicin is both a metabolism enhancer and a pain modulator — counterintuitively desensitizing pain receptors with regular use while improving circulation acutely.",
+    benefits:["Capsaicin boosts metabolism and promotes fat burning","Natural pain reliever when applied topically or consumed","Reduces appetite and increases satiety","Supports cardiovascular health and blood flow","Anti-inflammatory and antioxidant properties","Clears congestion and supports respiratory health"],
+    mechanisms:["Capsaicin activates TRPV1 receptors, triggering thermogenesis and increasing energy expenditure ~50 kcal/day","Depletes substance P in nociceptors, reducing chronic pain signaling","Stimulates saliva and gastric secretion — improves digestion"],
+    bestForms:["High Scoville fresh ground (40,000–50,000 SHU) for therapeutic potency","Standardized capsaicin extract capsules for measured dosing","Topical capsaicin cream (0.025–0.075%) for joint pain and neuropathy"],
+    pairings:["Lemon water with cayenne — morning circulatory tonic","Dark chocolate — Aztec-style; bioactive synergy","Honey + ginger + cayenne — cold and sore throat remedy"],
+    cautions:["GERD, ulcers, hemorrhoids — can aggravate","Wash hands carefully after handling; avoid eyes and mucous membranes","Blood-thinning effect — caution with anticoagulants","Some people lack TRPV1 sensitivity adaptations and tolerate poorly"],
+    dosage:"Culinary: ¼–½ tsp daily. Capsules: 30–120 mg (sometimes labeled as 40,000 HU) 2–3x daily with meals."
+  },
+  {
+    name:"Celery",icon:"🥬",cat:"food",tags:["food"],
+    summary:"More than diet food — phthalides relax vascular smooth muscle, and the high water + minerals make it a natural electrolyte source. Best benefits come from juice or eating fresh stalks.",
+    benefits:["Natural anti-inflammatory through polyacetylenes and luteolin","Supports digestion and reduces bloating","High water content supports hydration","Contains phthalides that may lower blood pressure","Rich in vitamin K, folate, and potassium","Antioxidants protect against oxidative stress"],
+    mechanisms:["3-n-butylphthalide (3nB) relaxes arterial smooth muscle, lowering systolic BP","Luteolin inhibits NF-κB inflammatory signaling","Apigenin acts as a mild GABA receptor modulator — calming effect"],
+    bestForms:["Fresh juice on empty stomach (16 oz) — popularized 'Medical Medium' protocol","Crisp whole stalks — most fiber and chewing satiety","Celery seed — concentrated source of 3nB"],
+    pairings:["Almond butter — slows the brief glucose blip from juice and adds protein","Salt — replaces sodium lost to natural diuretic effect","Apple + ginger in fresh juice — flavor and circulatory synergy"],
+    cautions:["High in oxalates — caution with calcium-oxalate kidney stones","Furocoumarins — phototoxic with sun exposure when crushed on skin","One of the more pesticide-contaminated crops — buy organic","Birch pollen cross-reactivity (oral allergy syndrome)"],
+    dosage:"Juice: 8–16 oz fresh on empty stomach. Whole: 2–4 stalks daily. Celery seed extract: 150 mg standardized for BP."
+  },
+  {
+    name:"Chlorella",icon:"🌿",cat:"supp",tags:["supp","herb"],
+    summary:"A single-celled freshwater algae — its cracked cell wall binds heavy metals (especially mercury) for excretion, making it the most studied natural chelator alongside cilantro.",
+    benefits:["Detoxifies heavy metals and environmental toxins from the body","Complete protein containing all essential amino acids","Rich in chlorophyll which supports blood oxygenation","Boosts immune system function","High in iron, vitamin B12, and omega-3s","Supports gut health and digestion"],
+    mechanisms:["Cell wall polysaccharides bind mercury, lead, cadmium in the GI tract for fecal excretion","Chlorella Growth Factor (CGF) stimulates lymphocyte proliferation","Highest chlorophyll concentration of any plant (~2–3% by weight) — supports erythropoiesis"],
+    bestForms:["Broken-cell-wall (cracked-cell) chlorella — required for absorption","Tablet over powder — easier on bitter taste","Brands tested for heavy metals themselves (key — algae bioaccumulate)"],
+    pairings:["Cilantro — combined chelation protocol (Klinghardt)","Vitamin C with each dose — supports phase II detoxification","Pure water and minerals — replace what's mobilized"],
+    cautions:["Iodine-sensitive thyroid disease (Hashimoto's, Graves')","Anticoagulants — high vitamin K","Start low and titrate up — die-off and detox reactions common","Quality varies widely; some products contaminated"],
+    dosage:"Start at 1 g (4 tablets) daily, increase to 3–5 g daily, split between meals. Heavy metal protocols: up to 10 g daily under guidance."
+  },
+  {
+    name:"Cinnamon",icon:"🪵",cat:"spice",tags:["spice"],
+    summary:"A genuine pharmacological agent disguised as a baking spice — small daily amounts can drop fasting blood sugar by 10–29% in clinical trials. Cassia and Ceylon are not interchangeable.",
+    benefits:["Powerfully lowers blood sugar and improves insulin sensitivity","Anti-inflammatory and antioxidant properties from cinnamaldehyde","Antibacterial and antifungal properties","May lower LDL cholesterol and triglycerides","Supports brain function and may protect against neurodegenerative disease","Natural preservative due to antimicrobial effects"],
+    mechanisms:["MHCP (methylhydroxychalcone polymer) mimics insulin and activates insulin receptors","Inhibits intestinal alpha-glucosidase, slowing carbohydrate absorption","Cinnamaldehyde disrupts microbial membranes — broad antimicrobial action"],
+    bestForms:["Ceylon ('true') cinnamon — very low coumarin, safe for daily use","Cassia (most grocery cinnamon) — higher potency but high coumarin","Cinnamon bark essential oil — therapeutic but extremely concentrated"],
+    pairings:["Coffee or oatmeal — blunts glucose response","Apple, sweet potato, pumpkin — flavor classics with blood sugar synergy","Honey — combined antimicrobial action for cough/sore throat"],
+    cautions:["Cassia coumarin can cause liver damage at >1 tsp daily long-term — use Ceylon","Drug interactions with diabetes meds and blood thinners","Allergic contact dermatitis in some users","Cinnamon challenge — never inhale dry powder"],
+    dosage:"½–1 tsp (1–6 g) daily of Ceylon — or up to 1 g/day of Cassia. Capsules: 250 mg with meals."
+  },
+  {
+    name:"Citrus Peel",icon:"🍊",cat:"food",tags:["food","herb"],
+    summary:"The most-discarded superfood — peels have several times the flavonoid content of the juice, and provide unique compounds like d-limonene found nowhere else in the diet.",
+    benefits:["High concentration of flavonoids not found in juice or flesh","D-limonene supports liver detoxification and cancer prevention","Rich in pectin fiber that lowers cholesterol","Hesperidin reduces inflammation and supports blood vessel health","Contains more vitamin C per gram than the juice","Antifungal and antimicrobial properties"],
+    mechanisms:["d-Limonene upregulates phase I/II liver detox enzymes (CYP and glutathione transferase)","Hesperidin strengthens capillary integrity and reduces venous insufficiency","Polymethoxyflavones (PMFs — only in peel) lower LDL via apoB inhibition"],
+    bestForms:["Organic only — peels concentrate pesticides; conventional citrus is high-risk","Zest from fresh lemons, limes, oranges (avoid bitter white pith for flavor)","Dried tangerine peel ('chen pi') — traditional Chinese medicine staple"],
+    pairings:["Add to tea, salad dressings, marinades, baked goods, smoothies","Stewed apples + cinnamon + orange zest — gut-soothing","Dark chocolate + candied orange peel — flavanol synergy"],
+    cautions:["Furocoumarins (especially grapefruit, bergamot) — photosensitivity and major drug interactions","Wax coatings on conventional citrus","Bitter pith can be high in oxalates"],
+    dosage:"½–2 tsp zest daily. Dried 'chen pi': 3–9 g in decoction. Avoid grapefruit peel if on statins, calcium-channel blockers, or many other drugs."
+  },
+  {
+    name:"Coconut",icon:"🥥",cat:"food",tags:["food"],
+    summary:"Tropical fat unlike any other — its medium-chain triglycerides bypass normal fat digestion and convert rapidly to ketones, fueling the brain even in carb-fed states.",
+    benefits:["Medium-chain triglycerides (MCTs) provide quick brain and body energy","Lauric acid has antimicrobial and antiviral properties","Supports thyroid function and metabolism","Rich in manganese for bone health and enzyme function","Antioxidant phenolic compounds protect against oxidative damage","Supports satiety and may aid weight management"],
+    mechanisms:["C8 (caprylic) and C10 (capric) acids absorbed via portal vein directly to liver → converted to ketones","Lauric acid (C12) converts to monolaurin, disrupting lipid-enveloped viruses and bacteria","Stimulates T3 conversion, supporting basal metabolic rate"],
+    bestForms:["Cold-pressed virgin coconut oil — unrefined, retains polyphenols","Fresh young coconut water and meat — best electrolyte profile","Unsweetened coconut flakes/butter for fiber + fat"],
+    pairings:["Curry spices (turmeric, ginger, garlic) — fat-soluble curcumin absorption","Coffee + MCT — 'bulletproof'-style sustained focus","Cocoa, vanilla, cinnamon — flavor synergies with antioxidant overlap"],
+    cautions:["High saturated fat — controversial for LDL cholesterol; monitor lipid panel","Tree-nut classification — possible allergic cross-reactivity","Lauric acid can elevate LDL more than other MCTs"],
+    dosage:"1–3 tbsp coconut oil daily, or ¼ cup shredded. Start with ½ tbsp to avoid GI upset, especially with concentrated MCT oil."
+  },
+  {
+    name:"Coconut Water",icon:"🥤",cat:"drink",tags:["drink"],
+    summary:"Nature's IV — the electrolyte balance of young coconut water (~500 mg potassium, low sodium) closely mirrors human plasma and has been used as emergency hydration in field medicine.",
+    benefits:["Natural electrolyte drink — rich in potassium, magnesium, sodium","Excellent hydration after exercise or illness","Cytokinins may have anti-aging effects on cells","Low in calories compared to sports drinks","Supports kidney health and may prevent kidney stones","Contains antioxidants that neutralize free radicals"],
+    mechanisms:["Isotonic to human plasma — rapid intracellular rehydration without needing to be diluted","Cytokinins regulate cell division and may slow senescence in cell models","Citrate content reduces calcium oxalate crystallization in urine"],
+    bestForms:["Fresh from young green coconut — best flavor and most enzymes","Cold-pressured HPP brands (refrigerated section)","Avoid 'from concentrate' or heated bottles — cooked, near-empty"],
+    pairings:["Sea salt pinch + lime — homemade endurance drink","Watermelon juice — natural electrolyte plus citrulline for circulation","Chia seeds — slow-release hydration"],
+    cautions:["Higher in potassium than sodium — not ideal as sole rehydration for heavy sweating","High potassium dangerous in chronic kidney disease","Sugar content (~6 g/cup) — moderate if diabetic","Variable quality; some brands oxidize and turn pink (still safe)"],
+    dosage:"8–16 oz post-exercise or with fluid losses. Daily wellness: 8 oz. Not a meal replacement."
+  },
+  {
+    name:"Coffee",icon:"☕",cat:"drink",tags:["drink"],
+    summary:"The most-consumed pharmacologically active beverage in the world — moderate intake (3–4 cups) is associated with lower all-cause mortality despite the stimulant load.",
+    benefits:["Caffeine significantly enhances focus, alertness, and physical performance","Rich in antioxidants — one of the largest antioxidant sources in Western diet","May reduce risk of Parkinson's, Alzheimer's, and type 2 diabetes","Increases metabolic rate and fat oxidation","Chlorogenic acids support blood sugar regulation","Protective effect on liver health"],
+    mechanisms:["Caffeine antagonizes adenosine receptors, blocking the fatigue signal and raising dopamine","Chlorogenic acid inhibits glucose-6-phosphatase, reducing hepatic glucose output","Polyphenols upregulate Nrf2 antioxidant defense in the liver"],
+    bestForms:["Filter-brewed (paper filter removes cafestol — LDL-raising diterpene)","Light roast — slightly higher chlorogenic acid","Mold-tested specialty roasters — mycotoxins are a real concern in cheap commodity beans"],
+    pairings:["L-theanine (100–200 mg) — smooths the caffeine curve, removes jitter","Cinnamon, cardamom, MCT oil — flavor and metabolic synergy","Avoid pairing with iron supplements or iron-rich meals — tannins block absorption"],
+    cautions:["Slow metabolizers (CYP1A2 variant) — caffeine raises BP and MI risk","Anxiety, GERD, insomnia (cut off by 10 AM if sensitive)","Pregnancy: limit to <200 mg/day","Tolerance develops; cycle off periodically"],
+    dosage:"3–4 cups daily (300–400 mg caffeine) is the sweet spot in epidemiology. Athletes: 3–6 mg/kg 45 min pre-exercise."
+  },
+  {
+    name:"Cordyceps",icon:"🍄",cat:"fungi",tags:["fungi","supp"],
+    summary:"A parasitic mushroom traditionally harvested from infected caterpillars in the Himalayas — modern cultivation makes it accessible as a true performance and lung-tonifying ally.",
+    benefits:["Increases ATP production for enhanced cellular energy","Improves VO2 max and endurance in athletes","Adaptogen that supports adrenal and lung function","Anti-aging properties through antioxidant effects","Supports immune modulation and anti-tumor activity","May improve libido and testosterone levels"],
+    mechanisms:["Cordycepin (3'-deoxyadenosine) supports cellular ATP regeneration","Increases steroidogenic enzymes — raises testosterone in animal studies","Bronchodilatory effect via beta-adrenergic-like activity"],
+    bestForms:["Cordyceps militaris (cultivated) — equal or higher cordycepin than wild sinensis, ethical","Hot-water extract (dual extraction for terpenes too)","Standardized for ≥0.2% cordycepin"],
+    pairings:["Reishi or lion's mane — broader mushroom stack","Pre-workout with rhodiola — synergistic endurance","Hot tea form — traditional preparation"],
+    cautions:["Bleeding disorders/anticoagulants — mild antiplatelet effect","Autoimmune disease — immunomodulatory","Wild sinensis is contaminated with heavy metals in many cases","Hormone-sensitive cancers — possible androgenic effect"],
+    dosage:"1–3 g extract daily, split AM/midday (stimulating effect). Best taken pre-workout or with breakfast."
+  },
+  {
+    name:"Dandelion",icon:"🌼",cat:"herb",tags:["herb"],
+    summary:"A common weed that is a complete pharmacy — root for liver and gallbladder, leaf as a potassium-sparing diuretic, flower for skin. Pluck it from a chemical-free yard.",
+    benefits:["Powerful liver tonic — stimulates bile production and liver detox","Natural diuretic that supports kidney function","Rich in vitamins A, C, K and minerals including iron and calcium","Prebiotic fiber supports beneficial gut bacteria","Anti-inflammatory properties from taraxerol and luteolin","May help regulate blood sugar"],
+    mechanisms:["Taraxasterol and chicoric acid stimulate bile secretion (choleretic)","Leaf is unique among diuretics — replaces potassium it eliminates","Inulin in root selectively feeds Bifidobacterium"],
+    bestForms:["Roasted root tea — coffee-like, gentle liver tonic","Fresh young leaves in spring salads","Tincture (1:5 ratio) for bitter digestive effect before meals"],
+    pairings:["Milk thistle + burdock root — classic liver formula","Lemon juice and olive oil dressing on greens","Roasted root + chicory + roasted barley — herbal coffee substitute"],
+    cautions:["Gallbladder/bile duct obstruction","Latex allergy or Asteraceae family allergy","Lithium and diuretic drug interactions","Pesticide accumulation if foraged near roads or treated lawns"],
+    dosage:"1–2 tsp dried root simmered 15 min, 1–3 cups daily. Tincture: 2–5 ml before meals. Salad greens: handful fresh."
+  },
+  {
+    name:"Distilled Water",icon:"💧",cat:"drink",tags:["drink"],
+    summary:"Stripped of everything but H₂O — useful for short-term detox protocols and for those with very sensitive constitutions, but not a long-term replacement for mineral-rich water.",
+    benefits:["Purest form of water — free from contaminants, chlorine, fluoride","Acts as a solvent that may help pull toxins from the body","Ideal for short-term detox protocols","Reduces exposure to pharmaceutical residues in tap water","May be gentler on kidneys for those with sensitivity","Best used alongside mineral-rich foods to maintain electrolyte balance"],
+    mechanisms:["Hypotonic — gradient draws extracellular toxins toward the lumen of the gut and kidney","Free of trihalomethanes, fluoride, microplastics, drug residue typical of municipal water","Slightly acidic (~pH 5.8) after exposure to air absorbs CO₂"],
+    bestForms:["Glass or BPA-free distilled — plastic-leached water is counterproductive","Home distillers for ongoing supply","Spring water with light minerals is healthier baseline; reserve distilled for protocols"],
+    pairings:["Sea salt or trace mineral drops added back for daily drinking","Lemon — replaces some flavor and bioactive content","With electrolyte-rich foods (coconut water, fruits) for balance"],
+    cautions:["Long-term exclusive use can deplete minerals (especially magnesium and calcium)","No fluoride — separate dental care needed (or not, depending on view)","Not suitable for infant formula without remineralization"],
+    dosage:"Detox protocols: 1–2 L daily for 1–3 weeks max. Otherwise alternate with mineral water or add trace minerals back."
+  },
+  {
+    name:"Echinacea",icon:"🌸",cat:"herb",tags:["herb","supp"],
+    summary:"The cold-and-flu herb of European/Native American tradition — most effective when started at the first tingle of illness, less so for chronic immune support.",
+    benefits:["Stimulates immune system — shortens duration of colds","Rich in alkylamides and polysaccharides that activate white blood cells","Anti-inflammatory properties","Antiviral effects particularly against respiratory viruses","Antioxidant protection from flavonoids","Wound healing properties when applied topically"],
+    mechanisms:["Alkylamides bind cannabinoid CB2 receptors, modulating immune response","Stimulates phagocytosis and macrophage activity","Inhibits hyaluronidase — reduces pathogen spread through tissues"],
+    bestForms:["E. purpurea (root + aerial parts) — most-studied species","Fresh-pressed juice (Echinacin) — original German preparation","Tincture causes the diagnostic tongue-tingle (alkylamides) — quality marker"],
+    pairings:["Elderberry — antiviral synergy at onset of cold","Goldenseal — classic immune combination (use sparingly; goldenseal is overharvested)","Zinc lozenges + vitamin C"],
+    cautions:["Asteraceae family allergy — ragweed, daisy, marigold","Autoimmune disease — immune-stimulating","Don't use continuously beyond 8 weeks — diminishing returns","Avoid with immunosuppressants"],
+    dosage:"Acute: 4–5 ml tincture every 2 hours for first day, then 4x daily. Capsules: 300–500 mg 3x daily. Stop after 7–10 days of acute use."
+  },
+  {
+    name:"Eden Beans",icon:"🫘",cat:"food",tags:["food"],
+    summary:"A canned-bean brand worth knowing — kombu-cooked, BPA-free lining, and organic, addressing the three biggest issues with conventional canned legumes.",
+    benefits:["Organic and prepared to reduce phytic acid and improve digestibility","Rich in plant-based protein and complex carbohydrates","High in iron, folate, and magnesium","Soluble fiber supports heart health and blood sugar","Prebiotic that feeds beneficial gut bacteria","BPA-free packaging preserves nutritional integrity"],
+    mechanisms:["Kombu seaweed in cooking water adds enzymes that reduce raffinose oligosaccharides (gas-causing)","Phytic acid reduced via long soak + slow cook","Soluble fiber binds bile acids, lowering serum cholesterol"],
+    bestForms:["Original Eden line in steel cans with non-BPA, non-BPS plant-based liner","Dry beans soaked overnight + cooked with kombu — even better and cheaper","Sprouted dry beans — highest nutrient availability"],
+    pairings:["Rice or quinoa — complementary amino acids for complete protein","Cumin, coriander, asafoetida — traditional digestion-supporting spices","Avocado or olive oil — fat improves carotenoid absorption"],
+    cautions:["High FODMAP — start small if sensitive","Lectins still present in some beans (kidney especially) — Eden cooks long enough to deactivate","Sodium in canned beans — rinse if low-sodium needs"],
+    dosage:"½–1 cup cooked beans per serving, 3–5 servings weekly. Beans = ¼ of plate in a Mediterranean-style meal."
+  },
+  {
+    name:"Flaxseed",icon:"🌰",cat:"food",tags:["food","supp"],
+    summary:"A tiny seed with outsized lignan content — beyond omega-3 ALA, it's the single richest dietary source of lignans, which have shown protective effects against hormone-driven cancers.",
+    benefits:["Richest plant source of omega-3 fatty acid ALA","Lignans act as phytoestrogens and have anti-cancer properties","High in both soluble and insoluble fiber","Reduces LDL cholesterol and supports heart health","Supports hormone balance particularly in women","Reduces inflammation and blood pressure"],
+    mechanisms:["ALA (alpha-linolenic acid) — partially converted to EPA/DHA (~5–10%)","Lignans bind weakly to estrogen receptors, blocking stronger endogenous estrogens","Mucilage (soluble fiber) lowers post-prandial glucose and binds bile acids"],
+    bestForms:["Whole seeds, ground fresh in coffee grinder daily — oils oxidize fast once ground","Refrigerated cold-milled flax meal","Flaxseed oil for ALA only (no lignans or fiber); keep refrigerated and never heat"],
+    pairings:["Oatmeal, smoothies, yogurt — easy daily addition","With water — ground flax + 8 oz water = mucilage gel for constipation","Berries — antioxidant synergy"],
+    cautions:["Hormone-sensitive cancers — phytoestrogen effect is debated; most data is protective but discuss with oncologist","Cyanogenic glycosides — small amount, but limit raw flax to 2 tbsp daily","Anticoagulants — high omega-3 + lignan effect"],
+    dosage:"1–2 tbsp ground daily, with plenty of water. Higher doses (up to 50 g) used in cholesterol-lowering trials."
+  },
+  {
+    name:"Frankincense",icon:"🌿",cat:"herb",tags:["herb","supp"],
+    summary:"The biblical resin — boswellic acids are a unique anti-inflammatory class that inhibit 5-LOX, a pathway most NSAIDs ignore, making it especially useful for inflammatory arthritis and IBD.",
+    benefits:["Boswellic acids powerfully inhibit inflammatory pathways","May protect against certain cancers through apoptosis induction","Supports joint health and reduces arthritis pain","Improves brain function and may protect against neurodegeneration","Supports gut health and reduces IBS symptoms","Antifungal and antibacterial properties"],
+    mechanisms:["AKBA (acetyl-keto-beta-boswellic acid) is a selective 5-LOX inhibitor — reduces leukotriene production","Triggers apoptosis in cancer cells via caspase activation","Inhibits NF-κB and TNF-alpha"],
+    bestForms:["Boswellia serrata extract standardized to ≥30% boswellic acids, ideally with ≥10% AKBA","AprèsFlex (5-Loxin) — patented high-AKBA extract","Resin tears (chewed or burned) — traditional but less standardized"],
+    pairings:["Turmeric/curcumin — synergistic anti-inflammatory","Ginger — additive anti-arthritis","Take with fat — fat-soluble boswellic acids"],
+    cautions:["GI upset, acid reflux at high doses","Anticoagulant and antidiabetic drug interactions","Pregnancy — emmenagogue effect","Many essential oils labeled 'frankincense' are not therapeutic grade"],
+    dosage:"300–500 mg boswellia extract 3x daily with meals. Topical essential oil diluted to 2–3% for joint/skin application."
+  },
+  {
+    name:"Garlic",icon:"🧄",cat:"food",tags:["food","herb"],
+    summary:"The 'king of herbs' — fresh crushed garlic is a true cardiovascular drug, lowering blood pressure comparably to a low-dose ACE inhibitor when used consistently.",
+    benefits:["Allicin is a potent antimicrobial, antiviral, and antifungal compound","Significantly lowers blood pressure and cholesterol","Boosts immune system function","Reduces risk of cardiovascular disease","Detoxifies heavy metals from the body","Anti-cancer properties shown in multiple studies"],
+    mechanisms:["Crushed garlic releases alliinase, converting alliin → allicin within 10 minutes","Allicin inhibits HMG-CoA reductase and ACE","Hydrogen sulfide release relaxes vascular endothelium"],
+    bestForms:["Fresh raw, crushed and rested 10 min before eating — peak allicin","Aged garlic extract (Kyolic) for sensitive stomachs — different compounds, still effective","Black garlic — fermented sweet form, retains some benefits"],
+    pairings:["Olive oil — fat-soluble compounds and Mediterranean-style synergy","Lemon juice — vitamin C stabilizes some compounds","Honey + raw garlic — antimicrobial folk remedy"],
+    cautions:["Anticoagulants and antiplatelet drugs — additive bleeding risk","GI upset, garlic breath","Pre-surgery: stop 7–10 days before","Topical raw garlic can cause burns"],
+    dosage:"1–2 fresh cloves daily, crushed and rested. Aged extract: 600–1200 mg daily. Stop 1 week pre-surgery."
+  },
+  {
+    name:"Ginseng",icon:"🌿",cat:"herb",tags:["herb","supp"],
+    summary:"Panax ginseng (Asian) and Panax quinquefolius (American) — the world's most-studied adaptogen, with measurable cognitive and fatigue benefits in clinical trials.",
+    benefits:["Adaptogen that improves energy, focus, and stress resilience","Ginsenosides have anti-inflammatory and antioxidant effects","Supports immune function and reduces infection risk","Improves erectile function and libido","May improve blood sugar regulation","Supports cognitive function and memory"],
+    mechanisms:["Ginsenosides Rg1 (stimulating) and Rb1 (calming) modulate dopaminergic and GABAergic systems","Improve nitric oxide synthesis — basis of erectile function benefit","Modulate HPA axis cortisol response"],
+    bestForms:["Korean red ginseng (Panax ginseng, steamed) — more stimulating, used for fatigue and ED","American ginseng (Panax quinquefolius) — cooler, more calming, better for stress","Standardized to ≥4% ginsenosides; avoid root powder without standardization"],
+    pairings:["Royal jelly or maca for vitality blends","Astragalus for immune building","Avoid pairing Korean red with stimulants or in the evening"],
+    cautions:["Stimulating — insomnia, headache, hypertension in some","Hormone-sensitive cancers","Diabetes meds, MAOIs, anticoagulants — interactions","Cycle 8 weeks on / 2 weeks off"],
+    dosage:"Korean red: 200–400 mg standardized extract daily, AM. American: 100–400 mg, more flexible timing."
+  },
+  {
+    name:"Green Tea vs Coffee",icon:"🍵",cat:"drink",tags:["drink"],
+    summary:"A direct head-to-head — both have legitimate health benefits, but they suit different goals and personalities. Green tea favors longevity and calm focus; coffee favors performance and acute alertness.",
+    benefits:["Green tea: L-theanine + caffeine = calm focus without jitteriness","Coffee: higher caffeine, faster onset, stronger performance boost","Green tea: EGCG is a powerful cancer-fighting antioxidant","Coffee: larger antioxidant load overall for most Western diets","Green tea: gentler on adrenals and better for anxiety-prone individuals","Coffee: better for athletic performance; green tea better for longevity"],
+    mechanisms:["Green tea: L-theanine produces alpha brainwaves and raises GABA, smoothing caffeine","Coffee: chlorogenic acids dominate the antioxidant load; faster GI absorption","Coffee: stronger cortisol response; green tea raises cortisol less"],
+    bestForms:["Green tea: shade-grown matcha or sencha; brew 70–80°C, 1–3 min","Coffee: paper-filter brewed, light-medium roast, fresh ground","Both: organic, lab-tested for heavy metals and mycotoxins"],
+    pairings:["Green tea + dark chocolate — synergistic flavonoids","Coffee + cinnamon — blunts the glucose blip from coffee","Both: pair with breakfast, not on empty stomach if cortisol-sensitive"],
+    cautions:["Green tea EGCG at high supplement doses (>800 mg/day) — hepatotoxicity reports","Coffee: cardiovascular risk in slow caffeine metabolizers (CYP1A2)","Both: pregnancy <200 mg caffeine; both bind iron — separate from iron-rich meals"],
+    dosage:"Green tea: 3–5 cups daily (300–500 mg EGCG). Coffee: 1–4 cups daily (100–400 mg caffeine). Cap total caffeine at 400 mg/day."
+  },
+  {
+    name:"Ground Beef",icon:"🥩",cat:"food",tags:["food"],
+    summary:"A complete-protein workhorse — grass-fed elevates the omega-3 and CLA profile dramatically, while conventional grain-fed is still a high-quality source of heme iron, zinc, B12, and creatine.",
+    benefits:["Complete protein with all essential amino acids","Rich in heme iron — most bioavailable form for preventing anemia","High in zinc, selenium, and B12","Creatine supports muscle function and brain energy","CLA (conjugated linoleic acid) from grass-fed beef supports fat metabolism","Carnosine is an antioxidant that supports muscle and brain health"],
+    mechanisms:["Heme iron absorbed 15–35% (vs 2–20% for plant iron) via direct receptor uptake","Creatine donates phosphate to ADP → ATP for muscle and brain energy","B12 cofactor for methylation and red blood cell formation"],
+    bestForms:["Grass-fed and grass-finished — 2–4x omega-3, higher CLA, lower omega-6","Lean grind (85/15) for cardiovascular cases; full-fat for keto/ancestral","Cooked medium (no char) — minimize heterocyclic amines"],
+    pairings:["Garlic + rosemary marinade — reduces HCA formation when grilled","Sautéed greens — pairs heme iron with vitamin K and folate","Avoid pairing with high-tannin foods (tea/coffee) if iron-deficient"],
+    cautions:["TMAO concern with high red meat intake — modulated by gut microbiome","CAFO beef carries higher inflammatory profile and antibiotic residues","Iron overload (hemochromatosis) — limit if positive","Char/grill carcinogens (HCAs, PAHs)"],
+    dosage:"3–6 oz (85–170 g) cooked, 2–4x weekly. Iron-deficient: more frequent. Limit total red meat to ~300 g/week per WHO."
+  },
+  {
+    name:"Hemp Seed",icon:"🌿",cat:"food",tags:["food","supp"],
+    summary:"A complete plant protein with a rare 3:1 omega-6 to omega-3 ratio and GLA — easy to digest, no phytic acid, and texture-friendly for sprinkling on virtually anything.",
+    benefits:["Complete protein with all essential amino acids — rare for a plant","Optimal omega-6 to omega-3 ratio (3:1) reduces inflammation","Rich in GLA (gamma-linolenic acid) which supports hormone balance","High in magnesium, zinc, and iron","Supports heart health and reduces blood pressure","Easy to digest protein source — no phytic acid"],
+    mechanisms:["GLA converts to DGLA → PGE1 series prostaglandins (anti-inflammatory)","Edestin protein closely mirrors human plasma globulin — high digestibility","Arginine content supports nitric oxide and vascular function"],
+    bestForms:["Raw shelled 'hemp hearts' — most palatable","Cold-pressed hemp oil — refrigerated, never heat","Hemp protein powder — fiber-rich alternative to whey"],
+    pairings:["Smoothies, oatmeal, yogurt, salads — 2–3 tbsp sprinkled","Citrus + hemp pesto — fresh herb sauce","With berries — anti-inflammatory powerhouse breakfast"],
+    cautions:["May show on drug tests in extremely high consumption (trace THC) — rare","High fiber from whole seed may cause GI distress in sensitive stomachs","Oxidation risk — refrigerate after opening"],
+    dosage:"2–4 tbsp (20–40 g) hemp hearts daily provides ~10 g protein and 4 g omega-3 ALA."
+  },
+  {
+    name:"Holy Basil (Tulsi)",icon:"🌿",cat:"herb",tags:["herb"],
+    summary:"India's 'Queen of Herbs' — venerated for over 3,000 years, holy basil is a gentler adaptogen than ashwagandha, well-suited for everyday stress, blood sugar support, and respiratory wellness.",
+    benefits:["Adaptogen that reduces cortisol and stress response","Antibacterial, antiviral, and antifungal properties","Supports blood sugar regulation","Anti-inflammatory eugenol reduces pain and inflammation","Protects liver and supports detoxification","Supports respiratory health and clears congestion"],
+    mechanisms:["Ocimumosides A and B modulate corticosteroid levels and serotonin","Eugenol inhibits COX-2 — anti-inflammatory","Ursolic acid supports glucose uptake into muscle cells"],
+    bestForms:["Fresh leaves — best aroma and eugenol content","Tulsi tea (Krishna, Rama, or Vana varieties — blend for full spectrum)","Standardized extract (2.5% ursolic acid) for therapeutic dosing"],
+    pairings:["Ginger + black pepper + tulsi — traditional cold/flu tea","Ashwagandha — broader adaptogen combination","Honey and lemon — flavor and antimicrobial synergy"],
+    cautions:["May lower blood sugar — caution with diabetic medications","Mild blood thinning effect","Pregnancy — traditional caution, may affect uterus","Hypothyroidism — possible mild T4 reduction"],
+    dosage:"Tea: 1–2 tsp dried leaves, 2–3 cups daily. Extract: 300–600 mg standardized daily. Safe for long-term daily use."
+  },
+  {
+    name:"Honey",icon:"🍯",cat:"food",tags:["food"],
+    summary:"Not just a sweetener — raw, unfiltered honey is a living food with enzymes, pollen, propolis residues, and a long-recognized medicinal pedigree for wounds, coughs, and antimicrobial use.",
+    benefits:["Antimicrobial — inhibits bacterial growth through hydrogen peroxide","Rich in antioxidants including phenolic compounds","Soothes cough and throat irritation better than some OTC drugs","Prebiotic that feeds beneficial gut bacteria","Promotes wound healing when applied topically","Natural energy source with trace minerals and enzymes"],
+    mechanisms:["Glucose oxidase enzyme produces hydrogen peroxide slowly, killing bacteria","High osmolarity dehydrates microbes","Methylglyoxal in manuka honey is non-peroxide antimicrobial"],
+    bestForms:["Raw, unfiltered, local — pollen content may reduce seasonal allergies","Manuka (UMF 10+/MGO 250+) for medicinal use","Dark varieties (buckwheat, manuka) have highest antioxidant content"],
+    pairings:["Lemon + ginger in warm (not hot) water — cold remedy; heat destroys enzymes","With Greek yogurt and walnuts — Mediterranean breakfast classic","Topical — apply directly to minor burns and wounds (medical-grade only for serious wounds)"],
+    cautions:["NEVER give to infants under 12 months — botulism risk","High glycemic — moderate if diabetic","Common honey is often adulterated with corn syrup — buy from trusted local source","Allergy possible (rare)"],
+    dosage:"1–2 tsp daily as a sweetener replacement. Medicinal cough: 1 tsp at bedtime. Wound care: apply medical-grade only."
+  },
+  {
+    name:"Hummus",icon:"🫙",cat:"food",tags:["food"],
+    summary:"A Mediterranean trifecta — chickpeas, tahini (sesame), and olive oil — providing protein, calcium, and monounsaturated fat in one shareable dip.",
+    benefits:["Plant-based protein from chickpeas supports muscle maintenance","High in fiber for digestive health and blood sugar regulation","Rich in iron, folate, and B vitamins","Tahini adds calcium and healthy monounsaturated fats","Prebiotic fiber feeds beneficial gut bacteria","Supports heart health by lowering LDL cholesterol"],
+    mechanisms:["Chickpea resistant starch ferments to butyrate — colonic energy","Sesame lignans (sesamin) lower LDL cholesterol synergistically with monounsaturated fats","Tahini calcium absorption rivals dairy"],
+    bestForms:["Homemade with sprouted/well-soaked chickpeas, lots of tahini, extra-virgin olive oil","Store-bought: short ingredient list, no preservatives or canola oil","Avoid varieties with added sugar or excessive sodium"],
+    pairings:["Raw veggies (carrots, cucumber, peppers) instead of pita for low-carb","Olive oil drizzle, paprika, parsley — flavor and additional polyphenols","Lemon juice and garlic added at the end — brightens and amplifies"],
+    cautions:["Sesame allergy is increasingly common — listed as major allergen in many countries","FODMAP-sensitive: chickpea oligosaccharides can cause gas","Calorie-dense — easy to over-consume"],
+    dosage:"¼ cup serving (~100 kcal). 2–4 servings weekly fits a Mediterranean diet pattern."
+  },
+  {
+    name:"Jalapeños",icon:"🌶️",cat:"spice",tags:["spice","food"],
+    summary:"Milder cousin to cayenne — same capsaicin family but in a vegetable matrix with vitamin C, making it easier to eat large amounts and get the metabolic and cardiovascular effects.",
+    benefits:["Capsaicin boosts metabolism and thermogenesis","Rich in vitamin C — one jalapeño provides significant daily needs","Anti-inflammatory and antioxidant properties","May inhibit growth of certain cancer cells","Supports cardiovascular health","Natural decongestant and pain reliever"],
+    mechanisms:["Capsaicin activates TRPV1 — same pathway as cayenne, gentler dose","Vitamin C regenerates oxidized vitamin E and supports collagen","Endorphin release from chili heat — natural mood boost"],
+    bestForms:["Fresh, firm green — most vitamin C","Red/ripe — slightly higher capsaicin and carotenoids","Pickled — flavor preserved; mostly capsaicin retained, less vitamin C"],
+    pairings:["Lime + cilantro — brightens and adds antioxidants","Avocado — fat increases capsaicin absorption","Pickled with garlic and onion — fermented mineral powerhouse"],
+    cautions:["GERD, IBS, ulcers — common aggravators","Capsaicin oil burns — handle with gloves; wash thoroughly","Heat varies wildly by individual fruit (1,000–20,000 SHU)"],
+    dosage:"1–3 fresh jalapeños daily for those who tolerate well. No upper limit beyond personal tolerance."
+  },
+  {
+    name:"Kale",icon:"🥬",cat:"food",tags:["food"],
+    summary:"Aggregate nutrient density score (ANDI) puts kale among the highest-rated foods on the planet — exceptional vitamin K, carotenoids, and glucosinolates per calorie.",
+    benefits:["One of the most nutrient-dense foods on earth","Exceptional source of vitamins K, A, and C","Glucosinolates support liver detox and cancer prevention","High in lutein and zeaxanthin for eye health","Supports bone density through calcium and vitamin K","Bile acid sequestrants lower cholesterol naturally"],
+    mechanisms:["Sulforaphane and indole-3-carbinol activate Nrf2 and phase II detoxification","Vitamin K2 (from microbial conversion of K1) activates osteocalcin for bone mineralization","Lutein and zeaxanthin concentrate in the macula, filtering blue light"],
+    bestForms:["Lacinato (dinosaur/Tuscan) — most tender raw","Curly — best for chips","Massaged with olive oil + lemon — breaks down cell walls, transforms texture","Lightly steamed retains more nutrients than long cooking"],
+    pairings:["Olive oil or avocado — fat-soluble vitamin A and K absorption","Lemon juice — vitamin C enhances iron absorption","White beans + kale — Tuscan classic for cardiovascular health"],
+    cautions:["Vitamin K interferes with warfarin — keep intake consistent","Goitrogens — heavy raw intake may affect iodine-deficient thyroid","Oxalates — caution with calcium-oxalate kidney stones","Pesticide-heavy crop conventionally — buy organic"],
+    dosage:"1–2 cups raw or ½–1 cup cooked, 4–6 days/week. Greens-heavy weeks for nutrient density resets."
+  },
+  {
+    name:"Kombucha",icon:"🫙",cat:"drink",tags:["drink","supp"],
+    summary:"Fermented sweetened tea — a living beverage with probiotics, organic acids, and B vitamins. Quality varies enormously; check sugar content, which has crept up in commercial brands.",
+    benefits:["Rich in beneficial probiotics that support gut microbiome","Contains organic acids that may support liver detoxification","B vitamins support energy and nervous system function","Antioxidants from tea base protect against oxidative stress","May support immune function through gut-immune connection","Enzymes aid in digestion and nutrient absorption"],
+    mechanisms:["Glucuronic acid binds toxins for biliary excretion","Acetic acid and gluconic acid lower pH, supporting GI environment","Polyphenols from tea base partially converted to more bioavailable forms"],
+    bestForms:["Home-brewed (controllable sugar, freshness, strain diversity)","Raw, unpasteurized commercial brands — refrigerated section only","Plain or lightly flavored — avoid sugar-heavy versions (>8 g per serving)"],
+    pairings:["With meals as a digestive aid — replaces wine or soda","Ginger flavor — additive digestive benefit","Avoid with antibiotics — defeats the purpose"],
+    cautions:["Contains small amount of alcohol (0.5–3%) — pregnancy, recovery from alcohol use","Acidic — can erode tooth enamel","Homebrews can grow mold if contaminated — use sterile technique","Histamine-rich — issue for those with histamine intolerance"],
+    dosage:"4–8 oz daily. Start with 4 oz to assess tolerance. Avoid >16 oz daily."
+  },
+  {
+    name:"Lavender",icon:"💜",cat:"herb",tags:["herb"],
+    summary:"Best-studied botanical for anxiety after kava — Silexan (an oral lavender oil preparation) matched lorazepam in clinical trials without the dependence risk.",
+    benefits:["Potent anxiolytic — reduces anxiety as effectively as some medications in studies","Promotes sleep quality and duration","Anti-inflammatory and analgesic when applied topically","Antimicrobial properties against bacteria and fungi","Supports digestive health and reduces bloating","Neuroprotective effects against cognitive decline"],
+    mechanisms:["Linalool and linalyl acetate modulate GABA and glutamate systems","Inhibits voltage-gated calcium channels — anxiolytic without sedation","Olfactory pathway directly modulates the limbic system"],
+    bestForms:["Silexan (80 mg standardized oral capsule) — clinical-grade for anxiety","Pure essential oil for aromatherapy (Lavandula angustifolia)","Dried buds for tea or sachets"],
+    pairings:["Chamomile — calming tea blend","Magnesium — additive relaxation","Diffused with bergamot or frankincense — synergistic mood support"],
+    cautions:["Some lavender essential oils may have endocrine effects in prepubescent males — preliminary data","Skin sensitization in some people — patch test","Spike lavender (L. latifolia) has different chemistry and contraindications","Avoid internal use of undiluted essential oil"],
+    dosage:"Silexan: 80–160 mg daily. Tea: 1–2 tsp dried buds. Aromatherapy: 2–3 drops in diffuser. Topical: 1–2% dilution."
+  },
+  {
+    name:"Lemon Lime Water",icon:"🍋",cat:"drink",tags:["drink"],
+    summary:"A pH-balanced morning ritual — combining lemon's d-limonene with lime's slightly different flavonoid profile gives a fuller spectrum of citrus benefits than either alone.",
+    benefits:["Alkalizing effect supports optimal body pH","Vitamin C boosts immune function and collagen synthesis","Flavonoids from both fruits have anti-inflammatory effects","Stimulates digestive enzymes and bile production","Supports kidney health and reduces kidney stone risk","Natural electrolytes support hydration"],
+    mechanisms:["Citrate raises urinary pH and inhibits calcium oxalate crystallization","Vitamin C is a cofactor for collagen, neurotransmitters, and carnitine synthesis","Limonene supports phase I/II liver detoxification"],
+    bestForms:["Fresh-squeezed, both fruits — never bottled lemon/lime juice (preservatives, no vitamin C)","Warm (not hot) water — preserves vitamin C","Add a sliver of peel for additional bioflavonoids"],
+    pairings:["Pinch of sea salt + raw honey — adrenal morning tonic","Cucumber + mint — spa-water style for digestion","With fish or chicken meal — citrus enhances iron absorption"],
+    cautions:["Erosive to tooth enamel — drink through a straw, rinse after","Photosensitivity from furocoumarins on skin","Citrus oral allergy syndrome (rare)","Acid reflux — may worsen in some, soothe in others"],
+    dosage:"8–16 oz on waking, with juice of ½ lemon and ½ lime. Daily is safe long-term with dental precautions."
+  },
+  {
+    name:"Lemon Water",icon:"🍋",cat:"drink",tags:["drink"],
+    summary:"The simplest morning ritual with real benefits — vitamin C, hepatic stimulation, hydration, and digestive priming, all from one fruit in a glass of water.",
+    benefits:["Boosts liver function and bile production for fat digestion","High in vitamin C for immune support and skin health","Alkalizing despite being acidic externally","Supports weight management by increasing satiety","D-limonene has anti-cancer and detox properties","Antibacterial properties in the mouth reduce bad bacteria"],
+    mechanisms:["Citric acid stimulates bile flow and stomach acid","Although acidic, lemon is metabolized to bicarbonate — net alkalizing effect on urine","D-limonene activates GST and other phase II liver enzymes"],
+    bestForms:["Fresh juice from organic lemon, warm (not hot) water","Add zest for limonene and additional flavonoids","Squeeze into water bottle for sipping through the morning"],
+    pairings:["Ginger slice — digestive and circulatory synergy","Raw honey — antimicrobial throat soother","Cayenne pinch — circulatory boost"],
+    cautions:["Tooth enamel erosion — straw + rinse","Heartburn in sensitive individuals","Citrus oral allergy syndrome"],
+    dosage:"Juice of ½ lemon in 12–16 oz warm water, on rising, daily. 30–60 min before food."
+  },
+  {
+    name:"Licorice Root",icon:"🌿",cat:"herb",tags:["herb","supp"],
+    summary:"A potent traditional medicine in both Chinese and Western herbalism — glycyrrhizin is a true pharmacological agent that demands respect; DGL form removes blood pressure risk for daily use.",
+    benefits:["Glycyrrhizin has powerful anti-inflammatory and antiviral properties","Soothes gastrointestinal issues including GERD and ulcers","Supports adrenal function and cortisol regulation","Antimicrobial against H. pylori, a common stomach bacteria","Expectorant that loosens mucus in respiratory conditions","Supports liver health and has hepatoprotective effects"],
+    mechanisms:["Glycyrrhizin inhibits 11-beta-HSD2, prolonging cortisol's half-life","Stimulates mucus secretion in gut and respiratory tract — protective coating","Antiviral against HSV, influenza, and SARS-CoV in cell studies"],
+    bestForms:["DGL (deglycyrrhizinated) — no BP risk, ideal for ulcers/GERD","Whole licorice root tea or extract — only for short-term adrenal/antiviral use","Chinese licorice (gan cao) — common 'harmonizer' in traditional formulas"],
+    pairings:["Marshmallow root + slippery elm — gut-soothing 'demulcent' blend","With ashwagandha — adrenal-support stack (short-term)","Avoid pairing with cortisone, diuretics, digoxin"],
+    cautions:["Whole licorice raises blood pressure and lowers potassium — DO NOT use long-term","Pregnancy — preterm labor risk","Heart, kidney, liver disease","Many drug interactions (digoxin, diuretics, blood thinners, corticosteroids)"],
+    dosage:"DGL: 1–2 chewable tablets (380–760 mg) before meals. Whole root tea: limit to 7–10 days. Tincture: under guidance only."
+  },
+  {
+    name:"Matcha",icon:"🍵",cat:"drink",tags:["drink"],
+    summary:"Powdered shade-grown green tea — you consume the entire leaf, multiplying every benefit of regular green tea (catechins, L-theanine, chlorophyll) several-fold per cup.",
+    benefits:["Highest concentration of EGCG among all teas","L-theanine + caffeine combination produces calm sustained focus","Chlorophyll from whole leaf supports detoxification","Thermogenic effect supports fat oxidation","Exceptional antioxidant ORAC score — higher than most foods","Supports immune function and reduces inflammation"],
+    mechanisms:["EGCG inhibits catechol-O-methyltransferase (COMT), prolonging norepinephrine for thermogenesis","L-theanine raises GABA, alpha brainwaves, and counteracts caffeine jitter","Shade-growing concentrates chlorophyll and theanine"],
+    bestForms:["Ceremonial grade (vivid green, fine powder, from first harvest) — drink straight","Culinary grade for smoothies and baking","Test for lead — matcha bioaccumulates heavy metals; choose reputable Japanese sources"],
+    pairings:["Coconut milk + cinnamon — matcha latte without dairy","Whisked with hot (not boiling, 75°C) water using bamboo whisk","Pair with a small fat for sustained energy"],
+    cautions:["Heavy metal accumulation — choose third-party tested brands","High EGCG can stress liver at supplement-level doses","Caffeine sensitivity (one cup = ~70 mg caffeine)","Tannins reduce iron absorption — separate from iron-rich meals"],
+    dosage:"½–1 tsp (1–2 g) matcha 1–2x daily. Best AM or early afternoon."
+  },
+  {
+    name:"MCT Oil",icon:"🫙",cat:"supp",tags:["supp","food"],
+    summary:"Fractionated coconut/palm oil providing concentrated medium-chain triglycerides — most potent ketogenic food per gram, providing rapid brain and body fuel.",
+    benefits:["Rapidly converted to ketones for immediate brain energy","Supports ketosis and fat burning even without full keto diet","Antimicrobial medium-chain fatty acids — especially C8 caprylic acid","Improves cognitive function and mental clarity","Supports gut health by reducing harmful bacteria","Increases satiety and supports weight management"],
+    mechanisms:["C8 (caprylic) is most ketogenic per gram — bypasses lymph, goes directly to liver via portal vein","Ketones are a preferred fuel for the brain — especially under cognitive load","C8 + C10 disrupt Candida and pathogenic bacteria cell membranes"],
+    bestForms:["C8 (caprylic acid) MCT oil — pure for highest ketogenic effect","C8/C10 blend — slightly less potent, more affordable","Avoid 'MCT oil' that includes C12 (lauric) — it behaves more like a long-chain fat"],
+    pairings:["Coffee (bulletproof-style) — sustained focus","Smoothies — emulsifies well","Salad dressing with apple cider vinegar"],
+    cautions:["GI distress (cramping, diarrhea) if started too quickly — start with ½ tsp","Not for high-heat cooking (smoke point ~150°C)","Pure MCT can raise LDL slightly in some","Not safe for those with carnitine deficiency"],
+    dosage:"Start ½ tsp once daily, build to 1–2 tbsp daily, split between doses. Never start at full dose."
+  },
+  {
+    name:"Milk Thistle",icon:"🌿",cat:"herb",tags:["herb","supp"],
+    summary:"The undisputed go-to liver herb — silymarin is so potent that an IV form (Legalon SIL) is the standard antidote for Amanita phalloides mushroom poisoning in hospitals.",
+    benefits:["Silymarin is one of the most potent liver-protective compounds known","Regenerates liver cells and protects against toxin damage","Anti-inflammatory and antioxidant throughout the liver","May reduce insulin resistance in people with liver disease","Supports healthy bile production for fat digestion","May reduce LDL cholesterol"],
+    mechanisms:["Silybin (main silymarin component) inhibits toxin uptake into hepatocytes","Stimulates RNA polymerase I, accelerating liver cell regeneration","Powerful antioxidant — scavenges free radicals and stimulates glutathione"],
+    bestForms:["Standardized extract (silymarin ≥80%, silybin ≥30%)","Phytosome form (Siliphos) — 5–10x more absorbable","Seeds ground fresh and added to smoothies — whole-food option"],
+    pairings:["NAC + alpha-lipoic acid — comprehensive liver protocol","Dandelion + burdock — traditional bitters blend","With fatty meals — improves absorption"],
+    cautions:["Generally very safe; mild GI upset possible","Asteraceae allergy","Drug interactions via CYP450 — discuss if on prescriptions","Estrogenic activity — caution with hormone-sensitive cancers"],
+    dosage:"140–420 mg silymarin daily, split with meals. Phytosome form: 120–360 mg daily."
+  },
+  {
+    name:"Mint",icon:"🌿",cat:"herb",tags:["herb","spice"],
+    summary:"Peppermint oil enteric-coated capsules are FDA-recognized for IBS — one of the few herbs with that level of evidence. Garden mint is gentler but shares the soothing actions.",
+    benefits:["Menthol relieves digestive spasms and reduces IBS symptoms","Antimicrobial properties fight bacteria in mouth and gut","Natural decongestant that opens airways","Reduces nausea effectively","Antioxidant properties protect cells from damage","Cooling effect reduces pain when applied topically"],
+    mechanisms:["Menthol activates TRPM8 cold receptors and blocks calcium channels in smooth muscle","Inhibits 5-HT3 serotonin receptors — anti-nausea","Antimicrobial via membrane disruption of pathogens"],
+    bestForms:["Enteric-coated peppermint oil capsules for IBS — release in lower GI","Fresh leaves for tea — gentlest form","Essential oil (diluted) for topical headache application"],
+    pairings:["Chamomile + ginger — gentle digestive tea","Cocoa powder + mint — antioxidant flavor classic","Lemon — vitamin C with cooling synergy"],
+    cautions:["GERD — peppermint relaxes lower esophageal sphincter, may worsen reflux","Hiatal hernia","Gallstones — increases bile flow","Pregnancy (avoid peppermint essential oil internally)"],
+    dosage:"Tea: 1–2 tsp dried, 3 cups daily. Enteric capsules for IBS: 0.2 ml oil, 3x daily before meals."
+  },
+  {
+    name:"Mushrooms",icon:"🍄",cat:"fungi",tags:["fungi","food"],
+    summary:"The under-appreciated kingdom — only food source of vitamin D (with UV exposure), beta-glucans for immune modulation, and unique antioxidants like ergothioneine that are found nowhere else.",
+    benefits:["Only plant-based source of vitamin D when exposed to sunlight","Beta-glucans powerfully modulate and enhance immune function","Rich in B vitamins including B12 precursors","Ergothioneine — a unique antioxidant concentrated in brain and organs","Anti-cancer properties shown in lion's mane, reishi, and turkey tail","Prebiotic fiber feeds beneficial gut bacteria"],
+    mechanisms:["Beta-glucans (1,3 and 1,6) bind Dectin-1 receptors on immune cells, priming defense","Ergothioneine is actively transported into mitochondria — protects organs from oxidative damage","Ergosterol converts to D2 with UV exposure"],
+    bestForms:["UV-exposed mushrooms for vitamin D (set sliced mushrooms in sun for 30 min before cooking)","Cooked (not raw) — breaks chitin cell walls, releases nutrients","Variety: shiitake, maitake, oyster, lion's mane, reishi each have unique compounds"],
+    pairings:["Olive oil + garlic — Mediterranean staple, fat-soluble compound absorption","Miso broth or bone broth — traditional combination","Eggs and mushrooms — vitamin D and choline synergy"],
+    cautions:["Raw mushrooms contain agaritine (button family) — small carcinogenic potential","Wild foraging — never eat without expert ID","Histamine reactive in sensitive individuals","Aspergillus/molds in poorly stored mushrooms"],
+    dosage:"½–1 cup cooked mixed mushrooms, 3–5x weekly. Supplements: dual-extracted blends 500–2000 mg daily."
+  },
+  {
+    name:"Myrrh",icon:"🌿",cat:"herb",tags:["herb","supp"],
+    summary:"An ancient resin used in embalming and dentistry — guggulsterones make it one of the most powerful natural antimicrobials and traditional support for oral and gum health.",
+    benefits:["Potent antimicrobial against bacteria, fungi, and parasites","Anti-inflammatory terpenoids reduce pain and swelling","Supports oral health — inhibits bacteria that cause gum disease","Antioxidant protection against free radical damage","May lower blood sugar and support insulin function","Wound healing and skin regeneration properties"],
+    mechanisms:["Sesquiterpenes inhibit bacterial growth and biofilm formation","Furanodienes have analgesic effect via central nervous system","Guggulsterones may activate FXR receptor — improves lipid metabolism"],
+    bestForms:["Resin tears for dental use (chewed) — direct contact with gums","Tincture for mouthwash dilution","Essential oil (diluted) for topical wound and skin care"],
+    pairings:["Frankincense — biblical combination; anti-inflammatory synergy","Goldenseal in mouthwash — broad-spectrum antimicrobial","Clove oil for dental issues — combined antimicrobial + analgesic"],
+    cautions:["Pregnancy — uterine stimulant","Anticoagulants — bleeding risk","Diabetes meds — additive blood sugar lowering","Allergic dermatitis topically"],
+    dosage:"Tincture: 1 ml in water as mouthwash, 2–3x daily. Oral: 300–500 mg gum resin, but typically used externally."
+  },
+  {
+    name:"Nutritional Yeast",icon:"🧀",cat:"food",tags:["food","supp"],
+    summary:"Inactivated Saccharomyces cerevisiae with a cheese-like umami flavor — a vegan staple for B12 (when fortified), complete protein, and immune-modulating beta-glucans.",
+    benefits:["Complete protein with all 9 essential amino acids","Fortified form provides B12 — essential for vegans","Rich in beta-glucans that support immune function","High in zinc, selenium, and manganese","Contains glutathione — master antioxidant of the body","Supports energy metabolism through B vitamin complex"],
+    mechanisms:["Beta-1,3/1,6-glucans bind Dectin-1 immune receptors","Free glutathione directly raises cellular antioxidant capacity","B12 (cobalamin) cofactor for methylation and red blood cell synthesis"],
+    bestForms:["Fortified flakes (contains B12) — most useful for vegans","Unfortified — for those getting B12 elsewhere","Choose non-GMO and free from MSG-equivalent additives"],
+    pairings:["Sprinkled on popcorn, pasta, eggs — 'cheesy' flavor","With turmeric and tahini — vegan cheese sauce base","Tomato-based dishes — umami enhancement"],
+    cautions:["High in glutamic acid (umami) — sensitive individuals may react like MSG","Yeast-sensitive Crohn's or histamine intolerance — may flare","Candida diet — controversial; inactivated yeast is debated for/against","Tyramine — caution with MAOIs"],
+    dosage:"1–2 tbsp daily. Fortified provides 8–24 µg B12 per tbsp — covers vegan needs."
+  },
+  {
+    name:"Oil of Oregano",icon:"🌿",cat:"herb",tags:["herb","supp"],
+    summary:"One of the most potent broad-spectrum natural antimicrobials — comparable to pharmaceutical antibiotics in some in vitro studies, particularly against gut pathogens and antibiotic-resistant strains.",
+    benefits:["Carvacrol and thymol are among the most powerful antimicrobials in nature","Effective against antibiotic-resistant bacteria","Antifungal — especially effective against Candida","Anti-inflammatory and antioxidant protection","Supports gut health by reducing harmful bacteria","Antiviral properties against multiple viruses"],
+    mechanisms:["Carvacrol disrupts microbial cell membranes, causing efflux of ions and ATP","Inhibits biofilm formation","Activates TRPV3 — anti-inflammatory at receptor level"],
+    bestForms:["Wild Mediterranean Origanum vulgare — highest carvacrol (>70%)","Standardized to ≥70% carvacrol","Diluted in olive oil for taste; capsules for ease"],
+    pairings:["Probiotics 2 hours apart — kills bad, replenishes good","Olive leaf extract + berberine — broad antimicrobial protocol","Honey — flavor and antimicrobial synergy"],
+    cautions:["Iron absorption inhibition — separate from iron supplements","Blood thinning — interaction with anticoagulants","Mucosal irritation — never undiluted on tongue or skin","Pregnancy — emmenagogue","Disrupts beneficial bacteria too — don't use long-term"],
+    dosage:"3–6 drops 2–3x daily in olive oil or water, for 7–14 days max per cycle. Capsules: 150 mg 2x daily."
+  },
+  {
+    name:"Oranges",icon:"🍊",cat:"food",tags:["food"],
+    summary:"The classic vitamin C fruit — but the hesperidin in the white pith and peel may matter more for cardiovascular health than the C itself. Eat the whole fruit, not just juice.",
+    benefits:["Exceptionally high in vitamin C for immune function and collagen","Flavonoids including hesperidin support cardiovascular health","Folate supports DNA synthesis and nervous system health","Soluble pectin fiber lowers LDL cholesterol","Antioxidants protect skin and reduce aging","Potassium supports heart rhythm and blood pressure"],
+    mechanisms:["Vitamin C is cofactor for collagen-forming enzymes (prolyl hydroxylase)","Hesperidin strengthens capillary integrity and lowers BP","Pectin in pith binds bile acids → liver pulls cholesterol from blood"],
+    bestForms:["Whole fresh oranges — eat with the pith for hesperidin","Blood oranges — anthocyanin bonus","Avoid commercial juice — sugar-dense without fiber; fresh-squeezed is acceptable in moderation"],
+    pairings:["With iron-rich foods (spinach, lentils) — vitamin C boosts non-heme iron absorption","Cinnamon + orange — blood sugar synergy","Dark chocolate + orange — classic flavor + flavanol combo"],
+    cautions:["Acid reflux trigger for some","Citrus oral allergy syndrome","Spikes blood sugar more as juice than whole fruit","Drug interactions less than grapefruit but still possible (especially bitter Seville)"],
+    dosage:"1–2 medium oranges daily. Juice (fresh): 4–6 oz max if blood sugar-sensitive."
+  },
+  {
+    name:"Oregano Oil",icon:"🌿",cat:"herb",tags:["herb","supp"],
+    summary:"Same plant family as oil of oregano, but oregano oil typically refers to higher-concentration extract preparations — often standardized to ≥70% carvacrol for therapeutic dosing.",
+    benefits:["High-concentration antimicrobial — effective against 23+ bacteria strains","Anti-parasitic properties useful in gut cleansing protocols","Rich in rosmarinic acid — a potent antioxidant","Reduces inflammation throughout the body","Supports respiratory health and clears mucus","Antifungal against Candida and mold species"],
+    mechanisms:["Carvacrol and thymol disrupt cell membrane integrity in microbes","Inhibits parasite reproduction (Giardia, Blastocystis)","Rosmarinic acid inhibits COX-2 and lipoxygenase"],
+    bestForms:["Steam-distilled essential oil ≥70% carvacrol","Encapsulated emulsified form for less GI irritation","Liposomal preparations for systemic action"],
+    pairings:["Berberine + black walnut hull — anti-parasitic protocol","Probiotic (offset by 2 hours)","Olive oil carrier for dilution and absorption"],
+    cautions:["Mucosal burns if undiluted","Iron, zinc absorption interference","Pregnancy","Long-term use disrupts beneficial bacteria — cycle 2 weeks on / 2 weeks off","Blood thinning effect"],
+    dosage:"50–200 mg emulsified extract or 3–6 drops essential oil in carrier, 2–3x daily for 7–14 days."
+  },
+  {
+    name:"Ormus",icon:"✨",cat:"supp",tags:["supp"],
+    summary:"A controversial alchemical preparation of 'monoatomic gold' and other precious metals — claimed to have profound effects on consciousness and cellular regeneration; the science is sparse and the field rife with unsubstantiated claims.",
+    benefits:["Monoatomic elements claimed to support cellular regeneration","Traditionally used to support pineal gland function","Anecdotally reported to improve mental clarity and focus","High mineral content depending on source quality","Used in spiritual traditions for consciousness enhancement","Research is limited — choose reputable sources"],
+    mechanisms:["Theoretical: monoatomic state of certain transition metals proposed to interact with quantum-level biological processes","Unverified by mainstream scientific literature","Most physiological claims rely on anecdotal report"],
+    bestForms:["Cooked sea salt brine method (DIY traditional preparation)","Reputable artisanal producers with lab analyses","Avoid colloidal precious metal claims without third-party testing"],
+    pairings:["Meditation, breathwork — most users report subjective benefits with contemplative practice","Pure spring water — for preparation","Quartz or other crystal setups (esoteric tradition)"],
+    cautions:["Not regulated — quality varies enormously; some preparations contain harmful metals","No clinical safety data","Skepticism warranted — many vendors make unsupported claims","Avoid if pregnant, nursing, or on medications"],
+    dosage:"Begin with a few drops in water, weekly. Approach experimentally and conservatively."
+  },
+  {
+    name:"Probiotics",icon:"🦠",cat:"supp",tags:["supp"],
+    summary:"Living microbial supplements — useful but oversold; strain specificity matters enormously, and most generic 'multi-strain' supplements don't survive stomach acid or take up residence.",
+    benefits:["Restore and maintain beneficial gut microbiome balance","Boost immune function — 70% of immune system is in the gut","Reduce anxiety and depression through gut-brain axis","Improve digestion, reduce bloating, and relieve IBS","Reduce antibiotic-associated diarrhea","Support nutrient absorption, especially B vitamins and minerals"],
+    mechanisms:["Compete with pathogens for binding sites on gut epithelium","Produce short-chain fatty acids (butyrate, propionate, acetate)","Modulate immune signaling via Peyer's patches","Influence vagal afferent signals to the brain"],
+    bestForms:["Targeted strains for specific issues (e.g., L. rhamnosus GG for diarrhea, B. infantis for IBS)","Soil-based organisms (Bacillus spores) — survive stomach acid","Fermented foods (kefir, sauerkraut, kimchi) — diverse and food-based","Refrigerated, enteric-coated, with verified CFU count at expiration"],
+    pairings:["Prebiotics (inulin, FOS, GOS) — feed the bacteria","Apart from antibiotics (2+ hours)","Polyphenol-rich foods — synergize with strain growth"],
+    cautions:["SIBO — adding more bacteria can worsen","Immunocompromised — translocation risk","Some strains may cause initial gas/bloating","Histamine intolerance — some strains produce histamine"],
+    dosage:"5–50 billion CFU daily depending on strain and goal. Spore-based: 4 billion CFU daily. Cycle strains every 2–3 months."
+  },
+  {
+    name:"Psyllium Husk",icon:"🌾",cat:"supp",tags:["supp","food"],
+    summary:"A specific gel-forming soluble fiber that adapts to deficit — relieves constipation and diarrhea both, lowers cholesterol clinically, and stabilizes blood sugar more than any other fiber.",
+    benefits:["Most powerful soluble fiber supplement available","Lowers LDL cholesterol significantly through bile acid binding","Regulates blood sugar by slowing carbohydrate absorption","Relieves both constipation and diarrhea","Prebiotic that feeds beneficial bacteria","Supports weight management through satiety"],
+    mechanisms:["Forms a gel that binds bile acids and cholesterol-rich micelles","Slows gastric emptying and glucose absorption","Bulks and softens stool simultaneously — adaptive effect","Partially fermented to butyrate"],
+    bestForms:["Whole husk — preferred over powder; less processed","Organic — psyllium crop has pesticide concerns","Capsules for travel and convenience — but less effective dose"],
+    pairings:["Always with 8–16 oz water — without enough water, can cause blockage","Smoothies or chia/flax mixtures","Probiotic foods — prebiotic synergy"],
+    cautions:["MUST take with plenty of water — choking and obstruction risk","Take medications 1+ hour before or 4 hours after psyllium","Severe constipation — start small to avoid worsening","Allergic reactions in those exposed via inhalation"],
+    dosage:"5–10 g (1–2 tsp) 1–3x daily. Start with 1 tsp once daily with 16 oz water and titrate up."
+  },
+  {
+    name:"Pumpkin Seeds",icon:"🎃",cat:"food",tags:["food"],
+    summary:"A nutritional anomaly — the highest plant source of zinc, magnesium-dense, and the only food where tryptophan content is high enough to noticeably affect mood and sleep in normal portions.",
+    benefits:["Highest plant source of zinc — critical for immune and hormone function","Rich in magnesium which most people are deficient in","Contains tryptophan which converts to serotonin and melatonin","Antioxidant vitamin E in multiple forms","Anti-parasitic properties in cucurbitin compound","Supports prostate health and urinary function"],
+    mechanisms:["Zinc is cofactor for 300+ enzymes, including testosterone production","Tryptophan → 5-HTP → serotonin/melatonin (when paired with B6 and carbohydrate)","Cucurbitin paralyzes intestinal parasites"],
+    bestForms:["Raw, unshelled (pepitas) for maximum nutrients","Lightly roasted with sea salt — best flavor without loss","Sprouted pumpkin seeds — phytic acid reduced, mineral availability up"],
+    pairings:["With dark chocolate — magnesium superfood combo","Apple slices and almond butter — pre-bed sleep snack","In trail mix — sustained energy"],
+    cautions:["Some find them difficult to digest","Easy to over-consume — calorie dense","Phytic acid in raw seeds reduces mineral absorption (less so when soaked/sprouted)","Rancidity in old or poorly stored seeds"],
+    dosage:"¼ cup (30 g) daily provides ~2.5 mg zinc, 150 mg magnesium. Limit to ½ cup."
+  },
+  {
+    name:"Radishes",icon:"🌸",cat:"food",tags:["food"],
+    summary:"Underappreciated cruciferous — peppery glucosinolates support liver detoxification similar to broccoli but in a crunchy, hydrating package. The greens are even more nutrient-dense than the root.",
+    benefits:["Glucosinolates support liver detoxification pathways","Isothiocyanates have anti-cancer properties","Natural diuretic that supports kidney health","Rich in vitamin C and folate","Anti-inflammatory properties","Supports digestion and bile flow"],
+    mechanisms:["Glucoraphanin → sulforaphane when chewed — activates Nrf2 phase II detox","Mustard oils stimulate bile production","Diuretic action via potassium and isothiocyanates"],
+    bestForms:["Fresh raw — most enzyme activity","Black Spanish radish — strongest medicinal effect; used in liver protocols","Daikon — milder, used in Japanese tradition for fat digestion","Don't discard the greens — sauté or add to pesto"],
+    pairings:["Lemon juice + olive oil — preserves enzymes, fat-soluble absorption","With fatty meals — supports bile flow","Cucumber + radish + dill salad — refreshing detox-style dish"],
+    cautions:["Gallbladder/bile duct obstruction","Goitrogenic at very high intake — iodine-deficient individuals","FODMAPs in larger amounts","Heartburn in sensitive individuals"],
+    dosage:"½–1 cup sliced raw daily, or 1 tbsp grated black radish for liver protocols."
+  },
+  {
+    name:"Lion's Mane",icon:"🦁",cat:"fungi",tags:["fungi","supp"],
+    summary:"The only known dietary substance that stimulates Nerve Growth Factor — making it uniquely interesting for memory, neuroplasticity, and recovery from nerve damage.",
+    benefits:["NGF (nerve growth factor) stimulation — promotes brain cell regeneration and neuroplasticity","Improves memory, focus, and cognitive function — studied for Alzheimer's and dementia","Reduces anxiety and depression through nervous system support","Supports myelin sheath repair — benefits nerve damage and MS research","Antimicrobial and anti-inflammatory properties","Supports gut health through prebiotic beta-glucans"],
+    mechanisms:["Hericenones (in fruiting body) and erinacines (in mycelium) cross BBB → stimulate NGF synthesis","Promotes oligodendrocyte differentiation — myelin formation","Anti-inflammatory in hippocampus — depression and anxiety target"],
+    bestForms:["Dual-extracted (water + alcohol) for both polysaccharides and terpenoids","Fruiting body labeled and verified (not just mycelium grown on grain)","Whole cooked mushroom (sautéed) — culinary form retains hericenones"],
+    pairings:["Coffee + lion's mane (very common 'nootropic coffee')","Omega-3 (fish oil) — synergistic neuroplasticity","Combined with cordyceps and reishi for full mushroom stack"],
+    cautions:["May lower blood sugar — caution with diabetic meds","Mushroom allergy/sensitivity","Bleeding risk with anticoagulants","Skin rash possible in rare cases"],
+    dosage:"500–1500 mg dual-extracted, 1–2x daily. Effects build over 2–4 weeks; long-term safe."
+  },
+  {
+    name:"Chaga",icon:"🍄",cat:"fungi",tags:["fungi","supp"],
+    summary:"A black tumor-like growth on birch trees in cold climates — the highest ORAC antioxidant score of any food on Earth, and traditionally used in Siberia and the Boreal as a daily tonic.",
+    benefits:["Highest ORAC antioxidant score of any food — superoxide dismutase (SOD) content","Powerful immune modulator — activates NK cells and macrophages","Betulinic acid has anti-cancer and anti-viral properties","Reduces inflammation throughout the body","Supports healthy blood sugar regulation","Adaptogenic — helps the body resist physical and mental stress"],
+    mechanisms:["Massive SOD content (100x higher than most superfoods) neutralizes superoxide radicals","Betulinic acid derived from host birch — selectively cytotoxic to cancer cells","Polysaccharides activate immune surveillance"],
+    bestForms:["Wild-harvested from live birch trees in cold climates (Russia, Canada, Northern US)","Dual-extracted (hot water + alcohol) — necessary for full benefits","Powdered for slow simmer (1+ hour) — single brew unlocks little"],
+    pairings:["Cacao + chaga — earthy hot-drink classic","With other adaptogens (reishi, ashwagandha)","Honey + chaga decoction — flavor and antimicrobial synergy"],
+    cautions:["High oxalate content — caution with kidney stones","Anticoagulants — bleeding risk","Diabetes meds — additive blood sugar effect","Sustainability concern — slow-growing; many products are now cultivated mycelium (lower potency)"],
+    dosage:"500–1000 mg dual-extracted daily, or 1 tsp powder simmered 30+ min, 1–2x daily."
+  },
+  {
+    name:"Shiitake",icon:"🍄",cat:"fungi",tags:["fungi","food"],
+    summary:"The most-consumed medicinal mushroom in the world — a culinary mushroom that also boasts genuine clinical research, especially for cholesterol lowering and immune support.",
+    benefits:["Lentinan is a beta-glucan used in cancer therapy in Japan","Rich in eritadenine which lowers LDL cholesterol","Contains all essential amino acids — rare for a mushroom","High in B vitamins including B5, B6, and folate","Immune-boosting polysaccharides activate white blood cells","Supports cardiovascular health and reduces inflammation"],
+    mechanisms:["Lentinan binds Dectin-1 → activates Th1 immune response","Eritadenine reduces methylation of phosphatidylethanolamine → lowers cholesterol","Ergosterol → vitamin D2 with UV exposure"],
+    bestForms:["Dried (rehydrated for cooking) — concentrated nutrients","UV-exposed dried — high vitamin D","Hot-water extract supplement for therapeutic dosing"],
+    pairings:["Sea vegetables (kombu, wakame) — traditional Japanese broth base","Garlic, ginger, scallions — savory umami stir-fries","Eggs — vitamin D + choline"],
+    cautions:["Shiitake dermatitis — rare rash from raw consumption (cook thoroughly)","Histamine release possible","Mushroom allergies"],
+    dosage:"3–10 dried shiitake (5–20 g) daily in cooking. Lentinan extract: 1–3 mg daily for therapeutic use."
+  },
+  {
+    name:"Turkey Tail",icon:"🍄",cat:"fungi",tags:["fungi","supp"],
+    summary:"The most extensively researched medicinal mushroom — PSK and PSP are approved cancer adjuvants in Japan, and turkey tail's prebiotic effect on the gut microbiome is unmatched among mushrooms.",
+    benefits:["PSK (polysaccharide-K) is an approved cancer adjunct therapy in Japan","Most researched mushroom for immune modulation and cancer support","Powerful prebiotic — feeds Bifidobacterium and Lactobacillus","Supports gut microbiome diversity more than most foods","Anti-viral properties against HPV and other viruses","Rich in phenolic antioxidants that reduce oxidative stress"],
+    mechanisms:["PSK and PSP bind TLR-2 and Dectin-1, priming both innate and adaptive immunity","Selectively feeds beneficial gut microbes (acts as prebiotic to microbiome)","Reduces tumor angiogenesis in animal models"],
+    bestForms:["Hot-water extract (PSK/PSP-rich)","Standardized to >30% polysaccharides","Fruiting body verified (not mycelium on grain)"],
+    pairings:["Probiotics — synergistic gut-immune effects","Reishi or chaga — broader immune support","With cancer treatments — discussed with oncologist as adjunct"],
+    cautions:["Anticoagulants — bleeding risk","Autoimmune disease — immune-stimulating","Mushroom allergy","Generally very safe even at high doses"],
+    dosage:"1–3 g extract daily, split between doses. Higher doses (3–9 g) used in cancer adjunct protocols under medical supervision."
+  },
+  {
+    name:"Oyster Mushroom",icon:"🍄",cat:"fungi",tags:["fungi","food"],
+    summary:"An accessible, easy-to-grow mushroom with a serious nutritional resume — natural statins, ergothioneine, and high in B12-active corrinoids that may benefit plant-based diets.",
+    benefits:["Rich in beta-glucans that activate innate immune response","Contains statins (lovastatin) that naturally lower cholesterol","High in ergothioneine — a unique antioxidant protective for organs and brain","Good source of B12 precursors — beneficial for plant-based diets","Anti-inflammatory and antioxidant polyphenols","Supports healthy blood pressure through potassium and fiber"],
+    mechanisms:["Lovastatin inhibits HMG-CoA reductase — same target as prescription statins","Ergothioneine actively transported into mitochondria, protecting organs","Beta-glucans modulate innate immune response"],
+    bestForms:["Fresh — sautéed in olive oil with garlic","Dried — for soups and broths","Pearl, king, golden varieties — flavor variations, similar nutrients"],
+    pairings:["Garlic + thyme + butter — classic preparation","With eggs or in risotto","Broths and ramen — releases umami glutamates"],
+    cautions:["Statin interactions if also on prescription statins","Mushroom allergy","Spores can trigger respiratory sensitivity in growers (less so in cooking)"],
+    dosage:"1 cup cooked (~85 g) provides modest nutritional dose. 3–5x weekly for therapeutic benefit."
+  },
+  {
+    name:"Maitake",icon:"🍄",cat:"fungi",tags:["fungi","supp"],
+    summary:"The 'dancing mushroom' of Japan — D-fraction is one of the most-studied anti-cancer compounds in the mushroom world, with particular research on glycemic control.",
+    benefits:["D-fraction extract is among the most studied anti-cancer mushroom compounds","Powerfully regulates blood sugar — used in type 2 diabetes management","Stimulates NK cells and T-cells for immune defense","Supports weight management through metabolic effects","Lowers blood pressure and LDL cholesterol","Adaptogenic properties reduce stress-related hormonal imbalance"],
+    mechanisms:["D-fraction (1,6/1,3 beta-glucan) activates macrophages and dendritic cells","Improves insulin sensitivity via PPAR-gamma pathway","Reduces angiotensin-converting enzyme activity → lowers BP"],
+    bestForms:["D-fraction or MD-fraction standardized extract","Whole cooked mushroom — rich flavor for soups, stir-fries","Hot-water dual extract for therapeutic dosing"],
+    pairings:["Combined with reishi or shiitake — synergistic immune stack","With sea vegetables — traditional Japanese miso soup base","Anti-cancer protocols often combine with turkey tail"],
+    cautions:["Diabetic medication — additive blood sugar lowering","Anticoagulants — bleeding risk","Autoimmune disease — immune stimulation","Generally safe"],
+    dosage:"500–2000 mg standardized extract daily, or 1–2 oz fresh mushroom 3–5x weekly."
+  },
+  {
+    name:"Reishi Mushroom",icon:"🍄",cat:"fungi",tags:["fungi","supp"],
+    summary:"The 'mushroom of immortality' in Chinese medicine — bitter and not a culinary mushroom; used exclusively as a tonic, with a 2000-year track record for stress, sleep, and immune function.",
+    benefits:["Triterpenes have powerful anti-cancer and immune-modulating properties","Reduces stress and anxiety — natural adaptogen","Supports liver detoxification and protection","Improves sleep quality through nervous system calming","Anti-inflammatory throughout the body","Supports cardiovascular health by lowering blood pressure"],
+    mechanisms:["Ganoderic acids (triterpenes) modulate immune response and inhibit histamine release","Polysaccharides stimulate T-cell and macrophage activity","Adenosine-like compounds support relaxation and sleep"],
+    bestForms:["Red reishi (Ganoderma lucidum) — most-studied species","Dual-extracted to capture both polysaccharides AND triterpenes","Fruiting body verified, ≥4% triterpenes"],
+    pairings:["Cacao + reishi — bitter-sweet evening tonic","Chamomile or passionflower — sleep blend","Long-term daily use builds effect"],
+    cautions:["Anticoagulants — bleeding risk","Immunosuppressants","Hypotension — additive BP lowering","Mild GI upset, dizziness, dry mouth occasionally"],
+    dosage:"1–3 g dual-extracted reishi daily, often at night for sleep benefits. Take consistently for 4+ weeks."
+  },
+  {
+    name:"Rhodiola Rosea",icon:"🌸",cat:"herb",tags:["herb","supp"],
+    summary:"A high-altitude adaptogen from the Russian Arctic — fast-acting (same-day effects), specifically researched for mental fatigue, depression, and athletic performance under stress.",
+    benefits:["Adaptogen that reduces physical and mental fatigue dramatically","Increases resistance to stress without sedation","Improves cognitive function and memory under stress","May increase ATP synthesis in mitochondria","Anti-depressant effects comparable to some pharmaceuticals in studies","Supports athletic performance and recovery"],
+    mechanisms:["Rosavins and salidroside modulate dopamine, serotonin, and norepinephrine","Inhibits MAO-A — mild anti-depressant effect","Improves mitochondrial ATP synthesis"],
+    bestForms:["SHR-5 (the Swedish-tested extract used in most clinical trials)","Standardized to 3% rosavins and 1% salidroside (3:1 ratio)","Avoid raw root powder — variable potency"],
+    pairings:["L-theanine — calmer focus","Mucuna pruriens — dopamine support","Best taken in AM/midday — can be stimulating"],
+    cautions:["Bipolar disorder — can trigger mania","Insomnia if taken too late","MAOI and SSRI interactions","Generally well tolerated"],
+    dosage:"200–600 mg standardized extract daily, AM or pre-stress. Effects within hours; long-term safe with breaks."
+  },
+  {
+    name:"Sage",icon:"🌿",cat:"herb",tags:["herb","spice"],
+    summary:"More than a Thanksgiving herb — sage extracts have shown notable cognitive enhancement in healthy adults and even improvements in Alzheimer's patients in small studies.",
+    benefits:["Improves memory and cognitive function — studied in Alzheimer's research","Rosmarinic acid is a potent anti-inflammatory and antioxidant","Antimicrobial against bacteria and fungi","Supports hormone balance — used traditionally for menopause symptoms","Reduces excessive sweating","Antidiabetic effects through enzyme inhibition"],
+    mechanisms:["Acetylcholinesterase inhibitor — increases acetylcholine, like donepezil","Rosmarinic acid reduces inflammation and oxidative stress","Phytoestrogens reduce hot flashes via estrogen receptor binding"],
+    bestForms:["Spanish sage (Salvia lavandulifolia) — most-studied for cognition","Common garden sage — traditional cooking and tea","Tincture for therapeutic dosing"],
+    pairings:["Rosemary + sage tea — cognitive enhancement blend","Butter + sage on pasta — Italian classic","Lemon + sage — herbal flavor brightener"],
+    cautions:["Thujone content — avoid high-dose sage essential oil","Pregnancy and breastfeeding (may reduce milk supply)","Seizure disorders — high-dose risk","Diabetic meds — additive blood sugar lowering"],
+    dosage:"Tea: 1–2 tsp dried leaves, 2–3 cups daily. Extract: 300–600 mg standardized daily."
+  },
+  {
+    name:"Sauerkraut",icon:"🫙",cat:"food",tags:["food","supp"],
+    summary:"Lacto-fermented cabbage — one of the richest natural probiotic sources, with up to 10x the vitamin C of fresh cabbage and unique post-fermentation compounds like indole-3-carbinol.",
+    benefits:["One of the richest natural sources of probiotics","Vitamin C levels increase through fermentation","Supports gut microbiome diversity","K2 produced by fermentation bacteria supports bone and cardiovascular health","Supports immune function through gut-immune connection","Digestive enzymes improve overall nutrient absorption"],
+    mechanisms:["Lactobacillus plantarum, brevis, sakei dominate during fermentation","Bacteria produce vitamin K2 (MK-7) — directs calcium to bones, away from arteries","Indole-3-carbinol from cabbage supports estrogen detoxification"],
+    bestForms:["Raw, unpasteurized (refrigerated section) — live cultures","Homemade — most diverse strains","Avoid heat-pasteurized canned kraut — no probiotic benefit"],
+    pairings:["With fatty meats (German tradition) — probiotic + protein","On eggs or avocado toast — modern brunch","Side of olive oil + lemon — Mediterranean spin"],
+    cautions:["Histamine-rich — issue for histamine intolerance","Sodium content — limit if hypertensive","Tyramine — MAOI interactions","Start small to avoid die-off symptoms"],
+    dosage:"1–2 tbsp daily, increasing to ¼ cup. Best with meals to support digestion."
+  },
+  {
+    name:"Schisandra",icon:"🌸",cat:"herb",tags:["herb","supp"],
+    summary:"The 'five-flavor berry' of Chinese medicine — uniquely tonifies all five organ systems (liver, lung, kidney, heart, spleen) and is increasingly studied for liver protection and stress.",
+    benefits:["Adaptogen that improves physical performance and endurance","Supports liver health and detoxification through schisandrin compounds","Improves mental focus and reduces anxiety simultaneously","Anti-aging antioxidant properties","Supports adrenal function and stress resilience","Traditional use for skin health and beautification"],
+    mechanisms:["Schisandrin B is one of the most powerful natural inducers of phase II liver enzymes","Adaptogenic via HPA axis modulation","Antioxidant 'lignans' protect mitochondrial DNA"],
+    bestForms:["Dried whole berries — chewable, traditional preparation","Tincture or extract standardized to schisandrin","Powder added to smoothies"],
+    pairings:["Goji + schisandra — traditional Chinese 'beauty' tonic","With rhodiola or ashwagandha — broader adaptogen stack","Berry-rich smoothies"],
+    cautions:["GERD — acidic berries can trigger reflux","Pregnancy","Drug interactions via CYP3A4 induction — affects many medications","Generally well tolerated"],
+    dosage:"1–3 g dried berries daily, or 500–1500 mg standardized extract."
+  },
+  {
+    name:"Stevia",icon:"🌿",cat:"herb",tags:["herb","food"],
+    summary:"A South American shrub whose leaves contain glycosides 200–300x sweeter than sucrose with no glycemic impact — but processing matters; whole leaf differs from refined Reb-A.",
+    benefits:["Zero calorie natural sweetener 200-300x sweeter than sugar","Does not spike blood sugar — safe for diabetics","May slightly lower blood pressure","Antioxidant properties from stevioside","Anti-inflammatory effects","Does not contribute to tooth decay unlike sugar"],
+    mechanisms:["Stevioside and rebaudioside-A bind sweet receptors without activating glucose pathways","Stevioside has mild calcium-channel blocking effect — lowers BP","Doesn't feed oral bacteria → no cavities"],
+    bestForms:["Whole green leaf (powder or tea) — full plant profile, slight licorice note","Pure stevia liquid (alcohol- or glycerin-based) — concentrated, no fillers","Avoid 'stevia' blends with maltodextrin or erythritol if pure intake desired"],
+    pairings:["Lemon water + stevia drops — zero-calorie 'lemonade'","Berries — sweetened without sugar","Coffee or tea — common application"],
+    cautions:["Asteraceae allergy","Bitter aftertaste — some find unpalatable","Possible mild blood pressure lowering","Truvia and similar blends often contain erythritol — different compound; GI effects in some"],
+    dosage:"As needed; pure stevia: 1–4 drops liquid per beverage. Whole leaf: ¼ tsp."
+  },
+  {
+    name:"Strawberries",icon:"🍓",cat:"food",tags:["food"],
+    summary:"The vitamin C, ellagic acid, and anthocyanin trifecta — a single cup exceeds full daily vitamin C and provides a clinically meaningful dose of anti-inflammatory and anti-cancer compounds.",
+    benefits:["Exceptionally high in vitamin C — one cup provides full daily value","Anthocyanins reduce inflammation and oxidative stress","Ellagic acid has anti-cancer properties","Improves insulin sensitivity and blood sugar response","Supports heart health by lowering LDL and blood pressure","High in folate for DNA repair and cell growth"],
+    mechanisms:["Ellagitannins metabolized by gut microbiome to urolithins — anti-aging and mitochondrial benefits","Pelargonidin (anthocyanin) inhibits inflammatory pathways","Fisetin — senolytic compound that may clear senescent cells"],
+    bestForms:["Organic — strawberries are top of the EWG Dirty Dozen pesticide list","In-season summer berries — peak flavor and nutrients","Freeze-dried for off-season — retains nutrients well"],
+    pairings:["Spinach salad + walnuts — vitamin C boosts iron absorption","Greek yogurt — protein and probiotic pairing","Dark chocolate — flavanol synergy"],
+    cautions:["Top pesticide-load fruit — buy organic","Common food allergen (oral allergy syndrome)","Histamine release possible in sensitive individuals","Oxalates — caution with kidney stones"],
+    dosage:"1–2 cups (150–300 g) daily in season. Pesticide-free essential."
+  },
+  {
+    name:"Thyme",icon:"🌿",cat:"herb",tags:["herb","spice"],
+    summary:"A culinary herb with serious antimicrobial credentials — thymol is used in pharmaceutical mouthwashes and is one of the few herbal compounds with broad activity against respiratory bacteria.",
+    benefits:["Thymol is a powerful antimicrobial against bacteria and fungi","Supports respiratory health — used for bronchitis and cough","Rich in antioxidants including vitamin C and A","Anti-inflammatory properties reduce inflammation","Supports digestion and reduces bloating","Antifungal properties helpful for Candida"],
+    mechanisms:["Thymol and carvacrol disrupt bacterial cell membranes — broad antimicrobial","Bronchodilator and expectorant effects","Antispasmodic in GI smooth muscle — relieves cramping and bloating"],
+    bestForms:["Fresh thyme — for cooking and infusions","Dried thyme — concentrated; use ⅓ the amount","Thyme essential oil — for steam inhalation or diluted topical use"],
+    pairings:["Honey + thyme tea — cold and cough remedy","Lemon and garlic — synergistic antimicrobial","Roasted vegetables, fish, and poultry — culinary classic"],
+    cautions:["Anticoagulants — mild bleeding risk","Pregnancy — avoid essential oil","Thyroid medication — thymol may interfere","Estrogenic — caution with hormone-sensitive conditions"],
+    dosage:"Tea: 1–2 tsp dried, 2–4 cups daily for respiratory issues. Cooking: generously. Essential oil: dilute to 1–2% topically."
+  },
+  {
+    name:"Turmeric",icon:"🟡",cat:"spice",tags:["spice","herb"],
+    summary:"The single most-studied medicinal herb in the world (over 17,000 published studies) — curcumin's broad anti-inflammatory effects are real, but absorption is the persistent challenge.",
+    benefits:["Curcumin is one of the most studied anti-inflammatory compounds","Reduces joint pain and stiffness comparable to some NSAIDs","Powerful antioxidant that stimulates the body's own antioxidant enzymes","May reverse early Alzheimer's pathology in research models","Supports liver health and detoxification","Anti-cancer properties through multiple mechanisms — best absorbed with black pepper"],
+    mechanisms:["Curcumin inhibits NF-κB, COX-2, and TNF-alpha — anti-inflammatory cascade","Activates Nrf2 antioxidant response","Piperine in black pepper inhibits glucuronidation → 2000% absorption increase"],
+    bestForms:["With black pepper + fat (turmeric latte) — traditional preparation","Meriva (phytosome), Theracurmin, Longvida — patented high-absorption forms","Fresh root grated into curries"],
+    pairings:["Black pepper — essential for absorption","Coconut milk or fat — fat-soluble curcumin","Ginger — anti-inflammatory synergy"],
+    cautions:["Bile duct obstruction — increases bile flow","Anticoagulants and antiplatelets","Iron absorption inhibitor","Some commercial powders adulterated with lead chromate — buy from reputable sources"],
+    dosage:"500–2000 mg curcumin extract daily with black pepper and fat. Culinary: 1 tsp turmeric in cooking."
+  },
+  {
+    name:"Vitex (Chaste Tree)",icon:"🌸",cat:"herb",tags:["herb","supp"],
+    summary:"The premier female hormone herb — works on the pituitary rather than the ovaries, gently rebalancing the menstrual cycle without exogenous hormones. Effects build over months.",
+    benefits:["Supports female hormone balance by acting on pituitary gland","Reduces PMS symptoms including mood swings and breast tenderness","May support fertility by normalizing luteal phase","Reduces prolactin levels — helpful for certain hormonal conditions","Traditionally used for menopause symptom relief","Adaptogenic effects on reproductive hormones"],
+    mechanisms:["Dopaminergic action on pituitary D2 receptors — suppresses prolactin","Normalizes LH/FSH ratio over time","Supports luteal phase progesterone via shifted feedback"],
+    bestForms:["Standardized extract (Ze 440 — German clinical extract)","Tincture from fresh berries","Capsules with ≥0.5% agnusides"],
+    pairings:["Black cohosh for menopause","Magnesium + B6 — additive PMS support","Cycle-tracking apps — measure effect over months"],
+    cautions:["Hormonal birth control — may reduce effectiveness","Pregnancy after first trimester","Dopamine-affecting medications (e.g., bromocriptine, antipsychotics)","Effects take 3+ cycles to assess"],
+    dosage:"400–500 mg standardized extract daily, or 40 drops tincture. Use consistently for at least 3 menstrual cycles."
+  },
+  {
+    name:"Wheatgrass",icon:"🌱",cat:"food",tags:["food","supp"],
+    summary:"Young wheat plant juiced before grain formation — gluten-free at this stage, packed with chlorophyll, and the closest dietary structural analog to hemoglobin.",
+    benefits:["Extremely concentrated source of chlorophyll for blood oxygenation","Complete amino acid profile","Rich in enzymes that support digestion","High in iron, magnesium, and calcium","Supports liver detoxification and cleansing","Alkalizing effect balances body pH"],
+    mechanisms:["Chlorophyll molecule structurally similar to hemoglobin (with magnesium vs iron) — may support erythropoiesis","Active superoxide dismutase (SOD) provides antioxidant defense","High enzymatic content aids digestion"],
+    bestForms:["Fresh-juiced from living wheatgrass — best enzymes","Frozen wheatgrass juice cubes — convenient and preserve most nutrients","Powdered for travel — lowest activity but acceptable"],
+    pairings:["Pineapple or apple juice — masks grassy taste","On empty stomach for best absorption","With a small fat (e.g., coconut oil) for fat-soluble compound absorption"],
+    cautions:["Wheat allergy/celiac — controversial; grain protein gluten not present at grass stage but cross-contamination risk","Nausea common when starting — start with 1 oz","Mold contamination possible in poorly grown wheatgrass","Histamine release"],
+    dosage:"1–2 oz fresh juice on empty stomach. Increase gradually. Powdered: 1–2 tsp daily."
+  },
+  {
+    name:"Yerba Mate",icon:"🍵",cat:"drink",tags:["drink"],
+    summary:"South America's caffeinated tea — unique trifecta of caffeine, theobromine, and theophylline produces sustained energy with less crash than coffee, and ritualistic communal drinking.",
+    benefits:["Unique stimulant blend — caffeine + theobromine + theophylline","Produces energy without jitters, often compared to clean coffee","Rich in antioxidants — higher than green tea","Supports fat oxidation and weight management","Improves physical performance and reduces fatigue","Immune-boosting saponins and polyphenols"],
+    mechanisms:["Caffeine + theobromine combination provides longer half-life energy curve","Saponins modulate cholesterol absorption","Polyphenols (chlorogenic and quinic acids) activate AMPK — fat oxidation"],
+    bestForms:["Loose-leaf yerba mate (cured in gourd) — traditional preparation","Bottled yerba mate (cold-brewed) — less PAH content","Roasted vs green leaf — different flavor profiles"],
+    pairings:["Mint or citrus — flavor balance","With breakfast (not on empty stomach if sensitive)","Bombilla straw and gourd for traditional method"],
+    cautions:["Higher PAH (polycyclic aromatic hydrocarbon) content in smoked/cured leaves — esophageal cancer link in heavy traditional drinkers","Caffeine sensitivity","Stains teeth","High-temperature drinking (the traditional way) is the cancer-link risk, not the leaf itself"],
+    dosage:"1–2 cups (8 oz) daily, ideally cool to warm (not boiling). 100–200 mg caffeine equivalent per cup."
+  },
+  {
+    name:"Chia Seeds",icon:"⚫",cat:"food",tags:["food","supp"],
+    summary:"Aztec endurance food — when soaked, the mucilage forms a gel that slows hydration loss and glucose absorption simultaneously. Highest plant omega-3 per gram.",
+    benefits:["Richest plant source of omega-3 ALA — higher than flaxseed per gram","Complete protein containing all essential amino acids","Absorb 10x their weight in water — promotes sustained hydration and satiety","Excellent source of calcium — more per gram than dairy milk","Soluble fiber lowers LDL cholesterol and stabilizes blood sugar","Rich in antioxidants that prevent rancidity of the healthy fats"],
+    mechanisms:["ALA → small percentage converts to EPA/DHA (5–10%)","Mucilage gel slows gastric emptying and glucose absorption","Calcium and magnesium ratio favorable for bone metabolism"],
+    bestForms:["Whole seeds (don't need grinding — chia is digestible whole)","Soaked overnight to release mucilage and reduce phytic acid","Black or white seeds — minimal nutritional difference"],
+    pairings:["Coconut milk + cinnamon → chia pudding","Lemon water + chia — Aztec endurance drink ('iskiate')","Yogurt and berries"],
+    cautions:["Choking risk if eaten dry without sufficient water","High fiber — start small to avoid GI distress","Anticoagulants — bleeding risk from omega-3 + saponins","Diverticulitis caution"],
+    dosage:"1–2 tbsp (15–30 g) daily, soaked. ~5 g omega-3 ALA per tbsp."
+  },
+  {
+    name:"Tuna",icon:"🐟",cat:"food",tags:["food"],
+    summary:"One of the most protein-dense and lowest-calorie protein foods — but the mercury contamination, especially in larger species, demands careful sourcing and portion control.",
+    benefits:["Exceptionally high protein — 25g per 100g with minimal fat","Richest food source of omega-3 DHA and EPA for brain and heart health","Complete amino acid profile supports muscle repair and growth","High in selenium — a critical antioxidant mineral for thyroid health","Rich in B12, B3, and B6 for energy and nervous system function","Low calorie, high satiety — excellent for weight management"],
+    mechanisms:["DHA forms structural lipid in brain — 60% of brain dry weight","EPA reduces triglycerides and inflammation","Selenium binds and protects against mercury's effects (partially)"],
+    bestForms:["Smaller species (skipjack 'light' tuna) — much lower mercury than albacore or bluefin","Pole-and-line caught (avoids bycatch)","Sashimi-grade for raw applications — frozen first per FDA standards"],
+    pairings:["Avocado — healthy fat with brain support","Lemon + olive oil — vitamin C reduces mercury toxicity slightly","Cilantro/parsley — supports mercury chelation"],
+    cautions:["Mercury bioaccumulation — limit albacore to 1x weekly, skipjack 2–3x","Pregnancy: skipjack only, 2 servings/week max","Histamine — scombroid poisoning from improperly stored fish","Sustainability — choose certified options"],
+    dosage:"4–6 oz cooked, 1–2x weekly (skipjack/light). Albacore: max 6 oz weekly. Pregnant: 8 oz weekly skipjack max."
+  },
+  {
+    name:"Yogurt",icon:"🥛",cat:"food",tags:["food","supp"],
+    summary:"Live fermented milk — the bacteria predigest lactose, raise mineral bioavailability, and produce vitamins and bioactive peptides that fresh milk lacks.",
+    benefits:["Rich in live probiotics — Lactobacillus and Bifidobacterium strains","High in calcium and phosphorus for bone strength","Complete protein including casein which is slow-digesting for muscle repair","B12 and B2 support energy production and red blood cell formation","May reduce risk of type 2 diabetes and cardiovascular disease","Fermentation increases bioavailability of nutrients"],
+    mechanisms:["Lactobacillus bulgaricus and Streptococcus thermophilus convert lactose to lactic acid","Bioactive peptides released during fermentation lower BP (ACE-inhibition)","Casein protein digests slowly, providing 6–8 hours of amino acids"],
+    bestForms:["Full-fat plain (not low-fat) — vitamin K2 and CLA","Grass-fed milk source — better fatty acid profile","Greek yogurt — strained for higher protein","Avoid yogurts with added sugar, gums, modified starches"],
+    pairings:["Berries + walnuts + honey — classic breakfast","Cucumber + dill + garlic (tzatziki) — Mediterranean classic","Probiotic foods stack — kefir on alternate days for diversity"],
+    cautions:["Lactose intolerance — strained Greek and aged yogurts have less lactose","Dairy sensitivity (casein) — common in autoimmune conditions","Histamine intolerance — yogurt is histamine-rich","Many commercial yogurts are dessert-level sugar"],
+    dosage:"½–1 cup daily, plain. Pair with low-glycemic toppings to maximize benefits."
+  },
+  {
+    name:"Alfalfa",icon:"🌱",cat:"herb",tags:["herb","food"],
+    summary:"A legume traditionally used as livestock fodder ('al-fal-fa' = father of all foods in Arabic) — a deep-rooted plant that pulls minerals up from subsoil, making it nutrient-dense like few other greens.",
+    benefits:["One of the most nutrient-dense plants — contains vitamins A, C, E, K, and full B complex","High in plant estrogens (phytoestrogens) that support hormone balance","Rich in chlorophyll for blood oxygenation and detoxification","Natural diuretic that supports kidney and urinary tract health","Alkalizing effect helps balance body pH","Saponins may lower LDL cholesterol and support immune function"],
+    mechanisms:["Saponins bind cholesterol in gut, preventing reabsorption","Coumestrol (phytoestrogen) modulates estrogen receptors","Deep taproot accesses mineral-rich subsoil — high in chlorophyll, vitamin K"],
+    bestForms:["Leaf and tops (not seed) — leaf is the medicinal/nutritional part","Sprouted seeds — high enzyme content (caution: canavanine)","Dried leaf tea or capsules"],
+    pairings:["Greens combination (with parsley, dandelion) — broad nutrient profile","With turmeric and ginger — anti-inflammatory blend","In smoothies — mask grassy taste"],
+    cautions:["L-canavanine in seeds and sprouts — can trigger lupus or autoimmune flares","Anticoagulants — high vitamin K","Hormone-sensitive cancers — phytoestrogenic","Pregnancy — uterine stimulant in larger doses"],
+    dosage:"Leaf tea: 1–2 tsp dried, 1–3 cups daily. Capsules: 500–1000 mg leaf. Sprouts: avoid if autoimmune."
+  }
 ];
 
 let activeCat = 'all';
@@ -373,7 +1089,16 @@ function filterCards() {
   const q = document.getElementById('search').value.toLowerCase();
   const filtered = DATA.filter(d => {
     const matchCat = activeCat === 'all' || d.cat === activeCat;
-    const matchQ = !q || d.name.toLowerCase().includes(q) || d.benefits.some(b => b.toLowerCase().includes(q));
+    const inText = (arr) => Array.isArray(arr) && arr.some(s => String(s).toLowerCase().includes(q));
+    const matchQ = !q
+      || d.name.toLowerCase().includes(q)
+      || (d.summary && d.summary.toLowerCase().includes(q))
+      || inText(d.benefits)
+      || inText(d.mechanisms)
+      || inText(d.bestForms)
+      || inText(d.pairings)
+      || inText(d.cautions)
+      || (d.dosage && d.dosage.toLowerCase().includes(q));
     return matchCat && matchQ;
   });
   render(filtered);
@@ -383,6 +1108,15 @@ function setCat(cat) {
   activeCat = cat;
   document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
   filterCards();
+}
+
+function sectionList(title, labelIcon, items, listClass) {
+  if (!items || !items.length) return '';
+  return `
+    <div class="detail-section-label"><span class="label-icon">${labelIcon}</span>${title}</div>
+    <ul class="detail-list ${listClass}">
+      ${items.map(b => `<li>${b}</li>`).join('')}
+    </ul>`;
 }
 
 function renderDetail(item) {
@@ -410,12 +1144,20 @@ function renderDetail(item) {
         <span class="tag tag-${item.cat}">${item.cat}</span>
         ${item.tags.map(t => `<span class="tag tag-${t}">${t}</span>`).join('')}
       </div>
-      <div class="detail-section-label">Benefits</div>
+      ${item.summary ? `<p class="detail-summary">${item.summary}</p>` : ''}
+      <div class="detail-section-label"><span class="label-icon">★</span>Benefits</div>
       <ul class="detail-benefits">
         ${item.benefits.map(b => `<li>${b}</li>`).join('')}
       </ul>
+      ${sectionList('How it works', '⚛', item.mechanisms, 'mechanisms')}
+      ${sectionList('Best forms & preparation', '◆', item.bestForms, 'forms')}
+      ${sectionList('Synergistic pairings', '+', item.pairings, 'pairings')}
+      ${sectionList('Cautions & interactions', '!', item.cautions, 'cautions')}
+      ${item.dosage ? `
+        <div class="detail-section-label"><span class="label-icon">℞</span>Typical dosage</div>
+        <div class="detail-dosage">${item.dosage}</div>` : ''}
       ${related.length ? `
-        <div class="detail-section-label">Related</div>
+        <div class="detail-section-label"><span class="label-icon">↗</span>Related</div>
         <div class="related-grid">
           ${related.map(r => `
             <a class="related-item" href="/benefits/${slugify(r.name)}">
@@ -423,6 +1165,7 @@ function renderDetail(item) {
               <span>${r.name}</span>
             </a>`).join('')}
         </div>` : ''}
+      <p class="detail-disclaimer">Educational reference only. Doses, interactions, and clinical claims are summaries of traditional use and published research — not medical advice. Consult a qualified clinician before making changes if you take medications, are pregnant or nursing, or have a chronic condition.</p>
     </article>
   `;
   grid.parentNode.insertBefore(detail, grid);
@@ -447,5 +1190,3 @@ if (pathMatch) {
   document.getElementById('count').textContent = DATA.length + ' items';
 }
 </script>
-</body>
-</html>
