@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Hand-pick herbs, foods, and teas to compose your own detox blend, with auto-flagged safety cautions and an exportable ingredient list." />
+  <title>Parasite Detox · Blend Builder | NutriMind</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/nav.css" />
+  <link rel="stylesheet" href="/parasite-detox.css" />
+</head>
+<body>
+  <nav class="top-nav" aria-label="Primary"></nav>
+  <script src="/nav.js"></script>
+  <div class="grain"></div>
+  <main class="page">
+    <nav id="pd-subnav" aria-label="Parasite detox sections"></nav>
+
+    <section id="blend-builder">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Blend builder</div>
+          <h2>Build your own detox blend</h2>
+        </div>
+        <p>Pick herbs, foods, and teas, set your own amounts, and the builder assembles your blend with auto-flagged cautions and an exportable list. This is an educational planning tool, not a prescription.</p>
+      </div>
+
+      <div class="warning-box" style="margin-bottom:16px">
+        <strong>Before you blend:</strong>
+        <p>Stacking many strong herbs at once is the most common mistake. Confirm a diagnosis first when symptoms persist, keep strong herbs practitioner-guided, and avoid intense cleanses if pregnant, breastfeeding, immunocompromised, on medication, or managing liver, kidney, seizure, or bleeding conditions.</p>
+      </div>
+
+      <div class="herb-toolbar">
+        <input class="search" id="blendSearch" placeholder="Search ingredients, e.g. ginger, clove, fiber..." />
+        <div class="tabs" id="blendFilters">
+          <button class="filter active" data-filter="all">All</button>
+          <button class="filter" data-filter="herb">Herbs</button>
+          <button class="filter" data-filter="food">Foods</button>
+          <button class="filter" data-filter="tea">Teas</button>
+          <button class="filter" data-filter="binder">Binders</button>
+          <button class="filter" data-filter="strong">Strong / caution</button>
+        </div>
+      </div>
+
+      <div class="detox-layout">
+        <div class="card">
+          <div class="detox-panel-head">
+            <h3>Ingredient catalog</h3>
+            <span class="pill" id="blendCatalogCount">0 shown</span>
+          </div>
+          <div class="detox-library-list" id="catalogList"></div>
+        </div>
+
+        <div class="card">
+          <div class="detox-panel-head">
+            <h3>Your blend</h3>
+            <span class="pill" id="blendCount">0 ingredients</span>
+          </div>
+          <div class="detox-ingredient-list" id="blendList"></div>
+
+          <div class="detox-subsection">
+            <h3>Safety read</h3>
+            <div id="blendSafety"></div>
+          </div>
+
+          <div class="detox-subsection">
+            <h3>Export</h3>
+            <div class="hero-actions">
+              <button class="btn" onclick="copyBlend()">Copy blend</button>
+              <button class="btn secondary" onclick="downloadBlend()">Download .txt</button>
+              <button class="btn secondary" onclick="clearBlend()">Clear</button>
+            </div>
+            <textarea class="blend-export" id="blendExport" readonly aria-label="Generated blend list"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">Educational frontend only. Not medical advice. Do not use this page to diagnose yourself or replace professional care.</p>
+  </main>
+  <script src="/parasite-detox-nav.js"></script>
+  <script>
+    const CATALOG = [
+      { id: "garlic", name: "Garlic", cats: ["herb", "food", "gentle"], amount: "1 clove, minced", flags: ["meds", "gut"], caution: "Can worsen reflux; may interact with blood-thinning medications at supplement doses." },
+      { id: "pumpkin-seed", name: "Pumpkin seed", cats: ["food", "gentle"], amount: "1–2 tbsp", flags: ["allergy"], caution: "Not a guaranteed dewormer; watch seed allergies and digestion tolerance." },
+      { id: "papaya-seed", name: "Papaya seed", cats: ["food", "strong"], amount: "1 tsp (occasional)", flags: ["pregnancy", "allergy", "gut"], caution: "Large amounts upset the gut; avoid careless use in pregnancy or latex allergy." },
+      { id: "clove", name: "Clove", cats: ["herb", "strong"], amount: "Culinary pinch", flags: ["pregnancy", "meds", "gut"], caution: "Clove oil is potent and irritating; supplement doses may interact with anticoagulants." },
+      { id: "oregano-thyme", name: "Oregano / Thyme", cats: ["herb", "food", "strong"], amount: "Culinary, to taste", flags: ["meds", "gut"], caution: "Do not ingest essential oils casually; concentrated forms irritate the gut and interact with meds." },
+      { id: "ginger", name: "Ginger", cats: ["herb", "food", "gentle"], amount: "2–3 thin slices", flags: ["meds", "gut"], caution: "High doses can worsen reflux or interact with blood-thinning medications." },
+      { id: "black-walnut", name: "Black walnut hull", cats: ["herb", "strong"], amount: "Practitioner-guided", flags: ["allergy", "pregnancy", "meds"], caution: "Avoid with tree-nut allergy; caution in pregnancy, children, liver/kidney issues, or with meds." },
+      { id: "wormwood", name: "Wormwood", cats: ["herb", "strong"], amount: "Practitioner-guided", flags: ["pregnancy", "meds"], caution: "Thujone products can be risky; avoid in pregnancy, seizure disorders, kidney issues, and with many meds." },
+      { id: "neem", name: "Neem", cats: ["herb", "strong"], amount: "Practitioner-guided", flags: ["pregnancy"], caution: "Avoid in pregnancy/trying to conceive unless supervised; can be unsafe for children." },
+      { id: "berberine", name: "Berberine herbs", cats: ["herb", "strong"], amount: "Practitioner-guided", flags: ["pregnancy", "meds"], caution: "Interacts with medications; not for pregnancy, breastfeeding, or infants." },
+      { id: "probiotics", name: "Probiotics / fermented foods", cats: ["food", "gentle"], amount: "1 serving", flags: [], caution: "Use caution if immunocompromised or if fermented foods worsen symptoms." },
+      { id: "bitter-greens", name: "Bitter greens", cats: ["food", "gentle"], amount: "1 cup", flags: ["meds"], caution: "Avoid with gallbladder/bile-duct issues or relevant medication interactions." },
+      { id: "oats", name: "Oats or barley", cats: ["food", "gentle"], amount: "1/2 cup dry", flags: [], caution: "Increase fiber gradually to avoid bloating; drink water with it." },
+      { id: "flaxseed", name: "Ground flaxseed", cats: ["food", "gentle"], amount: "1 tbsp", flags: [], caution: "Fiber needs fluid — add water to avoid constipation." },
+      { id: "blueberries", name: "Blueberries", cats: ["food", "gentle"], amount: "1/2–1 cup", flags: [], caution: "Whole-food polyphenols; no major cautions." },
+      { id: "cilantro", name: "Cilantro", cats: ["food", "gentle"], amount: "2 tbsp chopped", flags: [], caution: "Culinary herb, not a chelator." },
+      { id: "broccoli", name: "Broccoli / sprouts", cats: ["food", "gentle"], amount: "1/2 cup", flags: [], caution: "Cruciferous food support; gas for some if introduced quickly." },
+      { id: "quinoa", name: "Quinoa", cats: ["food", "gentle"], amount: "3/4 cup cooked", flags: [], caution: "Gentle fiber base." },
+      { id: "olive-oil", name: "Extra-virgin olive oil", cats: ["food", "gentle"], amount: "1 tbsp", flags: [], caution: "Supports bile-flow meals; calorie-dense." },
+      { id: "lemon", name: "Lemon juice", cats: ["food", "gentle"], amount: "1 tbsp", flags: [], caution: "Flavor and acidity; can bother reflux for some." },
+      { id: "chia", name: "Chia seeds", cats: ["food", "gentle"], amount: "1 tsp – 1 tbsp", flags: [], caution: "Start low if your gut is sensitive; drink plenty of water." },
+      { id: "yogurt-kefir", name: "Plain yogurt or kefir", cats: ["food", "gentle"], amount: "3/4 cup", flags: [], caution: "Use dairy-free if dairy bothers you." },
+      { id: "turmeric", name: "Turmeric", cats: ["food", "gentle"], amount: "1/4 tsp", flags: ["meds"], caution: "Supplement doses differ from culinary use and can interact with medications." },
+      { id: "dandelion-tea", name: "Dandelion root tea", cats: ["tea", "gentle"], amount: "1 cup", flags: ["meds"], caution: "Avoid with gallbladder/bile-duct issues; check diuretic, lithium, or diabetes-med interactions." },
+      { id: "ginger-tea", name: "Ginger tea", cats: ["tea", "gentle"], amount: "1 cup", flags: ["meds"], caution: "Soothing; high amounts can worsen reflux or interact with blood thinners." },
+      { id: "activated-charcoal", name: "Activated charcoal", cats: ["binder", "strong"], amount: "As directed on label", flags: ["binder", "meds"], caution: "Adsorbs medications and nutrients — space well away from them and avoid constipation." },
+      { id: "bentonite-clay", name: "Bentonite clay", cats: ["binder", "strong"], amount: "As directed on label", flags: ["binder", "meds"], caution: "Can cause constipation and bind nutrients/medications; choose third-party-tested products." }
+    ];
+
+    const FLAG_ORDER = ["strong", "pregnancy", "meds", "allergy", "binder", "gut"];
+    const FLAG_MSG = {
+      strong: "Strong / caution ingredient — best practitioner-guided, not casual daily use.",
+      pregnancy: "Avoid in pregnancy or breastfeeding unless a clinician approves.",
+      meds: "May interact with medications — check with a pharmacist or clinician.",
+      allergy: "Allergy risk — confirm you tolerate it before use.",
+      binder: "Binder — take away from medications, supplements, and meals.",
+      gut: "Can irritate the gut, especially as a concentrated extract or oil."
+    };
+
+    let blend = loadBlend();
+    let activeFilter = "all";
+
+    function loadBlend() {
+      try { return JSON.parse(localStorage.getItem("parasiteBlend")) || []; }
+      catch { return []; }
+    }
+    function persist() { localStorage.setItem("parasiteBlend", JSON.stringify(blend)); }
+    function byId(id) { return CATALOG.find(c => c.id === id); }
+    function inBlend(id) { return blend.some(b => b.id === id); }
+    function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+
+    function addItem(id) {
+      if (inBlend(id)) return;
+      blend.push({ id, amount: byId(id).amount });
+      persist(); renderCatalog(); renderBlend();
+    }
+    function removeItem(id) {
+      blend = blend.filter(b => b.id !== id);
+      persist(); renderCatalog(); renderBlend();
+    }
+    function setAmount(id, val) {
+      const b = blend.find(x => x.id === id);
+      if (b) { b.amount = val; persist(); updateExport(); }
+    }
+    function clearBlend() {
+      blend = [];
+      persist(); renderCatalog(); renderBlend();
+    }
+
+    const catalogList = document.getElementById("catalogList");
+    const blendSearch = document.getElementById("blendSearch");
+    const blendFilters = document.getElementById("blendFilters");
+
+    function renderCatalog() {
+      const q = blendSearch.value.toLowerCase().trim();
+      const items = CATALOG.filter(it => {
+        const matchesFilter = activeFilter === "all" || it.cats.includes(activeFilter);
+        const haystack = `${it.name} ${it.cats.join(" ")} ${it.caution}`.toLowerCase();
+        return matchesFilter && haystack.includes(q);
+      });
+      document.getElementById("blendCatalogCount").textContent = `${items.length} shown`;
+      catalogList.innerHTML = items.map(it => {
+        const added = inBlend(it.id);
+        const tags = it.cats.filter(c => c !== "gentle").join(" · ");
+        return `
+          <div class="detox-ingredient">
+            <div><span>${esc(it.name)}</span><div class="detox-purpose">${esc(tags)} — ${esc(it.caution)}</div></div>
+            <button class="btn secondary blend-add" ${added ? "disabled" : ""} onclick="addItem('${it.id}')">${added ? "Added ✓" : "Add"}</button>
+          </div>`;
+      }).join("") || `<div class="blend-empty">No ingredients match. Try a broader search or filter.</div>`;
+    }
+
+    function collectFlags() {
+      const set = new Set();
+      blend.forEach(b => byId(b.id).flags.forEach(f => set.add(f)));
+      return FLAG_ORDER.filter(f => set.has(f));
+    }
+
+    function renderBlend() {
+      const listEl = document.getElementById("blendList");
+      document.getElementById("blendCount").textContent = `${blend.length} ingredient${blend.length === 1 ? "" : "s"}`;
+
+      if (!blend.length) {
+        listEl.innerHTML = `<div class="blend-empty">Your blend is empty. Add ingredients from the catalog to build it.</div>`;
+        document.getElementById("blendSafety").innerHTML = `<div class="blend-empty">Add ingredients to see your blend's safety read.</div>`;
+        updateExport();
+        return;
+      }
+
+      listEl.innerHTML = blend.map(({ id, amount }) => {
+        const it = byId(id);
+        return `
+          <div class="detox-ingredient">
+            <div><span>${esc(it.name)}</span><div class="detox-purpose">${esc(it.cats.filter(c => c !== "gentle").join(" · "))}</div></div>
+            <div class="blend-controls">
+              <input class="blend-amount" value="${esc(amount)}" oninput="setAmount('${id}', this.value)" aria-label="Amount for ${esc(it.name)}" />
+              <button class="blend-remove" onclick="removeItem('${id}')" aria-label="Remove ${esc(it.name)}">&times;</button>
+            </div>
+          </div>`;
+      }).join("");
+
+      renderSafety();
+      updateExport();
+    }
+
+    function renderSafety() {
+      const safetyEl = document.getElementById("blendSafety");
+      const strong = blend.map(b => byId(b.id)).filter(it => it.cats.includes("strong"));
+      const flags = collectFlags();
+      let html = "";
+
+      if (strong.length >= 2) {
+        html += `<div class="warning-box"><strong>Stacking ${strong.length} strong ingredients.</strong><p>Avoid combining many strong herbs/binders at once. Choose one cautious lane at a time and keep this practitioner-guided.</p></div>`;
+      } else if (strong.length === 1) {
+        html += `<div class="warning-box"><strong>Contains a strong / caution ingredient.</strong><p>Treat ${esc(strong[0].name)} as practitioner-guided rather than casual daily use.</p></div>`;
+      }
+
+      html += `<div style="margin-top:12px" class="detox-cautions">` +
+        flags.map(f => `<div class="detox-caution-box">${esc(FLAG_MSG[f])}</div>`).join("") +
+        `</div>`;
+
+      html += `<div class="detail-grid" style="margin-top:12px">` +
+        blend.map(b => byId(b.id)).map(it => `<div class="mini"><b>${esc(it.name)}</b><span>${esc(it.caution)}</span></div>`).join("") +
+        `</div>`;
+
+      safetyEl.innerHTML = html;
+    }
+
+    function blendText() {
+      if (!blend.length) return "";
+      const lines = ["My detox blend — NutriMind (educational only, not medical advice)", ""];
+      blend.forEach(({ id, amount }) => lines.push(`- ${byId(id).name} — ${amount || byId(id).amount}`));
+      const flags = collectFlags();
+      if (flags.length) {
+        lines.push("", "Cautions:");
+        flags.forEach(f => lines.push(`- ${FLAG_MSG[f]}`));
+      }
+      return lines.join("\n");
+    }
+
+    function updateExport() {
+      document.getElementById("blendExport").value = blendText() || "Your blend is empty.";
+    }
+
+    function copyBlend() {
+      const text = blendText();
+      if (!text) return;
+      const ta = document.getElementById("blendExport");
+      ta.focus();
+      ta.select();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(() => {});
+      }
+    }
+
+    function downloadBlend() {
+      const text = blendText();
+      if (!text) return;
+      const blob = new Blob([text], { type: "text/plain" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "detox-blend.txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    }
+
+    blendFilters.addEventListener("click", (e) => {
+      if (!e.target.matches(".filter")) return;
+      document.querySelectorAll(".filter").forEach(btn => btn.classList.remove("active"));
+      e.target.classList.add("active");
+      activeFilter = e.target.dataset.filter;
+      renderCatalog();
+    });
+
+    blendSearch.addEventListener("input", renderCatalog);
+
+    renderCatalog();
+    renderBlend();
+  </script>
+</body>
+</html>
