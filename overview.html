@@ -37,8 +37,10 @@
   /* Cards row */
   .cards-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:32px}
 
-  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s,transform .2s;animation:fadeUp .3s ease both}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s,transform .2s;animation:fadeUp .3s ease both;display:block;text-decoration:none;color:inherit}
   .card:hover{border-color:#3e3a32;transform:translateY(-2px)}
+  .card:hover .card-more{color:var(--accent)}
+  .card:hover .card-more span{transform:translateX(3px)}
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
   .card-stripe{height:3px}
@@ -50,6 +52,8 @@
   .card-note{font-size:11px;color:var(--muted);margin-top:6px;font-style:italic;line-height:1.4}
   .card-source{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
   .pill{font-size:10px;padding:3px 9px;border-radius:20px;border:1px solid rgba(143,190,107,.2);color:var(--green);background:rgba(143,190,107,.07)}
+  .card-more{margin-top:10px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);transition:color .2s;display:flex;align-items:center;gap:5px}
+  .card-more span{transition:transform .2s}
 
   /* Tables */
   .table-wrap{overflow-x:auto;margin-bottom:32px;border:1px solid var(--border);border-radius:10px}
@@ -62,6 +66,8 @@
   td:first-child{font-weight:500;color:var(--text)}
   td.amount{color:var(--accent);font-weight:600;white-space:nowrap}
   td.fn{color:var(--green)}
+  .t-link{color:var(--text);text-decoration:none;border-bottom:1px dotted rgba(200,146,42,.5);transition:color .2s}
+  .t-link:hover{color:var(--accent)}
 
   /* Symptom guide */
   .symptom-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:24px}
@@ -89,6 +95,34 @@
   .ws-name{font-weight:600;font-size:13px;color:var(--text);margin-bottom:3px}
   .ws-alias{font-size:11px;color:var(--muted);margin-bottom:4px}
   .ws-fn{font-size:11px;color:var(--blue)}
+
+  /* Nutrient detail page */
+  .detail{max-width:780px;margin:0 auto}
+  .detail-back{display:inline-flex;align-items:center;gap:6px;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-decoration:none;margin-bottom:18px;transition:color .2s}
+  .detail-back:hover{color:var(--accent)}
+  .detail-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px 28px 24px;border-top:3px solid var(--accent)}
+  .detail-name{font-family:'Playfair Display',serif;font-size:clamp(24px,4vw,34px);font-weight:900;line-height:1.1;margin-bottom:10px}
+  .detail-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+  .detail-tag{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:20px;border:1px solid rgba(200,146,42,.25);color:var(--accent);background:rgba(200,146,42,.07)}
+  .detail-amount{font-size:14px;font-weight:600;color:var(--accent);margin:10px 0 4px}
+  .detail-amount span{color:var(--muted);font-weight:400;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+  .detail-summary{font-size:15px;color:#d8cfbf;line-height:1.65;margin:12px 0 4px}
+  .detail-about{font-size:13.5px;color:#b0a898;line-height:1.7;margin-bottom:8px}
+  .detail-section-label{display:flex;align-items:center;gap:8px;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--text);margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+  .label-icon{color:var(--accent)}
+  .detail-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+  .detail-list li{display:flex;gap:9px;font-size:13px;color:#c0b6a4;line-height:1.55}
+  .detail-list li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);margin-top:7px;flex-shrink:0}
+  .detail-list.deficiency li::before{background:var(--red)}
+  .detail-list.functions li::before{background:var(--green)}
+  .detail-list.tips li::before{background:var(--blue)}
+  .detail-list.cautions li::before{background:var(--accent)}
+  .detail-sources{display:flex;flex-wrap:wrap;gap:7px}
+  .detail-sources .pill{font-size:12px;padding:5px 12px}
+  .related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+  .related-item{display:block;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-decoration:none;color:#c0b6a4;font-size:12.5px;font-weight:500;transition:border-color .2s,color .2s}
+  .related-item:hover{border-color:var(--accent);color:var(--accent)}
+  .detail-disclaimer{font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:22px;padding-top:16px;border-top:1px solid var(--border);font-style:italic}
 </style>
 </head>
 <body>
@@ -113,7 +147,7 @@
 <!-- MACROS & MINERALS -->
 <div class="section active" id="tab-macros">
   <div class="section-title">Macronutrients & Key Minerals</div>
-  <div class="section-desc">Daily targets for core macronutrients, minerals, fiber, and hydration.</div>
+  <div class="section-desc">Daily targets for core macronutrients, minerals, fiber, and hydration. Tap any card for a full breakdown.</div>
 
   <div class="section-title" style="font-size:16px;margin-bottom:14px;color:var(--accent)">Macronutrients</div>
   <div class="cards-row" id="macroCards"></div>
@@ -128,7 +162,7 @@
 <!-- VITAMINS -->
 <div class="section" id="tab-vitamins">
   <div class="section-title">Vitamin Reference</div>
-  <div class="section-desc">Key vitamins, their functions, and what each one does for your body.</div>
+  <div class="section-desc">Key vitamins, their functions, and what each one does for your body. Tap any card for a full breakdown.</div>
   <div class="cards-row" id="vitaminCards"></div>
 </div>
 
@@ -144,7 +178,7 @@
 <!-- HEALTH TABLES -->
 <div class="section" id="tab-tables">
   <div class="section-title">Health Tables</div>
-  <div class="section-desc">Reference tables for daily requirements and functions across minerals, vitamins, and other nutrients.</div>
+  <div class="section-desc">Reference tables for daily requirements and functions across minerals, vitamins, and other nutrients. Linked names open a full breakdown.</div>
 
   <div class="section-title" style="font-size:16px;margin-bottom:14px;color:var(--blue)">Mineral Table</div>
   <div class="table-wrap"><table id="mineralTable"></table></div>
@@ -153,6 +187,7 @@
   <div class="table-wrap"><table id="vitaminTable"></table></div>
 
   <div class="section-title" style="font-size:16px;margin-bottom:14px;color:var(--teal)">Other Nutrients</div>
+  <div class="cards-row" id="otherCards"></div>
   <div class="table-wrap"><table id="otherTable"></table></div>
 </div>
 
@@ -174,6 +209,354 @@
 </div>
 
 <script>
+// ----------------------------------------------------------------------------
+// NUTRIENTS — single source of truth for the cards above and the per-nutrient
+// detail pages served at /overview/<slug> (see server.js routing). Searching
+// e.g. "magnesium" deep-links straight to /overview/magnesium via
+// search-index.json (run `npm run build:search` after editing this list).
+// Educational reference only — not medical advice.
+// ----------------------------------------------------------------------------
+const NUTRIENTS = [
+  // ===== MACRONUTRIENTS =====
+  {name:'Carbohydrates',group:'macro',label:'Macronutrient',amount:'20–50g (keto) / 225–300g (standard)',stripe:'var(--accent)',
+   summary:'Primary energy source for brain and body. Reduced on keto to force fat burning.',
+   about:'Carbohydrates are the body’s fastest-access fuel: they break down into glucose, which powers the brain, red blood cells, and high-intensity muscle work. Quality matters far more than quantity — fibrous, whole-food carbs digest slowly and steady blood sugar, while refined carbs spike it. Cutting carbs low enough (under ~50g/day) shifts the body into ketosis, burning fat for fuel instead.',
+   functions:['Supplies glucose, the brain’s preferred fuel','Spares protein from being burned for energy','Fibrous carbs feed gut bacteria and aid digestion','Replenishes muscle glycogen for performance'],
+   deficiency:['Low energy, brain fog, and irritability when very low','Initial fatigue and "keto flu" during adaptation','Constipation if fiber-rich carbs are dropped'],
+   sources:['Rice','Oats','Vegetables','Fruit','Legumes'],
+   tips:['Favor whole, high-fiber sources over refined sugar and flour','Pair carbs with protein or fat to blunt blood-sugar spikes','Time most carbs around activity if managing weight'],
+   cautions:['Excess refined carbs drive insulin resistance over time','Very low-carb diets need extra sodium, potassium, and magnesium']},
+  {name:'Protein',group:'macro',label:'Macronutrient',amount:'90–120g / day',stripe:'var(--blue)',
+   summary:'Builds and repairs muscle, enzymes, and hormones. Essential for recovery.',
+   about:'Protein supplies the amino acids that build and repair every tissue — muscle, skin, hair, enzymes, antibodies, and hormones. It is also the most satiating macronutrient, helping control appetite, and has the highest thermic effect (your body burns more calories digesting it). Spreading intake across meals maximizes muscle protein synthesis.',
+   functions:['Builds and repairs muscle and connective tissue','Forms enzymes, antibodies, and peptide hormones','Increases satiety and supports fat loss','Preserves lean mass during weight loss and aging'],
+   deficiency:['Muscle loss, weakness, and slow recovery','Thinning hair and brittle nails','Frequent infections and slow wound healing','Swelling (edema) in severe deficiency'],
+   sources:['Meat','Eggs','Fish','Legumes','Dairy'],
+   tips:['Aim for ~0.7–1g per lb of lean body mass','Spread across 3–4 meals (~25–40g each)','Include a complete-protein or varied plant mix each day'],
+   cautions:['Very high intakes may stress kidneys in those with existing kidney disease','Balance with vegetables and fiber for digestion']},
+  {name:'Fats',group:'macro',label:'Macronutrient',amount:'120–150g / day (keto) / 44–78g (standard)',stripe:'var(--green)',
+   summary:'Supports cell structure, hormones, and fat-soluble vitamin absorption.',
+   about:'Dietary fat builds cell membranes, insulates nerves, and is required to absorb the fat-soluble vitamins A, D, E, and K. Fats are also the raw material for steroid hormones like testosterone and estrogen. On a ketogenic diet, fat replaces carbohydrate as the primary fuel. Emphasize mono- and polyunsaturated fats and omega-3s; minimize industrial trans fats.',
+   functions:['Forms cell membranes and the myelin around nerves','Carries and absorbs vitamins A, D, E, and K','Provides building blocks for steroid hormones','Most energy-dense fuel (9 kcal/g)'],
+   deficiency:['Dry skin and poor wound healing','Hormonal disruption with chronically very low fat','Deficiency of fat-soluble vitamins','Constant hunger and low satiety'],
+   sources:['Avocado','Olive oil','Nuts','Fatty fish','Eggs'],
+   tips:['Prioritize olive oil, avocado, nuts, and fatty fish','Get omega-3s (EPA/DHA) weekly from fish or algae','Avoid partially hydrogenated (trans) fats'],
+   cautions:['Calorie-dense — portion awareness matters for weight','Balance omega-6 to omega-3 ratio (limit seed-oil excess)']},
+  {name:'Sugar',group:'macro',label:'Target',amount:'0g added (target)',stripe:'var(--red)',
+   summary:'Excess added sugar drives insulin resistance, inflammation, and metabolic harm.',
+   about:'Added sugar delivers rapidly absorbed glucose and fructose with no fiber, vitamins, or minerals. Chronic excess overloads the liver, raises triglycerides, and drives insulin resistance, fatty liver, and inflammation. Naturally occurring sugars inside whole fruit come packaged with fiber and nutrients and behave very differently from added sugar.',
+   functions:['Provides quick energy (but with no micronutrients)','Whole-fruit sugars come bundled with fiber and polyphenols'],
+   deficiency:['No deficiency exists — added sugar is not an essential nutrient'],
+   sources:['(Limit) sodas','Candy','Baked goods','Sweetened drinks'],
+   tips:['Eliminate added sugars; get sweetness from whole fruit','Read labels for hidden sugars (syrups, "-ose" words)','Use cinnamon, vanilla, or berries to satisfy cravings'],
+   cautions:['Drives insulin resistance, fatty liver, and weight gain','Liquid sugar (soda, juice) is the most metabolically harmful form']},
+
+  // ===== MINERALS =====
+  {name:'Magnesium',group:'mineral',label:'Mineral',amount:'400mg / day',stripe:'var(--blue)',
+   summary:'Powers energy, sleep, muscle function, and bone health — used in 300+ enzymes.',
+   about:'Magnesium is a cofactor in more than 300 enzyme reactions, including every step that makes and uses ATP (cellular energy). It relaxes muscles and the nervous system, supports healthy blood pressure and blood sugar, and is needed to activate vitamin D. Most people fall short because modern soils and refined foods are magnesium-poor.',
+   functions:['Activates ATP for cellular energy production','Relaxes muscles and calms the nervous system','Regulates blood pressure and blood sugar','Required to convert vitamin D to its active form'],
+   deficiency:['Muscle cramps, twitches, and spasms','Insomnia and difficulty relaxing','Anxiety, irritability, and low stress tolerance','Fatigue and heart palpitations'],
+   sources:['Pumpkin seeds','Spinach','Dark chocolate','Almonds','Black beans'],
+   tips:['Glycinate and citrate forms absorb best; oxide is poorly absorbed','Take in the evening to support sleep','Pair with vitamin D and K2 for bone health'],
+   cautions:['High doses can cause loose stools','Those with kidney disease should consult a clinician']},
+  {name:'Potassium',group:'mineral',label:'Mineral',amount:'4,700mg / day',stripe:'var(--green)',
+   summary:'Regulates blood pressure, fluid balance, nerve signals, and muscle contractions.',
+   about:'Potassium is the main intracellular electrolyte, working in opposition to sodium to control fluid balance, blood pressure, and the electrical signals that fire nerves and contract muscles — including the heartbeat. Most people get far too little because it is concentrated in whole plants and fresh foods rather than processed ones.',
+   functions:['Balances fluids and counteracts sodium’s blood-pressure effect','Conducts nerve impulses and muscle contractions','Supports a steady, healthy heart rhythm','Helps prevent kidney stones and bone loss'],
+   deficiency:['Muscle weakness, cramps, and fatigue','Heart palpitations or irregular rhythm','Constipation','Elevated blood pressure'],
+   sources:['Avocado','Banana','Sweet potato','Salmon','Leafy greens'],
+   tips:['Aim for food sources — supplements are capped low for safety','Increase intake on low-carb/keto diets and with heavy sweating'],
+   cautions:['Those with kidney disease or on certain BP meds must limit potassium — consult a clinician','Avoid high-dose supplements without medical guidance']},
+  {name:'Sodium',group:'mineral',label:'Mineral',amount:'3,000–5,000mg / day (active/keto)',stripe:'var(--teal)',
+   summary:'Essential for hydration, nerve function, muscle contraction, and digestion.',
+   about:'Sodium is the primary extracellular electrolyte, governing blood volume, hydration, nerve firing, and muscle contraction. While excess from processed food is a real problem, very low sodium — common on whole-food, low-carb, or athletic diets — causes its own issues. Athletes and keto dieters excrete more sodium and often need extra.',
+   functions:['Maintains blood volume and hydration','Enables nerve signaling and muscle contraction','Supports nutrient absorption in the gut','Partners with potassium to balance fluids'],
+   deficiency:['Headaches, lightheadedness, and brain fog','Muscle cramps and weakness','Fatigue and low blood pressure (esp. on keto)'],
+   sources:['Sea salt','Bone broth','Pickles','Olives','Celery'],
+   tips:['On keto or with heavy training, add salt deliberately','Balance with potassium and magnesium for true hydration'],
+   cautions:['Excess from processed foods raises blood pressure in salt-sensitive people','Those with hypertension or heart/kidney disease should moderate intake']},
+  {name:'Calcium',group:'mineral',label:'Mineral',amount:'1,000mg / day',stripe:'var(--blue)',
+   summary:'Essential for bone strength, muscle contraction, and nerve transmission.',
+   about:'About 99% of the body’s calcium is stored in bones and teeth, but the small circulating amount is critical for muscle contraction, nerve signaling, blood clotting, and heartbeat. Calcium needs vitamin D for absorption and vitamin K2 to direct it into bone rather than arteries.',
+   functions:['Builds and maintains bone and tooth density','Triggers muscle contraction (including the heart)','Enables nerve signaling and blood clotting','Supports enzyme and hormone release'],
+   deficiency:['Low bone density, osteopenia, and osteoporosis','Muscle cramps and spasms','Numbness or tingling in fingers','Brittle nails'],
+   sources:['Dairy','Sardines (with bones)','Kale','Fortified plant milks','Almonds'],
+   tips:['Take with vitamin D and K2 for proper bone deposition','Split doses (~500mg) for better absorption','Prioritize food sources over high-dose supplements'],
+   cautions:['Excess supplemental calcium may calcify arteries without K2','Can interfere with iron and zinc absorption if taken together']},
+  {name:'Iron',group:'mineral',label:'Mineral',amount:'8mg (men) / 18mg (women)',stripe:'var(--red)',
+   summary:'Carries oxygen in the blood via hemoglobin — the most common deficiency worldwide.',
+   about:'Iron is the core of hemoglobin, the molecule that ferries oxygen from lungs to tissues, and of myoglobin in muscle. It also drives energy production and immune function. Heme iron (from animal foods) absorbs far better than non-heme (plant) iron. Iron deficiency is the most common nutrient deficiency on earth, especially in menstruating women.',
+   functions:['Transports oxygen via hemoglobin and myoglobin','Supports energy production in mitochondria','Aids immune function and cognition','Needed for neurotransmitter synthesis'],
+   deficiency:['Fatigue and weakness','Pale skin and shortness of breath','Cold hands and feet','Brittle nails, hair loss, and restless legs'],
+   sources:['Red meat','Liver','Spinach','Lentils','Pumpkin seeds'],
+   tips:['Pair plant (non-heme) iron with vitamin C to boost absorption','Avoid tea/coffee and calcium around iron-rich meals','Test ferritin before supplementing'],
+   cautions:['Excess iron is pro-oxidant and harmful — don’t supplement without testing','Men and post-menopausal women rarely need extra']},
+  {name:'Zinc',group:'mineral',label:'Mineral',amount:'10–12mg / day',stripe:'var(--purple)',
+   summary:'Key for immunity, wound healing, enzyme activity, and testosterone.',
+   about:'Zinc is essential to over 300 enzymes and to the gene-regulating "zinc finger" proteins. It is central to immune defense, wound healing, taste and smell, skin health, and male hormone production. The body has no dedicated zinc store, so a steady intake is needed. Plant phytates reduce absorption, putting plant-based eaters at higher risk.',
+   functions:['Powers immune cell function and wound healing','Supports testosterone and reproductive health','Required for taste, smell, and skin integrity','Acts as an antioxidant cofactor'],
+   deficiency:['Frequent colds and slow healing','Hair loss and skin problems (acne, eczema)','Loss of taste or smell','Low libido and poor appetite'],
+   sources:['Oysters','Beef','Pumpkin seeds','Chickpeas','Cashews'],
+   tips:['Animal sources absorb 2–3x better than plant sources','Soak/sprout grains and legumes to cut phytates','Balance with copper — long-term zinc depletes it'],
+   cautions:['High-dose zinc depletes copper and can impair immunity','Avoid taking with calcium or iron supplements']},
+  {name:'Copper',group:'mineral',label:'Mineral',amount:'~900mcg / day',stripe:'var(--accent)',
+   summary:'Important for collagen formation, iron metabolism, and antioxidant defense.',
+   about:'Copper works alongside iron to form red blood cells, builds the collagen and elastin that hold connective tissue together, and powers key antioxidant enzymes. It must stay in balance with zinc — high zinc intake is a common, overlooked cause of copper deficiency.',
+   functions:['Helps form red blood cells and absorb iron','Builds collagen and elastin for skin and vessels','Drives antioxidant enzymes (SOD)','Supports nerve and immune function'],
+   deficiency:['Anemia not corrected by iron','Easy bruising and weak connective tissue','Low white blood cells and frequent infection','Premature graying of hair'],
+   sources:['Liver','Oysters','Dark chocolate','Cashews','Sesame seeds'],
+   tips:['Balance with zinc (roughly 1mg copper per 10mg zinc)','A few cashews or a square of dark chocolate covers most needs'],
+   cautions:['Excess copper is toxic to the liver','High supplemental zinc is the main driver of deficiency']},
+  {name:'Selenium',group:'mineral',label:'Mineral',amount:'55mcg / day',stripe:'var(--purple)',
+   summary:'Supports immune function, thyroid hormone conversion, and antioxidant protection.',
+   about:'Selenium is built into selenoproteins that defend cells from oxidative damage and convert thyroid hormone T4 into its active form T3. It also supports immune surveillance and reproductive health. Just two Brazil nuts a day typically meet the requirement — but the window between enough and too much is narrow.',
+   functions:['Powers glutathione peroxidase antioxidant defense','Converts thyroid hormone T4 to active T3','Supports immune response and fertility'],
+   deficiency:['Fatigue and brain fog','Impaired thyroid function','Weakened immunity','Muscle weakness'],
+   sources:['Brazil nuts','Tuna','Eggs','Sardines','Sunflower seeds'],
+   tips:['2 Brazil nuts/day usually meets needs — don’t overdo it','Pairs with iodine for healthy thyroid function'],
+   cautions:['Toxic in excess (selenosis): hair loss, nail changes, garlic breath','Do not stack high-dose supplements with Brazil nuts']},
+  {name:'Iodine',group:'mineral',label:'Mineral',amount:'150mcg / day',stripe:'var(--accent)',
+   summary:'Crucial for thyroid hormone production and metabolic regulation.',
+   about:'Iodine is a raw material for thyroid hormones, which set the body’s metabolic rate and are vital for brain development in pregnancy and infancy. Iodine deficiency is the leading preventable cause of intellectual disability worldwide; iodized salt and seafood are the main dietary sources.',
+   functions:['Builds thyroid hormones T3 and T4','Sets metabolic rate and energy use','Critical for fetal and infant brain development'],
+   deficiency:['Goiter (enlarged thyroid)','Fatigue, weight gain, and cold intolerance','Brain fog and depression','Developmental delays in infants'],
+   sources:['Iodized salt','Seaweed (kelp, nori)','Cod','Shrimp','Dairy'],
+   tips:['Use iodized salt or eat seafood/seaweed weekly','Pairs with selenium for balanced thyroid function'],
+   cautions:['Excess (often from kelp/seaweed) can also disrupt the thyroid','Those with thyroid conditions should consult a clinician']},
+  {name:'Manganese',group:'mineral',label:'Mineral',amount:'1.8–2.3mg / day',stripe:'var(--green)',
+   summary:'Supports glucose metabolism, bone development, and antioxidant defenses.',
+   about:'Manganese activates enzymes for bone formation, carbohydrate and amino-acid metabolism, and wound healing. It is also the metal at the core of mitochondrial superoxide dismutase (MnSOD), a frontline antioxidant. Deficiency is rare because small amounts in plants, grains, and tea cover daily needs.',
+   functions:['Cofactor for bone-building and metabolic enzymes','Core of the mitochondrial antioxidant MnSOD','Aids carbohydrate and collagen metabolism'],
+   deficiency:['Poor bone development','Impaired glucose tolerance','Slow wound healing (deficiency is uncommon)'],
+   sources:['Whole grains','Nuts','Leafy greens','Tea','Pineapple'],
+   tips:['A varied whole-food diet easily covers needs','Tea is one of the richest everyday sources'],
+   cautions:['Excess (often from contaminated water) can affect the nervous system']},
+  {name:'Chromium',group:'mineral',label:'Mineral',amount:'25–35mcg / day',stripe:'var(--pink)',
+   summary:'Helps regulate blood sugar and improves insulin sensitivity.',
+   about:'Chromium enhances the action of insulin, helping cells take up glucose efficiently. While the body needs only trace amounts, adequate chromium supports stable blood sugar and may help reduce carbohydrate cravings. Refined diets are low in chromium.',
+   functions:['Potentiates insulin and glucose uptake','Supports stable blood sugar','May help curb sugar cravings'],
+   deficiency:['Impaired blood-sugar control','Increased sugar cravings','Fatigue after carb-heavy meals (deficiency is rare)'],
+   sources:['Broccoli','Whole grains','Lean beef','Green beans','Brewer’s yeast'],
+   tips:['Whole foods provide enough for most people','May be useful for blood-sugar management under guidance'],
+   cautions:['High-dose supplements have limited proven benefit','Consult a clinician if on diabetes medication']},
+
+  // ===== FIBER & HYDRATION =====
+  {name:'Fiber',group:'fiber',label:'Fiber',amount:'25–38g / day',stripe:'var(--green)',
+   summary:'Aids digestion, steadies blood sugar, feeds gut bacteria, and lowers cholesterol.',
+   about:'Fiber is the indigestible part of plants. Soluble fiber forms a gel that slows digestion, lowers cholesterol, and steadies blood sugar; insoluble fiber adds bulk and keeps things moving. Both feed beneficial gut bacteria, which ferment fiber into short-chain fatty acids that nourish the colon and calm inflammation.',
+   functions:['Feeds gut bacteria, producing short-chain fatty acids','Slows glucose absorption and steadies blood sugar','Binds cholesterol and bile acids','Adds bulk for regular, healthy digestion'],
+   deficiency:['Constipation and irregular digestion','Blood-sugar swings and hunger','Poor gut microbiome diversity','Higher cholesterol'],
+   sources:['Vegetables','Legumes','Chia seeds','Oats','Berries'],
+   tips:['Increase slowly with plenty of water to avoid gas','Psyllium husk is an effective soluble-fiber supplement','Aim for variety to feed diverse gut bacteria'],
+   cautions:['Ramping up too fast causes bloating','Very high intake can reduce mineral absorption']},
+  {name:'Water',group:'fiber',label:'Hydration',amount:'12–14 cups / day',stripe:'var(--blue)',
+   summary:'Maintains hydration, regulates temperature, supports digestion, and flushes waste.',
+   about:'Water makes up roughly 60% of the body and is the medium for nearly every biochemical reaction. It transports nutrients, cushions joints, regulates temperature through sweat, and helps the kidneys clear waste. True hydration depends on electrolytes (sodium, potassium, magnesium) as much as on fluid volume.',
+   functions:['Transports nutrients and removes waste','Regulates body temperature via sweat','Lubricates joints and cushions tissues','Supports digestion and kidney function'],
+   deficiency:['Fatigue, headache, and poor concentration','Dark urine and constipation','Dizziness and muscle cramps','Dry skin and lips'],
+   sources:['Plain water','Electrolyte water','Herbal teas','Coconut water','Water-rich produce'],
+   tips:['Add electrolytes during heat, exercise, or low-carb diets','Use urine color (pale straw) as a hydration gauge','Spread intake through the day rather than all at once'],
+   cautions:['Overhydration without electrolytes can dangerously dilute sodium']},
+
+  // ===== FAT-SOLUBLE VITAMINS =====
+  {name:'Vitamin A',group:'vitamin',label:'Fat-Soluble',amount:'700–900mcg / day',stripe:'var(--accent)',
+   summary:'Immunity, eye health, and cell growth — essential for night vision.',
+   about:'Vitamin A maintains vision (especially in low light), keeps the immune system and skin barrier strong, and directs healthy cell growth. Preformed retinol from animal foods is used directly; plant beta-carotene must be converted, and some people convert poorly. Because it is fat-soluble and stored, both deficiency and excess are possible.',
+   functions:['Forms rhodopsin for night vision','Supports immune defense and mucous barriers','Directs cell growth and differentiation','Maintains healthy skin'],
+   deficiency:['Night blindness and dry eyes','Frequent infections','Dry, rough skin','Impaired growth in children'],
+   sources:['Beef liver','Sweet potato','Carrots','Eggs','Spinach'],
+   tips:['Eat with fat to absorb','Preformed A (liver, eggs) is more reliable than beta-carotene','A little liver weekly is a potent source'],
+   cautions:['Excess preformed A is toxic and harmful in pregnancy','Don’t megadose retinol supplements']},
+  {name:'Vitamin D',group:'vitamin',label:'Fat-Soluble',amount:'600–800 IU (most need 2,000–5,000 IU)',stripe:'var(--accent)',
+   summary:'Bone health, immunity, calcium absorption, and mood regulation.',
+   about:'Vitamin D acts more like a hormone than a vitamin: it regulates calcium absorption for bone health, modulates the immune system, and influences mood. The skin makes it from sunlight, but latitude, season, sunscreen, and indoor lifestyles leave a large share of people deficient. It works together with vitamin K2 and magnesium.',
+   functions:['Drives calcium absorption for strong bones','Modulates immune function','Supports mood and reduces seasonal lows','Influences muscle strength'],
+   deficiency:['Fatigue and low mood','Frequent infections','Bone pain and muscle weakness','Hair loss'],
+   sources:['Sunlight','Sardines','Mackerel','Egg yolks','Cod liver oil'],
+   tips:['Test blood 25-OH vitamin D and dose to reach ~40–60 ng/mL','Take with a fat-containing meal','Pair with K2 and magnesium'],
+   cautions:['Fat-soluble — very high chronic doses can cause toxicity','Get levels tested rather than guessing']},
+  {name:'Vitamin E',group:'vitamin',label:'Fat-Soluble',amount:'15mg / day',stripe:'var(--accent)',
+   summary:'Antioxidant protection for cell membranes, skin, and immune health.',
+   about:'Vitamin E is the body’s main fat-soluble antioxidant, protecting cell membranes and LDL cholesterol from oxidative damage. It supports skin, immune function, and healthy blood vessels. Natural vitamin E is a family of eight compounds; whole-food sources deliver the full spectrum.',
+   functions:['Protects cell membranes from oxidation','Supports immune function','Maintains healthy skin','Helps prevent LDL oxidation'],
+   deficiency:['Nerve and muscle weakness (rare)','Impaired immunity','Vision problems over time'],
+   sources:['Sunflower seeds','Almonds','Avocado','Spinach','Olive oil'],
+   tips:['Get it from whole foods for the full tocopherol/tocotrienol spectrum','Eat with fat for absorption'],
+   cautions:['High-dose synthetic supplements may increase bleeding risk','Avoid megadoses with blood thinners']},
+  {name:'Vitamin K2',group:'vitamin',label:'Fat-Soluble',amount:'90–120mcg / day',stripe:'var(--accent)',
+   summary:'Directs calcium into bones and away from arteries; supports clotting.',
+   about:'Vitamin K2 activates proteins that escort calcium into bones and teeth and keep it out of arteries and soft tissue — making it the crucial partner to vitamin D and calcium. (K1, from greens, mainly supports blood clotting.) K2 comes from fermented foods and animal fats and is scarce in modern diets.',
+   functions:['Activates osteocalcin to bind calcium to bone','Activates MGP to keep calcium out of arteries','Supports healthy blood clotting','Works synergistically with vitamin D3'],
+   deficiency:['Higher risk of arterial calcification','Weaker bones despite adequate calcium','Easy bruising (clotting forms)'],
+   sources:['Natto','Hard cheese (Gouda)','Egg yolks','Butter (grass-fed)','Liver'],
+   tips:['Take alongside vitamin D3 and calcium','MK-7 form lasts longest in the body','Natto is by far the richest source'],
+   cautions:['Can interact with warfarin and other blood thinners — consult a clinician']},
+
+  // ===== WATER-SOLUBLE VITAMINS =====
+  {name:'Vitamin B1 (Thiamine)',group:'vitamin',label:'Water-Soluble',amount:'1.1–1.2mg / day',stripe:'var(--blue)',
+   summary:'Converts carbohydrates into usable energy and supports nerve function.',
+   about:'Thiamine is essential for turning carbohydrates into ATP and for healthy nerve and heart function. Needs rise with high-carb or high-alcohol intake. Because it is water-soluble and not stored, deficiency can develop within weeks of poor intake — classically seen in alcoholism and refined-carb diets.',
+   functions:['Converts carbohydrates into cellular energy','Supports nerve signal transmission','Maintains healthy heart muscle'],
+   deficiency:['Fatigue and irritability','Nerve tingling and numbness','Poor memory and concentration','Beriberi in severe cases'],
+   sources:['Sunflower seeds','Pork','Legumes','Whole grains','Trout'],
+   tips:['Needs increase with high-carb and high-alcohol intake','Whole grains and legumes are steady sources'],
+   cautions:['Excess is excreted in urine; toxicity is very rare']},
+  {name:'Vitamin B2 (Riboflavin)',group:'vitamin',label:'Water-Soluble',amount:'1.1–1.3mg / day',stripe:'var(--blue)',
+   summary:'Drives energy production and antioxidant defense via FAD and FMN.',
+   about:'Riboflavin forms the coenzymes FAD and FMN, which carry electrons through energy metabolism and help regenerate the antioxidant glutathione. It also helps activate vitamins B6 and folate. It is abundant in dairy, eggs, and almonds, but is degraded by light.',
+   functions:['Forms FAD/FMN coenzymes for energy metabolism','Regenerates glutathione antioxidant','Helps activate vitamin B6 and folate','Supports healthy skin and eyes'],
+   deficiency:['Cracks at the corners of the mouth','Sore, inflamed tongue','Sensitivity to light and eye fatigue','Greasy, scaly skin'],
+   sources:['Eggs','Almonds','Dairy','Lean meat','Mushrooms'],
+   tips:['Store foods away from light (riboflavin degrades in sunlight)','Often helpful for some migraine sufferers under guidance'],
+   cautions:['Harmless excess turns urine bright yellow']},
+  {name:'Vitamin B3 (Niacin)',group:'vitamin',label:'Water-Soluble',amount:'14–16mg / day',stripe:'var(--blue)',
+   summary:'Powers energy metabolism, DNA repair, and brain function via NAD+.',
+   about:'Niacin builds NAD+ and NADP+, coenzymes central to energy production, DNA repair, and cellular signaling. The body can also make some niacin from the amino acid tryptophan. High pharmacological doses are sometimes used to improve cholesterol, but they cause flushing and require medical oversight.',
+   functions:['Forms NAD+/NADP+ for energy and DNA repair','Supports brain function and skin health','Helps regulate cholesterol at high doses'],
+   deficiency:['Fatigue and brain fog','Skin rash in sun-exposed areas','Digestive upset','Pellagra in severe cases'],
+   sources:['Chicken breast','Tuna','Mushrooms','Peanuts','Turkey'],
+   tips:['Protein-rich diets supply tryptophan that converts to niacin','Therapeutic doses for cholesterol need medical supervision'],
+   cautions:['High-dose niacin causes flushing and can stress the liver']},
+  {name:'Vitamin B5 (Pantothenic Acid)',group:'vitamin',label:'Water-Soluble',amount:'5mg / day',stripe:'var(--blue)',
+   summary:'Builds coenzyme A for metabolism and hormone production.',
+   about:'Pantothenic acid is the backbone of coenzyme A, which is required to metabolize fats, carbohydrates, and proteins and to synthesize hormones and the neurotransmitter acetylcholine. It is found in nearly all foods ("pantos" means everywhere), so deficiency is rare.',
+   functions:['Forms coenzyme A for energy metabolism','Supports adrenal hormone synthesis','Aids acetylcholine production','Helps maintain healthy skin'],
+   deficiency:['Fatigue and irritability','Numbness or burning feet (rare)','Poor coordination'],
+   sources:['Avocado','Chicken','Sweet potato','Eggs','Mushrooms'],
+   tips:['Widely available in whole foods — deficiency is uncommon'],
+   cautions:['Very safe; excess is excreted']},
+  {name:'Vitamin B6 (Pyridoxine)',group:'vitamin',label:'Water-Soluble',amount:'1.3–2mg / day',stripe:'var(--blue)',
+   summary:'Builds neurotransmitters and red blood cells; supports mood.',
+   about:'Vitamin B6 is a cofactor for more than 100 enzymes, especially those that build neurotransmitters (serotonin, dopamine, GABA), form hemoglobin, and metabolize amino acids and homocysteine. It is important for mood, sleep, and PMS symptoms. Unusually, very high long-term supplemental doses can cause nerve damage.',
+   functions:['Synthesizes serotonin, dopamine, and GABA','Helps form hemoglobin for oxygen transport','Lowers homocysteine with folate and B12','Supports immune function'],
+   deficiency:['Low mood and irritability','PMS symptoms','Cracked lips and sore tongue','Numbness or tingling'],
+   sources:['Turkey','Salmon','Spinach','Bananas','Chickpeas'],
+   tips:['Works with magnesium for mood and PMS support','Get it mostly from food'],
+   cautions:['Chronic high-dose supplements (>100mg) can cause nerve damage']},
+  {name:'Vitamin B7 (Biotin)',group:'vitamin',label:'Water-Soluble',amount:'30mcg / day',stripe:'var(--blue)',
+   summary:'Supports hair, nails, and skin, plus fat and carbohydrate metabolism.',
+   about:'Biotin is a cofactor for carboxylase enzymes that metabolize fats, carbohydrates, and amino acids. It is best known for supporting hair, skin, and nail health. Gut bacteria make some biotin, and it is widespread in food, so deficiency is uncommon — though raw egg whites can block its absorption.',
+   functions:['Cofactor for fat and carbohydrate metabolism','Supports keratin for hair and nails','Maintains healthy skin','Aids blood-sugar regulation'],
+   deficiency:['Thinning hair','Brittle nails','Scaly red skin rash','Fatigue'],
+   sources:['Egg yolks','Salmon','Nuts','Sweet potato','Seeds'],
+   tips:['Cook egg whites — raw whites bind biotin','Whole eggs (yolk + cooked white) are ideal'],
+   cautions:['High-dose biotin can skew some lab tests (e.g., thyroid, troponin) — tell your doctor']},
+  {name:'Vitamin B9 (Folate)',group:'vitamin',label:'Water-Soluble',amount:'400mcg / day',stripe:'var(--blue)',
+   summary:'Essential for DNA synthesis, cell division, and fetal development.',
+   about:'Folate is required to make and repair DNA and to form red blood cells, so demand is highest during rapid growth and pregnancy — where it prevents neural-tube defects. Natural folate comes from greens and legumes; folic acid is the synthetic form in supplements and fortified foods. Some people with MTHFR variants convert it less efficiently.',
+   functions:['Builds and repairs DNA','Forms red blood cells','Prevents neural-tube defects in pregnancy','Lowers homocysteine with B6 and B12'],
+   deficiency:['Fatigue and weakness','Mouth sores and swollen tongue','Megaloblastic anemia','Neural-tube defects in pregnancy'],
+   sources:['Leafy greens','Lentils','Asparagus','Avocado','Beans'],
+   tips:['Critical before and during early pregnancy','Methylfolate is a useful form for some MTHFR variants'],
+   cautions:['High folic acid can mask a B12 deficiency — check both']},
+  {name:'Vitamin B12 (Cobalamin)',group:'vitamin',label:'Water-Soluble',amount:'2.4mcg / day',stripe:'var(--blue)',
+   summary:'Forms red blood cells, maintains nerves, and synthesizes DNA.',
+   about:'Vitamin B12 is needed to make red blood cells, build the myelin that insulates nerves, and synthesize DNA. It is found almost exclusively in animal foods, so vegans and many older adults (who absorb it poorly) are at high risk. Deficiency can cause permanent neurological damage if left untreated.',
+   functions:['Forms healthy red blood cells','Maintains the myelin nerve sheath','Synthesizes DNA','Lowers homocysteine with folate and B6'],
+   deficiency:['Fatigue and weakness','Numbness and tingling','Memory problems and brain fog','Glossitis and mood changes'],
+   sources:['Salmon','Beef','Eggs','Dairy','Clams'],
+   tips:['Vegans and adults over 50 should supplement','Methylcobalamin and adenosylcobalamin are active forms','Sublingual or injection helps if absorption is poor'],
+   cautions:['Deficiency can cause irreversible nerve damage — don’t ignore symptoms']},
+  {name:'Vitamin C',group:'vitamin',label:'Water-Soluble',amount:'75–90mg / day',stripe:'var(--green)',
+   summary:'Builds collagen, supports immunity, and boosts iron absorption.',
+   about:'Vitamin C is a powerful water-soluble antioxidant and an essential cofactor for collagen synthesis — making it vital for skin, blood vessels, gums, and wound healing. It also regenerates other antioxidants, supports immune cells, and dramatically improves absorption of plant iron. Humans cannot make it, so daily intake is required.',
+   functions:['Builds collagen for skin, vessels, and joints','Supports immune cell function','Regenerates vitamin E and other antioxidants','Enhances non-heme iron absorption'],
+   deficiency:['Bleeding or swollen gums','Slow wound healing','Easy bruising','Fatigue (scurvy in severe cases)'],
+   sources:['Bell peppers','Kale','Broccoli','Citrus','Strawberries'],
+   tips:['Eat raw or lightly cooked — heat degrades it','Take with plant iron to boost absorption','Smokers and stressed people need more'],
+   cautions:['Very high doses can cause digestive upset and kidney stones in some']},
+
+  // ===== OTHER NUTRIENTS =====
+  {name:'Omega-3 Fatty Acids',group:'other',label:'Essential Fat',amount:'1.1–1.6g / day (more for EPA/DHA)',stripe:'var(--teal)',
+   summary:'Anti-inflammatory fats vital for brain, heart, and joint health.',
+   about:'Omega-3s — especially EPA and DHA from marine sources — are structural fats in the brain and retina and powerful regulators of inflammation. They support heart rhythm, triglyceride levels, mood, and joint comfort. Plant ALA (flax, chia) converts to EPA/DHA only inefficiently, so fatty fish or algae oil is preferred.',
+   functions:['Build brain and retinal cell membranes','Resolve inflammation','Lower triglycerides and support heart rhythm','Support mood and joint comfort'],
+   deficiency:['Dry skin and brittle hair','Poor concentration and low mood','Joint stiffness','Elevated triglycerides'],
+   sources:['Salmon','Sardines','Mackerel','Chia seeds','Walnuts'],
+   tips:['Prioritize EPA/DHA from fish or algae over plant ALA','Aim for 2 servings of fatty fish weekly','Balance against omega-6 by limiting seed oils'],
+   cautions:['High doses can thin blood — caution with anticoagulants']},
+  {name:'Omega-6 Fatty Acids',group:'other',label:'Essential Fat',amount:'12–17g / day',stripe:'var(--pink)',
+   summary:'Essential fats for skin, hair, and cell function — best kept in balance.',
+   about:'Omega-6 fats are essential for skin barrier integrity, cell signaling, and growth. The issue in modern diets is not deficiency but imbalance: industrial seed oils flood the diet with omega-6, crowding out anti-inflammatory omega-3. A healthier ratio comes from eating more omega-3 and fewer refined oils.',
+   functions:['Maintain the skin barrier','Support cell membrane structure and signaling','Aid normal growth and development'],
+   deficiency:['Dry, scaly skin','Hair loss','Poor wound healing (deficiency is rare)'],
+   sources:['Nuts','Seeds','Poultry','Eggs','Whole grains'],
+   tips:['Most people get plenty — focus on raising omega-3, not omega-6','Limit refined seed/vegetable oils to improve the ratio'],
+   cautions:['Excess from processed oils may promote inflammation when omega-3 is low']},
+  {name:'Choline',group:'other',label:'Other Nutrient',amount:'425–550mg / day',stripe:'var(--blue)',
+   summary:'Supports brain, memory, liver function, and cell membranes.',
+   about:'Choline is needed to make acetylcholine (a memory and muscle-control neurotransmitter) and phosphatidylcholine (a major cell-membrane building block). It is essential for liver fat metabolism and for fetal brain development. The body makes only small amounts, so diet matters — egg yolks and liver are standout sources.',
+   functions:['Builds acetylcholine for memory and muscle control','Forms cell membranes (phosphatidylcholine)','Transports fat out of the liver','Supports fetal brain development'],
+   deficiency:['Fatigue and memory issues','Fatty liver','Muscle damage','Higher needs in pregnancy'],
+   sources:['Egg yolks','Beef liver','Chicken','Fish','Soybeans'],
+   tips:['Two eggs supply a large share of daily needs','Especially important during pregnancy'],
+   cautions:['Very high doses can cause a fishy body odor and low blood pressure']},
+  {name:'Coenzyme Q10 (CoQ10)',group:'other',label:'Other Nutrient',amount:'30–200mg / day (no set RDA)',stripe:'var(--accent)',
+   summary:'Antioxidant that powers cellular energy and protects the heart.',
+   about:'CoQ10 sits in the mitochondria, where it shuttles electrons to generate ATP, and acts as a fat-soluble antioxidant. The heart and other high-energy organs are richest in it. Natural levels decline with age, and statin medications lower it — making supplementation worthwhile for some.',
+   functions:['Drives mitochondrial ATP (energy) production','Acts as a fat-soluble antioxidant','Supports heart muscle function'],
+   deficiency:['Fatigue and low exercise tolerance','Muscle aches (notably on statins)','Declines naturally with age'],
+   sources:['Organ meats','Fatty fish','Beef','Peanuts','Spinach'],
+   tips:['Ubiquinol form absorbs better, especially with age','Take with a fatty meal','Often paired with statin therapy under guidance'],
+   cautions:['May interact with blood thinners — consult a clinician']},
+  {name:'Lutein & Zeaxanthin',group:'other',label:'Other Nutrient',amount:'6–10mg / day (no set RDA)',stripe:'var(--green)',
+   summary:'Eye-protective carotenoids that filter blue light and guard the retina.',
+   about:'Lutein and zeaxanthin are carotenoid antioxidants that concentrate in the macula of the eye, where they filter damaging blue light and neutralize oxidative stress. Higher intake is linked to a lower risk of age-related macular degeneration and cataracts, and may support cognition.',
+   functions:['Filter high-energy blue light in the retina','Protect the macula from oxidative damage','May support memory and processing speed'],
+   deficiency:['Greater susceptibility to macular degeneration','Increased eye strain over time'],
+   sources:['Kale','Spinach','Egg yolks','Corn','Bell peppers'],
+   tips:['Eat with fat for absorption','Egg yolks deliver a highly bioavailable form'],
+   cautions:['Very safe; high intake may harmlessly tint skin']},
+  {name:'Probiotics',group:'other',label:'Other Nutrient',amount:'No set RDA',stripe:'var(--purple)',
+   summary:'Beneficial live bacteria that support gut, digestion, and immunity.',
+   about:'Probiotics are live beneficial microbes that, in adequate amounts, support a balanced gut microbiome. They aid digestion, compete with harmful bacteria, produce vitamins and short-chain fatty acids, and influence immunity and even mood through the gut-brain axis. Different strains do different things.',
+   functions:['Balance the gut microbiome','Aid digestion and nutrient production','Support immune regulation','Influence mood via the gut-brain axis'],
+   deficiency:['Digestive irregularity and bloating','Greater susceptibility after antibiotics','Reduced microbiome diversity'],
+   sources:['Yogurt','Kefir','Sauerkraut','Kimchi','Miso'],
+   tips:['Rotate fermented foods for strain diversity','Pair with prebiotic fiber to feed them','Strain and dose matter — match to the goal'],
+   cautions:['Immunocompromised people should consult a clinician first']},
+  {name:'Prebiotics',group:'other',label:'Other Nutrient',amount:'No set RDA',stripe:'var(--teal)',
+   summary:'Fibers that feed beneficial gut bacteria and improve digestion.',
+   about:'Prebiotics are specialized fibers (like inulin and resistant starch) that humans can’t digest but beneficial gut bacteria ferment into short-chain fatty acids such as butyrate. They nourish the microbiome from within, complementing probiotics, and support gut-barrier and metabolic health.',
+   functions:['Feed beneficial gut bacteria','Produce butyrate to nourish the colon','Support gut-barrier integrity','Aid mineral absorption'],
+   deficiency:['Less microbiome diversity','Sluggish digestion','Reduced short-chain fatty acid production'],
+   sources:['Garlic','Onions','Leeks','Asparagus','Green bananas'],
+   tips:['Increase slowly to avoid gas','Cooked-then-cooled potato/rice adds resistant starch','Combine with probiotics for synergy'],
+   cautions:['Can worsen symptoms in some IBS/SIBO cases — adjust to tolerance']},
+  {name:'Collagen',group:'other',label:'Other Nutrient',amount:'2.5–10g / day (no set RDA)',stripe:'var(--pink)',
+   summary:'Structural protein for skin elasticity, joints, and connective tissue.',
+   about:'Collagen is the most abundant protein in the body, forming the scaffolding of skin, tendons, ligaments, cartilage, and bone. Natural production declines with age. Supplemental collagen peptides supply the specific amino acids (glycine, proline, hydroxyproline) that support skin elasticity and joint comfort; vitamin C is required to build it.',
+   functions:['Provides skin elasticity and hydration','Supports joint cartilage and tendons','Strengthens connective tissue and bone matrix','Supplies glycine for sleep and gut lining'],
+   deficiency:['Reduced skin elasticity and more wrinkles','Joint aches and slower tissue repair','Weaker tendons and ligaments'],
+   sources:['Bone broth','Collagen peptides','Skin-on fish','Chicken skin','Gelatin'],
+   tips:['Pair with vitamin C, which is required to synthesize collagen','Peptides dissolve easily into coffee or smoothies'],
+   cautions:['Not a complete protein — don’t rely on it as your only protein']},
+  {name:'Creatine',group:'other',label:'Other Nutrient',amount:'3–5g / day (no set RDA)',stripe:'var(--blue)',
+   summary:'Fuels rapid energy for muscle performance and brain function.',
+   about:'Creatine helps regenerate ATP for short, intense efforts, making it one of the most evidence-backed supplements for strength and power. Beyond muscle, it supports brain energy and may aid cognition, especially under stress or sleep deprivation. The body makes some and stores it mostly in muscle; meat is the main dietary source.',
+   functions:['Rapidly regenerates ATP for power output','Increases strength and lean muscle gains','Supports brain energy and cognition','Buffers fatigue in intense exercise'],
+   deficiency:['Lower power output and strength','Vegetarians/vegans tend to have lower stores'],
+   sources:['Red meat','Herring','Salmon','Pork','(Supplement: monohydrate)'],
+   tips:['Creatine monohydrate, 3–5g daily, is the gold standard','No need to "load" — consistency matters most','Vegetarians often see the biggest benefit'],
+   cautions:['May cause mild water retention initially','Drink adequate water; safe for healthy kidneys']},
+  {name:'Carnitine',group:'other',label:'Other Nutrient',amount:'500–2,000mg / day (no set RDA)',stripe:'var(--accent)',
+   summary:'Shuttles fatty acids into mitochondria for energy and supports the brain.',
+   about:'L-carnitine transports long-chain fatty acids into the mitochondria, where they are burned for energy — making it central to fat metabolism and endurance. The body produces it from lysine and methionine, and red meat is the richest food source, so intake is lower on plant-based diets.',
+   functions:['Transports fatty acids into mitochondria for fuel','Supports energy production and endurance','Aids recovery and reduces exercise fatigue','Supports brain and heart energy'],
+   deficiency:['Fatigue and low exercise tolerance','Muscle weakness','Lower stores on vegetarian/vegan diets'],
+   sources:['Red meat','Pork','Fish','Chicken','Dairy'],
+   tips:['Acetyl-L-carnitine crosses into the brain for cognitive support','Most useful for those eating little red meat'],
+   cautions:['High doses may cause GI upset; consult a clinician if you have heart/kidney conditions']},
+];
+
+function slugify(name) {
+  return String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+const SLUGS = new Set(NUTRIENTS.map(n => slugify(n.name)));
+const byName = name => NUTRIENTS.find(n => slugify(n.name) === slugify(name));
+const byGroup = g => NUTRIENTS.filter(n => n.group === g);
+
 function showTab(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -181,202 +564,220 @@ function showTab(id) {
   event.target.classList.add('active');
 }
 
-function makeCard(name, amount, desc, note, sources, stripe, label) {
-  return `<div class="card" style="animation-delay:${Math.random()*0.2}s">
-    <div class="card-stripe" style="background:${stripe}"></div>
+// Landing card linking to the nutrient's detail page.
+function makeCard(n, opts) {
+  opts = opts || {};
+  const showSources = opts.sources !== false;
+  return `<a class="card" href="/overview/${slugify(n.name)}" style="animation-delay:${(Math.random()*0.2).toFixed(2)}s">
+    <div class="card-stripe" style="background:${n.stripe}"></div>
     <div class="card-inner">
-      ${label?`<div class="card-label">${label}</div>`:''}
-      <div class="card-name">${name}</div>
-      ${amount?`<div class="card-amount">${amount}</div>`:''}
-      <div class="card-desc">${desc}</div>
-      ${note?`<div class="card-note">${note}</div>`:''}
-      ${sources&&sources.length?`<div class="card-source">${sources.map(s=>`<span class="pill">${s}</span>`).join('')}</div>`:''}
+      ${n.label?`<div class="card-label">${n.label}</div>`:''}
+      <div class="card-name">${n.name}</div>
+      ${n.amount?`<div class="card-amount">${n.amount}</div>`:''}
+      <div class="card-desc">${n.summary}</div>
+      ${showSources&&n.sources&&n.sources.length?`<div class="card-source">${n.sources.slice(0,4).map(s=>`<span class="pill">${s}</span>`).join('')}</div>`:''}
+      <div class="card-more">Full breakdown <span>&rarr;</span></div>
     </div>
-  </div>`;
+  </a>`;
 }
 
-function makeTable(headers, rows) {
-  return `<thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${i===1?'amount':i===2?'fn':''}">${c}</td>`).join('')}</tr>`).join('')}</tbody>`;
+// Reference table; pass linkCol=true to deep-link the first column to detail pages.
+function makeTable(headers, rows, linkCol) {
+  const cell = (c, i) => {
+    if (linkCol && i === 0 && SLUGS.has(slugify(c))) {
+      return `<td><a class="t-link" href="/overview/${slugify(c)}">${c}</a></td>`;
+    }
+    return `<td class="${i===1?'amount':i===2?'fn':''}">${c}</td>`;
+  };
+  return `<thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(cell).join('')}</tr>`).join('')}</tbody>`;
 }
 
-// MACROS
-document.getElementById('macroCards').innerHTML = [
-  ['Carbohydrates','20–50g (keto) / 225–300g (standard)','Primary energy source for brain and body. Reduced on keto forces fat burning.','Keto range promotes ketosis and metabolic flexibility.',['Rice','Oats','Vegetables','Fruit'],'var(--accent)','Macronutrient'],
-  ['Protein','90–120g / day','Builds and repairs muscle tissue, enzymes, and hormones. Essential for recovery.','Aim for 0.7–1g per lb of lean body mass.',['Meat','Eggs','Fish','Legumes'],'var(--blue)','Macronutrient'],
-  ['Fats','120–150g / day','Supports cell structure, hormone production, and fat-soluble vitamin absorption.','On keto, fats replace carbs as primary fuel.',['Avocado','Olive oil','Nuts','Fatty fish'],'var(--green)','Macronutrient'],
-  ['Sugar','0g (target)','Excess sugar drives insulin resistance, inflammation, and metabolic dysfunction.','Eliminate added sugars; natural fruit sugars in moderation.',[],'var(--red)','Target'],
-].map(a=>makeCard(...a)).join('');
+function sectionList(title, icon, items, cls) {
+  if (!items || !items.length) return '';
+  return `<div class="detail-section-label"><span class="label-icon">${icon}</span>${title}</div>
+    <ul class="detail-list ${cls}">${items.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+}
 
-document.getElementById('mineralCards').innerHTML = [
-  ['Magnesium','400mg / day','Supports energy production, sleep regulation, muscle function, and bone health. Involved in 300+ enzyme reactions.','Deficiency causes cramps, insomnia, anxiety. Glycinate form absorbs best.',['Pumpkin seeds','Spinach','Dark chocolate','Almonds'],'var(--blue)','Mineral'],
-  ['Potassium','4,700mg / day','Regulates blood pressure, electrolyte balance, nerve signals, and muscle contractions.','97% of Americans are below adequate intake.',['Bananas','Avocado','Sweet potato','Salmon'],'var(--green)','Mineral'],
-  ['Sodium','3,000–5,000mg / day','Essential for hydration, nerve function, muscle contractions, and digestion.','Athletes and those on keto need higher sodium due to increased excretion.',['Sea salt','Broth','Pickles','Celery'],'var(--teal)','Mineral'],
-  ['Copper','~900mcg / day','Important for collagen formation, iron metabolism, and antioxidant defense.','Excess zinc depletes copper — balance both.',['Liver','Oysters','Dark chocolate','Nuts'],'var(--accent)','Mineral'],
-  ['Selenium','55mcg / day','Supports immune function, thyroid hormone conversion, and antioxidant protection.','2 Brazil nuts daily meets requirements. Do not over-supplement.',['Brazil nuts','Tuna','Eggs','Chicken'],'var(--purple)','Mineral'],
-  ['Chromium','35mcg / day','Helps regulate blood sugar levels and improves insulin sensitivity.','Particularly beneficial for blood sugar management.',['Broccoli','Whole grains','Lean beef','Green beans'],'var(--pink)','Mineral'],
-  ['Iodine','8–14mg / day','Crucial for thyroid hormone production and metabolic regulation.','Deficiency is the leading preventable cause of brain damage globally.',['Iodized salt','Seaweed','Seafood','Dairy'],'var(--accent)','Mineral'],
-  ['Iron','8–18mg / day','Necessary for oxygen transport in the blood via hemoglobin.','Most common deficiency worldwide. Heme iron from meat absorbs best.',['Red meat','Liver','Spinach','Lentils'],'var(--red)','Mineral'],
-  ['Manganese','2.3mg / day','Supports glucose metabolism, bone development, and antioxidant defenses.','Works alongside SOD as a mitochondrial antioxidant.',['Whole grains','Nuts','Leafy greens','Tea'],'var(--green)','Mineral'],
-  ['Calcium','1,000mg / day','Essential for muscle contraction, nerve transmission, and bone strength.','Requires vitamin D and K2 for proper absorption and bone deposition.',['Dairy','Sardines','Kale','Fortified milks'],'var(--blue)','Mineral'],
-  ['Zinc','10–12mg / day','Key for immune function, wound healing, enzyme activity, and testosterone.','Phytates in grains reduce absorption. Meat sources absorb 2-3x better.',['Oysters','Beef','Pumpkin seeds','Chickpeas'],'var(--purple)','Mineral'],
-].map(a=>makeCard(...a)).join('');
+function renderDetail(item) {
+  document.title = `${item.name} | Vitamins & Minerals | NutriMind`;
+  document.querySelector('.tabs').style.display = 'none';
+  document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
 
-document.getElementById('fiberCards').innerHTML = [
-  ['Fiber','15–25g / day','Aids digestion, regulates blood sugar, feeds beneficial gut bacteria, and lowers cholesterol.','Increase slowly to avoid gas. Psyllium husk is an effective supplement.',['Vegetables','Legumes','Chia seeds','Oats'],'var(--green)','Fiber'],
-  ['Water','12–14 cups / day','Maintains hydration, regulates temperature, supports digestion, and flushes toxins.','Add electrolytes (sodium, potassium, magnesium) for optimal hydration.',['Plain water','Electrolyte water','Herbal teas','Coconut water'],'var(--blue)','Hydration'],
-].map(a=>makeCard(...a)).join('');
+  const related = NUTRIENTS.filter(n => n.group === item.group && n.name !== item.name).slice(0, 6);
+  const el = document.createElement('div');
+  el.className = 'detail';
+  el.innerHTML = `
+    <a class="detail-back" href="/overview">&larr; All nutrients</a>
+    <article class="detail-card" style="border-top-color:${item.stripe}">
+      <div class="detail-meta">
+        ${item.label?`<span class="detail-tag" style="color:${item.stripe};border-color:${item.stripe}">${item.label}</span>`:''}
+      </div>
+      <h1 class="detail-name">${item.name}</h1>
+      ${item.amount?`<div class="detail-amount">${item.amount} <span>recommended</span></div>`:''}
+      <p class="detail-summary">${item.summary}</p>
+      <p class="detail-about">${item.about}</p>
+      ${sectionList('Key functions', '★', item.functions, 'functions')}
+      ${sectionList('Signs you may be low', '⚠', item.deficiency, 'deficiency')}
+      ${item.sources&&item.sources.length?`<div class="detail-section-label"><span class="label-icon">◆</span>Best food sources</div>
+        <div class="detail-sources">${item.sources.map(s=>`<span class="pill">${s}</span>`).join('')}</div>`:''}
+      ${sectionList('Tips for absorption & timing', '→', item.tips, 'tips')}
+      ${sectionList('Cautions', '!', item.cautions, 'cautions')}
+      ${related.length?`<div class="detail-section-label"><span class="label-icon">↗</span>Related nutrients</div>
+        <div class="related-grid">${related.map(r=>`<a class="related-item" href="/overview/${slugify(r.name)}">${r.name}</a>`).join('')}</div>`:''}
+      <p class="detail-disclaimer">Educational reference only. Daily amounts are general adult guidelines (RDA/AI) and vary by age, sex, pregnancy, and health status. This is not medical advice — consult a qualified clinician before changing supplementation, especially if you take medications, are pregnant or nursing, or have a chronic condition.</p>
+    </article>`;
+  document.body.appendChild(el);
+}
 
-// VITAMINS
-document.getElementById('vitaminCards').innerHTML = [
-  ['Vitamin A','700–900mcg','Immunity, eye health, and cell growth. Essential for night vision and immune defense.','Preformed A from liver is readily absorbed; beta-carotene requires conversion.',['Beef liver','Sweet potato','Carrots','Eggs'],'var(--accent)','Fat-Soluble'],
-  ['Vitamin B1 (Thiamine)','1.1–1.2mg','Energy metabolism and nerve function. Converts carbohydrates into usable energy.','',['Sunflower seeds','Whole grains','Legumes','Pork'],'var(--blue)','Water-Soluble'],
-  ['Vitamin B2 (Riboflavin)','1.1–1.3mg','Energy production and antioxidant function. Required for FAD and FMN coenzymes.','',['Eggs','Almonds','Dairy','Lean meat'],'var(--blue)','Water-Soluble'],
-  ['Vitamin B3 (Niacin)','14–16mg','Energy metabolism, brain function, and DNA repair.','',['Chicken breast','Tuna','Mushrooms','Peanuts'],'var(--blue)','Water-Soluble'],
-  ['Vitamin B5 (Pantothenic Acid)','5mg','Hormone production, metabolism, and synthesis of CoA (coenzyme A).','',['Avocado','Chicken','Sweet potato','Eggs'],'var(--blue)','Water-Soluble'],
-  ['Vitamin B6 (Pyridoxine)','1.3–2mg','Neurotransmitter synthesis (serotonin, dopamine), red blood cell production.','',['Turkey','Salmon','Spinach','Bananas'],'var(--blue)','Water-Soluble'],
-  ['Vitamin B7 (Biotin)','30mcg','Hair and nail health, metabolism of fats, carbohydrates, and proteins.','Raw egg whites block biotin absorption.',['Egg yolks','Salmon','Nuts','Sweet potato'],'var(--blue)','Water-Soluble'],
-  ['Vitamin B9 (Folate)','400mcg','DNA synthesis and repair, cell division, and neural tube development in pregnancy.','Critical in first trimester. MTHFR variants affect metabolism.',['Leafy greens','Lentils','Asparagus','Avocado'],'var(--blue)','Water-Soluble'],
-  ['Vitamin B12 (Cobalamin)','2.4mcg','Red blood cell formation, nerve function, and DNA synthesis.','Vegans must supplement. Deficiency causes irreversible neurological damage.',['Salmon','Beef','Eggs','Dairy'],'var(--blue)','Water-Soluble'],
-  ['Vitamin C','75–90mg','Collagen production, immune support, antioxidant protection, and iron absorption.','Smokers need 35mg more. Stress rapidly depletes stores.',['Kale','Broccoli','Bell peppers','Citrus'],'var(--green)','Water-Soluble'],
-  ['Vitamin D','600–800 IU (15–20mcg)','Bone health, immunity, calcium absorption, and mood regulation.','Most people need 2,000–5,000 IU. Get blood levels tested.',['Sardines','Mackerel','Egg yolks','Sun exposure'],'var(--accent)','Fat-Soluble'],
-  ['Vitamin E','15mg','Antioxidant protection, skin and immune health, and cell membrane integrity.','',['Avocado','Almonds','Sunflower seeds','Spinach'],'var(--accent)','Fat-Soluble'],
-  ['Vitamin K2','90–120mcg','Bone health, prevents arterial calcification, directs calcium to bones not arteries.','Works synergistically with D3 and magnesium.',['Natto','Hard cheese','Gouda','Egg yolks'],'var(--accent)','Fat-Soluble'],
-].map(a=>makeCard(...a)).join('');
+function renderNotFound(slug) {
+  document.querySelector('.tabs').style.display = 'none';
+  document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+  const el = document.createElement('div');
+  el.className = 'detail';
+  el.innerHTML = `<a class="detail-back" href="/overview">&larr; All nutrients</a>
+    <article class="detail-card"><h1 class="detail-name">Not found</h1>
+    <p class="detail-summary">No nutrient page found for "${slug}".</p></article>`;
+  document.body.appendChild(el);
+}
 
-// KETO TABLE
-document.getElementById('ketoTable').innerHTML = makeTable(
-  ['Vitamin','Intake','Keto-Friendly Source','Notes'],
-  [
-    ['Vitamin A','700–900 mcg','Beef liver','Extremely rich in preformed vitamin A'],
-    ['Vitamin B1','1.1–1.2 mg','Sunflower seeds','Great in moderation'],
-    ['Vitamin B2','1.1–1.3 mg','Eggs / Almonds','Both are solid keto staples'],
-    ['Vitamin B3','14–16 mg','Chicken breast / Tuna','Lean proteins, zero carbs'],
-    ['Vitamin B5','5 mg','Avocado','Excellent fat source'],
-    ['Vitamin B6','1.3–2 mg','Turkey / Salmon / Spinach','Low-carb and rich in B6'],
-    ['Vitamin B7','30 mcg','Egg yolks','Keto classic'],
-    ['Vitamin B12','2.4 mcg','Salmon / Beef / Eggs','High in fat and B12'],
-    ['Vitamin C','75–90 mg','Kale / Broccoli / Bell pepper (small amount)','Lower-carb veggies with vitamin C'],
-    ['Vitamin D','600–800 IU','Sardines / Mackerel / Egg yolks','Naturally high in D and fat'],
-    ['Vitamin E','15 mg','Avocado / Almonds / Sunflower seeds','Healthy fat sources'],
-    ['Vitamin K2','90–120 mcg','Natto / Hard cheeses (Gouda)','Excellent for K2 and keto-safe'],
-  ]
-);
+function renderLanding() {
+  document.getElementById('macroCards').innerHTML = byGroup('macro').map(n => makeCard(n)).join('');
+  document.getElementById('mineralCards').innerHTML = byGroup('mineral').map(n => makeCard(n)).join('');
+  document.getElementById('fiberCards').innerHTML = byGroup('fiber').map(n => makeCard(n)).join('');
+  document.getElementById('vitaminCards').innerHTML = byGroup('vitamin').map(n => makeCard(n)).join('');
+  document.getElementById('otherCards').innerHTML = byGroup('other').map(n => makeCard(n)).join('');
+  document.getElementById('mineralRoleCards').innerHTML = byGroup('mineral').map(n => makeCard(n, {sources:false})).join('');
 
-// HEALTH TABLES
-document.getElementById('mineralTable').innerHTML = makeTable(
-  ['Nutrient','Daily Requirement','Function / Benefit'],
-  [
-    ['Protein','56g','Muscle repair, enzymes, hormones'],
-    ['Carbohydrates','225g','Energy source, brain function'],
-    ['Fats','44g','Cell function, hormone production'],
-    ['Potassium','4,700mg','Nerve signals, muscle contractions, fluid balance'],
-    ['Zinc','6mg','Immune function, wound healing, DNA synthesis'],
-    ['Magnesium','400mg','Muscle & nerve function, energy production'],
-    ['Sodium','1,500mg','Fluid balance, nerve function, muscle contractions'],
-    ['Iron','14mg','Oxygen transport, energy production'],
-    ['Fiber','38g','Digestive health, regulates blood sugar'],
-    ['Water','13 cups','Hydration, temperature regulation, digestion'],
-  ]
-);
+  // KETO TABLE (reference; names not linked due to short-form naming)
+  document.getElementById('ketoTable').innerHTML = makeTable(
+    ['Vitamin','Intake','Keto-Friendly Source','Notes'],
+    [
+      ['Vitamin A','700–900 mcg','Beef liver','Extremely rich in preformed vitamin A'],
+      ['Vitamin B1','1.1–1.2 mg','Sunflower seeds','Great in moderation'],
+      ['Vitamin B2','1.1–1.3 mg','Eggs / Almonds','Both are solid keto staples'],
+      ['Vitamin B3','14–16 mg','Chicken breast / Tuna','Lean proteins, zero carbs'],
+      ['Vitamin B5','5 mg','Avocado','Excellent fat source'],
+      ['Vitamin B6','1.3–2 mg','Turkey / Salmon / Spinach','Low-carb and rich in B6'],
+      ['Vitamin B7','30 mcg','Egg yolks','Keto classic'],
+      ['Vitamin B12','2.4 mcg','Salmon / Beef / Eggs','High in fat and B12'],
+      ['Vitamin C','75–90 mg','Kale / Broccoli / Bell pepper (small amount)','Lower-carb veggies with vitamin C'],
+      ['Vitamin D','600–800 IU','Sardines / Mackerel / Egg yolks','Naturally high in D and fat'],
+      ['Vitamin E','15 mg','Avocado / Almonds / Sunflower seeds','Healthy fat sources'],
+      ['Vitamin K2','90–120 mcg','Natto / Hard cheeses (Gouda)','Excellent for K2 and keto-safe'],
+    ]
+  );
 
-document.getElementById('vitaminTable').innerHTML = makeTable(
-  ['Vitamin','Daily Requirement','Function / Benefit'],
-  [
-    ['Vitamin A','900mcg (men), 700mcg (women)','Immunity, eye health, cell growth'],
-    ['Vitamin B1 (Thiamine)','1.2mg (men), 1.1mg (women)','Energy metabolism, nerve function'],
-    ['Vitamin B2 (Riboflavin)','1.3mg (men), 1.1mg (women)','Energy production, antioxidant function'],
-    ['Vitamin B3 (Niacin)','16mg (men), 14mg (women)','Energy metabolism, brain function'],
-    ['Vitamin B5 (Pantothenic Acid)','5mg','Hormone production, metabolism'],
-    ['Vitamin B6 (Pyridoxine)','1.7mg (men), 1.5mg (women)','Neurotransmitters, red blood cell production'],
-    ['Vitamin B7 (Biotin)','30mcg','Hair & nail health, metabolism'],
-    ['Vitamin B12 (Cobalamin)','2.4mcg','Red blood cell formation, nerve function'],
-    ['Vitamin C','90mg (men), 75mg (women)','Collagen production, immune support, antioxidant'],
-    ['Vitamin D','600 IU (15mcg)','Bone health, immunity, calcium absorption'],
-    ['Vitamin E','15mg','Antioxidant, skin & immune health'],
-    ['Vitamin K2','120mcg (men), 90mcg (women)','Bone health, prevents arterial calcification'],
-  ]
-);
+  document.getElementById('mineralTable').innerHTML = makeTable(
+    ['Nutrient','Daily Requirement','Function / Benefit'],
+    [
+      ['Protein','56g','Muscle repair, enzymes, hormones'],
+      ['Carbohydrates','225g','Energy source, brain function'],
+      ['Fats','44g','Cell function, hormone production'],
+      ['Potassium','4,700mg','Nerve signals, muscle contractions, fluid balance'],
+      ['Zinc','6mg','Immune function, wound healing, DNA synthesis'],
+      ['Magnesium','400mg','Muscle & nerve function, energy production'],
+      ['Sodium','1,500mg','Fluid balance, nerve function, muscle contractions'],
+      ['Iron','14mg','Oxygen transport, energy production'],
+      ['Fiber','38g','Digestive health, regulates blood sugar'],
+      ['Water','13 cups','Hydration, temperature regulation, digestion'],
+    ], true
+  );
 
-document.getElementById('otherTable').innerHTML = makeTable(
-  ['Nutrient','Daily Requirement','Function / Benefit'],
-  [
-    ['Omega-3 Fatty Acids','1.6g (men), 1.1g (women)','Brain health, heart health, anti-inflammatory'],
-    ['Omega-6 Fatty Acids','17g (men), 12g (women)','Cell function, skin & hair health'],
-    ['Choline','550mg (men), 425mg (women)','Brain development, liver function, metabolism'],
-    ['Coenzyme Q10 (CoQ10)','30–200mg (no set RDA)','Antioxidant, heart health, energy production'],
-    ['Lutein & Zeaxanthin','6–10mg (no set RDA)','Eye health, reduces risk of macular degeneration'],
-    ['Probiotics','No set RDA','Gut health, digestion, immune support'],
-    ['Prebiotics','No set RDA','Feed good gut bacteria, improve digestion'],
-    ['Collagen','2.5–10g (no set RDA)','Skin health, joint support, muscle recovery'],
-    ['Creatine','3–5g (no set RDA)','Energy production, muscle performance'],
-    ['Carnitine','500–2,000mg (no set RDA)','Fat metabolism, brain function, energy production'],
-  ]
-);
+  document.getElementById('vitaminTable').innerHTML = makeTable(
+    ['Vitamin','Daily Requirement','Function / Benefit'],
+    [
+      ['Vitamin A','900mcg (men), 700mcg (women)','Immunity, eye health, cell growth'],
+      ['Vitamin B1 (Thiamine)','1.2mg (men), 1.1mg (women)','Energy metabolism, nerve function'],
+      ['Vitamin B2 (Riboflavin)','1.3mg (men), 1.1mg (women)','Energy production, antioxidant function'],
+      ['Vitamin B3 (Niacin)','16mg (men), 14mg (women)','Energy metabolism, brain function'],
+      ['Vitamin B5 (Pantothenic Acid)','5mg','Hormone production, metabolism'],
+      ['Vitamin B6 (Pyridoxine)','1.7mg (men), 1.5mg (women)','Neurotransmitters, red blood cell production'],
+      ['Vitamin B7 (Biotin)','30mcg','Hair & nail health, metabolism'],
+      ['Vitamin B12 (Cobalamin)','2.4mcg','Red blood cell formation, nerve function'],
+      ['Vitamin C','90mg (men), 75mg (women)','Collagen production, immune support, antioxidant'],
+      ['Vitamin D','600 IU (15mcg)','Bone health, immunity, calcium absorption'],
+      ['Vitamin E','15mg','Antioxidant, skin & immune health'],
+      ['Vitamin K2','120mcg (men), 90mcg (women)','Bone health, prevents arterial calcification'],
+    ], true
+  );
 
-// WATER-SOLUBLE
-const wsData = [
-  {name:'Vitamin C',alias:'Ascorbic Acid',fn:'Collagen synthesis, immune support, antioxidant'},
-  {name:'Vitamin B1',alias:'Thiamine',fn:'Energy metabolism, nerve function'},
-  {name:'Vitamin B2',alias:'Riboflavin',fn:'Energy production, antioxidant (FAD, FMN)'},
-  {name:'Vitamin B3',alias:'Niacin',fn:'Energy metabolism, DNA repair, brain function'},
-  {name:'Vitamin B5',alias:'Pantothenic Acid',fn:'Coenzyme A synthesis, hormone production'},
-  {name:'Vitamin B6',alias:'Pyridoxine',fn:'Neurotransmitter synthesis, red blood cells'},
-  {name:'Vitamin B7',alias:'Biotin',fn:'Hair, nails, fat & carbohydrate metabolism'},
-  {name:'Vitamin B9',alias:'Folate / Folic Acid',fn:'DNA synthesis, cell division, neural tube development'},
-  {name:'Vitamin B12',alias:'Cobalamin',fn:'Nerve function, red blood cells, DNA synthesis'},
-];
-document.getElementById('wsGrid').innerHTML = wsData.map(w=>`
-  <div class="ws-card">
-    <div class="ws-name">${w.name}</div>
-    <div class="ws-alias">${w.alias}</div>
-    <div class="ws-fn">${w.fn}</div>
-  </div>`).join('');
+  document.getElementById('otherTable').innerHTML = makeTable(
+    ['Nutrient','Daily Requirement','Function / Benefit'],
+    [
+      ['Omega-3 Fatty Acids','1.6g (men), 1.1g (women)','Brain health, heart health, anti-inflammatory'],
+      ['Omega-6 Fatty Acids','17g (men), 12g (women)','Cell function, skin & hair health'],
+      ['Choline','550mg (men), 425mg (women)','Brain development, liver function, metabolism'],
+      ['Coenzyme Q10 (CoQ10)','30–200mg (no set RDA)','Antioxidant, heart health, energy production'],
+      ['Lutein & Zeaxanthin','6–10mg (no set RDA)','Eye health, reduces risk of macular degeneration'],
+      ['Probiotics','No set RDA','Gut health, digestion, immune support'],
+      ['Prebiotics','No set RDA','Feed good gut bacteria, improve digestion'],
+      ['Collagen','2.5–10g (no set RDA)','Skin health, joint support, muscle recovery'],
+      ['Creatine','3–5g (no set RDA)','Energy production, muscle performance'],
+      ['Carnitine','500–2,000mg (no set RDA)','Fat metabolism, brain function, energy production'],
+    ], true
+  );
 
-// SYMPTOM GUIDE
-const symptoms = [
-  {s:'Cracked Lips',d:['Iron','Vitamin C']},
-  {s:'Dandruff',d:['Biotin (B7)']},
-  {s:'Thinning Hair',d:['Iron','Vitamin C']},
-  {s:'Acne / Feeling Weak',d:['Zinc']},
-  {s:'Greasy Skin',d:['Zinc','Vitamin B2','Vitamin B6']},
-  {s:'Cold Hands / Feet',d:['Iron (anemia)']},
-  {s:'Psoriasis',d:['Zinc','Vitamin D']},
-  {s:'Itchy / Dry Skin',d:['Omega-6']},
-  {s:'Headaches',d:['Sodium','Magnesium','Vitamin B6','Vitamin B12']},
-  {s:'Bad Breath / Brittle Nails / Low Energy',d:['Iron']},
-  {s:'Mouth Ulcers',d:['Iron','Folic Acid','Vitamin B6','Vitamin B12']},
-  {s:'PMS',d:['Magnesium']},
-  {s:'Low Libido',d:['Vitamin D']},
-  {s:'Depression / Anxiety',d:['Magnesium','Calcium','B-vitamins','Vitamin D']},
-  {s:'Stress',d:['Magnesium','Zinc']},
-  {s:'Joint Pain',d:['Magnesium','Potassium','Sodium','Vitamin B1','Vitamin D']},
-  {s:"Can't Sleep",d:['Magnesium']},
-  {s:'Feeling Tired',d:['Potassium']},
-];
-const vitamins = new Set(['Vitamin C','Vitamin D','Biotin (B7)','Vitamin B2','Vitamin B6','Vitamin B12','B-vitamins','Folic Acid','Vitamin B1','Calcium']);
-const minerals = new Set(['Iron','Iron (anemia)','Zinc','Magnesium','Sodium','Potassium']);
-document.getElementById('symGrid').innerHTML = symptoms.map(s=>`
-  <div class="sym-card">
-    <div class="sym-symptom">${s.s}</div>
-    <div class="sym-arrow">Possible deficiency:</div>
-    <div class="def-pills">
-      ${s.d.map(d=>`<span class="def-pill ${vitamins.has(d)?'def-vitamin':minerals.has(d)?'def-mineral':'def-other'}">${d}</span>`).join('')}
-    </div>
-  </div>`).join('');
+  // WATER-SOLUBLE
+  const wsData = [
+    {name:'Vitamin C',alias:'Ascorbic Acid',fn:'Collagen synthesis, immune support, antioxidant'},
+    {name:'Vitamin B1',alias:'Thiamine',fn:'Energy metabolism, nerve function'},
+    {name:'Vitamin B2',alias:'Riboflavin',fn:'Energy production, antioxidant (FAD, FMN)'},
+    {name:'Vitamin B3',alias:'Niacin',fn:'Energy metabolism, DNA repair, brain function'},
+    {name:'Vitamin B5',alias:'Pantothenic Acid',fn:'Coenzyme A synthesis, hormone production'},
+    {name:'Vitamin B6',alias:'Pyridoxine',fn:'Neurotransmitter synthesis, red blood cells'},
+    {name:'Vitamin B7',alias:'Biotin',fn:'Hair, nails, fat & carbohydrate metabolism'},
+    {name:'Vitamin B9',alias:'Folate / Folic Acid',fn:'DNA synthesis, cell division, neural tube development'},
+    {name:'Vitamin B12',alias:'Cobalamin',fn:'Nerve function, red blood cells, DNA synthesis'},
+  ];
+  document.getElementById('wsGrid').innerHTML = wsData.map(w=>`
+    <div class="ws-card">
+      <div class="ws-name">${w.name}</div>
+      <div class="ws-alias">${w.alias}</div>
+      <div class="ws-fn">${w.fn}</div>
+    </div>`).join('');
 
-document.getElementById('mineralRoleCards').innerHTML = [
-  ['Magnesium','400mg','Supports energy production, sleep regulation, and bone health.','',[],`var(--blue)`,'Mineral'],
-  ['Potassium','4,700mg','Helps regulate blood pressure and electrolyte balance.','',[],`var(--green)`,'Mineral'],
-  ['Sodium','3,000–5,000mg','Essential for hydration, nerve function, and digestion.','',[],`var(--teal)`,'Mineral'],
-  ['Copper','~900mcg','Important for collagen formation and iron metabolism.','',[],`var(--accent)`,'Mineral'],
-  ['Selenium','55mcg','Supports immune function and acts as an antioxidant.','',[],`var(--purple)`,'Mineral'],
-  ['Chromium','35mcg','Helps regulate blood sugar levels and insulin sensitivity.','',[],`var(--pink)`,'Mineral'],
-  ['Iodine','8–14mg','Crucial for thyroid hormone production and metabolic regulation.','',[],`var(--accent)`,'Mineral'],
-  ['Iron','8–18mg','Necessary for oxygen transport in the blood via hemoglobin.','',[],`var(--red)`,'Mineral'],
-  ['Manganese','2.3mg','Supports glucose metabolism, bone development, and antioxidant defenses.','',[],`var(--green)`,'Mineral'],
-  ['Calcium','1,000mg','Essential for muscle contraction, nerve transmission, and bone strength.','',[],`var(--blue)`,'Mineral'],
-  ['Zinc','10–12mg','Key for immune function, wound healing, and enzyme activity.','',[],`var(--purple)`,'Mineral'],
-].map(a=>makeCard(...a)).join('');
+  // SYMPTOM GUIDE
+  const symptoms = [
+    {s:'Cracked Lips',d:['Iron','Vitamin C']},
+    {s:'Dandruff',d:['Biotin (B7)']},
+    {s:'Thinning Hair',d:['Iron','Vitamin C']},
+    {s:'Acne / Feeling Weak',d:['Zinc']},
+    {s:'Greasy Skin',d:['Zinc','Vitamin B2','Vitamin B6']},
+    {s:'Cold Hands / Feet',d:['Iron (anemia)']},
+    {s:'Psoriasis',d:['Zinc','Vitamin D']},
+    {s:'Itchy / Dry Skin',d:['Omega-6']},
+    {s:'Headaches',d:['Sodium','Magnesium','Vitamin B6','Vitamin B12']},
+    {s:'Bad Breath / Brittle Nails / Low Energy',d:['Iron']},
+    {s:'Mouth Ulcers',d:['Iron','Folic Acid','Vitamin B6','Vitamin B12']},
+    {s:'PMS',d:['Magnesium']},
+    {s:'Low Libido',d:['Vitamin D']},
+    {s:'Depression / Anxiety',d:['Magnesium','Calcium','B-vitamins','Vitamin D']},
+    {s:'Stress',d:['Magnesium','Zinc']},
+    {s:'Joint Pain',d:['Magnesium','Potassium','Sodium','Vitamin B1','Vitamin D']},
+    {s:"Can't Sleep",d:['Magnesium']},
+    {s:'Feeling Tired',d:['Potassium']},
+  ];
+  const vitaminSet = new Set(['Vitamin C','Vitamin D','Biotin (B7)','Vitamin B2','Vitamin B6','Vitamin B12','B-vitamins','Folic Acid','Vitamin B1','Calcium']);
+  const mineralSet = new Set(['Iron','Iron (anemia)','Zinc','Magnesium','Sodium','Potassium']);
+  document.getElementById('symGrid').innerHTML = symptoms.map(s=>`
+    <div class="sym-card">
+      <div class="sym-symptom">${s.s}</div>
+      <div class="sym-arrow">Possible deficiency:</div>
+      <div class="def-pills">
+        ${s.d.map(d=>`<span class="def-pill ${vitaminSet.has(d)?'def-vitamin':mineralSet.has(d)?'def-mineral':'def-other'}">${d}</span>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// Route: /overview/<slug> renders a single nutrient; /overview renders the landing tabs.
+const pathMatch = window.location.pathname.match(/^\/overview\/(.+?)\/?$/);
+if (pathMatch) {
+  const slug = decodeURIComponent(pathMatch[1]).toLowerCase();
+  const item = NUTRIENTS.find(n => slugify(n.name) === slug);
+  if (item) renderDetail(item); else renderNotFound(slug);
+} else {
+  renderLanding();
+}
 </script>
 </body>
 </html>

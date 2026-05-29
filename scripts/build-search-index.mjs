@@ -82,12 +82,12 @@ const CARD_PAGES = [
   { file: "diets.html", context: "Diet Types", vars: ["DIETS"], link: (s) => `/diets#i-${s}` },
   { file: "foodtypes.html", context: "Food Categories", vars: ["FOODS"], link: (s) => `/foodtypes#i-${s}` },
   { file: "adaptogens.html", context: "Adaptogens", vars: ["ADAPTOGENS"], link: (s) => `/adaptogens#i-${s}` },
+  { file: "overview.html", context: "Vitamins & Minerals", vars: ["NUTRIENTS"], link: (s) => `/overview/${s}` },
 ];
 
 // Content pages: indexed whole-page (no per-item structure to deep-link into).
 const CONTENT_PAGES = [
   { file: "nutrition.html", path: "/nutrition", title: "Nutrition Checklist" },
-  { file: "overview.html", path: "/overview", title: "Vitamins & Minerals" },
   { file: "howto.html", path: "/howto", title: "How-To" },
   { file: "seasonal-rotation.html", path: "/seasonal-rotation", title: "Seasonal Rotation" },
   { file: "parasite-detox.html", path: "/parasite-detox", title: "Parasite Detox" },
