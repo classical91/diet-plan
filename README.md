@@ -23,8 +23,8 @@ or scrolls to and highlights the matching card (`/deficiencies#i-vitamin-d`).
 Results are served from `search-index.json`, generated from each card page's
 data by `npm run build:search`. **Re-run it whenever you edit a card page's
 data array** (the `DATA` / `FOODS` / `DIETS` / `ADAPTOGENS` lists in
-benefits, deficiencies, allergies, diets, foodtypes, adaptogens) so the search
-stays in sync.
+benefits, deficiencies, allergies, diets, foodtypes, adaptogens,
+functional-foods) so the search stays in sync.
 
 ## Notes
 

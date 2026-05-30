@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Functional Foods | NutriMind</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/nav.css">
+<style>
+:root{--bg:#0f0d0a;--surface:#1a1714;--card:#201d19;--border:#2e2a24;--accent:#c8922a;--green:#8fbe6b;--blue:#5b9bd5;--purple:#9b7de8;--teal:#5bbfb5;--pink:#c86b8f;--text:#f0ebe3;--muted:#7a7063;--soft:#c8b89a;--warn:#e8b84b}
+*{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(143,190,107,.05) 0%,transparent 50%)}
+header{text-align:center;max-width:900px;margin:0 auto 30px}.sub-label{font-size:11px;font-weight:600;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}h1{font-family:'Playfair Display',serif;font-size:clamp(34px,6vw,66px);font-weight:900;letter-spacing:-.03em;line-height:.96}h1 em{color:var(--accent);font-style:italic}.intro{max-width:780px;margin:18px auto 0;color:var(--soft);font-size:15px;line-height:1.7}.header-line{width:56px;height:2px;background:var(--accent);margin:18px auto 0;opacity:.5}
+.wrapper{max-width:1100px;margin:0 auto}.notice{background:linear-gradient(145deg,rgba(200,146,42,.12),rgba(91,155,213,.07));border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:20px;color:var(--soft);line-height:1.6;font-size:14px}.notice strong{color:var(--accent)}
+.controls{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 18px}.search-wrap{flex:1;min-width:240px;position:relative}.search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:12px 14px 12px 38px;font-size:13px;outline:none;font-family:'DM Sans',sans-serif}.search-wrap input:focus{border-color:var(--accent)}.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted)}.filters{display:flex;gap:8px;flex-wrap:wrap}.filter-btn{background:none;border:1px solid var(--border);color:var(--muted);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:8px 12px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif}.filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(200,146,42,.08)}
+.count{font-size:12px;color:var(--muted);letter-spacing:.1em;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;transition:.2s}.card:hover{border-color:#3e3a32;transform:translateY(-2px)}.card-top{display:flex;gap:12px;align-items:flex-start}.icon{font-size:24px}.card h2{font-family:'Playfair Display',serif;font-size:19px;line-height:1.12;margin-bottom:4px}.sub{font-size:12px;color:var(--muted);line-height:1.4}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.badge{font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:20px;border:1px solid}
+.eff-inflam{border-color:rgba(200,146,42,.4);color:var(--accent);background:rgba(200,146,42,.08)}.eff-anti{border-color:rgba(155,125,232,.4);color:var(--purple);background:rgba(155,125,232,.08)}.eff-micro{border-color:rgba(91,191,181,.4);color:var(--teal);background:rgba(91,191,181,.08)}.eff-gut{border-color:rgba(143,190,107,.4);color:var(--green);background:rgba(143,190,107,.08)}.eff-ferm{border-color:rgba(91,155,213,.4);color:var(--blue);background:rgba(91,155,213,.08)}.eff-omega{border-color:rgba(200,107,143,.4);color:var(--pink);background:rgba(200,107,143,.08)}
+.ev{font-weight:600}.ev-strong{border-color:rgba(143,190,107,.5);color:var(--green);background:rgba(143,190,107,.1)}.ev-moderate{border-color:rgba(200,146,42,.5);color:var(--accent);background:rgba(200,146,42,.1)}.ev-early{border-color:rgba(91,155,213,.5);color:var(--blue);background:rgba(91,155,213,.1)}.ev-lab{border-color:rgba(122,112,99,.6);color:var(--muted);background:rgba(122,112,99,.12)}
+.details{border-top:1px solid var(--border);padding-top:12px;margin-top:12px}.details h3{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 8px}.details ul{list-style:none;display:grid;gap:7px}.details li{font-size:13px;color:var(--soft);line-height:1.45;display:flex;gap:8px}.details li:before{content:'—';color:var(--accent)}.use{font-size:13px;color:var(--soft);line-height:1.55}.compounds{display:flex;flex-wrap:wrap;gap:6px}.chip{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--border);color:var(--soft)}
+.refs{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:4px}
+.section{margin-top:26px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px}.section h2{font-family:'Playfair Display',serif;font-size:24px;margin-bottom:10px}.section p,.section li{color:var(--soft);font-size:14px;line-height:1.65}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}.section ul{padding-left:18px;margin-top:6px}.section li{margin-bottom:6px}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:14px}.legend-item{background:#15120f;border:1px solid var(--border);border-radius:12px;padding:14px}.legend-item .badge{margin-bottom:8px}
+.ref-list{padding-left:18px}.ref-list li{margin-bottom:8px}.ref-list a{color:var(--blue);text-decoration:none;word-break:break-word}.ref-list a:hover{text-decoration:underline}
+.no-results{text-align:center;color:var(--muted);font-family:'Playfair Display',serif;font-size:20px;margin:42px 0;display:none}
+@media(max-width:900px){body{padding-top:24px}.two-col{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="top-nav" aria-label="Primary"></nav>
+<script src="/nav.js"></script>
+<header>
+  <div class="sub-label">Reference List</div>
+  <h1>Functional <em>Foods</em></h1>
+  <p class="intro">Foods associated with anti-inflammatory, antioxidant, antimicrobial, and gut-supportive effects — organized by their main compounds, how strong the evidence is, simple ways to use them, and cautions to keep in mind.</p>
+  <div class="header-line"></div>
+</header>
+
+<main class="wrapper">
+  <div class="notice"><strong>For education, not treatment.</strong> These foods may support general health, but they do not diagnose, treat, or cure disease. Evidence varies by food, compound, dose, and individual health condition. "Antimicrobial" here means <em>studied for antimicrobial activity</em> — these foods are not substitutes for antibiotics or medical care. If you take medication, are pregnant, or have a health condition, check with a clinician before making big changes.</div>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="search" placeholder="Search foods, compounds, or uses..." oninput="filterCards()">
+    </div>
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">All</button>
+      <button class="filter-btn" data-filter="antiinflam" onclick="setFilter('antiinflam')">Anti-Inflammatory</button>
+      <button class="filter-btn" data-filter="antioxidant" onclick="setFilter('antioxidant')">Antioxidant</button>
+      <button class="filter-btn" data-filter="antimicrobial" onclick="setFilter('antimicrobial')">Antimicrobial</button>
+      <button class="filter-btn" data-filter="gut" onclick="setFilter('gut')">Gut-Supporting</button>
+      <button class="filter-btn" data-filter="fermented" onclick="setFilter('fermented')">Fermented</button>
+      <button class="filter-btn" data-filter="omega3" onclick="setFilter('omega3')">Omega-3</button>
+    </div>
+  </div>
+
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+  <div class="no-results" id="noResults">No foods match that search</div>
+
+  <section class="section">
+    <h2>How to read the evidence strength</h2>
+    <div class="legend">
+      <div class="legend-item"><span class="badge ev ev-strong">Strong</span><p>Consistent human trials or reviews, often as part of a broader dietary pattern (e.g. Mediterranean eating).</p></div>
+      <div class="legend-item"><span class="badge ev ev-moderate">Moderate</span><p>Some human studies point in a helpful direction, though results vary and more research is useful.</p></div>
+      <div class="legend-item"><span class="badge ev ev-early">Early</span><p>Limited or early human evidence — promising but not yet well established.</p></div>
+      <div class="legend-item"><span class="badge ev ev-lab">Lab-based</span><p>Mostly lab or animal studies. Real-world food amounts may be far lower than what was tested.</p></div>
+    </div>
+  </section>
+
+  <section class="section two-col">
+    <div>
+      <h2>Foods to limit</h2>
+      <p>Cutting these back tends to matter as much as adding "good" foods:</p>
+      <ul>
+        <li>Ultra-processed foods</li>
+        <li>Refined sugar and sugary drinks</li>
+        <li>Fried foods and refined seed-oil heavy meals</li>
+        <li>Processed meats</li>
+        <li>Excess alcohol</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Lifestyle factors</h2>
+      <p>Food works alongside the basics — not instead of them:</p>
+      <ul>
+        <li>Sleep and recovery</li>
+        <li>Hydration</li>
+        <li>Regular movement and exercise</li>
+        <li>Stress reduction</li>
+        <li>Sunlight / vitamin D status</li>
+        <li>Overall gut health and fibre variety</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>References</h2>
+    <ol class="ref-list">
+      <li>Harvard Health — <a href="https://www.health.harvard.edu/healthy-aging-and-longevity/foods-that-fight-inflammation" target="_blank" rel="noreferrer">Foods that fight inflammation</a>.</li>
+      <li>NIH Office of Dietary Supplements — <a href="https://ods.od.nih.gov/factsheets/VitaminE-HealthProfessional/" target="_blank" rel="noreferrer">Vitamin E (Health Professional Fact Sheet)</a>.</li>
+      <li>NIH Office of Dietary Supplements — <a href="https://ods.od.nih.gov/factsheets/VitaminC-Consumer/" target="_blank" rel="noreferrer">Vitamin C (Consumer)</a>.</li>
+      <li>NIH Office of Dietary Supplements — <a href="https://ods.od.nih.gov/factsheets/Omega3FattyAcids-Consumer/" target="_blank" rel="noreferrer">Omega-3 Fatty Acids (Consumer)</a>.</li>
+      <li>NIH NCCIH — <a href="https://www.nccih.nih.gov/health/herbsataglance" target="_blank" rel="noreferrer">Herbs at a Glance</a> (turmeric, ginger, green tea, cranberry, probiotics).</li>
+      <li>NCBI / PMC — <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6678835/" target="_blank" rel="noreferrer">Bioactive Compounds and Biological Functions of Garlic</a>.</li>
+    </ol>
+    <p class="refs">Source labels on each card map to this list. Always prefer your own clinician or pharmacist for advice about medications and conditions.</p>
+  </section>
+</main>
+
+<script>
+const FOODS = [
+  // ANTI-INFLAMMATORY / ANTIOXIDANT CORE
+  {name:"Extra-Virgin Olive Oil",icon:"🫒",cats:["antiinflam","antioxidant"],evidence:"Strong",sub:"Cornerstone fat of Mediterranean eating",
+   compounds:["Oleocanthal","Polyphenols","Oleic acid (MUFA)"],
+   use:"Drizzle 1–2 tbsp raw over salads, vegetables, or finished dishes; use as your main cooking fat.",
+   cautions:["Calorie-dense — use in place of less healthy fats, not on top of them","Choose extra-virgin in dark bottles to preserve polyphenols"],
+   refs:["Harvard Health"]},
+
+  {name:"Berries",icon:"🫐",cats:["antioxidant","antiinflam","gut"],evidence:"Moderate",sub:"Blueberries, strawberries, raspberries",
+   compounds:["Anthocyanins","Vitamin C","Polyphenols","Fibre"],
+   use:"About 1 cup fresh or frozen in oats, yogurt, or smoothies.",
+   cautions:["Whole fruit is preferable to juice for blood-sugar control"],
+   refs:["Harvard Health","NIH ODS: Vitamin C"]},
+
+  {name:"Cherries",icon:"🍒",cats:["antiinflam","antioxidant"],evidence:"Early",sub:"Especially tart cherries",
+   compounds:["Anthocyanins","Polyphenols"],
+   use:"A handful of fresh cherries, or a small glass of unsweetened tart-cherry juice.",
+   cautions:["Juice adds sugar — whole fruit is the better default"],
+   refs:["Harvard Health"]},
+
+  {name:"Leafy Greens",icon:"🥬",cats:["antiinflam","antioxidant"],evidence:"Moderate",sub:"Spinach, kale, chard",
+   compounds:["Carotenoids","Vitamin C","Vitamin K","Polyphenols"],
+   use:"A couple of handfuls in salads, sautéed as a side, or blended into smoothies.",
+   cautions:["High vitamin K can interact with warfarin — keep intake consistent if you take blood thinners"],
+   refs:["Harvard Health","NIH ODS: Vitamin C"]},
+
+  {name:"Tomatoes",icon:"🍅",cats:["antioxidant","antiinflam"],evidence:"Moderate",sub:"Best absorbed cooked with a little fat",
+   compounds:["Lycopene (carotenoid)","Vitamin C"],
+   use:"Cooked with a little olive oil boosts lycopene — sauces, soups, roasted tomatoes.",
+   cautions:["Acidic; may aggravate reflux in some people"],
+   refs:["Harvard Health"]},
+
+  {name:"Citrus Fruits",icon:"🍊",cats:["antioxidant","antiinflam"],evidence:"Moderate",sub:"Oranges, grapefruit, lemons",
+   compounds:["Vitamin C","Flavonoids"],
+   use:"One whole orange, or citrus segments in salads.",
+   cautions:["Grapefruit interacts with several medications — check with a pharmacist"],
+   refs:["NIH ODS: Vitamin C","Harvard Health"]},
+
+  {name:"Nuts & Seeds",icon:"🥜",cats:["antioxidant","antiinflam"],evidence:"Moderate",sub:"Almonds, sunflower seeds",
+   compounds:["Vitamin E","Magnesium","Healthy fats"],
+   use:"A small unsalted handful daily, or over salads and oats.",
+   cautions:["Tree-nut allergy","Calorie-dense — keep portions small"],
+   refs:["NIH ODS: Vitamin E"]},
+
+  {name:"Whole Grains",icon:"🌾",cats:["antiinflam","gut"],evidence:"Moderate",sub:"Oats, brown rice, whole wheat",
+   compounds:["Fibre","Beta-glucan","B vitamins"],
+   use:"Swap refined grains for whole — oats at breakfast, whole-grain bread, brown rice.",
+   cautions:["Choose certified gluten-free oats/grains if coeliac"],
+   refs:["Harvard Health"]},
+
+  {name:"Legumes",icon:"🫘",cats:["antiinflam","gut"],evidence:"Moderate",sub:"Beans, lentils, chickpeas",
+   compounds:["Fibre","Resistant starch","Plant protein","Polyphenols"],
+   use:"Add to soups, stews, and salads; aim for several servings a week.",
+   cautions:["Introduce gradually to reduce gas","Cook dried beans thoroughly"],
+   refs:["Harvard Health"]},
+
+  // OMEGA-3
+  {name:"Fatty Fish",icon:"🐟",cats:["omega3","antiinflam"],evidence:"Strong",sub:"Salmon, sardines, mackerel, trout",
+   compounds:["Omega-3s (EPA & DHA)","Vitamin D","Protein"],
+   use:"2–3 servings a week — baked salmon, sardines on toast, mackerel in salads.",
+   cautions:["Limit high-mercury fish in pregnancy","High-dose omega-3 can have mild blood-thinning effects"],
+   refs:["NIH ODS: Omega-3"]},
+
+  {name:"Walnuts",icon:"🌰",cats:["omega3","antiinflam","antioxidant"],evidence:"Moderate",sub:"Top plant omega-3 nut",
+   compounds:["ALA omega-3","Vitamin E","Polyphenols"],
+   use:"A small handful (about 28 g) as a snack or over salads and oats.",
+   cautions:["Tree-nut allergy","Calorie-dense"],
+   refs:["NIH ODS: Omega-3","NIH ODS: Vitamin E"]},
+
+  {name:"Flaxseed",icon:"🌱",cats:["omega3","gut"],evidence:"Moderate",sub:"Grind for absorption",
+   compounds:["ALA omega-3","Lignans","Soluble fibre"],
+   use:"1–2 tbsp ground (not whole) into oats, yogurt, or smoothies.",
+   cautions:["Whole seeds pass through undigested — grind first","Drink water with the added fibre"],
+   refs:["NIH ODS: Omega-3"]},
+
+  {name:"Chia Seeds",icon:"⚫",cats:["omega3","gut"],evidence:"Early",sub:"Soak before eating",
+   compounds:["ALA omega-3","Soluble fibre"],
+   use:"1–2 tbsp soaked in liquid (puddings, smoothies).",
+   cautions:["Always hydrate before eating — dry chia can swell and cause choking"],
+   refs:["NIH ODS: Omega-3"]},
+
+  // ANTIMICROBIAL (studied)
+  {name:"Garlic",icon:"🧄",cats:["antimicrobial","gut","antiinflam"],evidence:"Lab-based",sub:"Studied for antimicrobial compounds",
+   compounds:["Allicin","Organosulfur compounds"],
+   use:"Crush fresh and let it stand ~10 min before light cooking; 1–2 cloves.",
+   cautions:["Can thin the blood — caution with anticoagulants and before surgery","May cause heartburn or odor","Not a replacement for antibiotics"],
+   refs:["PMC: Garlic"]},
+
+  {name:"Onions",icon:"🧅",cats:["antimicrobial","gut","antioxidant"],evidence:"Early",sub:"Prebiotic allium",
+   compounds:["Quercetin","Inulin (prebiotic)","Organosulfur compounds"],
+   use:"Use raw or cooked as a base for most savory dishes.",
+   cautions:["Can trigger reflux or IBS symptoms (high-FODMAP) in some people"],
+   refs:["PMC: Garlic"]},
+
+  {name:"Ginger",icon:"🫚",cats:["antimicrobial","antiinflam","gut"],evidence:"Moderate",sub:"Best human evidence for nausea",
+   compounds:["Gingerols","Shogaols"],
+   use:"Fresh grated in tea or stir-fries; about a 1-inch piece.",
+   cautions:["Mild blood-thinning at high doses","May worsen reflux for some"],
+   refs:["NIH NCCIH"]},
+
+  {name:"Turmeric",icon:"🟡",cats:["antiinflam","antioxidant","antimicrobial"],evidence:"Lab-based",sub:"Curcumin is poorly absorbed",
+   compounds:["Curcumin","Curcuminoids"],
+   use:"Add to curries, soups, and eggs with black pepper and a little fat to aid absorption.",
+   cautions:["High-dose supplements may interact with blood thinners","Rare reports of liver issues with concentrated extracts"],
+   refs:["NIH NCCIH"]},
+
+  {name:"Green Tea",icon:"🍵",cats:["antioxidant","antimicrobial"],evidence:"Moderate",sub:"Catechin-rich brew",
+   compounds:["Catechins (EGCG)","Polyphenols"],
+   use:"1–3 cups daily, steeped at about 70–80°C.",
+   cautions:["Contains caffeine","High-dose extracts linked to rare liver injury"],
+   refs:["NIH NCCIH"]},
+
+  {name:"Herbs & Spices",icon:"🌿",cats:["antioxidant","antiinflam","antimicrobial"],evidence:"Lab-based",sub:"Rosemary, oregano, cinnamon",
+   compounds:["Polyphenols","Essential oils"],
+   use:"Use generously in everyday cooking in place of extra salt.",
+   cautions:["Concentrated spice oils/supplements differ greatly from culinary amounts"],
+   refs:["Harvard Health"]},
+
+  {name:"Honey (raw)",icon:"🍯",cats:["antimicrobial"],evidence:"Moderate",sub:"Best evidence is topical wound care",
+   compounds:["Hydrogen peroxide","Phenolics","Methylglyoxal (manuka)"],
+   use:"A teaspoon to sweeten; medical-grade honey is used on wounds under clinical care.",
+   cautions:["Never give honey to infants under 12 months (botulism risk)","Still a sugar — use sparingly"],
+   refs:["NIH NCCIH"]},
+
+  {name:"Cranberry",icon:"🔴",cats:["antimicrobial","antioxidant"],evidence:"Moderate",sub:"Studied for UTI prevention",
+   compounds:["Proanthocyanidins (PACs)","Vitamin C"],
+   use:"Unsweetened juice or whole/dried berries; supplements standardized to PACs.",
+   cautions:["Can interact with warfarin","Many cranberry juices are high in added sugar"],
+   refs:["NIH NCCIH","NIH ODS: Vitamin C"]},
+
+  // GUT-SUPPORTING / PREBIOTIC
+  {name:"Oats",icon:"🥣",cats:["gut","antiinflam"],evidence:"Moderate",sub:"Beta-glucan soluble fibre",
+   compounds:["Beta-glucan","Soluble fibre"],
+   use:"Porridge or overnight oats; about 40–50 g dry.",
+   cautions:["Choose certified gluten-free if coeliac"],
+   refs:["Harvard Health"]},
+
+  {name:"Asparagus",icon:"🌿",cats:["gut","antioxidant"],evidence:"Early",sub:"Prebiotic vegetable",
+   compounds:["Inulin (prebiotic)","Folate","Vitamin C"],
+   use:"Roasted or steamed as a side.",
+   cautions:["Generally very safe; harmless urine odor"],
+   refs:["Harvard Health"]},
+
+  {name:"Bananas (slightly green)",icon:"🍌",cats:["gut"],evidence:"Early",sub:"Resistant starch when underripe",
+   compounds:["Resistant starch","Prebiotic fibre","Potassium"],
+   use:"A slightly underripe banana, or sliced into oats.",
+   cautions:["Riper bananas have more sugar and less resistant starch"],
+   refs:["Harvard Health"]},
+
+  // FERMENTED
+  {name:"Yogurt (live cultures)",icon:"🥛",cats:["fermented","gut"],evidence:"Moderate",sub:"Look for live and active cultures",
+   compounds:["Live cultures (Lactobacillus, Bifidobacterium)","Calcium","Protein"],
+   use:"Plain and unsweetened; add your own fruit.",
+   cautions:["Dairy allergy or lactose intolerance — though yogurt is often better tolerated"],
+   refs:["NIH NCCIH"]},
+
+  {name:"Kefir",icon:"🥛",cats:["fermented","gut"],evidence:"Early",sub:"Diverse fermented dairy drink",
+   compounds:["Diverse live cultures","Protein","Calcium"],
+   use:"Drink small amounts (about ½ cup) or blend into smoothies.",
+   cautions:["Dairy-based versions contain some lactose (usually reduced)"],
+   refs:["NIH NCCIH"]},
+
+  {name:"Sauerkraut & Kimchi",icon:"🥬",cats:["fermented","gut"],evidence:"Early",sub:"Fermented cabbage",
+   compounds:["Live cultures","Fibre","Vitamin C"],
+   use:"1–2 tbsp of unpasteurized (refrigerated) kraut or kimchi as a side.",
+   cautions:["High in salt","Heat and pasteurization kill the live cultures"],
+   refs:["NIH NCCIH"]},
+
+  {name:"Miso & Tempeh",icon:"🍲",cats:["fermented","gut"],evidence:"Early",sub:"Fermented soy",
+   compounds:["Live cultures (miso)","Plant protein","Isoflavones"],
+   use:"Stir miso into soup off the heat; pan-fry tempeh as a protein.",
+   cautions:["Miso is high in salt","Soy allergy"],
+   refs:["NIH NCCIH"]},
+];
+
+const EFFECT = {
+  antiinflam:{label:"Anti-inflammatory",cls:"eff-inflam"},
+  antioxidant:{label:"Antioxidant",cls:"eff-anti"},
+  antimicrobial:{label:"Antimicrobial*",cls:"eff-micro"},
+  gut:{label:"Gut-supporting",cls:"eff-gut"},
+  fermented:{label:"Fermented",cls:"eff-ferm"},
+  omega3:{label:"Omega-3",cls:"eff-omega"}
+};
+const EVIDENCE_CLS = {Strong:"ev-strong",Moderate:"ev-moderate",Early:"ev-early","Lab-based":"ev-lab"};
+
+let activeFilter = "all";
+
+function render() {
+  const q = document.getElementById("search").value.toLowerCase();
+  const grid = document.getElementById("grid");
+  const no = document.getElementById("noResults");
+  const count = document.getElementById("count");
+  const items = FOODS.filter(f => {
+    const matchFilter = activeFilter === "all" || f.cats.includes(activeFilter);
+    const hay = (f.name + " " + f.sub + " " + f.compounds.join(" ") + " " + f.use + " " + f.cautions.join(" ") + " " + f.cats.map(c => EFFECT[c].label).join(" ")).toLowerCase();
+    return matchFilter && hay.includes(q);
+  });
+  grid.innerHTML = items.map(f => `
+    <article class="card" id="i-${deeplinkSlug(f.name)}">
+      <div class="card-top"><div class="icon">${f.icon}</div><div><h2>${f.name}</h2><div class="sub">${f.sub}</div></div></div>
+      <div class="badges">
+        ${f.cats.map(c => `<span class="badge ${EFFECT[c].cls}">${EFFECT[c].label}</span>`).join("")}
+        <span class="badge ev ${EVIDENCE_CLS[f.evidence]}">${f.evidence} evidence</span>
+      </div>
+      <div class="details"><h3>Main compounds</h3><div class="compounds">${f.compounds.map(c => `<span class="chip">${c}</span>`).join("")}</div></div>
+      <div class="details"><h3>How to use</h3><p class="use">${f.use}</p></div>
+      <div class="details"><h3>Cautions</h3><ul>${f.cautions.map(c => `<li>${c}</li>`).join("")}</ul></div>
+      <div class="details"><h3>Sources</h3><p class="refs">${f.refs.join(" · ")}</p></div>
+    </article>`).join("");
+  count.textContent = items.length + " food" + (items.length === 1 ? "" : "s");
+  no.style.display = items.length ? "none" : "block";
+}
+
+function setFilter(f) {
+  activeFilter = f;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.filter === f));
+  render();
+}
+function filterCards() { render(); }
+render();
+
+// Search deep links arrive as #i-<slug> (see scripts/build-search-index.mjs).
+function deeplinkSlug(name) { return String(name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+function focusDeepLink() {
+  if (!/^#i-/.test(location.hash)) return;
+  const id = location.hash.slice(1);
+  let el = document.getElementById(id);
+  if (!el) {
+    const s = document.getElementById("search"); if (s) { s.value = ""; }
+    const allBtn = document.querySelector('[data-filter="all"]');
+    if (allBtn) allBtn.click();
+    el = document.getElementById(id);
+  }
+  if (!el) return;
+  el.classList.add("search-deeplink-target");
+  el.scrollIntoView({ behavior: "smooth", block: "center" });
+  setTimeout(() => el.classList.remove("search-deeplink-target"), 2600);
+}
+focusDeepLink();
+window.addEventListener("hashchange", focusDeepLink);
+</script>
+</body>
+</html>
