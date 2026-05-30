@@ -82,6 +82,7 @@ const CARD_PAGES = [
   { file: "diets.html", context: "Diet Types", vars: ["DIETS"], link: (s) => `/diets#i-${s}` },
   { file: "foodtypes.html", context: "Food Categories", vars: ["FOODS"], link: (s) => `/foodtypes#i-${s}` },
   { file: "adaptogens.html", context: "Adaptogens", vars: ["ADAPTOGENS"], link: (s) => `/adaptogens#i-${s}` },
+  { file: "functional-foods.html", context: "Functional Foods", vars: ["FOODS"], link: (s) => `/functional-foods#i-${s}` },
   { file: "overview.html", context: "Vitamins & Minerals", vars: ["NUTRIENTS"], link: (s) => `/overview/${s}` },
 ];
 
