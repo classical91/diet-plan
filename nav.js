@@ -203,6 +203,14 @@
     }
     nav.innerHTML = NAV_HTML;
 
+    const nutritionChecklistLink = nav.querySelector('[data-path="/nutrition"]');
+    if (nutritionChecklistLink) {
+      nutritionChecklistLink.insertAdjacentHTML(
+        "afterend",
+        '<a href="/nutrition/rich-foods" class="nav-dropdown-item" data-path="/nutrition/rich-foods">Rich Foods for Key Nutrients</a>'
+      );
+    }
+
     const path = window.location.pathname.replace(/\/$/, "") || "/";
     const activeLink = nav.querySelector(`[data-path="${path}"]`);
     if (activeLink) {

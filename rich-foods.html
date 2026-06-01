@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rich Foods for Key Nutrients | NutriMind</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/nav.css">
+<style>
+  :root {
+    --bg: #0f0d0a; --surface: #1a1714; --card: #201d19; --border: #2e2a24;
+    --accent: #c8922a; --green: #8fbe6b; --blue: #5b9bd5; --pink: #c86b8f;
+    --purple: #9b7de8; --teal: #5bbfb5; --red: #e05c5c; --text: #f0ebe3; --muted: #7a7063;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300;
+    min-height: 100vh; padding: 40px 20px 80px;
+    background-image: radial-gradient(ellipse at 15% 10%, rgba(200,146,42,0.06) 0%, transparent 55%), radial-gradient(ellipse at 85% 90%, rgba(91,155,213,0.05) 0%, transparent 50%);
+  }
+  header { text-align: center; margin-bottom: 32px; }
+  .sub-label { font-size: 11px; font-weight: 500; letter-spacing: 0.35em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(32px, 5vw, 56px); font-weight: 900; letter-spacing: -0.02em; line-height: 1; }
+  h1 em { color: var(--accent); font-style: italic; }
+  .header-line { width: 50px; height: 2px; background: var(--accent); margin: 18px auto 0; opacity: 0.5; }
+  .header-note { max-width: 760px; margin: 16px auto 0; color: #c8b89a; font-size: 13px; line-height: 1.65; }
+  .quick-links { max-width: 1100px; margin: 0 auto 24px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .quick-links a { color: var(--muted); text-decoration: none; border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; transition: all 0.2s; }
+  .quick-links a:hover { border-color: var(--accent); color: var(--accent); background: rgba(200,146,42,0.08); }
+  .table-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 18px; }
+  .nutrient-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; animation: fadeUp 0.35s ease both; }
+  .nutrient-card:nth-child(2n) .color-bar { background: var(--blue); }
+  .nutrient-card:nth-child(3n) .color-bar { background: var(--green); }
+  .nutrient-card:nth-child(4n) .color-bar { background: var(--purple); }
+  .color-bar { height: 3px; background: var(--accent); }
+  .card-title { padding: 13px 16px; border-bottom: 1px solid var(--border); font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 12px; line-height: 1.35; }
+  th { background: rgba(255,255,255,0.03); color: var(--text); font-weight: 600; }
+  th:first-child, td:first-child { border-right: 1px solid var(--border); }
+  td:first-child { color: #d8cbb7; }
+  td:last-child, th:last-child { text-align: right; white-space: nowrap; color: #f0dfc0; font-weight: 500; }
+  tr:last-child td { border-bottom: 0; }
+  .footnote { max-width: 1100px; margin: 22px auto 0; color: var(--muted); font-size: 12px; line-height: 1.6; text-align: center; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<nav class="top-nav" aria-label="Primary"></nav>
+<script src="/nav.js"></script>
+
+<header>
+  <div class="sub-label">Food Source Tables</div>
+  <h1>Rich Foods for <em>Key Nutrients</em></h1>
+  <div class="header-line"></div>
+  <p class="header-note">Use these quick tables to pick whole-food sources for potassium, magnesium, zinc, vitamins, electrolytes, and the other nutrients tracked in the nutrition checklist. Values are approximate and vary by brand, preparation, and serving size.</p>
+</header>
+
+<nav class="quick-links" id="quickLinks" aria-label="Jump to nutrient table"></nav>
+<main class="table-grid" id="tableGrid"></main>
+<p class="footnote">Tip: rotate foods across the week instead of relying on one source every day. Ask a qualified clinician before using supplements for diagnosed deficiencies or medical conditions.</p>
+
+<script>
+const nutrientTables = [
+  { name:"Potassium", unit:"Potassium (mg)", foods:[
+    ["1 cup cooked beet greens", "1,309"], ["1 cup white beans", "1,190"], ["1 medium baked potato with skin", "925"], ["1 cup cooked Swiss chard", "961"], ["1 medium sweet potato", "542"], ["½ avocado", "487"], ["1 medium banana", "422"], ["3 oz cooked salmon", "326"]
+  ]},
+  { name:"Magnesium", unit:"Magnesium (mg)", foods:[
+    ["1 oz pumpkin seeds", "156"], ["1 oz chia seeds", "111"], ["1 oz almonds", "80"], ["½ cup cooked spinach", "78"], ["1 oz cashews", "74"], ["½ cup black beans", "60"], ["1 oz dark chocolate", "50"], ["½ cup cooked brown rice", "42"]
+  ]},
+  { name:"Zinc", unit:"Zinc (mg)", foods:[
+    ["3 oz cooked oysters", "32.0"], ["3 oz beef chuck roast", "8.7"], ["3 oz crab", "6.5"], ["3 oz pork chop", "2.9"], ["1 oz pumpkin seeds", "2.2"], ["½ cup chickpeas", "1.3"], ["1 oz cashews", "1.6"], ["1 cup yogurt", "1.7"]
+  ]},
+  { name:"Calcium", unit:"Calcium (mg)", foods:[
+    ["1 cup plain yogurt", "415"], ["3 oz sardines with bones", "325"], ["1 cup milk", "305"], ["½ cup calcium-set tofu", "250"], ["1 oz cheddar cheese", "200"], ["1 cup cooked kale", "180"], ["1 cup fortified plant milk", "300"], ["1 cup cooked broccoli", "62"]
+  ]},
+  { name:"Iron", unit:"Iron (mg)", foods:[
+    ["3 oz cooked clams", "23.8"], ["3 oz beef liver", "5.6"], ["½ cup lentils", "3.3"], ["½ cup spinach", "3.2"], ["3 oz beef", "2.3"], ["1 oz pumpkin seeds", "2.3"], ["½ cup chickpeas", "2.4"], ["1 oz dark chocolate", "3.4"]
+  ]},
+  { name:"Selenium", unit:"Selenium (mcg)", foods:[
+    ["1 Brazil nut", "68-91"], ["3 oz yellowfin tuna", "92"], ["3 oz sardines", "45"], ["3 oz turkey", "31"], ["1 large egg", "15"], ["3 oz chicken", "22"], ["1 oz sunflower seeds", "18"], ["½ cup brown rice", "10"]
+  ]},
+  { name:"Iodine", unit:"Iodine (mcg)", foods:[
+    ["¼ tsp iodized salt", "76"], ["3 oz cod", "99"], ["1 cup milk", "85"], ["1 cup yogurt", "75"], ["3 oz shrimp", "35"], ["1 large egg", "24"], ["1 sheet nori", "16-43"], ["3 oz tuna", "17"]
+  ]},
+  { name:"Copper", unit:"Copper (mg)", foods:[
+    ["3 oz oysters", "4.9"], ["3 oz beef liver", "12.4"], ["1 oz sesame seeds", "1.1"], ["1 oz cashews", "0.6"], ["1 oz sunflower seeds", "0.5"], ["1 oz dark chocolate", "0.5"], ["½ cup shiitake mushrooms", "0.6"], ["½ avocado", "0.2"]
+  ]},
+  { name:"Vitamin A", unit:"Vitamin A (mcg RAE)", foods:[
+    ["3 oz beef liver", "6,500"], ["1 medium baked sweet potato", "1,400"], ["½ cup cooked carrots", "665"], ["½ cup cooked spinach", "570"], ["½ cup cooked kale", "443"], ["1 large egg", "75"], ["1 cup whole milk", "112"], ["½ cup pumpkin", "953"]
+  ]},
+  { name:"Vitamin D", unit:"Vitamin D (IU)", foods:[
+    ["3 oz cooked salmon", "570"], ["3 oz trout", "645"], ["3 oz sardines", "164"], ["3 oz tuna", "40"], ["1 cup fortified milk", "120"], ["1 cup fortified plant milk", "100-144"], ["1 large egg yolk", "37"], ["½ cup UV-exposed mushrooms", "366"]
+  ]},
+  { name:"Vitamin C", unit:"Vitamin C (mg)", foods:[
+    ["½ cup red bell pepper", "95"], ["1 medium orange", "70"], ["1 medium kiwi", "64"], ["½ cup strawberries", "49"], ["½ cup cooked broccoli", "51"], ["½ cup Brussels sprouts", "48"], ["1 medium baked potato", "17"], ["½ grapefruit", "39"]
+  ]},
+  { name:"Vitamin B12", unit:"Vitamin B12 (mcg)", foods:[
+    ["3 oz clams", "84"], ["3 oz beef liver", "70"], ["3 oz salmon", "2.6"], ["3 oz tuna", "2.5"], ["1 cup milk", "1.2"], ["1 cup yogurt", "1.1"], ["1 large egg", "0.6"], ["Fortified nutritional yeast", "varies"]
+  ]},
+  { name:"Omega-3", unit:"Omega-3 (g)", foods:[
+    ["3 oz mackerel", "2.5"], ["3 oz salmon", "1.5-2.0"], ["3 oz sardines", "1.0-1.5"], ["3 oz herring", "1.5"], ["1 oz chia seeds", "5.0 ALA"], ["1 tbsp ground flaxseed", "1.6 ALA"], ["1 oz walnuts", "2.5 ALA"], ["1 tbsp canola oil", "1.3 ALA"]
+  ]},
+  { name:"Choline", unit:"Choline (mg)", foods:[
+    ["3 oz beef liver", "356"], ["1 large egg", "147"], ["3 oz chicken liver", "247"], ["3 oz salmon", "75"], ["3 oz chicken breast", "72"], ["½ cup soybeans", "107"], ["1 cup cooked broccoli", "63"], ["1 cup cooked quinoa", "43"]
+  ]}
+];
+
+const quickLinks = document.getElementById('quickLinks');
+const tableGrid = document.getElementById('tableGrid');
+
+function slugify(name) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+quickLinks.innerHTML = nutrientTables.map(table => `<a href="#${slugify(table.name)}">${table.name}</a>`).join('');
+tableGrid.innerHTML = nutrientTables.map(table => `
+  <section class="nutrient-card" id="${slugify(table.name)}" aria-labelledby="${slugify(table.name)}-title">
+    <div class="color-bar"></div>
+    <h2 class="card-title" id="${slugify(table.name)}-title">Foods Rich in ${table.name}</h2>
+    <table>
+      <thead><tr><th>Foods Rich in ${table.name}</th><th>${table.unit}</th></tr></thead>
+      <tbody>${table.foods.map(row => `<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`).join('')}</tbody>
+    </table>
+  </section>
+`).join('');
+</script>
+</body>
+</html>
