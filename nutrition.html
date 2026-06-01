@@ -92,6 +92,23 @@
   .s-hydration .color-bar{background:var(--teal)}.s-hydration .section-header{border-left:3px solid var(--teal)}.s-hydration .item.checked .checkbox{background:rgba(91,191,181,0.15);color:var(--teal)}
   .s-vitamins-b .color-bar{background:var(--green)}.s-vitamins-b .section-header{border-left:3px solid var(--green)}.s-vitamins-b .item.checked .checkbox{background:rgba(143,190,107,0.15);color:var(--green)}
   .s-reminders .color-bar{background:#ff5a5f}.s-reminders .section-header{border-left:3px solid #ff5a5f}.s-reminders .item.checked .checkbox{background:rgba(255,90,95,0.16);color:#ff5a5f}
+
+  .rich-foods { max-width: 1000px; margin: 36px auto 0; }
+  .rich-foods-intro { background: linear-gradient(135deg, rgba(200,146,42,0.12), rgba(91,155,213,0.08)); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 18px; }
+  .rich-foods-kicker { font-size: 11px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .rich-foods h2 { font-family: 'Playfair Display', serif; font-size: clamp(24px, 4vw, 36px); line-height: 1; margin-bottom: 10px; }
+  .rich-foods h2 em { color: var(--accent); font-style: italic; }
+  .rich-foods-note { color: #c8b89a; font-size: 13px; line-height: 1.6; max-width: 760px; }
+  .food-table-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-top: 18px; }
+  .food-table-title { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-left: 3px solid var(--accent); border-bottom: 1px solid var(--border); font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; }
+  .table-scroll { overflow-x: auto; }
+  .rich-food-table { width: 100%; border-collapse: collapse; min-width: 720px; }
+  .rich-food-table th, .rich-food-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .rich-food-table th { font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); background: rgba(255,255,255,0.02); }
+  .rich-food-table td { font-size: 12.5px; color: #d8cbb7; line-height: 1.5; }
+  .rich-food-table tr:last-child td { border-bottom: 0; }
+  .nutrient-name { color: var(--text); font-weight: 600; white-space: nowrap; }
+  .serving-tip { color: var(--muted); }
 </style>
 </head>
 <body>
@@ -114,6 +131,15 @@
 </div>
 
 <div class="main" id="main"></div>
+
+<section class="rich-foods" id="rich-foods" aria-labelledby="rich-foods-title">
+  <div class="rich-foods-intro">
+    <div class="rich-foods-kicker">Food Source Tables</div>
+    <h2 id="rich-foods-title">Rich Foods for <em>Key Nutrients</em></h2>
+    <p class="rich-foods-note">Use these tables when you want food-first options for potassium, magnesium, zinc, vitamins, electrolytes, and the other nutrients in the checklist. Rotate a few options each week instead of relying on one food every day.</p>
+  </div>
+  <div id="richFoodsTables"></div>
+</section>
 
 <script>
 const sections = [
@@ -227,6 +253,67 @@ sections.forEach(sec => {
 });
 
 updateProgress();
+
+const richFoodGroups = [
+  { title:"Minerals & Electrolytes", icon:"💎", rows:[
+    ["Magnesium", "Pumpkin seeds, chia seeds, almonds, cashews, spinach, Swiss chard, black beans, dark chocolate", "Add seeds to oats/smoothies; pair beans or greens with dinner"],
+    ["Potassium", "White beans, potatoes with skin, sweet potatoes, beet greens, spinach, avocado, banana, salmon, coconut water", "Build one potassium anchor meal: beans/potato + greens + protein"],
+    ["Zinc", "Oysters, beef, lamb, dark-meat chicken, pumpkin seeds, hemp seeds, chickpeas, cashews", "Animal sources absorb best; soak/sprout legumes when possible"],
+    ["Calcium", "Greek yogurt, milk, cheese, sardines with bones, canned salmon with bones, tofu set with calcium, kale, broccoli", "Include dairy or fortified/tofu option if not eating bony fish"],
+    ["Iron", "Beef, liver, oysters, clams, sardines, lentils, spinach, pumpkin seeds, dark chocolate", "Take plant iron with vitamin C foods like peppers or citrus"],
+    ["Selenium", "Brazil nuts, tuna, sardines, eggs, chicken, turkey, sunflower seeds", "1-2 Brazil nuts can cover the day; avoid overdoing supplements"],
+    ["Phosphorus", "Salmon, chicken, turkey, dairy, eggs, lentils, beans, pumpkin seeds", "Usually easy to meet with protein foods"],
+    ["Manganese", "Oats, brown rice, whole grains, pecans, hazelnuts, spinach, pineapple, black tea", "Use whole grains, nuts, and leafy greens as steady sources"],
+    ["Sodium", "Salted soups/broths, olives, pickles, salted potatoes, electrolyte drinks", "Use more around heavy sweating; keep processed foods moderate"],
+    ["Chloride", "Table salt, sea salt, olives, celery, tomatoes, seaweed, rye", "Normally comes with sodium from salt"],
+    ["Bicarbonate support", "Fruits, vegetables, potatoes, leafy greens, mineral water", "A plant-rich diet supports acid-base balance; kidneys regulate bicarbonate"],
+    ["Iodine", "Iodized salt, cod, shrimp, tuna, dairy, eggs, nori, wakame", "Use iodized salt if seafood/seaweed intake is low"],
+    ["Chromium", "Broccoli, grape juice, whole grains, potatoes, green beans, lean beef, turkey", "Pair with high-fiber carbs for blood-sugar support"],
+    ["Copper", "Oysters, crab, liver, sesame seeds, sunflower seeds, cashews, dark chocolate, mushrooms", "Balance with zinc; avoid high-dose zinc without copper guidance"],
+  ]},
+  { title:"Vitamins", icon:"🌿", rows:[
+    ["Vitamin A", "Liver, eggs, dairy, sweet potato, carrots, pumpkin, spinach, kale", "Mix animal retinol sources with orange/green vegetables"],
+    ["Vitamin D", "Sunlight, salmon, sardines, trout, egg yolks, fortified milk, fortified plant milks", "Food helps, but sunlight or supplements may be needed in low-sun seasons"],
+    ["Vitamin E", "Sunflower seeds, almonds, hazelnuts, peanut butter, avocado, spinach, olive oil", "Add nuts/seeds to meals with healthy fats"],
+    ["Vitamin K", "Kale, collards, spinach, Swiss chard, broccoli, Brussels sprouts, natto", "Eat greens with fat; natto is especially rich in K2"],
+    ["Vitamin C", "Bell peppers, kiwi, strawberries, citrus, broccoli, Brussels sprouts, potatoes", "Use raw fruit/veg often because heat reduces vitamin C"],
+    ["Vitamin B1 (Thiamine)", "Pork, trout, sunflower seeds, black beans, lentils, peas, oats, brown rice", "Whole grains and legumes are practical daily sources"],
+    ["Vitamin B2 (Riboflavin)", "Milk, yogurt, eggs, beef liver, lean beef, almonds, mushrooms, spinach", "Dairy or eggs make this easier to cover"],
+    ["Vitamin B3 (Niacin)", "Chicken breast, tuna, salmon, turkey, peanuts, mushrooms, brown rice", "Lean meats and fish are dense sources"],
+    ["Vitamin B6", "Chickpeas, salmon, tuna, chicken, turkey, potatoes, bananas", "Chickpeas/potatoes plus protein are easy meal anchors"],
+    ["Vitamin B9 (Folate)", "Lentils, black beans, spinach, asparagus, Brussels sprouts, avocado, oranges", "Cook legumes in batches; add leafy greens often"],
+    ["Vitamin B12", "Clams, sardines, salmon, tuna, beef, eggs, milk, yogurt, fortified nutritional yeast", "Vegans typically need fortified foods or supplements"],
+    ["Biotin (B7)", "Eggs, salmon, pork, sunflower seeds, almonds, sweet potato, spinach", "Cook egg whites; raw whites can interfere with biotin"],
+    ["Pantothenic Acid (B5)", "Chicken, beef, eggs, yogurt, avocado, mushrooms, sunflower seeds, lentils", "Common in mixed whole-food diets"],
+  ]},
+  { title:"Macronutrients & Extras", icon:"⚡️", rows:[
+    ["Protein", "Chicken, turkey, beef, fish, eggs, Greek yogurt, cottage cheese, tofu, tempeh, lentils", "Aim for a palm-sized serving at meals"],
+    ["Carbohydrates", "Rice, oats, potatoes, sweet potatoes, fruit, beans, lentils, whole-grain bread", "Choose more whole-food carbs around activity"],
+    ["Healthy Fats", "Olive oil, avocado, salmon, sardines, eggs, walnuts, almonds, chia seeds, flaxseed", "Add fat to meals for satiety and fat-soluble vitamin absorption"],
+    ["Dietary Fiber", "Beans, lentils, oats, berries, apples, chia seeds, flaxseed, vegetables, whole grains", "Increase gradually and drink enough water"],
+    ["Omega-3 Fatty Acids", "Salmon, sardines, mackerel, herring, anchovies, trout, chia, flax, walnuts", "Prioritize fatty fish for EPA/DHA; plant ALA converts poorly"],
+    ["Choline", "Egg yolks, beef liver, chicken liver, salmon, beef, soybeans, cruciferous vegetables", "Eggs are the simplest everyday source"],
+    ["Water", "Plain water, mineral water, herbal tea, watery fruits and vegetables", "Sip steadily; increase with heat, exercise, or high-fiber meals"],
+  ]},
+];
+
+function renderRichFoodsTables() {
+  const wrap = document.getElementById('richFoodsTables');
+  wrap.innerHTML = richFoodGroups.map(group => `
+    <article class="food-table-card">
+      <div class="food-table-title"><span>${group.icon}</span><span>${group.title}</span></div>
+      <div class="table-scroll">
+        <table class="rich-food-table">
+          <thead><tr><th>Nutrient</th><th>Rich foods</th><th>Practical note</th></tr></thead>
+          <tbody>
+            ${group.rows.map(row => `<tr><td class="nutrient-name">${row[0]}</td><td>${row[1]}</td><td class="serving-tip">${row[2]}</td></tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </article>`).join('');
+}
+
+renderRichFoodsTables();
 
 function toggleSection(header) { header.closest('.section').classList.toggle('collapsed'); }
 
