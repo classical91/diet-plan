@@ -8,6 +8,8 @@
           <span>Nutrition <span class="nav-chevron">▾</span></span>
           <div class="nav-dropdown">
             <a href="/nutrition" class="nav-dropdown-item" data-path="/nutrition">Checklist</a>
+            <a href="/nutrition#rich-foods" class="nav-dropdown-item">Food Source Tables</a>
+            <a href="/nutrition#rich-foods" class="nav-dropdown-item">Rich Foods for Key Nutrients</a>
             <a href="/nutrition#s-reminders" class="nav-dropdown-item">Reminders</a>
             <a href="/benefits" class="nav-dropdown-item" data-path="/benefits">Benefits</a>
             <a href="/deficiencies" class="nav-dropdown-item" data-path="/deficiencies">Deficiencies</a>
