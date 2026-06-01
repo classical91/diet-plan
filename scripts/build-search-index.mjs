@@ -89,6 +89,7 @@ const CARD_PAGES = [
 // Content pages: indexed whole-page (no per-item structure to deep-link into).
 const CONTENT_PAGES = [
   { file: "nutrition.html", path: "/nutrition", title: "Nutrition Checklist" },
+  { file: "rich-foods.html", path: "/nutrition/rich-foods", title: "Rich Foods for Key Nutrients" },
   { file: "howto.html", path: "/howto", title: "How-To" },
   { file: "seasonal-rotation.html", path: "/seasonal-rotation", title: "Seasonal Rotation" },
   { file: "parasite-detox.html", path: "/parasite-detox", title: "Parasite Detox" },
