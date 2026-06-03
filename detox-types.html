@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detox Types | NutriMind Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/nav.css">
+<style>
+  :root{--bg:#0f0d0a;--surface:#1a1714;--card:#201d19;--border:#2e2a24;--accent:#c8922a;--green:#8fbe6b;--blue:#5b9bd5;--pink:#c86b8f;--purple:#9b7de8;--teal:#5bbfb5;--red:#e05c5c;--orange:#e07c3a;--text:#f0ebe3;--muted:#7a7063;--soft:#b0a898}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 20% 10%,rgba(143,190,107,.06) 0%,transparent 55%),radial-gradient(ellipse at 80% 90%,rgba(200,146,42,.05) 0%,transparent 50%)}
+  header{text-align:center;margin:18px auto 38px;max-width:900px}
+  .sub-label{font-size:11px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--green);margin-bottom:10px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(34px,6vw,62px);font-weight:900;letter-spacing:-.03em;line-height:.95}
+  h1 em{color:var(--green);font-style:italic}
+  .lead{color:var(--soft);font-size:15px;line-height:1.7;max-width:760px;margin:18px auto 0}
+  .header-line{width:54px;height:2px;background:var(--green);margin:18px auto 0;opacity:.55}
+  .container{max-width:1100px;margin:0 auto}
+  .note-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:16px;margin:18px 0 30px}
+  .note-box.highlight{border-left-color:var(--green)}
+  .note-box.warning{border-left-color:var(--red)}
+  .note{font-size:13px;color:var(--soft);line-height:1.65}
+  .note strong{color:var(--text)}
+  .note a{color:var(--green);text-decoration:none}
+  .note a:hover{text-decoration:underline}
+  h2{font-family:'Playfair Display',serif;font-size:25px;font-weight:700;margin:36px 0 6px}
+  .cat-label{font-size:11px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;margin-bottom:16px}
+  .sec-desc{font-size:13px;color:var(--soft);line-height:1.65;max-width:780px;margin-bottom:18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:36px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s}
+  .card:hover{border-color:#3e3a32;transform:translateY(-2px)}
+  .card a{text-decoration:none;color:inherit;display:block}
+  .stripe{height:3px}
+  .inner{padding:16px 18px 18px}
+  .label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  h3{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:6px;color:var(--text)}
+  .card p{font-size:13px;color:var(--soft);line-height:1.6}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+  .tag{font-size:10px;padding:4px 9px;border-radius:20px}
+  .tag.green{border:1px solid rgba(143,190,107,.28);color:var(--green);background:rgba(143,190,107,.07)}
+  .tag.teal{border:1px solid rgba(91,191,181,.28);color:var(--teal);background:rgba(91,191,181,.07)}
+  .tag.blue{border:1px solid rgba(91,155,213,.28);color:var(--blue);background:rgba(91,155,213,.07)}
+  .tag.purple{border:1px solid rgba(155,125,232,.28);color:var(--purple);background:rgba(155,125,232,.07)}
+  .tag.accent{border:1px solid rgba(200,146,42,.28);color:var(--accent);background:rgba(200,146,42,.07)}
+  .tag.red{border:1px solid rgba(224,92,92,.28);color:var(--red);background:rgba(224,92,92,.07)}
+  .tag.orange{border:1px solid rgba(224,124,58,.28);color:var(--orange);background:rgba(224,124,58,.07)}
+  .tag.pink{border:1px solid rgba(200,107,143,.28);color:var(--pink);background:rgba(200,107,143,.07)}
+  .divider{border:none;border-top:1px solid var(--border);margin:8px 0 32px}
+  .cat-header{display:flex;align-items:baseline;gap:12px;margin:36px 0 6px}
+  .cat-header h2{margin:0}
+  @media(max-width:720px){body{padding:24px 12px 60px}}
+</style>
+</head>
+<body>
+<nav class="top-nav" aria-label="Primary"></nav>
+<script src="/nav.js"></script>
+
+<header>
+  <div class="sub-label">Reference Guide</div>
+  <h1>Types of <em>Detox</em></h1>
+  <p class="lead">A comprehensive overview of recognised detox approaches — from dietary cleanses and herbal protocols to medical programmes and lifestyle resets. Understanding what each targets helps you choose wisely.</p>
+  <div class="header-line"></div>
+</header>
+
+<main class="container">
+  <div class="note-box">
+    <p class="note"><strong>For education, not prescription.</strong> Many detox methods lack strong clinical evidence. Medical detox programmes (alcohol, drug) and confirmed parasite or heavy metal protocols should always involve a qualified healthcare provider. Use this as an orientation guide, not a treatment plan.</p>
+  </div>
+
+  <!-- DIETARY & NUTRITIONAL -->
+  <div class="cat-header">
+    <h2>Dietary &amp; Nutritional</h2>
+    <div class="cat-label" style="color:var(--green)">food-based approaches</div>
+  </div>
+  <p class="sec-desc">These detoxes work by modifying what you eat and drink — removing certain foods, replacing meals with liquids, or returning to whole unprocessed ingredients to give the digestive system a rest.</p>
+  <div class="grid">
+    <article class="card">
+      <div class="stripe" style="background:var(--green)"></div>
+      <div class="inner">
+        <div class="label">Liquid reset</div>
+        <h3>Juice Detox / Cleanse</h3>
+        <p>Consuming only freshly pressed fruit and vegetable juices for 1–7 days. Removes fibre from the diet, which reduces digestive load while flooding the body with vitamins and antioxidants.</p>
+        <div class="tags"><span class="tag green">antioxidants</span><span class="tag green">digestive rest</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--blue)"></div>
+      <div class="inner">
+        <div class="label">Liquid reset</div>
+        <h3>Water Fasting Detox</h3>
+        <p>Consuming only water for a defined period (24–72 hours or longer under supervision). Triggers autophagy — the body's cellular clean-up process — and forces the liver to clear metabolic waste.</p>
+        <div class="tags"><span class="tag blue">autophagy</span><span class="tag blue">fasting</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--teal)"></div>
+      <div class="inner">
+        <div class="label">Herbal liquid</div>
+        <h3>Tea Detox (Teatox)</h3>
+        <p>Structured programmes using herbal tea blends — often senna, dandelion, ginger, or milk thistle — to support digestion, liver function, and mild diuretic effects over 14–28 days.</p>
+        <div class="tags"><span class="tag teal">liver support</span><span class="tag teal">herbs</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--green)"></div>
+      <div class="inner">
+        <div class="label">Liquid reset</div>
+        <h3>Smoothie Detox</h3>
+        <p>Replacing some or all meals with whole-food smoothies — retaining fibre unlike juice cleanses — to reduce processed food intake while maintaining nutrients and satiety.</p>
+        <div class="tags"><span class="tag green">fibre-rich</span><span class="tag green">whole food</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--accent)" style="background:#c8922a"></div>
+      <div class="inner">
+        <div class="label">Whole food</div>
+        <h3>Raw Food Detox</h3>
+        <p>Eating only uncooked, unprocessed plant foods. Maximises enzyme and nutrient content, eliminates additives and cooking by-products, and supports liver and gut function through high fibre intake.</p>
+        <div class="tags"><span class="tag accent">enzymes</span><span class="tag green">plant-based</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--pink)" style="background:#c86b8f"></div>
+      <div class="inner">
+        <div class="label">Elimination</div>
+        <h3>Sugar Detox</h3>
+        <p>Eliminating all added sugars and refined carbohydrates for 21–30 days to break glucose dependency, reduce inflammation, stabilise insulin, and reset taste sensitivity.</p>
+        <div class="tags"><span class="tag pink">insulin reset</span><span class="tag pink">inflammation</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--purple)"></div>
+      <div class="inner">
+        <div class="label">Structured diet</div>
+        <h3>Detox Diets</h3>
+        <p>Structured programmes such as Whole30 or elimination diets that remove common inflammatory foods — gluten, dairy, alcohol, legumes, processed foods — for 30 days, then systematically reintroduce them to identify sensitivities.</p>
+        <div class="tags"><span class="tag purple">Whole30</span><span class="tag purple">elimination</span></div>
+      </div>
+    </article>
+  </div>
+  <hr class="divider">
+
+  <!-- HERBAL & SUPPLEMENTAL -->
+  <div class="cat-header">
+    <h2>Herbal &amp; Supplemental</h2>
+    <div class="cat-label" style="color:var(--teal)">plant-based &amp; compound protocols</div>
+  </div>
+  <p class="sec-desc">These approaches use concentrated plant compounds, traditional medicine systems, or targeted supplements to support specific organs — primarily the liver, colon, and lymphatic system.</p>
+  <div class="grid">
+    <article class="card">
+      <div class="stripe" style="background:var(--teal)"></div>
+      <div class="inner">
+        <div class="label">Plant medicine</div>
+        <h3>Herbal Detox</h3>
+        <p>Using specific medicinal herbs — milk thistle, dandelion root, burdock, turmeric, chlorella — to support liver detoxification pathways, bile production, and lymphatic drainage.</p>
+        <div class="tags"><span class="tag teal">liver</span><span class="tag teal">lymphatic</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--accent)" style="background:#c8922a"></div>
+      <div class="inner">
+        <div class="label">Supplement protocol</div>
+        <h3>Detox Supplements &amp; Pills</h3>
+        <p>Packaged combinations of activated charcoal, psyllium husk, zeolite, N-acetyl cysteine (NAC), or liver-support compounds. Efficacy varies widely — quality and sourcing matter significantly.</p>
+        <div class="tags"><span class="tag accent">activated charcoal</span><span class="tag accent">NAC</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--purple)"></div>
+      <div class="inner">
+        <div class="label">Traditional system</div>
+        <h3>Ayurvedic Detox (Panchakarma)</h3>
+        <p>A classical five-step Ayurvedic purification system involving oil therapies, herbal enemas, nasal cleansing, and therapeutic emesis. Traditionally guided by an Ayurvedic practitioner over 1–4 weeks.</p>
+        <div class="tags"><span class="tag purple">Ayurveda</span><span class="tag purple">Panchakarma</span></div>
+      </div>
+    </article>
+  </div>
+  <hr class="divider">
+
+  <!-- PHYSICAL & THERAPEUTIC -->
+  <div class="cat-header">
+    <h2>Physical &amp; Therapeutic</h2>
+    <div class="cat-label" style="color:var(--blue)">body-based protocols</div>
+  </div>
+  <p class="sec-desc">These target specific organ systems or pathogen removal — ranging from colon irrigation to heavy metal chelation to sauna-based sweat protocols. Many require professional guidance.</p>
+  <div class="grid">
+    <article class="card">
+      <div class="stripe" style="background:var(--blue)"></div>
+      <div class="inner">
+        <div class="label">Digestive</div>
+        <h3>Colon Cleanse</h3>
+        <p>Removing waste and toxins from the large intestine using high-fibre diets, herbal laxatives, or professional colonic irrigation (hydrotherapy). Aims to reset gut microbiome balance and relieve constipation.</p>
+        <div class="tags"><span class="tag blue">gut reset</span><span class="tag blue">microbiome</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--accent)" style="background:#c8922a"></div>
+      <div class="inner">
+        <div class="label">Organ support</div>
+        <h3>Liver Detox</h3>
+        <p>Protocols combining dietary changes (reducing alcohol, processed foods, refined sugar) with liver-supportive herbs and nutrients — milk thistle, NAC, B vitamins, choline — to restore liver detox enzyme function.</p>
+        <div class="tags"><span class="tag accent">liver enzymes</span><span class="tag teal">bile flow</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--muted)" style="background:#7a7063"></div>
+      <div class="inner">
+        <div class="label">Metal removal</div>
+        <h3>Heavy Metal Detox</h3>
+        <p>Addressing accumulation of mercury, lead, arsenic, or cadmium through dietary binders (chlorella, cilantro, zeolite), nutritional support, or — in confirmed toxicity — medical chelation therapy under physician supervision.</p>
+        <div class="tags"><span class="tag teal">chelation</span><span class="tag accent">chlorella</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--green)"></div>
+      <div class="inner">
+        <div class="label">Pathogen protocol</div>
+        <h3>Parasite Detox</h3>
+        <p>A structured herbal or medical approach to eliminating intestinal or systemic parasites. Common herbs include black walnut hull, wormwood, and clove. Confirmed infections require professional diagnosis and may need antiparasitic medication.</p>
+        <div class="tags"><span class="tag green">antiparasitic herbs</span><span class="tag green">gut health</span></div>
+        <div style="margin-top:14px"><a href="/parasite-detox" style="font-size:12px;color:var(--green);text-decoration:none;border-bottom:1px solid rgba(143,190,107,.3)">View full Parasite Detox guide →</a></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--orange)" style="background:#e07c3a"></div>
+      <div class="inner">
+        <div class="label">Thermotherapy</div>
+        <h3>Infrared Sauna Detox</h3>
+        <p>Using infrared heat to raise core body temperature and induce deep sweating. Proposed to mobilise fat-soluble toxins, improve circulation, and support skin elimination. Regular sessions recommended over single use.</p>
+        <div class="tags"><span class="tag orange">sweat</span><span class="tag orange">circulation</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--teal)"></div>
+      <div class="inner">
+        <div class="label">Topical</div>
+        <h3>Detox Baths</h3>
+        <p>Soaking in baths enhanced with Epsom salt (magnesium sulphate), bentonite clay, or apple cider vinegar. Epsom salt may support magnesium absorption transdermally; clay may draw out surface impurities. Primarily relaxation-focused with mild supportive effects.</p>
+        <div class="tags"><span class="tag teal">Epsom salt</span><span class="tag teal">magnesium</span></div>
+      </div>
+    </article>
+  </div>
+  <hr class="divider">
+
+  <!-- MEDICAL & LIFESTYLE -->
+  <div class="cat-header">
+    <h2>Medical &amp; Lifestyle</h2>
+    <div class="cat-label" style="color:var(--red)">clinical &amp; behavioural detox</div>
+  </div>
+  <p class="sec-desc">These address chemical dependence or behavioural excess — some require medical supervision, others are purely habit-based resets with significant wellbeing benefits.</p>
+  <div class="grid">
+    <article class="card">
+      <div class="stripe" style="background:var(--red)"></div>
+      <div class="inner">
+        <div class="label">Substance — medical</div>
+        <h3>Alcohol Detox</h3>
+        <p>Medically supervised withdrawal from alcohol dependence. Severe cases carry life-threatening risks (seizures, delirium tremens) and require clinical management, tapering protocols, and nutritional support — never attempt alone if dependent.</p>
+        <div class="tags"><span class="tag red">medical supervision</span><span class="tag red">withdrawal</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--red)"></div>
+      <div class="inner">
+        <div class="label">Substance — clinical</div>
+        <h3>Drug Detox (Medical Detox)</h3>
+        <p>Clinical programmes managing withdrawal from opioids, benzodiazepines, stimulants, or other substances. Involves medical monitoring, pharmacological support, and transition to ongoing rehabilitation. Always requires professional oversight.</p>
+        <div class="tags"><span class="tag red">clinical programme</span><span class="tag red">rehabilitation</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--purple)"></div>
+      <div class="inner">
+        <div class="label">Behavioural</div>
+        <h3>Digital Detox</h3>
+        <p>A deliberate break from screens, social media, and digital devices — typically 24 hours to 30 days. Associated with reduced cortisol, improved sleep quality, better attention span, and stronger in-person social connection.</p>
+        <div class="tags"><span class="tag purple">cortisol</span><span class="tag purple">sleep</span><span class="tag purple">attention</span></div>
+      </div>
+    </article>
+  </div>
+
+  <div class="note-box highlight">
+    <p class="note"><strong>Choosing a detox.</strong> The most effective detox for most people is simply reducing ultra-processed foods, alcohol, and added sugars while increasing water, vegetables, fibre, and sleep — allowing the liver, kidneys, and gut to do what they are designed to do. More intensive protocols are best used for specific, identified needs rather than as a general starting point.</p>
+  </div>
+
+  <div class="note-box warning">
+    <p class="note"><strong>Medical detoxes require professional supervision.</strong> Alcohol detox, drug detox, and confirmed heavy metal or parasite infections should never be managed without a qualified healthcare provider. See the <a href="/parasite-detox">Parasite Detox guide</a> for the full herb-forward protocol.</p>
+  </div>
+</main>
+</body>
+</html>
