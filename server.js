@@ -25,7 +25,10 @@ const server = http.createServer(async (request, response) => {
     const url = new URL(request.url || "/", `http://${request.headers.host}`);
     let pathname = url.pathname;
 
-    // Route /nutrition -> nutrition.html
+    // Route / and /nutrition -> nutrition.html
+    if (pathname === "/" || pathname === "") {
+      pathname = "/nutrition.html";
+    }
     if (pathname === "/nutrition" || pathname === "/nutrition/") {
       pathname = "/nutrition.html";
     }
@@ -66,8 +69,14 @@ const server = http.createServer(async (request, response) => {
     if (pathname === "/adaptogens" || pathname === "/adaptogens/") {
       pathname = "/adaptogens.html";
     }
+    if (pathname === "/herbology" || pathname === "/herbology/") {
+      pathname = "/herbology.html";
+    }
     if (pathname === "/functional-foods" || pathname === "/functional-foods/") {
       pathname = "/functional-foods.html";
+    }
+    if (pathname === "/food-for-mood" || pathname === "/food-for-mood/") {
+      pathname = "/food-for-mood.html";
     }
     if (pathname === "/seasonal-rotation" || pathname === "/seasonal-rotation/") {
       pathname = "/seasonal-rotation.html";
@@ -82,7 +91,7 @@ const server = http.createServer(async (request, response) => {
       }
     }
 
-    const clean = pathname === "/" ? "index.html" : pathname.replace(/^\/+/, "");
+    const clean = pathname.replace(/^\/+/, "");
     const filePath = path.join(__dirname, clean);
 
     if (!filePath.startsWith(__dirname) || !existsSync(filePath)) {

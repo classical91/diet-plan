@@ -140,6 +140,8 @@
   <button class="tab" onclick="showTab('vitamins')">Vitamins</button>
   <button class="tab" onclick="showTab('keto')">Keto Vitamins</button>
   <button class="tab" onclick="showTab('tables')">Health Tables</button>
+  <button class="tab" onclick="showTab('inflammation')">Inflammation</button>
+  <button class="tab" onclick="showTab('focus')">Focus</button>
   <button class="tab" onclick="showTab('water')">Water-Soluble</button>
   <button class="tab" onclick="showTab('symptoms')">Symptom Guide</button>
 </div>
@@ -189,6 +191,51 @@
   <div class="section-title" style="font-size:16px;margin-bottom:14px;color:var(--teal)">Other Nutrients</div>
   <div class="cards-row" id="otherCards"></div>
   <div class="table-wrap"><table id="otherTable"></table></div>
+</div>
+
+<!-- INFLAMMATION -->
+<div class="section" id="tab-inflammation">
+  <div class="section-title">Vitamins & Minerals That Fight Inflammation</div>
+  <div class="section-desc">Anti-inflammatory nutrition works best as a balanced food pattern: whole foods first, supplements only when needed, and clinician guidance for individual dosing or health conditions.</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Nutrient</th><th>Main anti-inflammatory role</th><th>Food-first sources</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><a class="t-link" href="/overview/vitamin-c">Vitamin C</a></td><td>Antioxidant support that helps neutralize free radicals and reduce oxidative stress.</td><td>Citrus, bell peppers, broccoli, kale, strawberries</td></tr>
+        <tr><td><a class="t-link" href="/overview/vitamin-d">Vitamin D</a></td><td>Helps regulate immune activity and supports a healthier inflammatory response.</td><td>Sunlight, sardines, mackerel, egg yolks, fortified foods</td></tr>
+        <tr><td><a class="t-link" href="/overview/vitamin-e">Vitamin E</a></td><td>Fat-soluble antioxidant that helps protect cell membranes from oxidative damage.</td><td>Almonds, sunflower seeds, avocado, spinach</td></tr>
+        <tr><td><a class="t-link" href="/overview/magnesium">Magnesium</a></td><td>Supports immune regulation, stress resilience, blood-sugar control, and calmer inflammatory signaling.</td><td>Pumpkin seeds, spinach, almonds, legumes, dark chocolate</td></tr>
+        <tr><td><a class="t-link" href="/overview/zinc">Zinc</a></td><td>Supports immune function, tissue repair, and balanced inflammatory response.</td><td>Beef, shellfish, pumpkin seeds, chicken, legumes</td></tr>
+        <tr><td><a class="t-link" href="/overview/omega-3-fatty-acids">Omega-3 fatty acids</a></td><td>EPA and DHA help resolve inflammation and support heart, brain, mood, and joint health.</td><td>Salmon, sardines, mackerel, chia seeds, flaxseed, walnuts</td></tr>
+        <tr><td><a class="t-link" href="/overview/selenium">Selenium</a></td><td>Antioxidant mineral used in glutathione-related defenses that protect cells from oxidative stress.</td><td>Brazil nuts, tuna, eggs, sardines, turkey</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="section-desc">Use food sources whenever possible. If considering supplements, ask a healthcare professional about appropriate amounts, interactions, and whether testing is useful.</div>
+</div>
+
+<!-- FOCUS -->
+<div class="section" id="tab-focus">
+  <div class="section-title">Vitamins & Minerals for Focus</div>
+  <div class="section-desc">Focus depends on sleep, hydration, blood sugar, movement, and enough brain-supportive nutrients. Use food first; supplements are most useful when intake is low, deficiency is likely, or testing shows a need.</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Nutrient</th><th>How it connects to focus</th><th>Food-first sources</th><th>Supplement caution</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><a class="t-link" href="/overview/iron">Iron</a></td><td>Supports oxygen transport to the brain. Low iron can contribute to fatigue, low stamina, and cognitive strain.</td><td>Red meat, liver, sardines, lentils, spinach, pumpkin seeds</td><td>Do not supplement without testing ferritin/iron status; excess iron can be harmful.</td></tr>
+        <tr><td><a class="t-link" href="/overview/omega-3-fatty-acids">Omega-3 fatty acids</a></td><td>DHA is concentrated in the brain, and omega-3 intake supports brain and mood health.</td><td>Salmon, sardines, mackerel, trout, chia seeds, flaxseed, walnuts</td><td>High-dose EPA/DHA can affect bleeding risk and immune response; ask a clinician if on blood thinners.</td></tr>
+        <tr><td><a class="t-link" href="/overview/vitamin-b6-pyridoxine">Vitamin B6</a></td><td>Helps make neurotransmitters and supports normal nervous-system function.</td><td>Salmon, turkey, chicken, potatoes, bananas, chickpeas</td><td>Chronic high-dose B6 supplements can cause nerve symptoms.</td></tr>
+        <tr><td><a class="t-link" href="/overview/vitamin-b12-cobalamin">Vitamin B12</a></td><td>Supports nerve function and red blood cell formation; low B12 can cause fatigue and cognitive symptoms.</td><td>Fish, beef, eggs, dairy, fortified foods</td><td>Vegans, older adults, and people with absorption issues may need testing or supplementation.</td></tr>
+        <tr><td><a class="t-link" href="/overview/magnesium">Magnesium</a></td><td>Supports nerve signaling, muscle function, sleep quality, and stress regulation, all of which affect attention.</td><td>Pumpkin seeds, spinach, almonds, black beans, dark chocolate</td><td>High-dose supplements can cause diarrhea and interact with some medications.</td></tr>
+        <tr><td><a class="t-link" href="/overview/vitamin-d">Vitamin D</a></td><td>Supports brain, immune, and mood-related functions; low status may worsen fatigue or low mood.</td><td>Sunlight, sardines, mackerel, egg yolks, fortified milk</td><td>Test 25-OH vitamin D before high-dose supplementation; excess can be toxic.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="section-desc">Balanced meals matter more than isolated pills: pair protein, complex carbohydrates, healthy fats, hydration, and minerals to avoid energy crashes that feel like poor focus.</div>
 </div>
 
 <!-- WATER-SOLUBLE -->
@@ -561,7 +608,9 @@ function showTab(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
-  event.target.classList.add('active');
+  const tab = typeof event !== 'undefined' && event.target ? event.target : document.querySelector(`.tab[onclick="showTab('${id}')"]`);
+  if (tab) tab.classList.add('active');
+  if (window.location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
 }
 
 // Landing card linking to the nutrient's detail page.
@@ -777,6 +826,8 @@ if (pathMatch) {
   if (item) renderDetail(item); else renderNotFound(slug);
 } else {
   renderLanding();
+  const hashTab = window.location.hash.replace(/^#/, '');
+  if (hashTab && document.getElementById('tab-' + hashTab)) showTab(hashTab);
 }
 </script>
 </body>

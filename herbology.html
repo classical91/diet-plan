@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herbology | NutriMind Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/nav.css">
+<style>
+  :root{--bg:#0f0d0a;--surface:#1a1714;--card:#201d19;--border:#2e2a24;--accent:#c8922a;--green:#8fbe6b;--blue:#5b9bd5;--pink:#c86b8f;--purple:#9b7de8;--teal:#5bbfb5;--red:#e05c5c;--text:#f0ebe3;--muted:#7a7063;--soft:#b0a898;--warn:#e8b84b}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(143,190,107,.05) 0%,transparent 50%)}
+  header{text-align:center;margin:18px auto 34px;max-width:900px}
+  .sub-label{font-size:11px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(34px,6vw,64px);font-weight:900;letter-spacing:-.03em;line-height:.95}
+  h1 em{color:var(--accent);font-style:italic}
+  .lead{color:var(--soft);font-size:15px;line-height:1.7;max-width:780px;margin:18px auto 0}
+  .header-line{width:54px;height:2px;background:var(--accent);margin:18px auto 0;opacity:.55}
+  .container{max-width:1100px;margin:0 auto}
+  .notice{background:linear-gradient(145deg,rgba(200,146,42,.12),rgba(143,190,107,.06));border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:20px;color:var(--soft);line-height:1.65;font-size:14px}
+  .notice strong{color:var(--accent)}
+  .section-nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px}
+  .section-nav a{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:8px 12px;border:1px solid var(--border);border-radius:20px;transition:all .15s}
+  .section-nav a:hover,.section-nav a:focus{border-color:var(--accent);color:var(--accent);background:rgba(200,146,42,.08);outline:none}
+  .controls{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 18px}
+  .search-wrap{flex:1;min-width:240px;position:relative}
+  .search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:12px 14px;font-size:13px;outline:none;font-family:'DM Sans',sans-serif}
+  .search-wrap input:focus{border-color:var(--accent)}
+  .filters{display:flex;gap:8px;flex-wrap:wrap}
+  .filter-btn{background:none;border:1px solid var(--border);color:var(--muted);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:8px 12px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif}
+  .filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(200,146,42,.08)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin-bottom:32px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s}
+  .card:hover{border-color:#3e3a32;transform:translateY(-2px)}
+  .stripe{height:3px;background:var(--accent)}
+  .inner{padding:18px}
+  .card-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+  .card h2{font-family:'Playfair Display',serif;font-size:20px;line-height:1.12}
+  .latin{font-size:12px;color:var(--muted);font-style:italic;margin-top:3px}
+  .role{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
+  .summary{color:var(--soft);font-size:13px;line-height:1.6;margin:12px 0}
+  .details{border-top:1px solid var(--border);padding-top:12px;margin-top:12px}
+  .details h3{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 8px}
+  ul{list-style:none;display:grid;gap:7px}
+  li{font-size:13px;color:var(--soft);line-height:1.45;display:flex;gap:8px}
+  li::before{content:'-';color:var(--accent);flex-shrink:0}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+  .tag{font-size:10px;padding:4px 9px;border-radius:20px;border:1px solid rgba(200,146,42,.28);color:var(--accent);background:rgba(200,146,42,.07)}
+  .tag.green{border-color:rgba(143,190,107,.28);color:var(--green);background:rgba(143,190,107,.07)}
+  .tag.blue{border-color:rgba(91,155,213,.28);color:var(--blue);background:rgba(91,155,213,.07)}
+  .tag.purple{border-color:rgba(155,125,232,.28);color:var(--purple);background:rgba(155,125,232,.07)}
+  .tag.teal{border-color:rgba(91,191,181,.28);color:var(--teal);background:rgba(91,191,181,.07)}
+  .section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;margin:22px 0}
+  .section,#grid{scroll-margin-top:76px}
+  .section h2{font-family:'Playfair Display',serif;font-size:25px;margin-bottom:10px}
+  .section p,.section li{color:var(--soft);font-size:14px;line-height:1.65}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin-top:14px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{padding:12px 14px;text-align:left;color:var(--accent);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:var(--surface);border-bottom:1px solid var(--border)}
+  td{padding:12px 14px;border-bottom:1px solid var(--border);color:var(--soft);line-height:1.55;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td:first-child{color:var(--text);font-weight:500}
+  .no-results{text-align:center;color:var(--muted);font-family:'Playfair Display',serif;font-size:20px;margin:42px 0;display:none}
+  .search-deeplink-target{outline:1px solid var(--accent);box-shadow:0 0 0 4px rgba(200,146,42,.12)}
+  @media(max-width:900px){body{padding-top:24px}.two-col{grid-template-columns:1fr}.role{white-space:normal}}
+</style>
+</head>
+<body>
+<nav class="top-nav" aria-label="Primary"></nav>
+<script src="/nav.js"></script>
+
+<header>
+  <div class="sub-label">Reference Guide</div>
+  <h1>Herbology <em>Basics</em></h1>
+  <p class="lead">A practical herbal reference for culinary herbs, calming nervines, digestive bitters, immune-season herbs, adaptogens, and safety rules before using stronger extracts.</p>
+  <div class="header-line"></div>
+</header>
+
+<main class="container">
+  <div class="notice"><strong>Use herbs with respect.</strong> Culinary herbs are usually gentle, but concentrated tinctures, capsules, essential oils, and multi-herb protocols can interact with medications, pregnancy, blood pressure, blood sugar, liver health, and autoimmune conditions.</div>
+
+  <nav class="section-nav" aria-label="Herbology sections">
+    <a href="#grid">Herb Cards</a>
+    <a href="#muscle-tension">Muscle Knots</a>
+    <a href="#antiviral">Antiviral</a>
+    <a href="#ethnobotanicals">Ethnobotanicals</a>
+    <a href="#preparation-types">Preparation Types</a>
+  </nav>
+
+  <div class="controls">
+    <div class="search-wrap"><input id="search" placeholder="Search herbs, uses, cautions..." oninput="filterCards()"></div>
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">All</button>
+      <button class="filter-btn" data-filter="culinary" onclick="setFilter('culinary')">Culinary</button>
+      <button class="filter-btn" data-filter="calm" onclick="setFilter('calm')">Calm</button>
+      <button class="filter-btn" data-filter="digestive" onclick="setFilter('digestive')">Digestive</button>
+      <button class="filter-btn" data-filter="immune" onclick="setFilter('immune')">Immune</button>
+      <button class="filter-btn" data-filter="adaptogen" onclick="setFilter('adaptogen')">Adaptogen</button>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="no-results" id="noResults">No herbs match that search</div>
+
+  <section class="section two-col">
+    <div>
+      <h2>How to Think About Herbs</h2>
+      <ul>
+        <li>Culinary herbs support food quality and are the safest daily starting point.</li>
+        <li>Teas are generally gentler than tinctures, capsules, and essential oils.</li>
+        <li>Single-herb trials are easier to judge than stacking many herbs at once.</li>
+        <li>Use the lowest effective amount and track sleep, digestion, mood, and symptoms.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>When to Be Careful</h2>
+      <ul>
+        <li>Pregnancy, breastfeeding, liver disease, kidney disease, seizure history, or autoimmune disease.</li>
+        <li>Blood thinners, sedatives, thyroid medication, diabetes medication, blood pressure medication, or immunosuppressants.</li>
+        <li>Any herb sold as an essential oil for internal use, parasite cleanse, detox cure, or emergency treatment.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="muscle-tension">
+    <h2>Herbology & Muscle Knots</h2>
+    <p>In herbology, support for trigger knots sits under herbal medicine or phytotherapy: the use of plant-based remedies to support muscle tension, pain, inflammation, sleep, and recovery. Muscle knots are usually myofascial trigger points: tight, tender muscle areas tied to overuse, static posture, stress, poor sleep, dehydration, electrolyte strain, or injury.</p>
+    <p style="margin-top:10px">Herbs can support comfort, relaxation, inflammation balance, and recovery, but they do not mechanically release a knot by themselves. The core fixes are usually movement, posture changes, heat, gentle stretching, massage, trigger-point work, physical therapy, and finding the cause.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Herbal angle</th><th>Useful herbs</th><th>How it connects</th><th>Caution</th></tr></thead>
+        <tbody>
+          <tr><td>Calming / muscle tension</td><td>Valerian root, chamomile, lavender</td><td>May support relaxation, sleep, and nervous-system downshifting when tension is stress-related.</td><td>Can be sedating; use caution with alcohol, sedatives, driving, pregnancy, and complex medication routines.</td></tr>
+          <tr><td>Topical cooling</td><td>Peppermint / menthol</td><td>May reduce pain perception and create a cooling effect over sore areas.</td><td>Use diluted topical products; avoid eyes, broken skin, and casual internal use of peppermint oil.</td></tr>
+          <tr><td>Topical soreness</td><td>Arnica</td><td>Commonly used in topical creams or balms for soreness, bruising, and post-activity discomfort.</td><td>Topical use only on intact skin; avoid internal use unless medically supervised.</td></tr>
+          <tr><td>Inflammation support</td><td>Turmeric, ginger, rosemary, boswellia</td><td>Supports a broader anti-inflammatory food pattern around training, soreness, and joint comfort.</td><td>Concentrated extracts can interact with blood thinners, surgery, reflux, gallbladder issues, or medications.</td></tr>
+          <tr><td>Nervous-system relaxation</td><td>Chamomile, lavender, lemon balm, tulsi, ashwagandha</td><td>May help when knots are linked to stress tension, poor sleep, or a guarded nervous system.</td><td>Use caution with sedatives, pregnancy, thyroid medication, autoimmune conditions, or liver concerns.</td></tr>
+          <tr><td>Mineral support</td><td>Nettle, mineral-rich teas, magnesium-rich foods</td><td>Can support hydration and mineral intake, especially when training, sweating, or under-eating.</td><td>Magnesium evidence for cramps is mixed, and cramps are not the same as knots.</td></tr>
+          <tr><td>Warming circulation</td><td>Ginger, cayenne-style rubs</td><td>May create warmth and increase local comfort before mobility work.</td><td>Capsaicin/cayenne products can burn or irritate; wash hands and avoid sensitive skin.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:14px">Common forms include teas, tinctures, essential-oil aromatherapy, properly diluted topical oils, creams, and balms. Topicals can help the sore area feel better; teas and capsules act more systemically through relaxation, inflammation support, or recovery.</p>
+    <p style="margin-top:14px">Get medical or physical-therapy guidance if pain is severe, spreading, associated with weakness/numbness, follows injury, limits movement, or does not improve with basic care.</p>
+  </section>
+
+  <section class="section" id="antiviral">
+    <h2>Antiviral & Immune-Season Herbs</h2>
+    <p>Antiviral herbs are plants with compounds studied for immune support, respiratory-season comfort, or antiviral activity. In practical herbology, they are best framed as supportive tools: they may help the body respond during cold and flu season or soothe symptoms, but they are not substitutes for vaccination, testing, antivirals, antibiotics when needed, or medical care.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Herb</th><th>Why it is used</th><th>Common form</th><th>Caution</th></tr></thead>
+        <tbody>
+          <tr><td>Elderberry</td><td>Used for cold and flu-season support; rich in dark polyphenols and traditionally used to reduce symptom burden.</td><td>Syrup, lozenge, tea, capsule</td><td>Use cooked/prepared products; raw berries, leaves, and stems can be unsafe.</td></tr>
+          <tr><td>Echinacea</td><td>Used short-term at the first sign of a cold to support immune response.</td><td>Tea, tincture, capsule</td><td>Use caution with autoimmune disease, immunosuppressants, or Asteraceae allergy.</td></tr>
+          <tr><td>Garlic</td><td>Contains allicin-related sulfur compounds; used for immune, cardiovascular, and antimicrobial-style food support.</td><td>Fresh crushed garlic, food, capsule</td><td>Can irritate reflux and may increase bleeding risk with anticoagulants or surgery.</td></tr>
+          <tr><td>Ginger</td><td>Gingerols support inflammation balance and nausea relief; often used in respiratory-season teas.</td><td>Fresh tea, decoction, food</td><td>May aggravate reflux; use caution with blood thinners at high supplemental doses.</td></tr>
+          <tr><td>Licorice Root</td><td>Glycyrrhizin has been studied for antiviral activity and throat/upper-respiratory soothing.</td><td>Tea, decoction, DGL products</td><td>Can raise blood pressure and lower potassium; avoid with hypertension, kidney disease, pregnancy, and many medications unless clinician-guided.</td></tr>
+          <tr><td>Oregano</td><td>Carvacrol and thymol are studied for antimicrobial activity; oregano oil is much stronger than culinary oregano.</td><td>Culinary herb, diluted topical oil, capsule</td><td>Essential oil can irritate or burn tissue; avoid casual internal use and use caution with pregnancy or blood thinners.</td></tr>
+          <tr><td>Lemon Balm</td><td>Traditionally calming and studied topically for herpes-simplex related cold sores.</td><td>Tea, tincture, topical cream</td><td>Can be sedating; check thyroid-medication and sedative interactions.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:14px">Use these as part of a broader foundation: sleep, hydration, protein, colorful plants, hand hygiene, fresh air, and timely medical care when symptoms are severe, persistent, or unusual.</p>
+  </section>
+
+  <section class="section" id="ethnobotanicals">
+    <h2>Ethnobotanicals</h2>
+    <p>Ethnobotanicals are plants used within specific cultures for medicinal, spiritual, psychoactive, ceremonial, or therapeutic purposes. This page treats them as cultural and safety reference material only. Some are ordinary culinary or medicinal herbs; others are controlled, illegal, or high-risk psychoactive plants depending on jurisdiction and context.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Plant</th><th>Traditional context</th><th>Category</th><th>Safety / legal note</th></tr></thead>
+        <tbody>
+          <tr><td>Ayahuasca</td><td>South American ceremonial use involving Banisteriopsis caapi and Psychotria viridis.</td><td>Psychoactive ceremonial plant mixture</td><td>Contains DMT-related legal risk in many places; avoid unsupervised or recreational framing.</td></tr>
+          <tr><td>Kava</td><td>South Pacific social and ceremonial drink used for calm and relaxation.</td><td>Calming ethnobotanical</td><td>Can interact with sedatives/alcohol and has liver-safety concerns.</td></tr>
+          <tr><td>Kratom</td><td>Southeast Asian traditional use for stimulant-like and pain-related effects.</td><td>High-risk psychoactive botanical</td><td>FDA warns against use for medical treatment because of serious adverse-event and dependence risks.</td></tr>
+          <tr><td>Peyote</td><td>Native American ceremonial cactus containing mescaline.</td><td>Controlled ceremonial cactus</td><td>Generally illegal outside narrow protected religious contexts; conservation concerns also matter.</td></tr>
+          <tr><td>San Pedro</td><td>Andean traditional cactus used in ceremonial and folk-healing contexts.</td><td>Psychoactive cactus</td><td>Legal status varies; psychoactive use may be controlled.</td></tr>
+          <tr><td>Iboga</td><td>Central African spiritual practice, especially Bwiti contexts.</td><td>Powerful psychoactive root bark</td><td>High medical risk, including cardiac concerns; not appropriate for casual use.</td></tr>
+          <tr><td>Salvia divinorum</td><td>Mazatec ceremonial use.</td><td>Dissociative psychoactive plant</td><td>Legal status varies; acute effects can be intense and disorienting.</td></tr>
+          <tr><td>Mimosa hostilis</td><td>Used in some South American and traditional contexts; known for DMT-containing root bark.</td><td>Psychoactive plant material</td><td>DMT-related legal risk; do not frame as a preparation guide.</td></tr>
+          <tr><td>Turmeric</td><td>Indian and Southeast Asian traditional medicine and culinary use.</td><td>Medicinal culinary rhizome</td><td>Food use is generally safer than concentrated extracts.</td></tr>
+          <tr><td>Rhodiola rosea</td><td>Traditional use in Europe and Asia for fatigue and resilience.</td><td>Adaptogen</td><td>Can feel stimulating; caution with anxiety, insomnia, or bipolar disorder.</td></tr>
+          <tr><td>Ginseng</td><td>Traditional Chinese, Korean, and North American medicine.</td><td>Adaptogen / stimulant</td><td>Can affect sleep, blood sugar, blood pressure, and medications.</td></tr>
+          <tr><td>Ginger</td><td>Global culinary and traditional digestive medicine.</td><td>Digestive medicinal food</td><td>High supplemental doses may interact with blood thinners.</td></tr>
+          <tr><td>Cacao</td><td>Mesoamerican ceremonial and food use.</td><td>Stimulant / mood-support food</td><td>Contains theobromine and caffeine-like compounds; tolerance varies.</td></tr>
+          <tr><td>Burdock</td><td>Traditional Chinese and European use as a bitter root and food-herb.</td><td>Digestive / skin-support herb</td><td>Use caution with Asteraceae allergy and diuretic medications.</td></tr>
+          <tr><td>St. John's Wort</td><td>European traditional use for mood.</td><td>Mood herb</td><td>Major drug interactions, including antidepressants, birth control, anticoagulants, and transplant medications.</td></tr>
+          <tr><td>Echinacea</td><td>Native American traditional medicine and immune-season use.</td><td>Immune-season herb</td><td>Use caution with autoimmune disease, immunosuppressants, or Asteraceae allergy.</td></tr>
+          <tr><td>Ginkgo biloba</td><td>Traditional Chinese medicine and modern cognitive-support use.</td><td>Cognitive-support botanical</td><td>Can interact with anticoagulants/antiplatelets and may increase bleeding risk.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:14px">Do not treat ethnobotanical history as proof of safety. Cultural context, legality, dose, preparation, medical history, and medication interactions all matter.</p>
+  </section>
+
+  <section class="section" id="preparation-types">
+    <h2>Preparation Types</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Preparation</th><th>Best For</th><th>Safety Note</th></tr></thead>
+        <tbody>
+          <tr><td>Tea / infusion</td><td>Leaves, flowers, and gentle daily support such as mint, chamomile, or tulsi.</td><td>Usually gentle, but still check interactions for medicinal herbs.</td></tr>
+          <tr><td>Decoction</td><td>Roots, barks, berries, and tougher plant parts such as ginger, dandelion root, or schisandra.</td><td>Long simmer can make stronger extracts than a quick tea.</td></tr>
+          <tr><td>Tincture</td><td>More concentrated, portable extracts.</td><td>Higher interaction risk; dose matters more.</td></tr>
+          <tr><td>Capsule / standardized extract</td><td>Measured dosing for specific goals.</td><td>Closest to supplement use; verify quality and contraindications.</td></tr>
+          <tr><td>Essential oil</td><td>Aromatherapy or topical use when properly diluted.</td><td>Do not swallow casually; concentrated oils can irritate or harm tissue.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script>
+const HERBS = [
+  {name:"Ginger",latin:"Zingiber officinale",role:"Digestive",cats:["culinary","digestive"],summary:"Warming root used for nausea, digestion, circulation, and cold-weather meals.",uses:["Fresh tea for nausea or sluggish digestion","Grated into soups, stir-fries, rice bowls, or smoothies","Pairs well with lemon, honey, turmeric, and mint"],cautions:["Can aggravate reflux in some people","Use caution with blood thinners or surgery at high supplemental doses"]},
+  {name:"Elderberry",latin:"Sambucus nigra",role:"Immune Season",cats:["immune"],summary:"Dark berry used in syrups, lozenges, and teas for cold and flu-season support.",uses:["Prepared syrup or lozenge during respiratory season","Tea blends with ginger, cinnamon, or honey","Best used as supportive care, not as a replacement for medical treatment"],cautions:["Use cooked/prepared products; raw berries, leaves, and stems can be unsafe","Use caution with autoimmune disease or immune-active medication"]},
+  {name:"Turmeric",latin:"Curcuma longa",role:"Anti-inflammatory",cats:["culinary","digestive"],summary:"Golden rhizome known for curcumin, a heavily studied anti-inflammatory compound with poor absorption unless paired well.",uses:["Add to curries, soups, eggs, and rice bowls","Pair with black pepper and fat for better absorption","Use culinary amounts as the safest default"],cautions:["High-dose extracts can interact with blood thinners","Use caution with gallbladder issues or liver concerns"]},
+  {name:"Peppermint",latin:"Mentha x piperita",role:"Cooling Digestive",cats:["culinary","digestive"],summary:"Cooling aromatic herb used for digestive spasms, nausea, breath, and a refreshing tea.",uses:["Tea after meals","Fresh leaves in water, salads, sauces, and smoothies","Enteric-coated peppermint oil is a separate stronger product"],cautions:["Can worsen reflux","Peppermint oil is concentrated and should not be used casually"]},
+  {name:"Chamomile",latin:"Matricaria chamomilla",role:"Calm",cats:["calm"],summary:"Gentle flower tea commonly used for relaxation, sleep routines, and mild digestive tension.",uses:["Evening tea","Blend with lavender, lemon balm, or mint","Good first herb when a gentle calm effect is desired"],cautions:["Avoid if allergic to ragweed-family plants","Use caution with sedatives or anticoagulants"]},
+  {name:"Valerian Root",latin:"Valeriana officinalis",role:"Sleep / Tension",cats:["calm"],summary:"Sedating root traditionally used for sleep support, nervous-system tension, and occasional muscle tightness linked to stress.",uses:["Evening tea, capsule, or tincture when sleep and tension are connected","Often paired with lemon balm or chamomile","Best used when relaxation is the goal, not daytime focus"],cautions:["Can cause drowsiness or grogginess","Avoid combining with alcohol, sedatives, or driving until you know your response"]},
+  {name:"Lavender",latin:"Lavandula angustifolia",role:"Calm / Topical",cats:["calm"],summary:"Aromatic flower used in teas, aromatherapy, and diluted topical oils for relaxation and tension comfort.",uses:["Aromatherapy during wind-down routines","Diluted topical oil in massage blends","Tea blends with chamomile or lemon balm"],cautions:["Essential oils must be diluted for skin use","Use caution with sedatives and avoid casual internal essential-oil use"]},
+  {name:"Arnica",latin:"Arnica montana",role:"Topical Soreness",cats:["calm"],summary:"Flower commonly used in topical creams and balms for muscle soreness, bruising, and post-activity discomfort.",uses:["Topical cream or balm on intact skin after activity","Use alongside rest, gentle mobility, and heat or ice as appropriate","Best framed as comfort support, not a trigger-point cure"],cautions:["Do not apply to broken skin","Do not take internally unless medically supervised; can be toxic"]},
+  {name:"Tulsi / Holy Basil",latin:"Ocimum tenuiflorum",role:"Adaptogen",cats:["adaptogen","calm","immune"],summary:"Daily-use adaptogenic herb used for stress tone, respiratory season, and emotional steadiness.",uses:["Tea during stressful work periods","Blend with ginger or mint","Useful when stress support should stay gentle"],cautions:["May affect blood sugar or blood thinning","Pregnancy safety is not well established"]},
+  {name:"Dandelion",latin:"Taraxacum officinale",role:"Bitter Digestive",cats:["digestive"],summary:"Bitter leaf and root used for digestion, bile-flow support, and mineral-rich greens.",uses:["Roasted root tea","Young greens in salad if tolerated","Bitter tea before meals for digestive support"],cautions:["Avoid with bile duct obstruction or gallbladder attacks","Use caution with diuretics, lithium, and ragweed-family allergy"]},
+  {name:"Echinacea",latin:"Echinacea spp.",role:"Immune Season",cats:["immune"],summary:"Immune-season herb commonly used short-term at the first sign of a cold.",uses:["Short-term tea, tincture, or capsule during cold season","Often paired with elderberry, ginger, or honey","Best framed as support, not guaranteed prevention"],cautions:["Use caution with autoimmune disease or immunosuppressants","Avoid if allergic to Asteraceae plants"]},
+  {name:"Garlic",latin:"Allium sativum",role:"Immune Food",cats:["culinary","immune"],summary:"Pungent culinary herb with allicin-related sulfur compounds used for immune and antimicrobial-style food support.",uses:["Crush fresh garlic and let it sit briefly before cooking","Use in soups, dressings, beans, meats, and vegetables","Pairs with ginger, lemon, oregano, and olive oil"],cautions:["Can irritate reflux or gastritis","Use caution with anticoagulants, surgery, or high-dose supplements"]},
+  {name:"Licorice Root",latin:"Glycyrrhiza glabra",role:"Throat / Immune",cats:["immune"],summary:"Sweet root used for throat soothing and upper-respiratory support; glycyrrhizin has been studied for antiviral activity.",uses:["Tea or decoction for throat comfort","DGL forms are used differently for digestive lining support","Best used short-term unless clinician-guided"],cautions:["Can raise blood pressure and lower potassium","Avoid with hypertension, kidney disease, pregnancy, diuretics, heart medication, or corticosteroids unless clinician-guided"]},
+  {name:"Oregano",latin:"Origanum vulgare",role:"Antimicrobial",cats:["culinary","immune"],summary:"Culinary herb whose carvacrol and thymol compounds are studied for antimicrobial activity; oregano oil is much stronger.",uses:["Use culinary oregano freely in food","Diluted topical or capsule products should be treated as concentrated supplements","Pairs with garlic, thyme, rosemary, and olive oil"],cautions:["Essential oil can irritate or burn tissue","Avoid casual internal essential-oil use; use caution with pregnancy, blood thinners, or allergies"]},
+  {name:"Lemon Balm",latin:"Melissa officinalis",role:"Calm / Antiviral",cats:["calm","immune"],summary:"Gentle lemon-scented herb used for calm, sleep support, digestion, and topical herpes-simplex cold-sore support.",uses:["Tea for nervous-system calm","Topical cream preparations for cold-sore support","Blends well with chamomile, lavender, and peppermint"],cautions:["Can be sedating","Check thyroid medication and sedative interactions"]},
+  {name:"Ashwagandha",latin:"Withania somnifera",role:"Adaptogen",cats:["adaptogen","calm"],summary:"Grounding adaptogen used for stress resilience, sleep quality, and recovery.",uses:["Evening or with food depending on response","Often used when stress feels wired, tense, or depleting","Can pair with magnesium-focused evening routines"],cautions:["Avoid in pregnancy unless clinician-approved","Use caution with thyroid medication, sedatives, autoimmune conditions, or liver concerns"]},
+  {name:"Nettle",latin:"Urtica dioica",role:"Mineral Support",cats:["immune"],summary:"Mineral-rich leaf used as a nourishing tea and seasonal support herb.",uses:["Long infusion for mineral support","Spring rotation tea","Pairs well with mint or lemon"],cautions:["Can interact with diuretics, blood pressure medication, and blood sugar medication","Handle fresh leaves carefully because they sting"]},
+  {name:"Rosemary",latin:"Salvia rosmarinus",role:"Culinary Antioxidant",cats:["culinary"],summary:"Aromatic culinary herb with antioxidant compounds and a strong savory profile.",uses:["Use in roasted vegetables, chicken, fish, beans, and olive-oil dressings","Blend with thyme, sage, garlic, and lemon","Good everyday food-first herb"],cautions:["Culinary amounts are the safest default","Avoid high-dose essential oil use, especially with seizure risk"]}
+];
+
+const TAGS = {culinary:"Culinary",calm:"Calm",digestive:"Digestive",immune:"Immune",adaptogen:"Adaptogen"};
+let activeFilter = "all";
+
+function deeplinkSlug(name){return String(name).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
+function render(){
+  const q = document.getElementById("search").value.toLowerCase();
+  const items = HERBS.filter(h => {
+    const hay = [h.name,h.latin,h.role,h.summary,...h.uses,...h.cautions,...h.cats.map(c=>TAGS[c])].join(" ").toLowerCase();
+    return (activeFilter === "all" || h.cats.includes(activeFilter)) && hay.includes(q);
+  });
+  document.getElementById("grid").innerHTML = items.map(h => `
+    <article class="card" id="i-${deeplinkSlug(h.name)}">
+      <div class="stripe"></div>
+      <div class="inner">
+        <div class="card-top"><div><h2>${h.name}</h2><div class="latin">${h.latin}</div></div><div class="role">${h.role}</div></div>
+        <p class="summary">${h.summary}</p>
+        <div class="tags">${h.cats.map(c=>`<span class="tag ${c === "culinary" ? "green" : c === "digestive" ? "blue" : c === "calm" ? "purple" : c === "immune" ? "teal" : ""}">${TAGS[c]}</span>`).join("")}</div>
+        <div class="details"><h3>Common uses</h3><ul>${h.uses.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+        <div class="details"><h3>Cautions</h3><ul>${h.cautions.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+      </div>
+    </article>`).join("");
+  document.getElementById("noResults").style.display = items.length ? "none" : "block";
+}
+function setFilter(f){activeFilter=f;document.querySelectorAll(".filter-btn").forEach(b=>b.classList.toggle("active",b.dataset.filter===f));render();}
+function filterCards(){render();}
+function focusDeepLink(){
+  if(!/^#i-/.test(location.hash)) return;
+  let el = document.getElementById(location.hash.slice(1));
+  if(!el){document.getElementById("search").value = ""; setFilter("all"); el = document.getElementById(location.hash.slice(1));}
+  if(!el) return;
+  el.classList.add("search-deeplink-target");
+  el.scrollIntoView({behavior:"smooth",block:"center"});
+  setTimeout(()=>el.classList.remove("search-deeplink-target"),2600);
+}
+render();
+focusDeepLink();
+window.addEventListener("hashchange", focusDeepLink);
+</script>
+</body>
+</html>

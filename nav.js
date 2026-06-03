@@ -1,19 +1,19 @@
 (function () {
   const NAV_HTML = `
     <div class="nav-inner">
-      <a href="/" class="nav-logo">NutriMind</a>
+      <a href="/nutrition" class="nav-logo">NutriMind</a>
       <div class="nav-items" id="navItems">
         <a href="https://nutri-mind-production-d054.up.railway.app/" class="nav-item" target="_blank" rel="noreferrer">Diet Plan</a>
         <div class="nav-item has-dropdown" data-group="nutrition">
           <span>Nutrition <span class="nav-chevron">▾</span></span>
           <div class="nav-dropdown">
             <a href="/nutrition" class="nav-dropdown-item" data-path="/nutrition">Checklist</a>
-            <a href="/nutrition#rich-foods" class="nav-dropdown-item">Food Source Tables</a>
-            <a href="/nutrition#rich-foods" class="nav-dropdown-item">Rich Foods for Key Nutrients</a>
+            <a href="/nutrition/rich-foods" class="nav-dropdown-item" data-path="/nutrition/rich-foods">Rich Foods for Key Nutrients</a>
             <a href="/nutrition#s-reminders" class="nav-dropdown-item">Reminders</a>
             <a href="/benefits" class="nav-dropdown-item" data-path="/benefits">Benefits</a>
             <a href="/deficiencies" class="nav-dropdown-item" data-path="/deficiencies">Deficiencies</a>
             <a href="/overview" class="nav-dropdown-item" data-path="/overview">Vitamins &amp; Minerals</a>
+            <a href="/overview#focus" class="nav-dropdown-item">Focus Nutrients</a>
           </div>
         </div>
         <div class="nav-item has-dropdown" data-group="reference">
@@ -24,7 +24,10 @@
             <a href="/allergies" class="nav-dropdown-item" data-path="/allergies">Allergies</a>
             <a href="/foodtypes" class="nav-dropdown-item" data-path="/foodtypes">Food Categories</a>
             <a href="/adaptogens" class="nav-dropdown-item" data-path="/adaptogens">Adaptogens</a>
+            <a href="/herbology" class="nav-dropdown-item" data-path="/herbology">Herbology</a>
+            <a href="/herbology#antiviral" class="nav-dropdown-item">Antiviral Herbs</a>
             <a href="/functional-foods" class="nav-dropdown-item" data-path="/functional-foods">Functional Foods</a>
+            <a href="/food-for-mood" class="nav-dropdown-item" data-path="/food-for-mood">Food for Mood</a>
             <a href="/parasite-detox" class="nav-dropdown-item" data-path="/parasite-detox">Parasite Detox</a>
             <a href="/seasonal-rotation" class="nav-dropdown-item" data-path="/seasonal-rotation">Seasonal Rotation</a>
           </div>
@@ -57,7 +60,9 @@
     { path: "/allergies", title: "Allergies" },
     { path: "/foodtypes", title: "Food Categories" },
     { path: "/adaptogens", title: "Adaptogens" },
+    { path: "/herbology", title: "Herbology" },
     { path: "/functional-foods", title: "Functional Foods" },
+    { path: "/food-for-mood", title: "Food for Mood" },
     { path: "/parasite-detox", title: "Parasite Detox" },
     { path: "/seasonal-rotation", title: "Seasonal Rotation" }
   ];
@@ -205,15 +210,7 @@
     }
     nav.innerHTML = NAV_HTML;
 
-    const nutritionChecklistLink = nav.querySelector('[data-path="/nutrition"]');
-    if (nutritionChecklistLink) {
-      nutritionChecklistLink.insertAdjacentHTML(
-        "afterend",
-        '<a href="/nutrition/rich-foods" class="nav-dropdown-item" data-path="/nutrition/rich-foods">Rich Foods for Key Nutrients</a>'
-      );
-    }
-
-    const path = window.location.pathname.replace(/\/$/, "") || "/";
+    const path = (window.location.pathname.replace(/\/$/, "") || "/").replace(/^\/$/, "/nutrition");
     const activeLink = nav.querySelector(`[data-path="${path}"]`);
     if (activeLink) {
       activeLink.classList.add("active");

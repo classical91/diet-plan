@@ -64,7 +64,7 @@
   .step-num{width:28px;height:28px;border-radius:50%;background:rgba(200,146,42,.15);border:1px solid rgba(200,146,42,.3);color:var(--accent);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
   .step-text{font-size:13px;color:#b0a898;line-height:1.55;padding-top:4px}
   .step-title{font-weight:600;color:var(--text);display:block;margin-bottom:2px}
-  .recipe-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:16px;animation:fadeUp .3s ease both}
+  .recipe-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:16px;animation:fadeUp .3s ease both;scroll-margin-top:76px}
   .recipe-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
   .recipe-sub{font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
   .recipe-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -493,6 +493,15 @@
     </div>
   </div>
 
+  <div class="recipe-card" id="lymph-antioxidant-shake">
+    <div class="recipe-title">Lymph & Antioxidant Support Shake</div>
+    <div class="recipe-sub" style="color:var(--green)">Food-first support &middot; Antioxidants &middot; Immune nutrition</div>
+    <div class="recipe-cols">
+      <div><div class="recipe-label">Ingredients</div><ul class="ing-list"><li>1 cup kale or spinach</li><li>1/2 cup blueberries</li><li>1/2 cup pineapple</li><li>1 small beet, raw or cooked</li><li>1 tbsp chia seeds</li><li>1 tbsp ground flaxseed</li><li>1 tbsp fresh ginger</li><li>1/2 tsp turmeric powder</li><li>1/2 cup coconut water or almond milk</li><li>Optional: 1 scoop plant-based protein powder</li></ul></div>
+      <div><div class="recipe-label">Protocol</div><ul class="ing-list"><li>Blend until smooth, adding liquid as needed.</li><li>Use as a nutrient-dense food support shake, not as a cancer treatment.</li><li>Protein powder can help if appetite is low or protein needs are higher.</li><li>If in active cancer treatment, ask the oncology team or dietitian about turmeric, ginger, antioxidants, protein powders, and supplement-like add-ins.</li></ul></div>
+    </div>
+  </div>
+
   <div class="subsec">Mineral & Recovery Shakes</div>
   <div class="recipe-card">
     <div class="recipe-title">Potassium-Magnesium Electrolyte Shake</div>
@@ -579,12 +588,29 @@
 </div>
 
 <script>
-function showTab(id) {
+function showTab(id, updateHash = true) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
-  event.target.classList.add('active');
+  const tab = typeof event !== 'undefined' && event.target ? event.target : document.querySelector(`.tab[onclick="showTab('${id}')"]`);
+  if (tab) tab.classList.add('active');
+  if (updateHash && window.location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
 }
+function openHashTarget() {
+  const hash = window.location.hash.replace(/^#/, '');
+  if (!hash) return;
+  if (hash === 'lymph-antioxidant-shake') {
+    showTab('shakes', false);
+    requestAnimationFrame(() => {
+      const el = document.getElementById(hash);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  } else if (document.getElementById('tab-' + hash)) {
+    showTab(hash);
+  }
+}
+openHashTarget();
+window.addEventListener('hashchange', openHashTarget);
 </script>
 </body>
 </html>

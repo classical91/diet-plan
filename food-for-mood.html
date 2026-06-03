@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food for Mood | NutriMind Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/nav.css">
+<style>
+  :root{--bg:#0f0d0a;--surface:#1a1714;--card:#201d19;--border:#2e2a24;--accent:#c8922a;--green:#8fbe6b;--blue:#5b9bd5;--pink:#c86b8f;--purple:#9b7de8;--teal:#5bbfb5;--red:#e05c5c;--text:#f0ebe3;--muted:#7a7063;--soft:#b0a898}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(91,191,181,.05) 0%,transparent 50%)}
+  header{text-align:center;margin:18px auto 38px;max-width:900px}
+  .sub-label{font-size:11px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(34px,6vw,62px);font-weight:900;letter-spacing:-.03em;line-height:.95}
+  h1 em{color:var(--accent);font-style:italic}
+  .lead{color:var(--soft);font-size:15px;line-height:1.7;max-width:760px;margin:18px auto 0}
+  .header-line{width:54px;height:2px;background:var(--accent);margin:18px auto 0;opacity:.55}
+  .container{max-width:1100px;margin:0 auto}
+  .note-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:16px;margin:18px 0 30px}
+  .note{font-size:13px;color:var(--soft);line-height:1.65}
+  .note strong{color:var(--text)}
+  h2{font-family:'Playfair Display',serif;font-size:25px;font-weight:700;margin:34px 0 8px}
+  .sec-desc{font-size:13px;color:var(--soft);line-height:1.65;max-width:780px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:18px 0 34px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s}
+  .card:hover{border-color:#3e3a32;transform:translateY(-2px)}
+  .stripe{height:3px;background:var(--accent)}
+  .inner{padding:18px}
+  .label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:7px;color:var(--text)}
+  .card p{font-size:13px;color:var(--soft);line-height:1.6}
+  ul{list-style:none;display:grid;gap:8px;margin-top:12px}
+  li{font-size:13px;color:var(--soft);line-height:1.5;display:flex;gap:8px;align-items:flex-start}
+  li::before{content:'-';color:var(--accent);flex-shrink:0}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+  .tag{font-size:10px;padding:4px 9px;border-radius:20px;border:1px solid rgba(200,146,42,.28);color:var(--accent);background:rgba(200,146,42,.07)}
+  .tag.green{border-color:rgba(143,190,107,.28);color:var(--green);background:rgba(143,190,107,.07)}
+  .tag.blue{border-color:rgba(91,155,213,.28);color:var(--blue);background:rgba(91,155,213,.07)}
+  .tag.purple{border-color:rgba(155,125,232,.28);color:var(--purple);background:rgba(155,125,232,.07)}
+  .tag.teal{border-color:rgba(91,191,181,.28);color:var(--teal);background:rgba(91,191,181,.07)}
+  .tag.pink{border-color:rgba(200,107,143,.28);color:var(--pink);background:rgba(200,107,143,.07)}
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin:18px 0 32px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{padding:12px 14px;text-align:left;color:var(--accent);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:var(--surface);border-bottom:1px solid var(--border)}
+  td{padding:12px 14px;border-bottom:1px solid var(--border);color:var(--soft);line-height:1.55;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td:first-child{color:var(--text);font-weight:500}
+  @media(max-width:720px){body{padding:24px 12px 60px}}
+</style>
+</head>
+<body>
+<nav class="top-nav" aria-label="Primary"></nav>
+<script src="/nav.js"></script>
+
+<header>
+  <div class="sub-label">Reference Guide</div>
+  <h1>Food for <em>Mood</em></h1>
+  <p class="lead">A practical guide to nutrient-dense foods that support steady energy, mood, brain health, hydration, and healthy weight gain without relying on processed calories.</p>
+  <div class="header-line"></div>
+</header>
+
+<main class="container">
+  <div class="note-box">
+    <p class="note"><strong>For education, not treatment.</strong> Food can support mood and energy, but it is not a replacement for mental-health care, medication, or medical advice. If depression, anxiety, fatigue, or appetite changes are persistent or severe, work with a clinician.</p>
+  </div>
+
+  <h2>What to Prioritize</h2>
+  <p class="sec-desc">The strongest pattern is simple: build meals around whole foods, enough calories, steady protein, complex carbohydrates, healthy fats, minerals, and fermented or fiber-rich foods.</p>
+  <div class="grid">
+    <article class="card">
+      <div class="stripe"></div>
+      <div class="inner">
+        <div class="label">Energy</div>
+        <h3>Complex Carbohydrates</h3>
+        <p>Use slow-digesting carbohydrates to help prevent energy crashes while keeping meals nutrient-dense.</p>
+        <ul>
+          <li>Quinoa, brown rice, oats, and sweet potatoes</li>
+          <li>Black beans, lentils, and chickpeas</li>
+          <li>Pair with protein and fat for steadier energy</li>
+        </ul>
+        <div class="tags"><span class="tag">steady energy</span><span class="tag green">fiber</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--green)"></div>
+      <div class="inner">
+        <div class="label">Weight Gain</div>
+        <h3>Healthy Fats</h3>
+        <p>Healthy fats raise calories without needing large food volume, which helps when gaining weight cleanly.</p>
+        <ul>
+          <li>Avocado, olive oil, nuts, and seeds</li>
+          <li>Walnuts, almonds, chia, flax, and pumpkin seeds</li>
+          <li>Coconut oil can fit, but olive oil is the better daily default</li>
+        </ul>
+        <div class="tags"><span class="tag green">calorie support</span><span class="tag">omega fats</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--blue)"></div>
+      <div class="inner">
+        <div class="label">Repair</div>
+        <h3>Protein Foods</h3>
+        <p>Protein supports muscle, satiety, neurotransmitter building blocks, and recovery from training.</p>
+        <ul>
+          <li>Eggs, lean meats, fish, Greek yogurt, tofu, and tempeh</li>
+          <li>Include a protein source at most meals</li>
+          <li>Use smoothies or yogurt bowls when appetite is low</li>
+        </ul>
+        <div class="tags"><span class="tag blue">recovery</span><span class="tag">amino acids</span></div>
+      </div>
+    </article>
+  </div>
+
+  <h2>Mood-Supporting Foods</h2>
+  <div class="grid">
+    <article class="card">
+      <div class="stripe" style="background:var(--teal)"></div>
+      <div class="inner">
+        <div class="label">Folate</div>
+        <h3>Dark Leafy Greens</h3>
+        <p>Spinach, kale, and Swiss chard supply folate and minerals that support normal brain and nervous-system function.</p>
+        <ul><li>Add to eggs, rice bowls, smoothies, soups, or sides</li><li>Cook greens when raw meals feel hard to digest</li></ul>
+        <div class="tags"><span class="tag teal">folate</span><span class="tag green">minerals</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--purple)"></div>
+      <div class="inner">
+        <div class="label">Gut-Brain</div>
+        <h3>Fermented Foods</h3>
+        <p>Kimchi, sauerkraut, yogurt, and kefir support gut health, which is linked with mood and immune regulation.</p>
+        <ul><li>Start small: 1 to 2 tablespoons of fermented vegetables</li><li>Choose plain yogurt or kefir to avoid added sugar</li></ul>
+        <div class="tags"><span class="tag purple">fermented</span><span class="tag">microbiome</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--pink)"></div>
+      <div class="inner">
+        <div class="label">Brain Fats</div>
+        <h3>Fatty Fish</h3>
+        <p>Salmon, sardines, and mackerel provide omega-3 fats that support brain health and mood regulation.</p>
+        <ul><li>Aim for 2 to 3 servings weekly if tolerated</li><li>Use walnuts, chia, or flax when fish is not available</li></ul>
+        <div class="tags"><span class="tag pink">omega-3</span><span class="tag blue">brain health</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe"></div>
+      <div class="inner">
+        <div class="label">Antioxidants</div>
+        <h3>Berries and Dark Chocolate</h3>
+        <p>Berries bring antioxidants and fiber. Dark chocolate at 85% cacao or higher can be a small mood-supporting treat.</p>
+        <ul><li>Use berries in oats, yogurt, or smoothies</li><li>Keep dark chocolate portions small because it still contains caffeine and calories</li></ul>
+        <div class="tags"><span class="tag">polyphenols</span><span class="tag purple">stress support</span></div>
+      </div>
+    </article>
+  </div>
+
+  <h2>Depression and Anxiety Support</h2>
+  <p class="sec-desc">These foods and drinks are useful support layers because they target inflammation, minerals, relaxation, and neurotransmitter cofactors. They should complement, not replace, mental-health care.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Food or Drink</th><th>Main Support</th><th>How to Use</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Turmeric + black pepper</td><td>Curcumin and inflammation support</td><td>Add to curries, soups, eggs, or rice bowls with a little fat</td><td>Use caution with blood thinners or high-dose supplements</td></tr>
+        <tr><td>Nuts and seeds</td><td>Magnesium, zinc, healthy fats</td><td>Small handfuls, seed toppings, nut butter, or trail mix</td><td>Great for healthy weight gain; watch allergies</td></tr>
+        <tr><td>Green tea</td><td>L-theanine plus gentle caffeine</td><td>1 to 3 cups earlier in the day</td><td>Can promote calm alertness, but caffeine sensitivity varies</td></tr>
+        <tr><td>Bananas</td><td>Vitamin B6 and carbohydrates</td><td>Add to smoothies, oats, yogurt, or post-workout meals</td><td>Useful when appetite or energy is low</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Hydration and Herbal Support</h2>
+  <div class="grid">
+    <article class="card">
+      <div class="stripe" style="background:var(--teal)"></div>
+      <div class="inner">
+        <div class="label">Hydration</div>
+        <h3>Water and Electrolytes</h3>
+        <p>Dehydration can worsen fatigue, headaches, low mood, and poor concentration.</p>
+        <ul><li>Drink water steadily through the day</li><li>Add electrolytes after sweating, workouts, heat, or low intake</li></ul>
+      </div>
+    </article>
+    <article class="card">
+      <div class="stripe" style="background:var(--purple)"></div>
+      <div class="inner">
+        <div class="label">Tea</div>
+        <h3>Herbal Teas</h3>
+        <p>Chamomile can be relaxing, peppermint can feel refreshing, and ashwagandha is often used as an adaptogen for stress.</p>
+        <ul><li>Keep herbs gentle and rotate based on response</li><li>Check medication and condition interactions for adaptogens</li></ul>
+      </div>
+    </article>
+    <article class="card">
+      <div class="stripe" style="background:var(--green)"></div>
+      <div class="inner">
+        <div class="label">Fast Meal</div>
+        <h3>Smoothies and Juices</h3>
+        <p>Smoothies are the better default for weight gain because they keep fiber and can carry protein and healthy fats.</p>
+        <ul><li>Blend greens, berries, banana, yogurt, seeds, and nut butter</li><li>Use juices more sparingly because they remove fiber</li></ul>
+      </div>
+    </article>
+  </div>
+
+  <h2>Foods to Minimize</h2>
+  <div class="note-box">
+    <p class="note">Processed foods, refined sugars, artificial sweeteners, excess caffeine, excess alcohol, trans fats, and fried foods can drain energy, worsen inflammation, or make mood and appetite less stable.</p>
+  </div>
+
+  <h2>Weight-Gain Emphasis</h2>
+  <div class="grid">
+    <article class="card">
+      <div class="stripe"></div>
+      <div class="inner">
+        <div class="label">Simple Rule</div>
+        <h3>Add calories without lowering quality</h3>
+        <p>Keep carbs complex and nutrient-dense, then increase healthy fats and protein around the meals you already tolerate well.</p>
+        <ul>
+          <li>Add olive oil, avocado, nuts, seeds, Greek yogurt, eggs, salmon, tofu, or tempeh</li>
+          <li>Use smoothies when it is easier to drink calories than chew them</li>
+          <li>Choose whole-food calorie density instead of refined sugar or fried foods</li>
+        </ul>
+      </div>
+    </article>
+  </div>
+</main>
+</body>
+</html>

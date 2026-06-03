@@ -82,6 +82,7 @@ const CARD_PAGES = [
   { file: "diets.html", context: "Diet Types", vars: ["DIETS"], link: (s) => `/diets#i-${s}` },
   { file: "foodtypes.html", context: "Food Categories", vars: ["FOODS"], link: (s) => `/foodtypes#i-${s}` },
   { file: "adaptogens.html", context: "Adaptogens", vars: ["ADAPTOGENS"], link: (s) => `/adaptogens#i-${s}` },
+  { file: "herbology.html", context: "Herbology", vars: ["HERBS"], link: (s) => `/herbology#i-${s}` },
   { file: "functional-foods.html", context: "Functional Foods", vars: ["FOODS"], link: (s) => `/functional-foods#i-${s}` },
   { file: "overview.html", context: "Vitamins & Minerals", vars: ["NUTRIENTS"], link: (s) => `/overview/${s}` },
 ];
@@ -90,6 +91,7 @@ const CARD_PAGES = [
 const CONTENT_PAGES = [
   { file: "nutrition.html", path: "/nutrition", title: "Nutrition Checklist" },
   { file: "rich-foods.html", path: "/nutrition/rich-foods", title: "Rich Foods for Key Nutrients" },
+  { file: "food-for-mood.html", path: "/food-for-mood", title: "Food for Mood" },
   { file: "howto.html", path: "/howto", title: "How-To" },
   { file: "seasonal-rotation.html", path: "/seasonal-rotation", title: "Seasonal Rotation" },
   { file: "parasite-detox.html", path: "/parasite-detox", title: "Parasite Detox" },
@@ -102,6 +104,39 @@ const CONTENT_PAGES = [
   { file: "parasite-detox-safe-plan.html", path: "/parasite-detox/safe-plan", title: "Parasite Detox · Safe Plan" },
   { file: "parasite-detox-tracker.html", path: "/parasite-detox/tracker", title: "Parasite Detox · Tracker" },
   { file: "parasite-detox-red-flags.html", path: "/parasite-detox/red-flags", title: "Parasite Detox · Red Flags" },
+];
+
+const STATIC_ENTRIES = [
+  {
+    path: "/overview#inflammation",
+    title: "Vitamins & Minerals That Fight Inflammation",
+    context: "Vitamins & Minerals",
+    text: "Vitamin C antioxidant neutralizes free radicals and reduces oxidative stress. Vitamin D regulates immune activity and supports anti-inflammatory effects. Vitamin E protects cell membranes from oxidative damage. Magnesium supports immune regulation and anti-inflammatory effects. Zinc supports immune function and balanced inflammatory response. Omega-3 fatty acids from fatty fish, nuts, and seeds help resolve inflammation. Selenium is an antioxidant mineral that protects cells from oxidative stress. Use balanced food sources whenever possible and consult a healthcare professional for appropriate amounts and supplement guidance."
+  },
+  {
+    path: "/overview#focus",
+    title: "Vitamins & Minerals for Focus",
+    context: "Vitamins & Minerals",
+    text: "Focus nutrients vitamins minerals attention concentration brain function fatigue cognitive support. Iron supports oxygen transport to the brain and helps prevent fatigue and cognitive impairment when low. Omega-3 fatty acids DHA EPA support brain function focus attention mood. B vitamins especially B12 and B6 support brain function nerve function neurotransmitters red blood cells and may reduce fatigue when deficient. Magnesium supports nerve and muscle function sleep stress regulation and attention. Vitamin D supports brain development function mood immune health and cognitive performance. Food-first balanced diet is best; consult a healthcare professional before supplements."
+  },
+  {
+    path: "/howto#lymph-antioxidant-shake",
+    title: "Lymph & Antioxidant Support Shake",
+    context: "How-To",
+    text: "Lymph antioxidant support shake smoothie recipe kale spinach blueberries pineapple beet chia seeds ground flaxseed ginger turmeric coconut water almond milk optional plant-based protein powder. Food-first nutrient-dense support for antioxidants inflammation balance immune nutrition hydration fiber omega-3 plant foods. Not a cancer treatment. If in active cancer treatment ask oncology team or registered dietitian about turmeric ginger antioxidants protein powders supplements and interactions."
+  },
+  {
+    path: "/herbology#antiviral",
+    title: "Antiviral & Immune-Season Herbs",
+    context: "Herbology",
+    text: "Antiviral herbs immune season phytotherapy. Elderberry may support cold and flu symptom burden. Echinacea supports immune response at first sign of cold. Garlic contains allicin-related sulfur compounds for immune and antimicrobial food support. Ginger gingerol supports inflammation balance nausea and respiratory-season teas. Licorice root glycyrrhizin has been studied for antiviral activity and throat support. Oregano carvacrol thymol antimicrobial activity oregano oil caution. Lemon balm calming herb studied topically for herpes simplex cold sores. Antiviral herbs are supportive tools, not substitutes for vaccination testing antivirals antibiotics or medical care."
+  },
+  {
+    path: "/herbology#ethnobotanicals",
+    title: "Ethnobotanicals",
+    context: "Herbology",
+    text: "Ethnobotanicals plants used traditionally for medicinal psychoactive ceremonial spiritual or therapeutic properties. Ayahuasca Banisteriopsis caapi Psychotria viridis South American ceremonial use DMT legal risk. Kava Piper methysticum calming South Pacific liver safety sedatives alcohol. Kratom Mitragyna speciosa stimulant pain-related effects dependence FDA warning. Peyote Lophophora williamsii Native American ceremonial cactus mescaline legal protected religious context. San Pedro Echinopsis pachanoi Andean ceremonial cactus. Iboga Tabernanthe iboga Central African spiritual practice cardiac risk. Salvia divinorum Mazatec shamanism dissociative effects. Mimosa hostilis DMT-containing root bark legal risk. Turmeric Rhodiola Ginseng Ginger Cacao Burdock St. John's Wort Echinacea Ginkgo biloba traditional medicinal plants. Educational cultural safety reference only; not preparation dosing sourcing or legal advice."
+  },
 ];
 
 function pageText(src) {
@@ -146,6 +181,8 @@ for (const page of CONTENT_PAGES) {
     text: pageText(src),
   });
 }
+
+entries.push(...STATIC_ENTRIES);
 
 const out = path.join(root, "search-index.json");
 writeFileSync(out, JSON.stringify({ generatedAt: new Date().toISOString(), entries }, null, 0) + "\n");
