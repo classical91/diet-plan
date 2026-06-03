@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hydration & Water Benefits | NutriMind Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/nav.css">
+<style>
+  :root{--bg:#0f0d0a;--surface:#1a1714;--card:#201d19;--border:#2e2a24;--accent:#c8922a;--green:#8fbe6b;--blue:#5b9bd5;--pink:#c86b8f;--purple:#9b7de8;--teal:#5bbfb5;--red:#e05c5c;--text:#f0ebe3;--muted:#7a7063;--soft:#b0a898}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(91,155,213,.07) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(91,191,181,.05) 0%,transparent 50%)}
+  header{text-align:center;margin:18px auto 38px;max-width:900px}
+  .sub-label{font-size:11px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(34px,6vw,62px);font-weight:900;letter-spacing:-.03em;line-height:.95}
+  h1 em{color:var(--blue);font-style:italic}
+  .lead{color:var(--soft);font-size:15px;line-height:1.7;max-width:760px;margin:18px auto 0}
+  .header-line{width:54px;height:2px;background:var(--blue);margin:18px auto 0;opacity:.55}
+  .container{max-width:1100px;margin:0 auto}
+  .note-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:16px;margin:18px 0 30px}
+  .note-box.info{border-left-color:var(--blue)}
+  .note-box.warning{border-left-color:var(--red)}
+  .note{font-size:13px;color:var(--soft);line-height:1.65}
+  .note strong{color:var(--text)}
+  h2{font-family:'Playfair Display',serif;font-size:25px;font-weight:700;margin:34px 0 8px}
+  .sec-desc{font-size:13px;color:var(--soft);line-height:1.65;max-width:780px;margin-bottom:18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:18px 0 34px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s}
+  .card:hover{border-color:#3e3a32;transform:translateY(-2px)}
+  .stripe{height:3px}
+  .inner{padding:18px}
+  .label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:7px;color:var(--text)}
+  .card p{font-size:13px;color:var(--soft);line-height:1.6}
+  ul{list-style:none;display:grid;gap:8px;margin-top:12px}
+  li{font-size:13px;color:var(--soft);line-height:1.5;display:flex;gap:8px;align-items:flex-start}
+  li::before{content:'-';color:var(--accent);flex-shrink:0}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+  .tag{font-size:10px;padding:4px 9px;border-radius:20px;border:1px solid rgba(91,155,213,.28);color:var(--blue);background:rgba(91,155,213,.07)}
+  .tag.teal{border-color:rgba(91,191,181,.28);color:var(--teal);background:rgba(91,191,181,.07)}
+  .tag.green{border-color:rgba(143,190,107,.28);color:var(--green);background:rgba(143,190,107,.07)}
+  .tag.red{border-color:rgba(224,92,92,.28);color:var(--red);background:rgba(224,92,92,.07)}
+  .tag.purple{border-color:rgba(155,125,232,.28);color:var(--purple);background:rgba(155,125,232,.07)}
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin:18px 0 32px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{padding:12px 14px;text-align:left;color:var(--blue);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:var(--surface);border-bottom:1px solid var(--border)}
+  td{padding:12px 14px;border-bottom:1px solid var(--border);color:var(--soft);line-height:1.55;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td:first-child{color:var(--text);font-weight:500}
+  .signal-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:18px 0 30px}
+  .signal{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center}
+  .signal-pct{font-family:'Playfair Display',serif;font-size:36px;font-weight:900;line-height:1}
+  .signal-label{font-size:11px;color:var(--soft);margin-top:5px;line-height:1.5}
+  @media(max-width:720px){body{padding:24px 12px 60px}}
+</style>
+</head>
+<body>
+<nav class="top-nav" aria-label="Primary"></nav>
+<script src="/nav.js"></script>
+
+<header>
+  <div class="sub-label">Reference Guide</div>
+  <h1>Hydration &amp; the Power of <em>Water</em></h1>
+  <p class="lead">Water is involved in virtually every physiological process. Understanding what adequate hydration does — and what dehydration costs — is one of the simplest levers for improving daily health and performance.</p>
+  <div class="header-line"></div>
+</header>
+
+<main class="container">
+  <div class="note-box info">
+    <p class="note"><strong>For education, not treatment.</strong> General guidance is provided here. People with kidney disease, heart failure, or conditions affecting fluid balance should follow clinician-specific targets.</p>
+  </div>
+
+  <h2>What Water Does in the Body</h2>
+  <p class="sec-desc">Water is not a passive carrier — it actively enables nearly every system in the human body.</p>
+  <div class="grid">
+    <article class="card">
+      <div class="stripe" style="background:var(--blue)"></div>
+      <div class="inner">
+        <div class="label">Circulation</div>
+        <h3>Blood Volume &amp; Delivery</h3>
+        <p>Plasma, the liquid portion of blood, is roughly 90% water. Adequate hydration maintains blood volume, which determines how efficiently oxygen and nutrients reach every cell.</p>
+        <div class="tags"><span class="tag">oxygen delivery</span><span class="tag teal">circulation</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--teal)"></div>
+      <div class="inner">
+        <div class="label">Temperature</div>
+        <h3>Thermoregulation</h3>
+        <p>Sweat is the body's primary cooling mechanism. Without enough water, core temperature rises during exertion or heat exposure, straining the cardiovascular system and impairing performance.</p>
+        <div class="tags"><span class="tag teal">cooling</span><span class="tag">sweat</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--purple)"></div>
+      <div class="inner">
+        <div class="label">Brain</div>
+        <h3>Cognitive Function</h3>
+        <p>Brain tissue is approximately 75% water. Hydration supports neurotransmitter production, signal speed, focus, and mood. Even mild dehydration measurably impairs attention and short-term memory.</p>
+        <div class="tags"><span class="tag purple">focus</span><span class="tag purple">mood</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--green)"></div>
+      <div class="inner">
+        <div class="label">Digestion</div>
+        <h3>Nutrient Absorption</h3>
+        <p>Water dissolves soluble nutrients and aids their transport across the gut wall. It also softens food in the stomach and keeps digestive enzymes functioning, preventing constipation and bloating.</p>
+        <div class="tags"><span class="tag green">digestion</span><span class="tag green">absorption</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--blue)"></div>
+      <div class="inner">
+        <div class="label">Detox</div>
+        <h3>Kidney Filtration &amp; Waste Removal</h3>
+        <p>The kidneys filter roughly 200 litres of blood per day, producing urine to eliminate metabolic waste, excess electrolytes, and toxins. Sufficient water intake keeps this filtration system efficient and prevents kidney stone formation.</p>
+        <div class="tags"><span class="tag">kidney health</span><span class="tag teal">detox</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--accent)" style="background:#c8922a"></div>
+      <div class="inner">
+        <div class="label">Joints &amp; Tissue</div>
+        <h3>Lubrication &amp; Cushioning</h3>
+        <p>Synovial fluid — which lubricates joints — and intervertebral discs both depend on adequate hydration. Well-hydrated cartilage resists damage and reduces joint pain during movement.</p>
+        <div class="tags"><span class="tag teal">joint health</span><span class="tag">cartilage</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--pink)" style="background:#c86b8f"></div>
+      <div class="inner">
+        <div class="label">Skin</div>
+        <h3>Skin Elasticity &amp; Appearance</h3>
+        <p>Skin cells require water to maintain turgor (plumpness). Chronic dehydration accelerates the appearance of fine lines, reduces elasticity, and impairs the skin's barrier function against environmental stressors.</p>
+        <div class="tags"><span class="tag">skin health</span><span class="tag">elasticity</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--green)"></div>
+      <div class="inner">
+        <div class="label">Metabolism</div>
+        <h3>Energy Production</h3>
+        <p>Cellular energy production (ATP synthesis) requires water as a reactant. Dehydration reduces the efficiency of mitochondria, contributing to fatigue even before other symptoms appear.</p>
+        <div class="tags"><span class="tag green">ATP</span><span class="tag green">energy</span></div>
+      </div>
+    </article>
+  </div>
+
+  <h2>What Happens When You're Dehydrated</h2>
+  <p class="sec-desc">Dehydration symptoms progress in severity with increasing fluid loss as a percentage of body weight.</p>
+
+  <div class="signal-strip">
+    <div class="signal">
+      <div class="signal-pct" style="color:var(--blue)">1–2%</div>
+      <div class="signal-label">Thirst, reduced focus, mild headache, decreased performance</div>
+    </div>
+    <div class="signal">
+      <div class="signal-pct" style="color:var(--accent)">3–4%</div>
+      <div class="signal-label">Fatigue, muscle cramps, reduced endurance, irritability, dry mouth</div>
+    </div>
+    <div class="signal">
+      <div class="signal-pct" style="color:var(--red)">5–6%</div>
+      <div class="signal-label">Severe headache, rapid heart rate, reduced urine output, dizziness</div>
+    </div>
+    <div class="signal">
+      <div class="signal-pct" style="color:var(--red)">8%+</div>
+      <div class="signal-label">Confusion, organ stress, risk of heat stroke — medical emergency</div>
+    </div>
+  </div>
+
+  <h2>Common Symptoms by System</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>System</th><th>Dehydration Effect</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Brain</td><td>Brain fog, poor concentration, low mood, headaches</td><td>Even 1–2% loss impairs cognitive tasks requiring attention</td></tr>
+        <tr><td>Kidneys</td><td>Dark urine, reduced output, kidney stone risk</td><td>Pale yellow urine is the target; clear can indicate overhydration</td></tr>
+        <tr><td>Digestive system</td><td>Constipation, bloating, slower nutrient absorption</td><td>Water is required for intestinal motility and stool softening</td></tr>
+        <tr><td>Muscles</td><td>Cramps, reduced strength, slower recovery</td><td>Electrolyte imbalance (sodium, potassium) compounds muscle effects</td></tr>
+        <tr><td>Cardiovascular</td><td>Elevated heart rate, lower blood pressure, reduced endurance</td><td>Blood becomes more viscous, increasing cardiac workload</td></tr>
+        <tr><td>Skin</td><td>Dryness, reduced elasticity, slower wound healing</td><td>The skin pinch test (tenting) is a quick field indicator of dehydration</td></tr>
+        <tr><td>Joints</td><td>Increased stiffness and pain, especially in the spine</td><td>Intervertebral discs lose height with chronic mild dehydration</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Daily Intake Guidelines</h2>
+  <p class="sec-desc">General targets — adjust upward for heat, heavy exercise, illness, pregnancy, or breastfeeding.</p>
+  <div class="grid">
+    <article class="card">
+      <div class="stripe" style="background:var(--blue)"></div>
+      <div class="inner">
+        <div class="label">General adult</div>
+        <h3>2.0 – 3.5 Litres / Day</h3>
+        <p>Women typically need around 2.0–2.7 L and men around 2.5–3.5 L of total water daily from all sources, including food.</p>
+        <ul>
+          <li>About 20% of daily water typically comes from food</li>
+          <li>Drink consistently through the day, not in large boluses</li>
+        </ul>
+        <div class="tags"><span class="tag">baseline</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--teal)"></div>
+      <div class="inner">
+        <div class="label">Exercise</div>
+        <h3>Add 500 ml Per Hour of Activity</h3>
+        <p>Sweat rate varies widely — from 0.5 to 2.5 litres per hour depending on intensity, temperature, and individual factors. Weigh yourself before and after training to calibrate loss.</p>
+        <ul>
+          <li>Replace electrolytes (sodium, potassium) after prolonged sweating</li>
+          <li>Don't rely only on thirst during intense exercise</li>
+        </ul>
+        <div class="tags"><span class="tag teal">exercise</span><span class="tag">electrolytes</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--green)"></div>
+      <div class="inner">
+        <div class="label">Practical Check</div>
+        <h3>Urine Colour Test</h3>
+        <p>The simplest hydration check: aim for pale straw-yellow urine throughout the day. Dark amber signals underhydration; completely clear can signal overhydration.</p>
+        <ul>
+          <li>First morning urine is naturally darker — this is normal</li>
+          <li>Supplements (e.g. riboflavin/B2) can temporarily colour urine bright yellow regardless of hydration</li>
+        </ul>
+        <div class="tags"><span class="tag green">self-monitoring</span></div>
+      </div>
+    </article>
+  </div>
+
+  <h2>Best Hydration Sources</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Source</th><th>Notes</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td>Plain water</td><td>The gold standard — zero calories, universally available</td><td>All-day baseline hydration</td></tr>
+        <tr><td>Sparkling water</td><td>Equivalent to still water for hydration; carbonation does not harm enamel significantly at normal intake</td><td>Those who dislike still water</td></tr>
+        <tr><td>Herbal teas</td><td>Caffeine-free varieties count fully toward fluid intake; mild beneficial compounds vary by herb</td><td>Warm-weather or evening hydration</td></tr>
+        <tr><td>Coconut water</td><td>Natural source of potassium and electrolytes; contains natural sugars — use in moderation</td><td>Post-exercise rehydration</td></tr>
+        <tr><td>Water-rich foods</td><td>Cucumber (96%), lettuce (95%), celery (95%), tomatoes (94%), watermelon (92%) contribute meaningfully</td><td>Complementing fluid intake</td></tr>
+        <tr><td>Electrolyte drinks</td><td>Useful after heavy sweating; choose low-sugar formulas; not needed for ordinary daily activity</td><td>Long training sessions, hot climates, illness</td></tr>
+        <tr><td>Coffee &amp; tea</td><td>Mild diuretic effect is largely offset by fluid content at moderate intake (&lt;4 cups/day)</td><td>Morning hydration — counts toward daily total</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>What to Limit</h2>
+  <div class="note-box warning">
+    <p class="note"><strong>Alcohol</strong> is a diuretic that causes net fluid loss — drinking water alongside alcoholic drinks reduces but does not eliminate this effect. <strong>Sugary drinks</strong> (sodas, juice, energy drinks) add calories and sugar without meaningfully improving hydration efficiency. <strong>Excessive caffeine</strong> above roughly 400 mg/day starts to have a diuretic effect that can outpace the fluid provided.</p>
+  </div>
+
+  <div class="note-box">
+    <p class="note"><strong>Key takeaway.</strong> Hydration is not a wellness trend — it is a fundamental requirement for nearly every function in the body. Steady intake of plain water throughout the day, calibrated by urine colour and adjusted for activity and climate, is the simplest and most impactful daily health habit available.</p>
+  </div>
+</main>
+</body>
+</html>
