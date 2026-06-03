@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electrolytes & Minerals | NutriMind Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/nav.css">
+<style>
+  :root{--bg:#0f0d0a;--surface:#1a1714;--card:#201d19;--border:#2e2a24;--accent:#c8922a;--green:#8fbe6b;--blue:#5b9bd5;--pink:#c86b8f;--purple:#9b7de8;--teal:#5bbfb5;--red:#e05c5c;--text:#f0ebe3;--muted:#7a7063;--soft:#b0a898}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(155,125,232,.07) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(91,191,181,.05) 0%,transparent 50%)}
+  header{text-align:center;margin:18px auto 38px;max-width:900px}
+  .sub-label{font-size:11px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--teal);margin-bottom:10px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(34px,6vw,62px);font-weight:900;letter-spacing:-.03em;line-height:.95}
+  h1 em{color:var(--teal);font-style:italic}
+  .lead{color:var(--soft);font-size:15px;line-height:1.7;max-width:760px;margin:18px auto 0}
+  .header-line{width:54px;height:2px;background:var(--teal);margin:18px auto 0;opacity:.55}
+  .container{max-width:1100px;margin:0 auto}
+  .note-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:16px;margin:18px 0 30px}
+  .note{font-size:13px;color:var(--soft);line-height:1.65}
+  .note strong{color:var(--text)}
+  h2{font-family:'Playfair Display',serif;font-size:25px;font-weight:700;margin:34px 0 8px}
+  .sec-desc{font-size:13px;color:var(--soft);line-height:1.65;max-width:780px;margin-bottom:18px}
+  .two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;margin:18px 0 34px}
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .panel-head{padding:18px 20px 14px;border-bottom:1px solid var(--border)}
+  .panel-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .panel-head h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:700}
+  .panel-body{padding:18px 20px}
+  .panel-body p{font-size:13px;color:var(--soft);line-height:1.65;margin-bottom:14px}
+  .role-list{list-style:none;display:grid;gap:8px;margin-bottom:16px}
+  .role-list li{font-size:13px;color:var(--soft);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+  .role-list li::before{content:'-';color:var(--accent);flex-shrink:0}
+  .pill-list{display:flex;flex-wrap:wrap;gap:7px}
+  .pill{font-size:12px;padding:5px 11px;border-radius:20px;font-weight:500}
+  .pill.teal{border:1px solid rgba(91,191,181,.35);color:var(--teal);background:rgba(91,191,181,.08)}
+  .pill.purple{border:1px solid rgba(155,125,232,.35);color:var(--purple);background:rgba(155,125,232,.08)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:18px 0 34px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s}
+  .card:hover{border-color:#3e3a32;transform:translateY(-2px)}
+  .stripe{height:3px}
+  .inner{padding:18px}
+  .label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  h3{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:6px;color:var(--text)}
+  .card p{font-size:13px;color:var(--soft);line-height:1.6}
+  .card ul{list-style:none;display:grid;gap:6px;margin-top:10px}
+  .card li{font-size:12px;color:var(--soft);display:flex;gap:7px;align-items:flex-start;line-height:1.5}
+  .card li::before{content:'-';color:var(--accent);flex-shrink:0}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+  .tag{font-size:10px;padding:4px 9px;border-radius:20px}
+  .tag.teal{border:1px solid rgba(91,191,181,.28);color:var(--teal);background:rgba(91,191,181,.07)}
+  .tag.purple{border:1px solid rgba(155,125,232,.28);color:var(--purple);background:rgba(155,125,232,.07)}
+  .tag.green{border:1px solid rgba(143,190,107,.28);color:var(--green);background:rgba(143,190,107,.07)}
+  .tag.blue{border:1px solid rgba(91,155,213,.28);color:var(--blue);background:rgba(91,155,213,.07)}
+  .tag.accent{border:1px solid rgba(200,146,42,.28);color:var(--accent);background:rgba(200,146,42,.07)}
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin:18px 0 32px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{padding:12px 14px;text-align:left;color:var(--teal);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:var(--surface);border-bottom:1px solid var(--border)}
+  td{padding:12px 14px;border-bottom:1px solid var(--border);color:var(--soft);line-height:1.55;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td:first-child{color:var(--text);font-weight:500}
+  .steps{display:grid;gap:14px;margin:16px 0 30px}
+  .step{display:flex;gap:16px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+  .step-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:var(--teal);line-height:1;flex-shrink:0;width:32px;text-align:center}
+  .step-body h4{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:4px}
+  .step-body p{font-size:13px;color:var(--soft);line-height:1.6}
+  @media(max-width:720px){body{padding:24px 12px 60px}}
+</style>
+</head>
+<body>
+<nav class="top-nav" aria-label="Primary"></nav>
+<script src="/nav.js"></script>
+
+<header>
+  <div class="sub-label">Reference Guide</div>
+  <h1>Electrolytes &amp; <em>Minerals</em></h1>
+  <p class="lead">Electrolytes and minerals are both essential for optimal body function and often overlap — but they serve distinct purposes. Understanding the difference helps you target the right nutrients at the right time.</p>
+  <div class="header-line"></div>
+</header>
+
+<main class="container">
+
+  <h2>The Core Distinction</h2>
+  <div class="two-col">
+    <div class="panel">
+      <div class="panel-head" style="border-top:3px solid var(--teal)">
+        <div class="panel-label">Charged minerals</div>
+        <h3>Electrolytes</h3>
+      </div>
+      <div class="panel-body">
+        <p>Electrolytes are minerals that carry an electrical charge when dissolved in water. This charge is what makes them uniquely capable of conducting nerve impulses and driving fluid movement across cell membranes.</p>
+        <ul class="role-list">
+          <li><strong>Hydration</strong> — regulate fluid balance inside and outside cells</li>
+          <li><strong>Muscle function</strong> — drive proper contractions, including the heart</li>
+          <li><strong>Nerve signalling</strong> — facilitate communication between neurons</li>
+          <li><strong>pH balance</strong> — maintain the acid-base balance of the blood</li>
+        </ul>
+        <div class="pill-list">
+          <span class="pill teal">Sodium Na⁺</span>
+          <span class="pill teal">Potassium K⁺</span>
+          <span class="pill teal">Calcium Ca²⁺</span>
+          <span class="pill teal">Magnesium Mg²⁺</span>
+          <span class="pill teal">Chloride Cl⁻</span>
+          <span class="pill teal">Bicarbonate HCO₃⁻</span>
+          <span class="pill teal">Phosphate PO₄³⁻</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head" style="border-top:3px solid var(--purple)">
+        <div class="panel-label">Inorganic essentials</div>
+        <h3>Minerals</h3>
+      </div>
+      <div class="panel-body">
+        <p>Minerals are inorganic substances the body cannot synthesise — they must come from food. Some minerals are electrolytes, but others serve structural or catalytic roles that have nothing to do with electrical charge.</p>
+        <ul class="role-list">
+          <li><strong>Bone health</strong> — calcium and phosphorus form bone and tooth structure</li>
+          <li><strong>Oxygen transport</strong> — iron is vital for haemoglobin in red blood cells</li>
+          <li><strong>Enzyme activity</strong> — many minerals act as cofactors that activate enzymes</li>
+          <li><strong>Immune function</strong> — zinc and selenium support immune defence</li>
+        </ul>
+        <div class="pill-list">
+          <span class="pill purple">Iron</span>
+          <span class="pill purple">Zinc</span>
+          <span class="pill purple">Copper</span>
+          <span class="pill purple">Selenium</span>
+          <span class="pill purple">Iodine</span>
+          <span class="pill purple">Manganese</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Key Electrolytes — Roles &amp; Sources</h2>
+  <p class="sec-desc">Each electrolyte has a primary role and distinct food sources. Deficiency in any one can have cascading effects across multiple systems.</p>
+  <div class="grid">
+    <article class="card">
+      <div class="stripe" style="background:var(--teal)"></div>
+      <div class="inner">
+        <div class="label">Na⁺</div>
+        <h3>Sodium</h3>
+        <p>The main extracellular electrolyte. Controls blood volume, blood pressure, and the osmotic pressure that moves water in and out of cells.</p>
+        <ul><li>Table salt, olives, pickles, canned foods, soy sauce</li><li>Lost heavily in sweat — the first electrolyte to replenish after exercise</li></ul>
+        <div class="tags"><span class="tag teal">fluid balance</span><span class="tag teal">blood pressure</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--green)"></div>
+      <div class="inner">
+        <div class="label">K⁺</div>
+        <h3>Potassium</h3>
+        <p>The primary intracellular electrolyte. Works opposite to sodium to regulate cell membrane potential, heart rhythm, and muscle contraction.</p>
+        <ul><li>Bananas, avocado, sweet potato, spinach, beans, lentils</li><li>Low intake linked to hypertension and muscle cramps</li></ul>
+        <div class="tags"><span class="tag green">heart rhythm</span><span class="tag green">muscle</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--blue)"></div>
+      <div class="inner">
+        <div class="label">Ca²⁺</div>
+        <h3>Calcium</h3>
+        <p>Most abundant mineral in the body — 99% stored in bones and teeth. The remaining 1% is critical for muscle contraction, nerve firing, and blood clotting.</p>
+        <ul><li>Dairy, fortified plant milks, sardines, kale, broccoli, tofu</li><li>Requires vitamin D for absorption</li></ul>
+        <div class="tags"><span class="tag blue">bone health</span><span class="tag blue">nerve firing</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--purple)"></div>
+      <div class="inner">
+        <div class="label">Mg²⁺</div>
+        <h3>Magnesium</h3>
+        <p>Involved in over 300 enzyme reactions. Supports ATP energy production, protein synthesis, nerve function, and blood sugar control.</p>
+        <ul><li>Dark chocolate, nuts, seeds, legumes, whole grains, leafy greens</li><li>Commonly low in modern diets; depletion worsens anxiety and sleep</li></ul>
+        <div class="tags"><span class="tag purple">energy</span><span class="tag purple">sleep</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--accent)" style="background:#c8922a"></div>
+      <div class="inner">
+        <div class="label">Cl⁻</div>
+        <h3>Chloride</h3>
+        <p>Pairs with sodium to maintain fluid balance and is a key component of stomach acid (HCl), which is essential for digestion and pathogen defence.</p>
+        <ul><li>Table salt (sodium chloride), seaweed, rye, tomatoes, celery</li><li>Rarely deficient on its own; follows sodium losses</li></ul>
+        <div class="tags"><span class="tag accent">digestion</span><span class="tag accent">fluid balance</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="stripe" style="background:var(--soft)" style="background:#b0a898"></div>
+      <div class="inner">
+        <div class="label">HCO₃⁻ / PO₄³⁻</div>
+        <h3>Bicarbonate &amp; Phosphate</h3>
+        <p>Bicarbonate is the blood's primary pH buffer, neutralising excess acid. Phosphate supports bone mineralisation, energy currency (ATP), and DNA structure.</p>
+        <ul><li>Bicarbonate: produced by the kidneys and lungs endogenously</li><li>Phosphate: meat, fish, dairy, nuts, seeds, legumes</li></ul>
+        <div class="tags"><span class="tag teal">pH balance</span><span class="tag blue">ATP / DNA</span></div>
+      </div>
+    </article>
+  </div>
+
+  <h2>Key Non-Electrolyte Minerals</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Mineral</th><th>Primary Role</th><th>Best Food Sources</th><th>Deficiency Signs</th></tr></thead>
+      <tbody>
+        <tr><td>Iron</td><td>Haemoglobin formation; oxygen transport to tissues</td><td>Red meat, liver, lentils, spinach, fortified cereals</td><td>Fatigue, pale skin, shortness of breath, poor concentration</td></tr>
+        <tr><td>Zinc</td><td>Immune defence, wound healing, testosterone, enzyme cofactor</td><td>Oysters, beef, pumpkin seeds, chickpeas, cashews</td><td>Frequent illness, slow wound healing, loss of taste or smell</td></tr>
+        <tr><td>Copper</td><td>Iron metabolism, collagen synthesis, antioxidant enzyme production</td><td>Liver, shellfish, nuts, seeds, dark chocolate</td><td>Anaemia, joint pain, neurological symptoms</td></tr>
+        <tr><td>Selenium</td><td>Antioxidant defence (glutathione peroxidase), thyroid hormone activation</td><td>Brazil nuts (1–2/day), tuna, sardines, eggs, sunflower seeds</td><td>Muscle weakness, thyroid dysfunction, impaired immunity</td></tr>
+        <tr><td>Iodine</td><td>Thyroid hormone synthesis; metabolism regulation</td><td>Seaweed, iodised salt, seafood, dairy</td><td>Goitre, hypothyroidism, fatigue, weight gain</td></tr>
+        <tr><td>Manganese</td><td>Bone formation, carbohydrate and amino acid metabolism, antioxidant enzyme</td><td>Whole grains, legumes, nuts, leafy greens, tea</td><td>Rare; bone fragility, impaired glucose tolerance</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>When Each Matters Most</h2>
+  <div class="note-box">
+    <p class="note"><strong>During intense exercise or illness:</strong> Electrolyte replenishment — especially sodium, potassium, and magnesium — is the immediate priority. These are lost rapidly through sweat, vomiting, or diarrhoea and must be replaced to restore nerve and muscle function.<br><br><strong>For long-term health:</strong> A balanced intake of all essential minerals (both electrolytes and non-electrolytes) from whole foods supports bone density, immune resilience, hormonal balance, and cellular energy over time.</p>
+  </div>
+
+  <h2>How to Balance Both</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Diet First</h4>
+        <p>Prioritise whole foods naturally rich in both categories: leafy greens, nuts, seeds, legumes, fruits, quality dairy or fortified alternatives, and lean meats or fish. Variety across food groups covers most needs without supplementation.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Targeted Supplementation</h4>
+        <p>Consider electrolyte drinks or tablets after heavy sweating or prolonged activity. For general mineral gaps — especially iron, magnesium, zinc, or vitamin D (which affects calcium absorption) — supplement only where a deficiency is suspected or confirmed, ideally with testing.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Account for Individual Needs</h4>
+        <p>Specific conditions alter requirements significantly. Kidney disease may require limiting potassium and phosphate. High blood pressure may benefit from sodium reduction. Pregnancy increases iron and folate needs. Work with a clinician if any of these apply.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <p class="note"><strong>Key takeaway.</strong> Neither electrolytes nor minerals are "more important" — they serve overlapping but distinct functions. Electrolytes are the immediate regulators of hydration, nerve firing, and muscle contraction. Broader minerals underpin long-term structure, immunity, and metabolism. A diet built around whole, varied foods covers most of both.</p>
+  </div>
+</main>
+</body>
+</html>
