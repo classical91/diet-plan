@@ -81,6 +81,9 @@ const server = http.createServer(async (request, response) => {
     if (pathname === "/seasonal-rotation" || pathname === "/seasonal-rotation/") {
       pathname = "/seasonal-rotation.html";
     }
+    if (pathname === "/foods-dementia-risk" || pathname === "/foods-dementia-risk/") {
+      pathname = "/foods-dementia-risk.html";
+    }
     if (pathname === "/parasite-detox" || pathname === "/parasite-detox/") {
       pathname = "/parasite-detox.html";
     } else if (pathname.startsWith("/parasite-detox/")) {

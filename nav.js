@@ -28,6 +28,7 @@
             <a href="/herbology#antiviral" class="nav-dropdown-item">Antiviral Herbs</a>
             <a href="/functional-foods" class="nav-dropdown-item" data-path="/functional-foods">Functional Foods</a>
             <a href="/food-for-mood" class="nav-dropdown-item" data-path="/food-for-mood">Food for Mood</a>
+            <a href="/foods-dementia-risk" class="nav-dropdown-item" data-path="/foods-dementia-risk">Dementia Risk Foods</a>
             <a href="/parasite-detox" class="nav-dropdown-item" data-path="/parasite-detox">Parasite Detox</a>
             <a href="/seasonal-rotation" class="nav-dropdown-item" data-path="/seasonal-rotation">Seasonal Rotation</a>
           </div>
@@ -63,6 +64,7 @@
     { path: "/herbology", title: "Herbology" },
     { path: "/functional-foods", title: "Functional Foods" },
     { path: "/food-for-mood", title: "Food for Mood" },
+    { path: "/foods-dementia-risk", title: "Dementia Risk Foods" },
     { path: "/parasite-detox", title: "Parasite Detox" },
     { path: "/seasonal-rotation", title: "Seasonal Rotation" }
   ];
