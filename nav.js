@@ -26,6 +26,7 @@
             <a href="/adaptogens" class="nav-dropdown-item" data-path="/adaptogens">Adaptogens</a>
             <a href="/herbology" class="nav-dropdown-item" data-path="/herbology">Herbology</a>
             <a href="/herbology#antiviral" class="nav-dropdown-item">Antiviral Herbs</a>
+            <a href="/tea" class="nav-dropdown-item" data-path="/tea">Teas &amp; Benefits</a>
             <a href="/functional-foods" class="nav-dropdown-item" data-path="/functional-foods">Functional Foods</a>
             <a href="/superfoods" class="nav-dropdown-item" data-path="/superfoods">Superfoods</a>
             <a href="/food-for-mood" class="nav-dropdown-item" data-path="/food-for-mood">Food for Mood</a>
@@ -69,6 +70,7 @@
     { path: "/foodtypes", title: "Food Categories" },
     { path: "/adaptogens", title: "Adaptogens" },
     { path: "/herbology", title: "Herbology" },
+    { path: "/tea", title: "Teas & Health Benefits" },
     { path: "/functional-foods", title: "Functional Foods" },
     { path: "/superfoods", title: "Superfoods" },
     { path: "/food-for-mood", title: "Food for Mood" },
