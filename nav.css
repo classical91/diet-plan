@@ -229,6 +229,25 @@
   }
   .nav-items.open { display: flex; }
   .nav-item { border-radius: 6px; }
+  /* On mobile the dropdown is rendered inline (position: static), so it sits
+     inside its .nav-item. The group's hover/active background would then wrap
+     the whole expanded list (a big lit-up box around the active group). Keep
+     the group container transparent and move the highlight onto the label row. */
+  .nav-item.has-dropdown {
+    padding: 0;
+    background: none;
+  }
+  .nav-item.has-dropdown > span {
+    display: block;
+    padding: 6px 14px;
+    border-radius: 6px;
+    color: #7a7063;
+  }
+  .nav-item.has-dropdown.has-active > span,
+  .nav-item.has-dropdown:hover > span {
+    color: #f0ebe3;
+    background: rgba(255,255,255,0.04);
+  }
   .nav-dropdown {
     display: flex;
     position: static;
