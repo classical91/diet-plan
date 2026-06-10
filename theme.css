@@ -23,6 +23,8 @@
   --muted: #7a7063;
   --soft: #b0a898;
   --check-bg: #2a2520;
+  --hover: rgba(255, 255, 255, .03);
+  --border-hover: #3e3a32;
 }
 
 html[data-theme="light"] {
@@ -43,6 +45,8 @@ html[data-theme="light"] {
   --muted: #6f6657;
   --soft: #5b5246;
   --check-bg: #efe9dc;
+  --hover: rgba(60, 50, 30, .05);
+  --border-hover: #cdc2aa;
 }
 
 /* Smooth the flip between themes. */

@@ -42,7 +42,7 @@
   .section:nth-child(1){animation-delay:.05s}.section:nth-child(2){animation-delay:.10s}.section:nth-child(3){animation-delay:.15s}.section:nth-child(4){animation-delay:.20s}.section:nth-child(5){animation-delay:.25s}.section:nth-child(6){animation-delay:.30s}
   @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
   .section-header { padding: 14px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
-  .section-header:hover { background: rgba(255,255,255,0.02); }
+  .section-header:hover { background: var(--hover); }
   .section-icon { font-size: 18px; }
   .section-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--text); flex: 1; }
   .section-count { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; }
@@ -52,7 +52,7 @@
   .items-list { padding: 8px 0; overflow: hidden; max-height: 1000px; transition: max-height 0.3s ease, padding 0.3s ease; }
   .section.collapsed .items-list { max-height: 0; padding: 0; }
   .item { display: flex; align-items: center; gap: 14px; padding: 9px 20px; cursor: pointer; transition: background 0.15s; user-select: none; }
-  .item:hover { background: rgba(255,255,255,0.02); }
+  .item:hover { background: var(--hover); }
   .checkbox { width: 20px; height: 20px; border-radius: 5px; border: 1.5px solid var(--border); background: var(--check-bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
   .checkbox svg { opacity: 0; transform: scale(0.5); transition: all 0.2s; }
   .item.checked .checkbox { border-color: currentColor; }
