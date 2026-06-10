@@ -27,6 +27,7 @@
             <a href="/herbology" class="nav-dropdown-item" data-path="/herbology">Herbology</a>
             <a href="/herbology#antiviral" class="nav-dropdown-item">Antiviral Herbs</a>
             <a href="/functional-foods" class="nav-dropdown-item" data-path="/functional-foods">Functional Foods</a>
+            <a href="/superfoods" class="nav-dropdown-item" data-path="/superfoods">Superfoods</a>
             <a href="/food-for-mood" class="nav-dropdown-item" data-path="/food-for-mood">Food for Mood</a>
             <a href="/foods-dementia-risk" class="nav-dropdown-item" data-path="/foods-dementia-risk">Dementia Risk Foods</a>
             <a href="/hydration" class="nav-dropdown-item" data-path="/hydration">Hydration &amp; Water</a>
@@ -68,6 +69,7 @@
     { path: "/adaptogens", title: "Adaptogens" },
     { path: "/herbology", title: "Herbology" },
     { path: "/functional-foods", title: "Functional Foods" },
+    { path: "/superfoods", title: "Superfoods" },
     { path: "/food-for-mood", title: "Food for Mood" },
     { path: "/foods-dementia-risk", title: "Dementia Risk Foods" },
     { path: "/hydration", title: "Hydration & Water" },
