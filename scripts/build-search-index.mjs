@@ -95,6 +95,7 @@ const CONTENT_PAGES = [
   { file: "food-for-mood.html", path: "/food-for-mood", title: "Food for Mood" },
   { file: "howto.html", path: "/howto", title: "How-To" },
   { file: "seasonal-rotation.html", path: "/seasonal-rotation", title: "Seasonal Rotation" },
+  { file: "elements-in-biology.html", path: "/elements-in-biology", title: "Elements in Biology" },
   { file: "parasite-detox.html", path: "/parasite-detox", title: "Parasite Detox" },
   { file: "parasite-detox-recommended.html", path: "/parasite-detox/recommended", title: "Parasite Detox · Recommended Blend" },
   { file: "parasite-detox-effects.html", path: "/parasite-detox/effects", title: "Parasite Detox · Effects" },

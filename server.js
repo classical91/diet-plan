@@ -87,6 +87,9 @@ const server = http.createServer(async (request, response) => {
     if (pathname === "/electrolytes-minerals" || pathname === "/electrolytes-minerals/") {
       pathname = "/electrolytes-minerals.html";
     }
+    if (pathname === "/elements-in-biology" || pathname === "/elements-in-biology/") {
+      pathname = "/elements-in-biology.html";
+    }
     if (pathname === "/hydration" || pathname === "/hydration/") {
       pathname = "/hydration.html";
     }
