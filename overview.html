@@ -606,6 +606,9 @@ function slugify(name) {
 const SLUGS = new Set(NUTRIENTS.map(n => slugify(n.name)));
 const byName = name => NUTRIENTS.find(n => slugify(n.name) === slugify(name));
 const byGroup = g => NUTRIENTS.filter(n => n.group === g);
+// Gut-health nutrients are surfaced together on the landing tab rather than
+// under Health Tables. Order = probiotics (the bacteria) then prebiotics (their food).
+const GUT_NUTRIENTS = ['Probiotics', 'Prebiotics'];
 
 function showTab(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -696,9 +699,9 @@ function renderLanding() {
   document.getElementById('macroCards').innerHTML = byGroup('macro').map(n => makeCard(n)).join('');
   document.getElementById('mineralCards').innerHTML = byGroup('mineral').map(n => makeCard(n)).join('');
   document.getElementById('fiberCards').innerHTML = byGroup('fiber').map(n => makeCard(n)).join('');
-  document.getElementById('gutCards').innerHTML = byGroup('other').filter(n => n.name === 'Prebiotics').map(n => makeCard(n)).join('');
+  document.getElementById('gutCards').innerHTML = byGroup('other').filter(n => GUT_NUTRIENTS.includes(n.name)).map(n => makeCard(n)).join('');
   document.getElementById('vitaminCards').innerHTML = byGroup('vitamin').map(n => makeCard(n)).join('');
-  document.getElementById('otherCards').innerHTML = byGroup('other').filter(n => n.name !== 'Prebiotics').map(n => makeCard(n)).join('');
+  document.getElementById('otherCards').innerHTML = byGroup('other').filter(n => !GUT_NUTRIENTS.includes(n.name)).map(n => makeCard(n)).join('');
   document.getElementById('mineralRoleCards').innerHTML = byGroup('mineral').map(n => makeCard(n, {sources:false})).join('');
 
   // KETO TABLE (reference; names not linked due to short-form naming)
