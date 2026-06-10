@@ -44,6 +44,8 @@
                aria-label="Search the site" />
         <div class="nav-search-results" id="navSearchResults" role="listbox" hidden></div>
       </div>
+      <button class="nav-theme-toggle" id="navThemeToggle" type="button"
+              aria-label="Toggle light or dark theme" title="Toggle theme"></button>
       <button class="nav-mobile-btn" type="button" aria-label="Toggle menu">&#9776;</button>
     </div>
   `;
@@ -233,6 +235,43 @@
     }
 
     wireSearch(nav);
+    wireThemeToggle(nav);
+  }
+
+  // Light/dark theme toggle. The chosen theme is stored in
+  // localStorage('nm-theme') and reflected on <html data-theme>. A matching
+  // inline script in each page's <head> applies the saved theme before paint
+  // to avoid a flash; this only updates the button glyph and handles clicks.
+  function currentTheme() {
+    return document.documentElement.getAttribute("data-theme") === "light"
+      ? "light" : "dark";
+  }
+
+  function applyTheme(theme, btn) {
+    const root = document.documentElement;
+    if (theme === "light") root.setAttribute("data-theme", "light");
+    else root.removeAttribute("data-theme");
+    try { localStorage.setItem("nm-theme", theme); } catch (e) { /* ignore */ }
+    if (btn) {
+      // Show the glyph for the theme you'd switch TO.
+      btn.textContent = theme === "light" ? "🌙" : "☀️";
+      btn.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
+    }
+  }
+
+  function wireThemeToggle(nav) {
+    const btn = nav.querySelector("#navThemeToggle");
+    if (!btn) return;
+    // Only offer the toggle on pages that load the shared theme palette.
+    // The planner and parasite-detox section ship their own styling.
+    if (!document.querySelector('link[href="/theme.css"]')) {
+      btn.remove();
+      return;
+    }
+    applyTheme(currentTheme(), btn);
+    btn.addEventListener("click", () => {
+      applyTheme(currentTheme() === "light" ? "dark" : "light", btn);
+    });
   }
 
   if (document.readyState === "loading") {

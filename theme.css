@@ -1,0 +1,111 @@
+/* ───────────────────────────────────────────────────────────────
+   NutriMind shared theme palette.
+   Single source of truth for colors across every static reference page.
+   Dark is the default (:root); light is opt-in via <html data-theme="light">.
+   The choice is persisted in localStorage('nm-theme') and applied before
+   paint by a small inline script in each page's <head> to avoid flashes.
+   ─────────────────────────────────────────────────────────────── */
+:root {
+  --bg: #0f0d0a;
+  --surface: #1a1714;
+  --card: #201d19;
+  --border: #2e2a24;
+  --accent: #c8922a;
+  --green: #8fbe6b;
+  --blue: #5b9bd5;
+  --pink: #c86b8f;
+  --purple: #9b7de8;
+  --teal: #5bbfb5;
+  --red: #e05c5c;
+  --orange: #e07c3a;
+  --warn: #e8b84b;
+  --text: #f0ebe3;
+  --muted: #7a7063;
+  --soft: #b0a898;
+  --check-bg: #2a2520;
+}
+
+html[data-theme="light"] {
+  --bg: #f4efe6;
+  --surface: #fbf8f1;
+  --card: #ffffff;
+  --border: #e4ddcd;
+  --accent: #a8761a;
+  --green: #5f9440;
+  --blue: #3f7bb8;
+  --pink: #b14e76;
+  --purple: #7a5bd0;
+  --teal: #2f968a;
+  --red: #c44545;
+  --orange: #c2611f;
+  --warn: #b8860b;
+  --text: #2b2620;
+  --muted: #6f6657;
+  --soft: #5b5246;
+  --check-bg: #efe9dc;
+}
+
+/* Smooth the flip between themes. */
+html[data-theme] body {
+  transition: background-color .25s ease, color .25s ease;
+}
+
+/* ── Shared nav, light-mode overrides ──
+   nav.css ships dark hard-coded colors as the default. These only take
+   effect on pages that load theme.css and are switched to light. */
+html[data-theme="light"] .top-nav {
+  background: #fbf8f1;
+  border-bottom-color: #e4ddcd;
+}
+html[data-theme="light"] .nav-logo { color: #a8761a; }
+html[data-theme="light"] .nav-item { color: #6f6657; }
+html[data-theme="light"] .nav-item:hover,
+html[data-theme="light"] .nav-item.active { color: #a8761a; }
+html[data-theme="light"] .nav-dropdown {
+  background: #ffffff;
+  border-color: #e4ddcd;
+  box-shadow: 0 12px 28px rgba(60, 50, 30, .15);
+}
+html[data-theme="light"] .nav-dropdown-item { color: #6f6657; }
+html[data-theme="light"] .nav-dropdown-item:hover {
+  background: #f4efe6;
+  color: #a8761a;
+}
+html[data-theme="light"] .nav-search-input {
+  background: #ffffff;
+  border-color: #e4ddcd;
+  color: #2b2620;
+}
+html[data-theme="light"] .nav-search-results {
+  background: #ffffff;
+  border-color: #e4ddcd;
+}
+html[data-theme="light"] .nav-search-result:hover { background: #f4efe6; }
+html[data-theme="light"] .nav-mobile-btn { color: #6f6657; }
+
+/* ── Theme toggle button (injected by nav.js) ── */
+.nav-theme-toggle {
+  background: none;
+  border: 1px solid #2e2a24;
+  color: #7a7063;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .2s, color .2s;
+}
+.nav-theme-toggle:hover { border-color: #c8922a; color: #c8922a; }
+html[data-theme="light"] .nav-theme-toggle {
+  border-color: #e4ddcd;
+  color: #6f6657;
+}
+html[data-theme="light"] .nav-theme-toggle:hover {
+  border-color: #a8761a;
+  color: #a8761a;
+}
