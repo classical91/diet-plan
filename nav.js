@@ -32,6 +32,7 @@
             <a href="/food-for-mood" class="nav-dropdown-item" data-path="/food-for-mood">Food for Mood</a>
             <a href="/foods-dementia-risk" class="nav-dropdown-item" data-path="/foods-dementia-risk">Dementia Risk Foods</a>
             <a href="/hydration" class="nav-dropdown-item" data-path="/hydration">Hydration &amp; Water</a>
+            <a href="/deficiencies" class="nav-dropdown-item" data-path="/deficiencies">Deficiencies</a>
             <a href="/electrolytes-minerals" class="nav-dropdown-item" data-path="/electrolytes-minerals">Electrolytes &amp; Minerals</a>
             <a href="/elements-in-biology" class="nav-dropdown-item" data-path="/elements-in-biology">Elements in Biology</a>
             <a href="/detox-types" class="nav-dropdown-item" data-path="/detox-types">Detox Types</a>
@@ -227,14 +228,16 @@
     nav.innerHTML = NAV_HTML;
 
     const path = (window.location.pathname.replace(/\/$/, "") || "/").replace(/^\/$/, "/nutrition");
-    const activeLink = nav.querySelector(`[data-path="${path}"]`);
-    if (activeLink) {
+    // A page can be linked from more than one group (e.g. Deficiencies lives
+    // under both Nutrition and Reference), so highlight every matching link.
+    const activeLinks = nav.querySelectorAll(`[data-path="${path}"]`);
+    activeLinks.forEach((activeLink) => {
       activeLink.classList.add("active");
       const parentGroup = activeLink.closest(".nav-item.has-dropdown");
       // Start the active page's group expanded so the current page is visible
       // when the mobile menu opens; other groups stay collapsed.
       if (parentGroup) parentGroup.classList.add("has-active", "expanded");
-    }
+    });
 
     const toggleBtn = nav.querySelector(".nav-mobile-btn");
     const items = nav.querySelector("#navItems");
