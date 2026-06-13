@@ -94,6 +94,7 @@ const CONTENT_PAGES = [
   { file: "rich-foods.html", path: "/nutrition/rich-foods", title: "Rich Foods for Key Nutrients" },
   { file: "superfoods.html", path: "/superfoods", title: "Superfoods" },
   { file: "food-for-mood.html", path: "/food-for-mood", title: "Food for Mood" },
+  { file: "nervous-system.html", path: "/nervous-system", title: "Calm the Nervous System" },
   { file: "howto.html", path: "/howto", title: "How-To" },
   { file: "seasonal-rotation.html", path: "/seasonal-rotation", title: "Seasonal Rotation" },
   { file: "elements-in-biology.html", path: "/elements-in-biology", title: "Elements in Biology" },

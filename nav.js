@@ -30,6 +30,7 @@
             <a href="/functional-foods" class="nav-dropdown-item" data-path="/functional-foods">Functional Foods</a>
             <a href="/superfoods" class="nav-dropdown-item" data-path="/superfoods">Superfoods</a>
             <a href="/food-for-mood" class="nav-dropdown-item" data-path="/food-for-mood">Food for Mood</a>
+            <a href="/nervous-system" class="nav-dropdown-item" data-path="/nervous-system">Calm the Nervous System</a>
             <a href="/foods-dementia-risk" class="nav-dropdown-item" data-path="/foods-dementia-risk">Dementia Risk Foods</a>
             <a href="/hydration" class="nav-dropdown-item" data-path="/hydration">Hydration &amp; Water</a>
             <a href="/deficiencies" class="nav-dropdown-item" data-path="/deficiencies">Deficiencies</a>
@@ -75,6 +76,7 @@
     { path: "/functional-foods", title: "Functional Foods" },
     { path: "/superfoods", title: "Superfoods" },
     { path: "/food-for-mood", title: "Food for Mood" },
+    { path: "/nervous-system", title: "Calm the Nervous System" },
     { path: "/foods-dementia-risk", title: "Dementia Risk Foods" },
     { path: "/hydration", title: "Hydration & Water" },
     { path: "/electrolytes-minerals", title: "Electrolytes & Minerals" },
