@@ -11,34 +11,54 @@
             <a href="/nutrition/rich-foods" class="nav-dropdown-item" data-path="/nutrition/rich-foods">Rich Foods for Key Nutrients</a>
             <a href="/nutrition#s-reminders" class="nav-dropdown-item">Reminders</a>
             <a href="/benefits" class="nav-dropdown-item" data-path="/benefits">Benefits</a>
-            <a href="/deficiencies" class="nav-dropdown-item" data-path="/deficiencies">Deficiencies</a>
             <a href="/overview" class="nav-dropdown-item" data-path="/overview">Vitamins &amp; Minerals</a>
             <a href="/overview#focus" class="nav-dropdown-item">Focus Nutrients</a>
+            <a href="/deficiencies" class="nav-dropdown-item" data-path="/deficiencies">Deficiencies</a>
           </div>
         </div>
-        <div class="nav-item has-dropdown" data-group="reference">
-          <span>Reference <span class="nav-chevron">▾</span></span>
+        <div class="nav-item has-dropdown" data-group="food">
+          <span>Food <span class="nav-chevron">▾</span></span>
           <div class="nav-dropdown">
-            <a href="/howto" class="nav-dropdown-item" data-path="/howto">How-To</a>
-            <a href="/diets" class="nav-dropdown-item" data-path="/diets">Diet Types</a>
-            <a href="/allergies" class="nav-dropdown-item" data-path="/allergies">Allergies</a>
             <a href="/foodtypes" class="nav-dropdown-item" data-path="/foodtypes">Food Categories</a>
-            <a href="/adaptogens" class="nav-dropdown-item" data-path="/adaptogens">Adaptogens</a>
-            <a href="/herbology" class="nav-dropdown-item" data-path="/herbology">Herbology</a>
-            <a href="/herbology#antiviral" class="nav-dropdown-item">Antiviral Herbs</a>
-            <a href="/tea" class="nav-dropdown-item" data-path="/tea">Teas &amp; Benefits</a>
+            <a href="/diets" class="nav-dropdown-item" data-path="/diets">Diet Types</a>
             <a href="/functional-foods" class="nav-dropdown-item" data-path="/functional-foods">Functional Foods</a>
             <a href="/superfoods" class="nav-dropdown-item" data-path="/superfoods">Superfoods</a>
             <a href="/food-for-mood" class="nav-dropdown-item" data-path="/food-for-mood">Food for Mood</a>
-            <a href="/nervous-system" class="nav-dropdown-item" data-path="/nervous-system">Calm the Nervous System</a>
             <a href="/foods-dementia-risk" class="nav-dropdown-item" data-path="/foods-dementia-risk">Dementia Risk Foods</a>
-            <a href="/hydration" class="nav-dropdown-item" data-path="/hydration">Hydration &amp; Water</a>
-            <a href="/deficiencies" class="nav-dropdown-item" data-path="/deficiencies">Deficiencies</a>
+            <a href="/seasonal-rotation" class="nav-dropdown-item" data-path="/seasonal-rotation">Seasonal Rotation</a>
+            <a href="/allergies" class="nav-dropdown-item" data-path="/allergies">Allergies</a>
+          </div>
+        </div>
+        <div class="nav-item has-dropdown" data-group="herbs">
+          <span>Herbs &amp; Teas <span class="nav-chevron">▾</span></span>
+          <div class="nav-dropdown">
+            <a href="/herbology" class="nav-dropdown-item" data-path="/herbology">Herbology</a>
+            <a href="/herbology#antiviral" class="nav-dropdown-item">Antiviral Herbs</a>
+            <a href="/adaptogens" class="nav-dropdown-item" data-path="/adaptogens">Adaptogens</a>
+            <a href="/tea" class="nav-dropdown-item" data-path="/tea">Teas &amp; Benefits</a>
+          </div>
+        </div>
+        <div class="nav-item has-dropdown" data-group="minerals">
+          <span>Minerals <span class="nav-chevron">▾</span></span>
+          <div class="nav-dropdown">
             <a href="/electrolytes-minerals" class="nav-dropdown-item" data-path="/electrolytes-minerals">Electrolytes &amp; Minerals</a>
             <a href="/elements-in-biology" class="nav-dropdown-item" data-path="/elements-in-biology">Elements in Biology</a>
+            <a href="/hydration" class="nav-dropdown-item" data-path="/hydration">Hydration &amp; Water</a>
+            <a href="/deficiencies" class="nav-dropdown-item" data-path="/deficiencies">Deficiencies</a>
+          </div>
+        </div>
+        <div class="nav-item has-dropdown" data-group="detox">
+          <span>Detox <span class="nav-chevron">▾</span></span>
+          <div class="nav-dropdown">
             <a href="/detox-types" class="nav-dropdown-item" data-path="/detox-types">Detox Types</a>
             <a href="/parasite-detox" class="nav-dropdown-item" data-path="/parasite-detox">Parasite Detox</a>
-            <a href="/seasonal-rotation" class="nav-dropdown-item" data-path="/seasonal-rotation">Seasonal Rotation</a>
+          </div>
+        </div>
+        <div class="nav-item has-dropdown" data-group="guides">
+          <span>Guides <span class="nav-chevron">▾</span></span>
+          <div class="nav-dropdown">
+            <a href="/howto" class="nav-dropdown-item" data-path="/howto">How-To</a>
+            <a href="/nervous-system" class="nav-dropdown-item" data-path="/nervous-system">Calm the Nervous System</a>
           </div>
         </div>
         <a href="https://workout-tracker-production-0ec7.up.railway.app" class="nav-item" target="_blank" rel="noreferrer">Workout</a>
