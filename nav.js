@@ -8,7 +8,6 @@
           <span>Nutrition <span class="nav-chevron">▾</span></span>
           <div class="nav-dropdown">
             <a href="/nutrition/rich-foods" class="nav-dropdown-item" data-path="/nutrition/rich-foods">Rich Foods for Key Nutrients</a>
-            <a href="/nutrition#s-reminders" class="nav-dropdown-item">Reminders</a>
             <a href="/benefits" class="nav-dropdown-item" data-path="/benefits">Benefits</a>
             <a href="/overview" class="nav-dropdown-item" data-path="/overview">Vitamins &amp; Minerals</a>
             <a href="/overview#focus" class="nav-dropdown-item">Focus Nutrients</a>
@@ -81,7 +80,7 @@
   // content page. If the manifest can't load we fall back to a flat page list
   // so search still navigates somewhere useful.
   const FALLBACK_PAGES = [
-    { path: "/nutrition", title: "Nutrition Checklist" },
+    { path: "/nutrition", title: "Nutrition Guide" },
     { path: "/benefits", title: "Food Benefits" },
     { path: "/deficiencies", title: "Deficiencies" },
     { path: "/overview", title: "Vitamins & Minerals" },

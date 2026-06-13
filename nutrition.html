@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily Nutrition Checklist | NutriMind</title>
+<title>Daily Nutrition Guide | NutriMind</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/nav.css">
 <link rel="stylesheet" href="/theme.css">
@@ -21,27 +21,21 @@
       radial-gradient(ellipse at 15% 10%, rgba(200,146,42,0.06) 0%, transparent 55%),
       radial-gradient(ellipse at 85% 90%, rgba(91,155,213,0.05) 0%, transparent 50%);
   }
-  header { text-align: center; margin-bottom: 44px; }
+  header { text-align: center; margin-bottom: 36px; }
   .sub-label { font-size: 11px; font-weight: 500; letter-spacing: 0.35em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
   h1 { font-family: 'Playfair Display', serif; font-size: clamp(32px, 5vw, 56px); font-weight: 900; letter-spacing: -0.02em; line-height: 1; }
   h1 em { color: var(--accent); font-style: italic; }
+  .lead { color: var(--soft); font-size: 14px; line-height: 1.65; max-width: 600px; margin: 16px auto 0; }
   .header-line { width: 50px; height: 2px; background: var(--accent); margin: 18px auto 0; opacity: 0.5; }
-  .progress-wrap {
-    max-width: 680px; margin: 0 auto 40px;
-    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-    padding: 18px 24px; display: flex; align-items: center; gap: 18px;
-  }
-  .progress-text { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--accent); min-width: 60px; }
-  .progress-bar-outer { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
-  .progress-bar-inner { height: 100%; background: linear-gradient(90deg, var(--accent), var(--green)); border-radius: 4px; transition: width 0.4s ease; width: 0%; }
-  .progress-label { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; }
-  .reset-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; cursor: pointer; transition: all 0.2s; }
-  .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .main { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  .toolbar { max-width: 680px; margin: 0 auto 22px; display: flex; justify-content: flex-end; }
+  .toggle-all-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; cursor: pointer; transition: all 0.2s; }
+  .toggle-all-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .main { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
   .section { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; animation: fadeUp 0.4s ease both; }
   .section:nth-child(1){animation-delay:.05s}.section:nth-child(2){animation-delay:.10s}.section:nth-child(3){animation-delay:.15s}.section:nth-child(4){animation-delay:.20s}.section:nth-child(5){animation-delay:.25s}.section:nth-child(6){animation-delay:.30s}
   @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-  .section-header { padding: 14px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
+  .section-header { padding: 14px 20px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.15s; }
+  .section:not(.collapsed) .section-header { border-bottom: 1px solid var(--border); }
   .section-header:hover { background: var(--hover); }
   .section-icon { font-size: 18px; }
   .section-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--text); flex: 1; }
@@ -51,35 +45,18 @@
   .color-bar { height: 3px; }
   .items-list { padding: 8px 0; overflow: hidden; max-height: 1000px; transition: max-height 0.3s ease, padding 0.3s ease; }
   .section.collapsed .items-list { max-height: 0; padding: 0; }
-  .item { display: flex; align-items: center; gap: 14px; padding: 9px 20px; cursor: pointer; transition: background 0.15s; user-select: none; }
-  .item:hover { background: var(--hover); }
-  .checkbox { width: 20px; height: 20px; border-radius: 5px; border: 1.5px solid var(--border); background: var(--check-bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
-  .checkbox svg { opacity: 0; transform: scale(0.5); transition: all 0.2s; }
-  .item.checked .checkbox { border-color: currentColor; }
-  .item.checked .checkbox svg { opacity: 1; transform: scale(1); }
+  .item { display: flex; align-items: center; gap: 14px; padding: 9px 20px; }
   .item-info { flex: 1; }
-  .item-name { font-size: 13.5px; font-weight: 500; color: var(--text); transition: color 0.2s; }
-  .item.checked .item-name { text-decoration: line-through; color: var(--muted); }
+  .item-name { font-size: 13.5px; font-weight: 500; color: var(--text); }
   .item-detail { font-size: 11px; color: var(--muted); margin-top: 1px; }
-  .item-amount { font-size: 11px; font-weight: 500; letter-spacing: 0.05em; color: var(--muted); white-space: nowrap; transition: color 0.2s; }
-  .item.checked .item-amount { color: var(--muted); opacity: 0.5; }
-  .subsection-label {
-    padding: 10px 20px 6px;
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .s-macro .color-bar{background:var(--accent)}.s-macro .section-header{border-left:3px solid var(--accent)}.s-macro .item.checked .checkbox{background:rgba(200,146,42,0.15);color:var(--accent)}
-  .s-vitamins .color-bar{background:var(--green)}.s-vitamins .section-header{border-left:3px solid var(--green)}.s-vitamins .item.checked .checkbox{background:rgba(143,190,107,0.15);color:var(--green)}
-  .s-minerals .color-bar{background:var(--blue)}.s-minerals .section-header{border-left:3px solid var(--blue)}.s-minerals .item.checked .checkbox{background:rgba(91,155,213,0.15);color:var(--blue)}
-  .s-electrolytes .color-bar{background:var(--pink)}.s-electrolytes .section-header{border-left:3px solid var(--pink)}.s-electrolytes .item.checked .checkbox{background:rgba(200,107,143,0.15);color:var(--pink)}
-  .s-extras .color-bar{background:var(--purple)}.s-extras .section-header{border-left:3px solid var(--purple)}.s-extras .item.checked .checkbox{background:rgba(155,125,232,0.15);color:var(--purple)}
-  .s-hydration .color-bar{background:var(--teal)}.s-hydration .section-header{border-left:3px solid var(--teal)}.s-hydration .item.checked .checkbox{background:rgba(91,191,181,0.15);color:var(--teal)}
-  .s-vitamins-b .color-bar{background:var(--green)}.s-vitamins-b .section-header{border-left:3px solid var(--green)}.s-vitamins-b .item.checked .checkbox{background:rgba(143,190,107,0.15);color:var(--green)}
-  .s-reminders .color-bar{background:#ff5a5f}.s-reminders .section-header{border-left:3px solid #ff5a5f}.s-reminders .item.checked .checkbox{background:rgba(255,90,95,0.16);color:#ff5a5f}
-
+  .item-amount { font-size: 11px; font-weight: 500; letter-spacing: 0.05em; color: var(--muted); white-space: nowrap; }
+  .s-macro .color-bar{background:var(--accent)}.s-macro .section-header{border-left:3px solid var(--accent)}
+  .s-vitamins .color-bar{background:var(--green)}.s-vitamins .section-header{border-left:3px solid var(--green)}
+  .s-minerals .color-bar{background:var(--blue)}.s-minerals .section-header{border-left:3px solid var(--blue)}
+  .s-electrolytes .color-bar{background:var(--pink)}.s-electrolytes .section-header{border-left:3px solid var(--pink)}
+  .s-extras .color-bar{background:var(--purple)}.s-extras .section-header{border-left:3px solid var(--purple)}
+  .s-hydration .color-bar{background:var(--teal)}.s-hydration .section-header{border-left:3px solid var(--teal)}
+  .s-vitamins-b .color-bar{background:var(--green)}.s-vitamins-b .section-header{border-left:3px solid var(--green)}
 </style>
 </head>
 <body>
@@ -87,18 +64,14 @@
 <script src="/nav.js"></script>
 
 <header>
-  <div class="sub-label">Daily Tracking</div>
-  <h1>Nutrition <em>Checklist</em></h1>
+  <div class="sub-label">Daily Reference</div>
+  <h1>Nutrition <em>Guide</em></h1>
+  <p class="lead">Target amounts for the macros, vitamins, minerals, and hydration to aim for each day. Tap any section to expand it.</p>
   <div class="header-line"></div>
 </header>
 
-<div class="progress-wrap">
-  <div class="progress-text" id="pct">0%</div>
-  <div style="flex:1">
-    <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar"></div></div>
-    <div class="progress-label" style="margin-top:6px" id="pcount">0 of 0 completed</div>
-  </div>
-  <button class="reset-btn" onclick="resetAll()">Reset</button>
+<div class="toolbar">
+  <button class="toggle-all-btn" id="toggleAll" onclick="toggleAll()">Expand all</button>
 </div>
 
 <div class="main" id="main"></div>
@@ -150,14 +123,6 @@ const sections = [
     {name:"Biotin (B7)",detail:"Eggs, nuts, salmon",amount:"30 mcg"},
     {name:"Pantothenic Acid (B5)",detail:"Avocado, chicken, whole grains",amount:"5 mg"},
   ]},
-  { id:"s-reminders", icon:"📝", title:"Reminders", items:[
-    {type:"subsection",name:"Personal grooming"},
-    {name:"Fade beard + mustache",detail:"Personal grooming",amount:"As needed"},
-    {name:"Clean toes",detail:"Personal grooming",amount:"Daily"},
-    {name:"Clean belly button",detail:"Personal grooming",amount:"Daily"},
-    {name:"Clean inner areas",detail:"Personal grooming",amount:"Daily"},
-    {name:"Cut nails",detail:"Personal grooming",amount:"Weekly"},
-  ]},
   { id:"s-hydration", icon:"💧", title:"Hydration & Fiber", items:[
     {name:"Water",detail:"Plain water throughout the day",amount:"3.7 L / day"},
     {name:"Electrolyte Water",detail:"Post-workout or hot weather",amount:"1-2 glasses"},
@@ -167,80 +132,44 @@ const sections = [
   ]},
 ];
 
-const STORAGE_KEY = 'nutrition-checklist-v1';
 const main = document.getElementById('main');
-let total = 0;
-let saved = {};
-try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch {}
 
 sections.forEach(sec => {
-  const actionableItems = sec.items.filter(item => item.type !== 'subsection');
   const div = document.createElement('div');
-  div.className = `section ${sec.id}`;
+  // Sections start collapsed so each is a tab you expand on demand.
+  div.className = `section ${sec.id} collapsed`;
   div.id = sec.id;
   div.innerHTML = `
     <div class="color-bar"></div>
     <div class="section-header" onclick="toggleSection(this)">
       <span class="section-icon">${sec.icon}</span>
       <span class="section-title">${sec.title}</span>
-      <span class="section-count">${actionableItems.length} items</span>
+      <span class="section-count">${sec.items.length} items</span>
       <svg class="chevron" viewBox="0 0 16 16" fill="none">
         <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
     <div class="items-list">
-      ${sec.items.map((item, i) => {
-        if (item.type === 'subsection') {
-          return `<div class="subsection-label">${item.name}</div>`;
-        }
-        const id = sec.id + '-' + i;
-        const isChecked = saved[id] ? ' checked' : '';
-        return `
-        <div class="item${isChecked}" data-id="${id}" onclick="toggle(this)">
-          <div class="checkbox">
-            <svg width="12" height="9" viewBox="0 0 12 9" fill="none">
-              <path d="M1 4L4.5 7.5L11 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
+      ${sec.items.map(item => `
+        <div class="item">
           <div class="item-info">
             <div class="item-name">${item.name}</div>
             <div class="item-detail">${item.detail}</div>
           </div>
           <div class="item-amount">${item.amount}</div>
-        </div>`;
-      }).join('')}
+        </div>`).join('')}
     </div>`;
   main.appendChild(div);
-  total += actionableItems.length;
 });
-
-updateProgress();
-
 
 function toggleSection(header) { header.closest('.section').classList.toggle('collapsed'); }
 
-function toggle(el) {
-  el.classList.toggle('checked');
-  saved[el.dataset.id] = el.classList.contains('checked');
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
-  updateProgress();
-}
-
-function updateProgress() {
-  const checked = document.querySelectorAll('.item.checked').length;
-  const pct = total > 0 ? Math.round((checked / total) * 100) : 0;
-  document.getElementById('pct').textContent = pct + '%';
-  document.getElementById('bar').style.width = pct + '%';
-  document.getElementById('pcount').textContent = checked + ' of ' + total + ' completed';
-}
-
-function resetAll() {
-  document.querySelectorAll('.item.checked').forEach(el => {
-    el.classList.remove('checked');
-    saved[el.dataset.id] = false;
-  });
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
-  updateProgress();
+function toggleAll() {
+  const sectionEls = document.querySelectorAll('.section');
+  // If anything is still collapsed, expand everything; otherwise collapse all.
+  const anyCollapsed = document.querySelector('.section.collapsed') !== null;
+  sectionEls.forEach(el => el.classList.toggle('collapsed', !anyCollapsed));
+  document.getElementById('toggleAll').textContent = anyCollapsed ? 'Collapse all' : 'Expand all';
 }
 </script>
 </body>
