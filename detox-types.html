@@ -30,6 +30,8 @@
   .sec-desc{font-size:13px;color:var(--soft);line-height:1.65;max-width:780px;margin-bottom:18px}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:36px}
   .card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s}
+  .card[data-detox]{cursor:pointer}
+  .card[data-detox]:focus-visible{outline:2px solid var(--green);outline-offset:2px}
   .card:hover{border-color:var(--border-hover);transform:translateY(-2px)}
   .card a{text-decoration:none;color:inherit;display:block}
   .stripe{height:3px}
@@ -47,10 +49,32 @@
   .tag.red{border:1px solid rgba(224,92,92,.28);color:var(--red);background:rgba(224,92,92,.07)}
   .tag.orange{border:1px solid rgba(224,124,58,.28);color:var(--orange);background:rgba(224,124,58,.07)}
   .tag.pink{border:1px solid rgba(200,107,143,.28);color:var(--pink);background:rgba(200,107,143,.07)}
+  .howto-hint{margin-top:14px;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--muted);transition:color .2s;display:flex;align-items:center;gap:5px}
+  .card[data-detox]:hover .howto-hint,.card[data-detox]:focus-visible .howto-hint{color:var(--green)}
   .divider{border:none;border-top:1px solid var(--border);margin:8px 0 32px}
   .cat-header{display:flex;align-items:baseline;gap:12px;margin:36px 0 6px}
   .cat-header h2{margin:0}
-  @media(max-width:720px){body{padding:24px 12px 60px}}
+  /* How-to modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:20px;z-index:500}
+  .modal-overlay[hidden]{display:none}
+  .modal{position:relative;background:var(--card);border:1px solid var(--border);border-radius:14px;max-width:560px;width:100%;max-height:86vh;overflow-y:auto;box-shadow:0 24px 70px rgba(0,0,0,.55);animation:modalIn .22s ease}
+  @keyframes modalIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .modal-stripe{height:4px;border-radius:14px 14px 0 0;background:var(--green)}
+  .modal-close{position:absolute;top:10px;right:14px;background:none;border:none;color:var(--muted);font-size:28px;line-height:1;cursor:pointer;z-index:2;transition:color .2s}
+  .modal-close:hover{color:var(--text)}
+  .modal-body{padding:26px 28px 30px}
+  .modal-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .modal-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:800;line-height:1.1;color:var(--text);margin-bottom:10px;padding-right:24px}
+  .modal-summary{font-size:13.5px;color:var(--soft);line-height:1.6}
+  .modal-section-title{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin:20px 0 9px}
+  .modal-body ol,.modal-body ul{margin:0;padding-left:20px}
+  .modal-body li{font-size:13px;color:var(--soft);line-height:1.6;margin-bottom:7px}
+  .modal-meta{font-size:13px;color:var(--soft);line-height:1.6}
+  .modal-meta strong{color:var(--text)}
+  .modal-safety{background:rgba(224,92,92,.08);border:1px solid rgba(224,92,92,.25);border-left:3px solid var(--red);border-radius:8px;padding:12px 14px;margin-top:20px;font-size:12.5px;color:var(--soft);line-height:1.55}
+  .modal-safety strong{color:var(--text)}
+  .modal-link{display:inline-block;margin-top:16px;font-size:12.5px;color:var(--green);text-decoration:none;border-bottom:1px solid rgba(143,190,107,.35)}
+  @media(max-width:720px){body{padding:24px 12px 60px}.modal-body{padding:22px 20px 24px}}
 </style>
 </head>
 <body>
@@ -60,7 +84,7 @@
 <header>
   <div class="sub-label">Reference Guide</div>
   <h1>Types of <em>Detox</em></h1>
-  <p class="lead">A comprehensive overview of recognised detox approaches — from dietary cleanses and herbal protocols to medical programmes and lifestyle resets. Understanding what each targets helps you choose wisely.</p>
+  <p class="lead">A comprehensive overview of recognised detox approaches — from dietary cleanses and herbal protocols to medical programmes and lifestyle resets. <strong>Tap any method for a step-by-step how-to.</strong></p>
   <div class="header-line"></div>
 </header>
 
@@ -76,73 +100,80 @@
   </div>
   <p class="sec-desc">These detoxes work by modifying what you eat and drink — removing certain foods, replacing meals with liquids, or returning to whole unprocessed ingredients to give the digestive system a rest.</p>
   <div class="grid">
-    <article class="card">
+    <article class="card" data-detox="juice">
       <div class="stripe" style="background:var(--green)"></div>
       <div class="inner">
         <div class="label">Liquid reset</div>
         <h3>Juice Detox / Cleanse</h3>
         <p>Consuming only freshly pressed fruit and vegetable juices for 1–7 days. Removes fibre from the diet, which reduces digestive load while flooding the body with vitamins and antioxidants.</p>
         <div class="tags"><span class="tag green">antioxidants</span><span class="tag green">digestive rest</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
 
-    <article class="card">
+    <article class="card" data-detox="water-fast">
       <div class="stripe" style="background:var(--blue)"></div>
       <div class="inner">
         <div class="label">Liquid reset</div>
         <h3>Water Fasting Detox</h3>
         <p>Consuming only water for a defined period (24–72 hours or longer under supervision). Triggers autophagy — the body's cellular clean-up process — and forces the liver to clear metabolic waste.</p>
         <div class="tags"><span class="tag blue">autophagy</span><span class="tag blue">fasting</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
 
-    <article class="card">
+    <article class="card" data-detox="teatox">
       <div class="stripe" style="background:var(--teal)"></div>
       <div class="inner">
         <div class="label">Herbal liquid</div>
         <h3>Tea Detox (Teatox)</h3>
         <p>Structured programmes using herbal tea blends — often senna, dandelion, ginger, or milk thistle — to support digestion, liver function, and mild diuretic effects over 14–28 days.</p>
         <div class="tags"><span class="tag teal">liver support</span><span class="tag teal">herbs</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
 
-    <article class="card">
+    <article class="card" data-detox="smoothie">
       <div class="stripe" style="background:var(--green)"></div>
       <div class="inner">
         <div class="label">Liquid reset</div>
         <h3>Smoothie Detox</h3>
         <p>Replacing some or all meals with whole-food smoothies — retaining fibre unlike juice cleanses — to reduce processed food intake while maintaining nutrients and satiety.</p>
         <div class="tags"><span class="tag green">fibre-rich</span><span class="tag green">whole food</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
 
-    <article class="card">
+    <article class="card" data-detox="raw-food">
       <div class="stripe" style="background:var(--accent)" style="background:#c8922a"></div>
       <div class="inner">
         <div class="label">Whole food</div>
         <h3>Raw Food Detox</h3>
         <p>Eating only uncooked, unprocessed plant foods. Maximises enzyme and nutrient content, eliminates additives and cooking by-products, and supports liver and gut function through high fibre intake.</p>
         <div class="tags"><span class="tag accent">enzymes</span><span class="tag green">plant-based</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
 
-    <article class="card">
+    <article class="card" data-detox="sugar">
       <div class="stripe" style="background:var(--pink)" style="background:#c86b8f"></div>
       <div class="inner">
         <div class="label">Elimination</div>
         <h3>Sugar Detox</h3>
         <p>Eliminating all added sugars and refined carbohydrates for 21–30 days to break glucose dependency, reduce inflammation, stabilise insulin, and reset taste sensitivity.</p>
         <div class="tags"><span class="tag pink">insulin reset</span><span class="tag pink">inflammation</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
 
-    <article class="card">
+    <article class="card" data-detox="detox-diet">
       <div class="stripe" style="background:var(--purple)"></div>
       <div class="inner">
         <div class="label">Structured diet</div>
         <h3>Detox Diets</h3>
         <p>Structured programmes such as Whole30 or elimination diets that remove common inflammatory foods — gluten, dairy, alcohol, legumes, processed foods — for 30 days, then systematically reintroduce them to identify sensitivities.</p>
         <div class="tags"><span class="tag purple">Whole30</span><span class="tag purple">elimination</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
   </div>
@@ -155,33 +186,36 @@
   </div>
   <p class="sec-desc">These approaches use concentrated plant compounds, traditional medicine systems, or targeted supplements to support specific organs — primarily the liver, colon, and lymphatic system.</p>
   <div class="grid">
-    <article class="card">
+    <article class="card" data-detox="herbal">
       <div class="stripe" style="background:var(--teal)"></div>
       <div class="inner">
         <div class="label">Plant medicine</div>
         <h3>Herbal Detox</h3>
         <p>Using specific medicinal herbs — milk thistle, dandelion root, burdock, turmeric, chlorella — to support liver detoxification pathways, bile production, and lymphatic drainage.</p>
         <div class="tags"><span class="tag teal">liver</span><span class="tag teal">lymphatic</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
 
-    <article class="card">
+    <article class="card" data-detox="supplements">
       <div class="stripe" style="background:var(--accent)" style="background:#c8922a"></div>
       <div class="inner">
         <div class="label">Supplement protocol</div>
         <h3>Detox Supplements &amp; Pills</h3>
         <p>Packaged combinations of activated charcoal, psyllium husk, zeolite, N-acetyl cysteine (NAC), or liver-support compounds. Efficacy varies widely — quality and sourcing matter significantly.</p>
         <div class="tags"><span class="tag accent">activated charcoal</span><span class="tag accent">NAC</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
 
-    <article class="card">
+    <article class="card" data-detox="ayurvedic">
       <div class="stripe" style="background:var(--purple)"></div>
       <div class="inner">
         <div class="label">Traditional system</div>
         <h3>Ayurvedic Detox (Panchakarma)</h3>
         <p>A classical five-step Ayurvedic purification system involving oil therapies, herbal enemas, nasal cleansing, and therapeutic emesis. Traditionally guided by an Ayurvedic practitioner over 1–4 weeks.</p>
         <div class="tags"><span class="tag purple">Ayurveda</span><span class="tag purple">Panchakarma</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
   </div>
@@ -194,64 +228,69 @@
   </div>
   <p class="sec-desc">These target specific organ systems or pathogen removal — ranging from colon irrigation to heavy metal chelation to sauna-based sweat protocols. Many require professional guidance.</p>
   <div class="grid">
-    <article class="card">
+    <article class="card" data-detox="colon">
       <div class="stripe" style="background:var(--blue)"></div>
       <div class="inner">
         <div class="label">Digestive</div>
         <h3>Colon Cleanse</h3>
         <p>Removing waste and toxins from the large intestine using high-fibre diets, herbal laxatives, or professional colonic irrigation (hydrotherapy). Aims to reset gut microbiome balance and relieve constipation.</p>
         <div class="tags"><span class="tag blue">gut reset</span><span class="tag blue">microbiome</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
 
-    <article class="card">
+    <article class="card" data-detox="liver">
       <div class="stripe" style="background:var(--accent)" style="background:#c8922a"></div>
       <div class="inner">
         <div class="label">Organ support</div>
         <h3>Liver Detox</h3>
         <p>Protocols combining dietary changes (reducing alcohol, processed foods, refined sugar) with liver-supportive herbs and nutrients — milk thistle, NAC, B vitamins, choline — to restore liver detox enzyme function.</p>
         <div class="tags"><span class="tag accent">liver enzymes</span><span class="tag teal">bile flow</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
 
-    <article class="card">
+    <article class="card" data-detox="heavy-metal">
       <div class="stripe" style="background:var(--muted)" style="background:#7a7063"></div>
       <div class="inner">
         <div class="label">Metal removal</div>
         <h3>Heavy Metal Detox</h3>
         <p>Addressing accumulation of mercury, lead, arsenic, or cadmium through dietary binders (chlorella, cilantro, zeolite), nutritional support, or — in confirmed toxicity — medical chelation therapy under physician supervision.</p>
         <div class="tags"><span class="tag teal">chelation</span><span class="tag accent">chlorella</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
 
-    <article class="card">
+    <article class="card" data-detox="parasite">
       <div class="stripe" style="background:var(--green)"></div>
       <div class="inner">
         <div class="label">Pathogen protocol</div>
         <h3>Parasite Detox</h3>
         <p>A structured herbal or medical approach to eliminating intestinal or systemic parasites. Common herbs include black walnut hull, wormwood, and clove. Confirmed infections require professional diagnosis and may need antiparasitic medication.</p>
         <div class="tags"><span class="tag green">antiparasitic herbs</span><span class="tag green">gut health</span></div>
-        <div style="margin-top:14px"><a href="/parasite-detox" style="font-size:12px;color:var(--green);text-decoration:none;border-bottom:1px solid rgba(143,190,107,.3)">View full Parasite Detox guide →</a></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
 
-    <article class="card">
+    <article class="card" data-detox="sauna">
       <div class="stripe" style="background:var(--orange)" style="background:#e07c3a"></div>
       <div class="inner">
         <div class="label">Thermotherapy</div>
         <h3>Infrared Sauna Detox</h3>
         <p>Using infrared heat to raise core body temperature and induce deep sweating. Proposed to mobilise fat-soluble toxins, improve circulation, and support skin elimination. Regular sessions recommended over single use.</p>
         <div class="tags"><span class="tag orange">sweat</span><span class="tag orange">circulation</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
 
-    <article class="card">
+    <article class="card" data-detox="bath">
       <div class="stripe" style="background:var(--teal)"></div>
       <div class="inner">
         <div class="label">Topical</div>
         <h3>Detox Baths</h3>
         <p>Soaking in baths enhanced with Epsom salt (magnesium sulphate), bentonite clay, or apple cider vinegar. Epsom salt may support magnesium absorption transdermally; clay may draw out surface impurities. Primarily relaxation-focused with mild supportive effects.</p>
         <div class="tags"><span class="tag teal">Epsom salt</span><span class="tag teal">magnesium</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
   </div>
@@ -264,33 +303,36 @@
   </div>
   <p class="sec-desc">These address chemical dependence or behavioural excess — some require medical supervision, others are purely habit-based resets with significant wellbeing benefits.</p>
   <div class="grid">
-    <article class="card">
+    <article class="card" data-detox="alcohol">
       <div class="stripe" style="background:var(--red)"></div>
       <div class="inner">
         <div class="label">Substance — medical</div>
         <h3>Alcohol Detox</h3>
         <p>Medically supervised withdrawal from alcohol dependence. Severe cases carry life-threatening risks (seizures, delirium tremens) and require clinical management, tapering protocols, and nutritional support — never attempt alone if dependent.</p>
         <div class="tags"><span class="tag red">medical supervision</span><span class="tag red">withdrawal</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
 
-    <article class="card">
+    <article class="card" data-detox="drug">
       <div class="stripe" style="background:var(--red)"></div>
       <div class="inner">
         <div class="label">Substance — clinical</div>
         <h3>Drug Detox (Medical Detox)</h3>
         <p>Clinical programmes managing withdrawal from opioids, benzodiazepines, stimulants, or other substances. Involves medical monitoring, pharmacological support, and transition to ongoing rehabilitation. Always requires professional oversight.</p>
         <div class="tags"><span class="tag red">clinical programme</span><span class="tag red">rehabilitation</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
 
-    <article class="card">
+    <article class="card" data-detox="digital">
       <div class="stripe" style="background:var(--purple)"></div>
       <div class="inner">
         <div class="label">Behavioural</div>
         <h3>Digital Detox</h3>
         <p>A deliberate break from screens, social media, and digital devices — typically 24 hours to 30 days. Associated with reduced cortisol, improved sleep quality, better attention span, and stronger in-person social connection.</p>
         <div class="tags"><span class="tag purple">cortisol</span><span class="tag purple">sleep</span><span class="tag purple">attention</span></div>
+        <div class="howto-hint">How to do it →</div>
       </div>
     </article>
   </div>
@@ -303,5 +345,333 @@
     <p class="note"><strong>Medical detoxes require professional supervision.</strong> Alcohol detox, drug detox, and confirmed heavy metal or parasite infections should never be managed without a qualified healthcare provider. See the <a href="/parasite-detox">Parasite Detox guide</a> for the full herb-forward protocol.</p>
   </div>
 </main>
+
+<!-- How-to modal -->
+<div class="modal-overlay" id="detoxModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="detoxModalTitle">
+    <div class="modal-stripe" id="detoxModalStripe"></div>
+    <button class="modal-close" id="detoxModalClose" type="button" aria-label="Close">&times;</button>
+    <div class="modal-body" id="detoxModalBody"></div>
+  </div>
+</div>
+
+<script>
+// Step-by-step how-to for each detox. Medical/clinical methods deliberately
+// route to professional care rather than DIY instructions.
+const GUIDES = {
+  "juice": {
+    label: "Liquid reset", title: "Juice Detox / Cleanse",
+    summary: "A short liquid reset on freshly pressed juices that lightens the digestive load.",
+    steps: [
+      "Ease in over 2–3 days by cutting caffeine, alcohol, added sugar, and processed food.",
+      "Press or buy a variety of juices — aim for roughly 80% vegetables, 20% fruit to keep sugar down.",
+      "Drink 4–6 fresh juices (about 16 oz each) spread across the day, plus plenty of plain water and herbal tea.",
+      "Sip slowly and stop if you feel faint, shaky, or unwell.",
+      "Ease out over 2–3 days: reintroduce smoothies and fruit first, then cooked whole foods."
+    ],
+    duration: "1–3 days for most people; longer only with professional guidance.",
+    tips: ["Favour green vegetable juices and add lemon or ginger.", "Keep electrolytes up with a pinch of salt or coconut water."],
+    safety: "Very low in protein and fibre — not for extended use. Avoid if pregnant, diabetic, underweight, on blood-sugar or blood-pressure medication, or with kidney disease or an eating-disorder history."
+  },
+  "water-fast": {
+    label: "Liquid reset", title: "Water Fasting Detox",
+    summary: "Consuming only water for a defined window to trigger autophagy and rest digestion.",
+    steps: [
+      "Ease in for a few days with lighter, whole-food meals and less caffeine.",
+      "Start small — a 12–24 hour window — before ever attempting longer.",
+      "Drink water steadily through the day; add a pinch of salt or electrolytes if going beyond ~24 hours.",
+      "Rest. Avoid intense exercise and don't drive when light-headed.",
+      "Break the fast gently with a little fruit or broth, then rebuild to normal meals slowly."
+    ],
+    duration: "24–72 hours is the usual self-directed ceiling; anything longer needs medical supervision.",
+    tips: ["Stop immediately for dizziness, palpitations, or confusion.", "Plan it for a low-stress, low-activity day."],
+    safety: "Do not water-fast if pregnant or breastfeeding, underweight, diabetic, on medications, or with a history of disordered eating. Refeeding after long fasts can be dangerous and should be supervised."
+  },
+  "teatox": {
+    label: "Herbal liquid", title: "Tea Detox (Teatox)",
+    summary: "Herbal tea blends used alongside a clean diet to support digestion and the liver.",
+    steps: [
+      "Choose gentle blends — milk thistle, dandelion, ginger, peppermint, or nettle.",
+      "Drink 2–3 cups daily between meals, paired with a whole-food diet.",
+      "Avoid blends built on senna or other stimulant laxatives, or use them only very briefly.",
+      "Keep drinking plain water too, so the diuretic effect doesn't dehydrate you."
+    ],
+    duration: "1–4 weeks.",
+    tips: ["A teatox is support, not a cleanse on its own — pair it with good food and sleep."],
+    safety: "Senna-based 'detox teas' can cause cramping, dependence, and electrolyte loss. Avoid in pregnancy and with bowel conditions."
+  },
+  "smoothie": {
+    label: "Liquid reset", title: "Smoothie Detox",
+    summary: "Replace meals with fibre-retaining whole-food smoothies to cut processed intake.",
+    steps: [
+      "Replace 1–2 meals a day with blended whole-food smoothies (keep the pulp and fibre).",
+      "Build each one: leafy greens + low-sugar fruit + protein (Greek yogurt or protein powder) + healthy fat (chia, flax, nut butter).",
+      "Keep at least one normal whole-food meal so intake stays balanced.",
+      "Drink water between smoothies."
+    ],
+    duration: "3–7 days, or ongoing as a meal habit.",
+    tips: ["Front-load vegetables and limit fruit to control the sugar.", "Add ice and blend longer for a more filling texture."],
+    safety: "Generally gentle. Make sure you still get enough protein and total calories — don't use it to under-eat."
+  },
+  "raw-food": {
+    label: "Whole food", title: "Raw Food Detox",
+    summary: "Eating only uncooked, unprocessed plant foods for a defined reset.",
+    steps: [
+      "Eat raw fruits, vegetables, sprouts, nuts, seeds, and cold-pressed oils.",
+      "Prepare food by blending, soaking, sprouting, and dehydrating rather than heating above ~46°C / 115°F.",
+      "Include nuts, seeds, and avocado for calories and fat-soluble vitamins.",
+      "Afterwards, reintroduce cooked whole foods gradually."
+    ],
+    duration: "3–14 days for a reset.",
+    tips: ["Wash produce well and soak nuts and seeds for easier digestion."],
+    safety: "Can run low in protein, B12, iron, and calories. Not suitable during pregnancy or for anyone needing higher energy intake. Mind food safety with raw items."
+  },
+  "sugar": {
+    label: "Elimination", title: "Sugar Detox",
+    summary: "Cutting added sugars and refined carbs to steady blood sugar and reset taste.",
+    steps: [
+      "Remove added sugars, sweetened drinks, and refined carbs (white bread, pastries, sweets).",
+      "Read labels for hidden sugars — syrups and most '-ose' ingredients.",
+      "Anchor every meal on protein, vegetables, healthy fat, and whole grains.",
+      "Handle cravings with fruit, water, a protein snack, and good sleep.",
+      "Afterwards, keep sweetness mostly to whole fruit."
+    ],
+    duration: "21–30 days.",
+    tips: ["Expect 3–5 days of cravings and low energy, then a noticeable lift."],
+    safety: "If you're diabetic and on medication, adjust it with your clinician to avoid hypoglycaemia."
+  },
+  "detox-diet": {
+    label: "Structured diet", title: "Detox Diets (Whole30 / Elimination)",
+    summary: "Remove common trigger foods for a set period, then reintroduce them to find sensitivities.",
+    steps: [
+      "Choose the foods to remove — commonly gluten, dairy, alcohol, added sugar, legumes, and processed food.",
+      "Eat whole foods only for about 30 days.",
+      "Keep a simple food-and-symptom log.",
+      "Reintroduce one food group at a time over several days, watching for reactions.",
+      "Keep what feels good; limit what reliably triggers symptoms."
+    ],
+    duration: "~30 days elimination plus 1–2 weeks of reintroduction.",
+    tips: ["Plan meals ahead.", "The reintroduction phase is where you actually learn what bothers you."],
+    safety: "It's not a weight-loss tool — keep enough variety so you don't fall short on nutrients."
+  },
+  "herbal": {
+    label: "Plant medicine", title: "Herbal Detox",
+    summary: "Liver- and lymph-supportive herbs taken as a defined course alongside clean eating.",
+    steps: [
+      "Use better-studied herbs: milk thistle (silymarin), dandelion root, burdock, turmeric, chlorella.",
+      "Take them as teas, tinctures, or standardised capsules per the label.",
+      "Pair with a clean diet, hydration, and movement to support lymph flow.",
+      "Run a defined block rather than taking them indefinitely."
+    ],
+    duration: "2–4 weeks.",
+    tips: ["Introduce one herb at a time so you can spot any reaction."],
+    safety: "Herbs interact with medications (blood thinners, statins, and more). Check with a pharmacist or doctor first — especially milk thistle and high-dose turmeric."
+  },
+  "supplements": {
+    label: "Supplement protocol", title: "Detox Supplements & Pills",
+    summary: "Binders and liver-support compounds used in short, targeted courses.",
+    steps: [
+      "Decide your goal first — binding, liver support, or regularity — before buying anything.",
+      "Common agents: activated charcoal, psyllium husk, zeolite, NAC, glutathione support.",
+      "Take binders away from food and medications (they bind those too) — usually 1–2 hours apart.",
+      "Drink plenty of water with any fibre or binder to avoid constipation."
+    ],
+    duration: "Short, targeted courses — not daily, ongoing use.",
+    tips: ["Choose third-party-tested brands; quality and purity vary a lot."],
+    safety: "Charcoal and other binders reduce absorption of medications and nutrients — separate the dosing and ask a pharmacist, especially if you take any prescription."
+  },
+  "ayurvedic": {
+    label: "Traditional system", title: "Ayurvedic Detox (Panchakarma)",
+    summary: "A classical five-step Ayurvedic purification, traditionally practitioner-guided.",
+    steps: [
+      "Work with a qualified Ayurvedic practitioner for assessment and suitability.",
+      "Preparation (purvakarma): several days of oleation (ghee/oils) and steam.",
+      "Main therapies may include therapeutic purgation, herbal enema (basti), and nasal cleansing (nasya).",
+      "Follow the post-care phase — rest and light, easy-to-digest meals to rebuild."
+    ],
+    duration: "1–4 weeks, practitioner-guided.",
+    tips: ["It's strongly diet- and rest-dependent — not a quick weekend protocol."],
+    safety: "Several traditional steps are intense and unsuitable for many conditions and for pregnancy. Verify any herbs are tested for heavy metals, and only do this under trained supervision."
+  },
+  "colon": {
+    label: "Digestive", title: "Colon Cleanse",
+    summary: "Supporting the large intestine — best done food-first rather than with irrigation.",
+    steps: [
+      "Take a gentle, food-first approach: more fibre (vegetables, oats, legumes, psyllium) and more water.",
+      "Add fermented foods for the microbiome and move your body daily.",
+      "If you choose colonic hydrotherapy, only use a trained, hygienic professional.",
+      "Avoid routine stimulant laxatives."
+    ],
+    duration: "Dietary approach is ongoing; hydrotherapy is occasional at most.",
+    tips: ["Most of the benefit comes simply from fibre, hydration, and movement."],
+    safety: "Colonic irrigation carries real risks — perforation, electrolyte imbalance, infection — and isn't advised for many gut conditions. Don't become dependent on laxatives."
+  },
+  "liver": {
+    label: "Organ support", title: "Liver Detox",
+    summary: "Reduce the load on the liver and supply nutrients its enzymes use.",
+    steps: [
+      "Cut alcohol, ultra-processed food, refined sugar, and excess fried food.",
+      "Eat liver-supportive foods: cruciferous vegetables, garlic, beets, leafy greens, and moderate coffee.",
+      "Consider milk thistle, NAC, B-vitamins, or choline — after checking interactions.",
+      "Hydrate, sleep well, and exercise to support metabolism."
+    ],
+    duration: "2–4 weeks of cleaner living; ideally the habits stick.",
+    tips: ["The liver self-cleans — the real goal is to stop overloading it."],
+    safety: "Persistent symptoms — jaundice, abdominal pain, very high liver enzymes — need medical evaluation, not a DIY cleanse."
+  },
+  "heavy-metal": {
+    label: "Metal removal", title: "Heavy Metal Detox",
+    summary: "Reduce exposure and support clearance; medical chelation only if toxicity is confirmed.",
+    steps: [
+      "First, test with a clinician to identify real exposure — don't guess.",
+      "Reduce sources: certain fish, old paint, contaminated water, some cookware.",
+      "Support the body with fibre, adequate selenium and zinc, and foods like cilantro and chlorella.",
+      "For confirmed toxicity, prescription chelation (DMSA/EDTA) is done under physician supervision only."
+    ],
+    duration: "Depends on diagnosis; any medical chelation is clinician-directed.",
+    tips: ["Be sceptical of unproven 'chelation' supplements and at-home protocols."],
+    safety: "DIY and IV chelation have caused serious harm and deaths. Confirmed toxicity means medical care only — never self-administer chelating agents."
+  },
+  "parasite": {
+    label: "Pathogen protocol", title: "Parasite Detox",
+    summary: "Herbal or medical elimination of intestinal or systemic parasites.",
+    steps: [
+      "If you suspect an infection, get tested first — symptoms overlap with many other conditions.",
+      "Herb-forward protocols cycle black walnut hull, wormwood, and clove over several weeks.",
+      "Support gut health with fibre and anti-inflammatory foods, and tighten hygiene to prevent reinfection.",
+      "Confirmed infections may need prescription antiparasitic medication."
+    ],
+    duration: "Often a 2–6 week cycle — see the full guide for the day-by-day plan.",
+    tips: ["The Parasite Detox page has the complete step-by-step protocol, herbs, and tracker."],
+    safety: "Wormwood and high-dose herbs aren't for pregnancy. Confirmed infections need proper diagnosis and possibly medication.",
+    link: "/parasite-detox", linkText: "View full Parasite Detox guide →"
+  },
+  "sauna": {
+    label: "Thermotherapy", title: "Infrared Sauna Detox",
+    summary: "Sweat-based support using infrared heat, built up gradually over regular sessions.",
+    steps: [
+      "Start low and short — about 10–15 minutes at a moderate temperature.",
+      "Hydrate well before, during, and after, and replace electrolytes.",
+      "Build up to 20–40 minutes, 2–4 times a week as tolerated.",
+      "Shower afterwards to rinse off the sweat, and cool down gradually."
+    ],
+    duration: "An ongoing routine — benefits come from regular use, not one session.",
+    tips: ["Listen to your body and leave if you feel unwell."],
+    safety: "Avoid with heart conditions, low blood pressure, or pregnancy, and never combine with alcohol. Stop immediately for dizziness or nausea."
+  },
+  "bath": {
+    label: "Topical", title: "Detox Baths",
+    summary: "Epsom salt or clay soaks — mostly relaxing, with mild supportive effects.",
+    steps: [
+      "Add 1–2 cups of Epsom salt (optionally bentonite clay or a splash of apple cider vinegar) to warm water.",
+      "Soak for 15–20 minutes, keeping the water comfortably warm rather than hot.",
+      "Hydrate before and after, then rinse off.",
+      "Use a few times a week as desired."
+    ],
+    duration: "15–20 minute sessions, as often as you like.",
+    tips: ["Set expectations around relaxation and magnesium support rather than dramatic 'toxin' removal."],
+    safety: "Avoid very hot baths if you have heart issues, low blood pressure, or are pregnant. Get out if you feel light-headed."
+  },
+  "alcohol": {
+    label: "Substance — medical", title: "Alcohol Detox",
+    summary: "Medically supervised withdrawal from alcohol dependence.",
+    steps: [
+      "If you're dependent, do not stop abruptly on your own — contact a doctor or a detox service first.",
+      "Clinical care provides assessment, a tapering plan or medication (e.g. benzodiazepines), and monitoring.",
+      "Nutritional support — thiamine (B1) and fluids — helps prevent complications.",
+      "Transition into ongoing support and relapse-prevention."
+    ],
+    duration: "Acute withdrawal lasts several days to about a week, clinically managed.",
+    tips: ["Non-dependent drinkers can simply abstain — but it's important to know which group you're in."],
+    safety: "Severe alcohol withdrawal can cause seizures and delirium tremens, which can be fatal. Never attempt it unsupervised if you are physically dependent. In an emergency, call your local emergency number."
+  },
+  "drug": {
+    label: "Substance — clinical", title: "Drug Detox (Medical Detox)",
+    summary: "Clinically managed withdrawal from opioids, benzodiazepines, stimulants, or other substances.",
+    steps: [
+      "Seek a medical detox programme or addiction specialist for assessment.",
+      "Withdrawal is managed with monitoring and medication tailored to the specific substance.",
+      "Some drugs — benzodiazepines especially — require a careful taper, not cold-turkey.",
+      "Follow detox with rehabilitation and relapse-prevention support."
+    ],
+    duration: "Days to weeks depending on the substance, clinically directed.",
+    tips: ["Local helplines and clinics can often arrange a same-day assessment."],
+    safety: "Benzodiazepine (and alcohol) withdrawal can be life-threatening, so always do it professionally. Even where withdrawal is rarely fatal, medically supported detox is far safer and more likely to succeed."
+  },
+  "digital": {
+    label: "Behavioural", title: "Digital Detox",
+    summary: "A deliberate, structured break from screens and social media.",
+    steps: [
+      "Define the scope and length — a screen-free evening, a weekend, or up to a week.",
+      "Tell people you'll be less reachable and set up auto-replies if needed.",
+      "Remove triggers: log out of social apps, mute notifications, grayscale your phone, or park it in another room.",
+      "Fill the freed-up time with offline activities — walks, reading, people, hobbies.",
+      "Reintroduce with intention and keep the limits that helped."
+    ],
+    duration: "24 hours to 30 days.",
+    tips: ["If a full break feels impossible, start with daily boundaries like no phone in the first or last hour of the day."],
+    safety: "Keep an emergency contact reachable — the goal is healthier use, not total isolation."
+  }
+};
+
+(function () {
+  const overlay = document.getElementById('detoxModal');
+  const body = document.getElementById('detoxModalBody');
+  const stripe = document.getElementById('detoxModalStripe');
+  const closeBtn = document.getElementById('detoxModalClose');
+  let lastFocused = null;
+
+  function render(g) {
+    const tips = (g.tips && g.tips.length)
+      ? `<div class="modal-section-title">Tips</div><ul>${g.tips.map(t => `<li>${t}</li>`).join('')}</ul>` : '';
+    const link = g.link
+      ? `<a class="modal-link" href="${g.link}">${g.linkText || 'Learn more →'}</a>` : '';
+    body.innerHTML = `
+      <div class="modal-label">${g.label}</div>
+      <div class="modal-title" id="detoxModalTitle">${g.title}</div>
+      <p class="modal-summary">${g.summary}</p>
+      <div class="modal-section-title">How to do it</div>
+      <ol>${g.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+      <div class="modal-section-title">Typical duration</div>
+      <p class="modal-meta">${g.duration}</p>
+      ${tips}
+      <div class="modal-safety"><strong>Safety:</strong> ${g.safety}</div>
+      ${link}`;
+  }
+
+  function open(key, color) {
+    const g = GUIDES[key];
+    if (!g) return;
+    lastFocused = document.activeElement;
+    stripe.style.background = color || '';
+    render(g);
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+
+  function close() {
+    overlay.hidden = true;
+    document.body.style.overflow = '';
+    body.scrollTop = 0;
+    if (lastFocused && lastFocused.focus) lastFocused.focus();
+  }
+
+  document.querySelectorAll('.card[data-detox]').forEach((card) => {
+    const key = card.getAttribute('data-detox');
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    const color = getComputedStyle(card.querySelector('.stripe')).backgroundColor;
+    card.addEventListener('click', () => open(key, color));
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(key, color); }
+    });
+  });
+
+  closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !overlay.hidden) close(); });
+})();
+</script>
 </body>
 </html>
