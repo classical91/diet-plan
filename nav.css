@@ -79,8 +79,10 @@
   right: 0;
   height: 8px;
 }
-.nav-item.has-dropdown:hover .nav-dropdown {
-  display: flex;
+@media (min-width: 769px) {
+  .nav-item.has-dropdown:hover .nav-dropdown {
+    display: flex;
+  }
 }
 .nav-dropdown-item {
   font-family: 'DM Sans', sans-serif;
@@ -238,18 +240,30 @@
     background: none;
   }
   .nav-item.has-dropdown > span {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 6px 14px;
     border-radius: 6px;
     color: #7a7063;
+    cursor: pointer;
   }
   .nav-item.has-dropdown.has-active > span,
+  .nav-item.has-dropdown.expanded > span,
   .nav-item.has-dropdown:hover > span {
     color: #f0ebe3;
     background: rgba(255,255,255,0.04);
   }
+  /* Collapsible groups on mobile: hidden until the label is tapped (or the
+     group contains the active page). The chevron flips to signal the state. */
+  .nav-item.has-dropdown > span .nav-chevron {
+    transition: transform .2s ease;
+  }
+  .nav-item.has-dropdown.expanded > span .nav-chevron {
+    transform: rotate(180deg);
+  }
   .nav-dropdown {
-    display: flex;
+    display: none;
     position: static;
     box-shadow: none;
     border: none;
@@ -257,6 +271,9 @@
     border-radius: 6px;
     padding: 4px;
     margin-top: 2px;
+  }
+  .nav-item.has-dropdown.expanded .nav-dropdown {
+    display: flex;
   }
   .nav-search { position: static; margin-left: auto; margin-right: 8px; }
   .nav-search-input { width: 130px; }
