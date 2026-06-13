@@ -56,6 +56,19 @@
   font-size: 10px;
   opacity: 0.6;
 }
+/* Per-group accent colors so each themed dropdown is easy to tell apart.
+   --group is the solid hue; --group-soft is its translucent hover tint.
+   Custom properties inherit, so every link inside a group picks these up. */
+.nav-item.has-dropdown[data-group="nutrition"] { --group: #c8922a; --group-soft: rgba(200,146,42,0.12); }
+.nav-item.has-dropdown[data-group="food"]      { --group: #8fbe6b; --group-soft: rgba(143,190,107,0.13); }
+.nav-item.has-dropdown[data-group="herbs"]     { --group: #5bbfb5; --group-soft: rgba(91,191,181,0.13); }
+.nav-item.has-dropdown[data-group="minerals"]  { --group: #5b9bd5; --group-soft: rgba(91,155,213,0.13); }
+.nav-item.has-dropdown[data-group="detox"]     { --group: #9b7de8; --group-soft: rgba(155,125,232,0.13); }
+.nav-item.has-dropdown[data-group="guides"]    { --group: #c86b8f; --group-soft: rgba(200,107,143,0.13); }
+.nav-item.has-dropdown > span .nav-chevron {
+  color: var(--group, #c8922a);
+  opacity: 0.9;
+}
 .nav-dropdown {
   display: none;
   position: absolute;
@@ -63,6 +76,7 @@
   left: 0;
   background: #1a1714;
   border: 1px solid #2e2a24;
+  border-top: 2px solid var(--group, #c8922a);
   border-radius: 10px;
   padding: 6px;
   min-width: 180px;
@@ -96,8 +110,17 @@
 }
 .nav-dropdown-item:hover,
 .nav-dropdown-item.active {
-  background: rgba(200,146,42,0.08);
-  color: #c8922a;
+  background: var(--group-soft, rgba(200,146,42,0.08));
+  color: var(--group, #c8922a);
+}
+/* A colored left rail on each item reinforces which group it belongs to,
+   visible even before hover. */
+.nav-dropdown-item {
+  border-left: 2px solid transparent;
+}
+.nav-dropdown-item:hover,
+.nav-dropdown-item.active {
+  border-left-color: var(--group, #c8922a);
 }
 .nav-mobile-btn {
   display: none;
@@ -255,11 +278,14 @@
     color: #7a7063;
     cursor: pointer;
   }
+  .nav-item.has-dropdown > span {
+    border-left: 3px solid var(--group, #c8922a);
+  }
   .nav-item.has-dropdown.has-active > span,
   .nav-item.has-dropdown.expanded > span,
   .nav-item.has-dropdown:hover > span {
     color: #f0ebe3;
-    background: rgba(255,255,255,0.04);
+    background: var(--group-soft, rgba(255,255,255,0.04));
   }
   /* Collapsible groups on mobile: hidden until the label is tapped (or the
      group contains the active page). The chevron flips to signal the state. */
@@ -274,6 +300,7 @@
     position: static;
     box-shadow: none;
     border: none;
+    border-left: 3px solid var(--group, #c8922a);
     background: rgba(255,255,255,0.03);
     border-radius: 6px;
     padding: 4px;
