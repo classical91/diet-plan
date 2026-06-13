@@ -228,6 +228,13 @@
     padding: 10px 16px 16px;
     gap: 4px;
     z-index: 200;
+    /* The menu is absolutely positioned (out of flow), so a long expanded
+       group — e.g. Reference with 20+ links — would run past the bottom of
+       the screen with no way to scroll to it. Cap the menu to the viewport
+       height below the bar and let it scroll internally instead. */
+    max-height: calc(100vh - 57px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .nav-items.open { display: flex; }
   .nav-item { border-radius: 6px; }
