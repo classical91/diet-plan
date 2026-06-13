@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work Meal Planner | NutriMind</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/nav.css">
+<link rel="stylesheet" href="/theme.css">
+<script>try{if(localStorage.getItem('nm-theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(91,155,213,.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(143,190,107,.05) 0%,transparent 50%)}
+  header{text-align:center;margin:18px auto 30px;max-width:900px}
+  .sub-label{font-size:11px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(32px,6vw,58px);font-weight:900;letter-spacing:-.03em;line-height:.95}
+  h1 em{color:var(--accent);font-style:italic}
+  .lead{color:var(--soft);font-size:15px;line-height:1.7;max-width:720px;margin:18px auto 0}
+  .header-line{width:54px;height:2px;background:var(--accent);margin:18px auto 0;opacity:.55}
+  .container{max-width:760px;margin:0 auto}
+  .note-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:14px 16px;margin:0 0 24px}
+  .note{font-size:12.5px;color:var(--soft);line-height:1.6}
+  .note strong{color:var(--text)}
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .summary{font-size:13px;color:var(--soft);line-height:1.5}
+  .summary strong{color:var(--text);font-weight:600}
+  .btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:7px 14px;border-radius:20px;cursor:pointer;transition:all .2s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .slots{display:flex;flex-direction:column;gap:16px}
+  .slot{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .slot-top{height:3px;background:var(--accent)}
+  .slot.morning .slot-top{background:var(--accent)}
+  .slot.afternoon .slot-top{background:var(--blue)}
+  .slot.night .slot-top{background:var(--purple)}
+  .slot-head{display:flex;align-items:center;gap:12px;padding:16px 18px 10px}
+  .slot-icon{font-size:22px}
+  .slot-title{flex:1}
+  .slot-title h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text)}
+  .slot-title .when{font-size:11px;color:var(--muted);letter-spacing:.04em;margin-top:1px}
+  .seg{display:flex;gap:6px;padding:0 18px 14px;flex-wrap:wrap}
+  .seg button{flex:1;min-width:92px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--soft);background:var(--surface);border:1px solid var(--border);padding:8px 10px;border-radius:8px;cursor:pointer;transition:all .15s}
+  .seg button:hover{border-color:var(--border-hover)}
+  .seg button.on{color:var(--text);border-color:currentColor}
+  .slot.morning .seg button.on{color:var(--accent);background:rgba(200,146,42,.08);border-color:rgba(200,146,42,.4)}
+  .slot.afternoon .seg button.on{color:var(--blue);background:rgba(91,155,213,.08);border-color:rgba(91,155,213,.4)}
+  .slot.night .seg button.on{color:var(--purple);background:rgba(155,125,232,.08);border-color:rgba(155,125,232,.4)}
+  .slot-body{padding:0 18px 18px}
+  .focus{font-size:12.5px;color:var(--soft);line-height:1.55;background:var(--surface);border-radius:8px;padding:10px 12px;margin-bottom:12px}
+  .focus strong{color:var(--text)}
+  .list-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:14px 0 8px}
+  .list-label:first-child{margin-top:0}
+  ul{list-style:none;display:flex;flex-direction:column;gap:2px}
+  li.item{display:flex;align-items:flex-start;gap:11px;padding:8px 8px;border-radius:8px;cursor:pointer;transition:background .15s}
+  li.item:hover{background:var(--hover)}
+  .checkbox{width:19px;height:19px;border-radius:5px;border:1.5px solid var(--border);background:var(--check-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .2s}
+  .checkbox svg{opacity:0;transform:scale(.5);transition:all .2s}
+  li.item.checked .checkbox{border-color:var(--accent);background:rgba(200,146,42,.16);color:var(--accent)}
+  li.item.checked .checkbox svg{opacity:1;transform:scale(1)}
+  .item-text{flex:1}
+  .item-name{font-size:13.5px;color:var(--text);line-height:1.4}
+  li.item.checked .item-name{color:var(--muted)}
+  .item-note{font-size:11.5px;color:var(--muted);margin-top:1px;line-height:1.4}
+  .chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+  .chip{font-size:9.5px;padding:2px 8px;border-radius:12px;border:1px solid rgba(143,190,107,.28);color:var(--green);background:rgba(143,190,107,.07);letter-spacing:.02em}
+  .muted-state{font-size:13px;color:var(--muted);line-height:1.6;padding:6px 2px;font-style:italic}
+  .ai-tag{display:inline-block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(91,155,213,.3);border-radius:10px;padding:1px 7px;margin-left:8px;vertical-align:middle}
+  /* AI panel */
+  .ai-panel{margin-top:24px;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .ai-head{display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;user-select:none}
+  .ai-head h3{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);flex:1}
+  .ai-opt{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .ai-chev{color:var(--muted);transition:transform .25s}
+  .ai-panel.open .ai-chev{transform:rotate(180deg)}
+  .ai-body{display:none;padding:0 18px 18px;border-top:1px solid var(--border)}
+  .ai-panel.open .ai-body{display:block}
+  .ai-body p.hint{font-size:12px;color:var(--soft);line-height:1.6;margin:14px 0}
+  .ai-body label{display:block;font-size:11px;letter-spacing:.04em;color:var(--muted);margin:12px 0 5px;text-transform:uppercase}
+  .ai-body input,.ai-body textarea{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:9px 11px;border-radius:8px;outline:none}
+  .ai-body input:focus,.ai-body textarea:focus{border-color:var(--accent)}
+  .ai-body textarea{resize:vertical;min-height:64px;line-height:1.5}
+  .ai-actions{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap}
+  .ai-go{background:var(--accent);border:none;color:#1a1408;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;padding:9px 18px;border-radius:8px;cursor:pointer;transition:opacity .2s}
+  .ai-go:hover{opacity:.9}
+  .ai-go:disabled{opacity:.5;cursor:default}
+  .ai-status{font-size:12px;color:var(--muted)}
+  .ai-status.err{color:var(--red)}
+  .ai-keynote{font-size:11px;color:var(--muted);line-height:1.5;margin-top:10px}
+  @media(max-width:720px){body{padding:24px 12px 60px}}
+</style>
+</head>
+<body>
+<nav class="top-nav" aria-label="Primary"></nav>
+<script src="/nav.js"></script>
+
+<header>
+  <div class="sub-label">Daily Planner</div>
+  <h1>Work Meal <em>Planner</em></h1>
+  <p class="lead">Plan what you'll actually eat at work today. Set each meal to <strong>at work</strong>, <strong>at home</strong>, or <strong>skip</strong> — the plan focuses on your work meals and adjusts the focus when you eat earlier or skip. Your choices are saved on this device.</p>
+  <div class="header-line"></div>
+</header>
+
+<main class="container">
+  <div class="note-box">
+    <p class="note"><strong>How it works.</strong> Tick foods as you pack or eat them. If you already ate before work, set Morning to <strong>at home</strong>; if you'll eat once at work and again at home later, set the others accordingly. The "focus" under each work meal shifts based on what you've eaten so far. General guidance, not medical or specific dietary advice.</p>
+  </div>
+
+  <div class="toolbar">
+    <div class="summary" id="summary"></div>
+    <button class="btn" id="resetBtn" type="button">Reset day</button>
+  </div>
+
+  <div class="slots" id="slots"></div>
+
+  <!-- Optional AI panel -->
+  <div class="ai-panel" id="aiPanel">
+    <div class="ai-head" id="aiHead">
+      <h3>Generate ideas with AI</h3>
+      <span class="ai-opt">Optional</span>
+      <span class="ai-chev">▾</span>
+    </div>
+    <div class="ai-body">
+      <p class="hint">Describe your day, what's in the fridge, or any preferences, and Claude will suggest packable food ideas for the meals you've marked <strong>at work</strong>. This runs in your browser with <strong>your own Anthropic API key</strong> — nothing is stored on a server.</p>
+      <label for="aiKey">Anthropic API key</label>
+      <input type="password" id="aiKey" placeholder="sk-ant-..." autocomplete="off" spellcheck="false">
+      <label for="aiNotes">Your day / preferences (optional)</label>
+      <textarea id="aiNotes" placeholder="e.g. vegetarian, no microwave at work, want high protein, have leftover chickpeas..."></textarea>
+      <div class="ai-actions">
+        <button class="ai-go" id="aiGo" type="button">Generate ideas</button>
+        <span class="ai-status" id="aiStatus"></span>
+      </div>
+      <p class="ai-keynote">Your key is kept only in this browser (localStorage) so you don't have to re-enter it. Get a key from console.anthropic.com.</p>
+    </div>
+  </div>
+</main>
+
+<script>
+const SLOTS = [
+  { id:"morning",   icon:"🌅", label:"Morning",   when:"Before work / start of shift" },
+  { id:"afternoon", icon:"☀️", label:"Afternoon", when:"Midday at work" },
+  { id:"night",     icon:"🌙", label:"Night",     when:"After work / evening" },
+];
+
+// Work-friendly foods, tagged by which slot(s) they suit.
+const WORK_FOODS = [
+  { name:"Overnight oats with chia & berries", slots:["morning"], note:"Make it the night before — no cooking at work.", tags:["slow carbs","fibre"] },
+  { name:"Greek yogurt + nuts + fruit", slots:["morning","afternoon"], note:"High protein, no prep.", tags:["protein"] },
+  { name:"Boiled eggs + whole-grain toast", slots:["morning"], note:"Portable protein.", tags:["protein"] },
+  { name:"Nut butter + banana on whole-grain", slots:["morning"], note:"Quick energy + potassium.", tags:["energy"] },
+  { name:"Protein smoothie in a bottle", slots:["morning"], note:"Greens, fruit, protein — drink at your desk.", tags:["protein","greens"] },
+  { name:"Cottage cheese + fruit", slots:["morning","afternoon"], note:"High protein, light to carry.", tags:["protein"] },
+  { name:"Chicken or tofu grain bowl", slots:["afternoon","night"], note:"Quinoa/brown rice + veg — a balanced main.", tags:["protein","veg"] },
+  { name:"Tuna or salmon wrap", slots:["afternoon"], note:"Protein + omega-3, no reheat needed.", tags:["omega-3"] },
+  { name:"Chickpea or lentil salad", slots:["afternoon","night"], note:"Plant protein + fibre, keeps well.", tags:["fibre","plant protein"] },
+  { name:"Hummus + veg sticks + crackers", slots:["afternoon"], note:"Easy fibre-rich snack-lunch.", tags:["fibre","snack"] },
+  { name:"Mixed nuts + a piece of fruit", slots:["afternoon"], note:"Steady-energy snack between tasks.", tags:["snack"] },
+  { name:"Leftover stir-fry + brown rice", slots:["afternoon","night"], note:"Just reheat — uses last night's dinner.", tags:["reheat"] },
+  { name:"Salmon + sweet potato + greens", slots:["night"], note:"Cook fresh — omega-3 and slow carbs.", tags:["omega-3","veg"] },
+  { name:"Tofu or tempeh stir-fry + brown rice", slots:["night"], note:"Plant protein, quick to cook.", tags:["plant protein"] },
+  { name:"Bean chili + side salad", slots:["night"], note:"Fibre and protein, batch-friendly.", tags:["fibre","protein"] },
+  { name:"Veg omelette + toast", slots:["night"], note:"Fast, low-effort dinner.", tags:["protein","quick"] },
+  { name:"Lentil soup + whole-grain bread", slots:["night"], note:"Comforting, fibre-rich.", tags:["fibre"] },
+  { name:"Grilled chicken + roast vegetables", slots:["night"], note:"Simple balanced plate.", tags:["protein","veg"] },
+];
+
+const STORE_KEY = "work-meals:v1";
+const KEY_KEY = "work-meals:anthropic-key";
+const ORDER = SLOTS.map(s => s.id);
+
+let state = { states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{} };
+try {
+  const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+  if (saved && saved.states) state = Object.assign(state, saved, { states: Object.assign(state.states, saved.states) });
+} catch (e) { /* ignore */ }
+
+const slotsEl = document.getElementById("slots");
+const summaryEl = document.getElementById("summary");
+
+function persist() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+}
+
+function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+
+function focusFor(i) {
+  const slot = SLOTS[i];
+  const ateBefore = ORDER.slice(0, i).some(id => state.states[id] === "work" || state.states[id] === "home");
+  const workCount = ORDER.filter(id => state.states[id] === "work").length;
+  if (slot.id === "night") {
+    return ateBefore
+      ? "<strong>Wind-down meal.</strong> Include vegetables and protein; go a little lighter if you ate well earlier."
+      : "<strong>First real meal today</strong> — build a proper plate: protein, slow carbs, and vegetables.";
+  }
+  if (!ateBefore) return "<strong>Your first fuel of the day</strong> — lead with protein and slow carbs so you don't crash mid-shift.";
+  if (workCount === 1) return "<strong>Your main meal at work</strong> — make it balanced: protein + slow carbs + veg, plus a piece of fruit.";
+  return "<strong>Top-up meal</strong> — keep it lighter, but include protein and veg to sustain energy.";
+}
+
+function itemHtml(slotId, name, note, tags) {
+  const id = slotId + "|" + slugify(name);
+  const checked = state.checked[id] ? " checked" : "";
+  const chips = (tags || []).map(t => `<span class="chip">${t}</span>`).join("");
+  return `
+    <li class="item${checked}" data-id="${id}">
+      <span class="checkbox"><svg width="11" height="8" viewBox="0 0 12 9" fill="none"><path d="M1 4L4.5 7.5L11 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="item-text">
+        <span class="item-name">${name}</span>
+        ${note ? `<span class="item-note">${note}</span>` : ""}
+        ${chips ? `<span class="chips">${chips}</span>` : ""}
+      </span>
+    </li>`;
+}
+
+function render() {
+  slotsEl.innerHTML = SLOTS.map((slot, i) => {
+    const st = state.states[slot.id] || "work";
+    let body = "";
+    if (st === "work") {
+      const foods = WORK_FOODS.filter(f => f.slots.includes(slot.id));
+      const aiList = (state.ai && state.ai[slot.id]) || [];
+      body = `
+        <div class="focus">${focusFor(i)}</div>
+        <div class="list-label">Pack or eat at work</div>
+        <ul>${foods.map(f => itemHtml(slot.id, f.name, f.note, f.tags)).join("")}</ul>
+        ${aiList.length ? `<div class="list-label">AI ideas <span class="ai-tag">generated</span></div><ul>${aiList.map(n => itemHtml(slot.id, n, "", [])).join("")}</ul>` : ""}
+        <div class="item-note" style="margin-top:10px">+ Bring water; add electrolytes after a hot or physical shift.</div>`;
+    } else if (st === "home") {
+      body = `<div class="muted-state">Eating this at home — nothing to pack for work.</div>`;
+    } else {
+      body = `<div class="muted-state">Skipping this meal — your next work meal carries a bit more (see its focus).</div>`;
+    }
+    return `
+      <div class="slot ${slot.id}">
+        <div class="slot-top"></div>
+        <div class="slot-head">
+          <span class="slot-icon">${slot.icon}</span>
+          <span class="slot-title"><h3>${slot.label}</h3><div class="when">${slot.when}</div></span>
+        </div>
+        <div class="seg" data-slot="${slot.id}">
+          <button type="button" data-state="work"${st === "work" ? ' class="on"' : ""}>At work</button>
+          <button type="button" data-state="home"${st === "home" ? ' class="on"' : ""}>At home</button>
+          <button type="button" data-state="skip"${st === "skip" ? ' class="on"' : ""}>Skip</button>
+        </div>
+        <div class="slot-body">${body}</div>
+      </div>`;
+  }).join("");
+  renderSummary();
+  persist();
+}
+
+function renderSummary() {
+  const workCount = ORDER.filter(id => state.states[id] === "work").length;
+  summaryEl.innerHTML = workCount === 0
+    ? "No work meals planned — eating at home or skipping today."
+    : `Planning <strong>${workCount}</strong> work meal${workCount === 1 ? "" : "s"} today. Tick items as you pack or eat them.`;
+}
+
+// Event delegation for state buttons and item checkboxes.
+slotsEl.addEventListener("click", (e) => {
+  const stateBtn = e.target.closest(".seg button");
+  if (stateBtn) {
+    const slotId = stateBtn.parentElement.getAttribute("data-slot");
+    state.states[slotId] = stateBtn.getAttribute("data-state");
+    render();
+    return;
+  }
+  const item = e.target.closest("li.item");
+  if (item) {
+    const id = item.getAttribute("data-id");
+    state.checked[id] = !state.checked[id];
+    item.classList.toggle("checked", state.checked[id]);
+    persist();
+  }
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  state.states = { morning:"work", afternoon:"work", night:"work" };
+  state.checked = {};
+  state.ai = {};
+  render();
+});
+
+// ---- Optional AI generation (browser → Anthropic Messages API with the user's key) ----
+const aiPanel = document.getElementById("aiPanel");
+document.getElementById("aiHead").addEventListener("click", () => aiPanel.classList.toggle("open"));
+
+const aiKey = document.getElementById("aiKey");
+const aiNotes = document.getElementById("aiNotes");
+const aiStatus = document.getElementById("aiStatus");
+const aiGo = document.getElementById("aiGo");
+try { aiKey.value = localStorage.getItem(KEY_KEY) || ""; } catch (e) { /* ignore */ }
+
+function extractJson(text) {
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if (start === -1 || end === -1) throw new Error("no JSON in response");
+  return JSON.parse(text.slice(start, end + 1));
+}
+
+aiGo.addEventListener("click", async () => {
+  const key = aiKey.value.trim();
+  if (!key) { aiStatus.textContent = "Enter your API key first."; aiStatus.className = "ai-status err"; return; }
+  try { localStorage.setItem(KEY_KEY, key); } catch (e) { /* ignore */ }
+
+  const workSlots = SLOTS.filter(s => state.states[s.id] === "work").map(s => s.label);
+  if (workSlots.length === 0) { aiStatus.textContent = "No meals are set to 'at work' yet."; aiStatus.className = "ai-status err"; return; }
+  const homeSlots = SLOTS.filter(s => state.states[s.id] === "home").map(s => s.label);
+  const skipSlots = SLOTS.filter(s => state.states[s.id] === "skip").map(s => s.label);
+
+  aiGo.disabled = true;
+  aiStatus.textContent = "Generating…";
+  aiStatus.className = "ai-status";
+
+  const prompt = `I'm planning food to eat AT WORK today.
+Meals I'll eat at work: ${workSlots.join(", ") || "none"}.
+Meals at home / already eaten: ${homeSlots.join(", ") || "none"}.
+Meals I'm skipping: ${skipSlots.join(", ") || "none"}.
+My notes: ${aiNotes.value.trim() || "(none)"}
+
+Return ONLY a JSON object with keys "morning", "afternoon", and "night". For each slot I'll eat AT WORK, give 4-6 short, practical, packable food or meal ideas as an array of strings (a dish plus its key components, e.g. "Turkey & avocado wrap with spinach"). For slots that are NOT at work, use an empty array. Respect my notes. No markdown, no commentary — JSON only.`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": key,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true",
+      },
+      body: JSON.stringify({
+        model: "claude-opus-4-8",
+        max_tokens: 1200,
+        system: "You are a practical meal-planning assistant. Suggest realistic, balanced, packable foods for someone eating at work. Keep each idea short. Respect dietary notes. Output strictly valid JSON only.",
+        messages: [{ role: "user", content: prompt }],
+      }),
+    });
+    if (!res.ok) {
+      let msg = "Request failed (" + res.status + ")";
+      try { const err = await res.json(); if (err && err.error && err.error.message) msg = err.error.message; } catch (e) { /* ignore */ }
+      throw new Error(msg);
+    }
+    const data = await res.json();
+    const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
+    const parsed = extractJson(text);
+    state.ai = {
+      morning: Array.isArray(parsed.morning) ? parsed.morning : [],
+      afternoon: Array.isArray(parsed.afternoon) ? parsed.afternoon : [],
+      night: Array.isArray(parsed.night) ? parsed.night : [],
+    };
+    render();
+    aiStatus.textContent = "Added ideas to your work meals.";
+    aiStatus.className = "ai-status";
+  } catch (err) {
+    aiStatus.textContent = (err && err.message) ? err.message : "Something went wrong.";
+    aiStatus.className = "ai-status err";
+  } finally {
+    aiGo.disabled = false;
+  }
+});
+
+render();
+</script>
+</body>
+</html>
