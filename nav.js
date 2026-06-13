@@ -7,16 +7,18 @@
         <div class="nav-item has-dropdown" data-group="nutrition">
           <span>Nutrition <span class="nav-chevron">▾</span></span>
           <div class="nav-dropdown">
+            <a href="/nutrition" class="nav-dropdown-item" data-path="/nutrition">Nutrition Guide</a>
             <a href="/nutrition/rich-foods" class="nav-dropdown-item" data-path="/nutrition/rich-foods">Rich Foods for Key Nutrients</a>
-            <a href="/benefits" class="nav-dropdown-item" data-path="/benefits">Benefits</a>
             <a href="/overview" class="nav-dropdown-item" data-path="/overview">Vitamins &amp; Minerals</a>
             <a href="/overview#focus" class="nav-dropdown-item">Focus Nutrients</a>
             <a href="/deficiencies" class="nav-dropdown-item" data-path="/deficiencies">Deficiencies</a>
+            <a href="/hydration" class="nav-dropdown-item" data-path="/hydration">Hydration &amp; Water</a>
           </div>
         </div>
         <div class="nav-item has-dropdown" data-group="food">
           <span>Food <span class="nav-chevron">▾</span></span>
           <div class="nav-dropdown">
+            <a href="/benefits" class="nav-dropdown-item" data-path="/benefits">Food Benefits Library</a>
             <a href="/foodtypes" class="nav-dropdown-item" data-path="/foodtypes">Food Categories</a>
             <a href="/diets" class="nav-dropdown-item" data-path="/diets">Diet Types</a>
             <a href="/functional-foods" class="nav-dropdown-item" data-path="/functional-foods">Functional Foods</a>
@@ -41,8 +43,6 @@
           <div class="nav-dropdown">
             <a href="/electrolytes-minerals" class="nav-dropdown-item" data-path="/electrolytes-minerals">Electrolytes &amp; Minerals</a>
             <a href="/elements-in-biology" class="nav-dropdown-item" data-path="/elements-in-biology">Elements in Biology</a>
-            <a href="/hydration" class="nav-dropdown-item" data-path="/hydration">Hydration &amp; Water</a>
-            <a href="/deficiencies" class="nav-dropdown-item" data-path="/deficiencies">Deficiencies</a>
           </div>
         </div>
         <div class="nav-item has-dropdown" data-group="detox">
@@ -50,6 +50,11 @@
           <div class="nav-dropdown">
             <a href="/detox-types" class="nav-dropdown-item" data-path="/detox-types">Detox Types</a>
             <a href="/parasite-detox" class="nav-dropdown-item" data-path="/parasite-detox">Parasite Detox</a>
+            <a href="/parasite-detox/safe-plan" class="nav-dropdown-item" data-path="/parasite-detox/safe-plan">Safe Detox Plan</a>
+            <a href="/parasite-detox/herbs" class="nav-dropdown-item" data-path="/parasite-detox/herbs">Detox Herbs</a>
+            <a href="/parasite-detox/effects" class="nav-dropdown-item" data-path="/parasite-detox/effects">Effects / Symptoms</a>
+            <a href="/parasite-detox/red-flags" class="nav-dropdown-item" data-path="/parasite-detox/red-flags">Red Flags</a>
+            <a href="/parasite-detox/tracker" class="nav-dropdown-item" data-path="/parasite-detox/tracker">Tracker</a>
           </div>
         </div>
         <div class="nav-item has-dropdown" data-group="guides">
