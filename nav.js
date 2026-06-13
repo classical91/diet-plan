@@ -231,7 +231,9 @@
     if (activeLink) {
       activeLink.classList.add("active");
       const parentGroup = activeLink.closest(".nav-item.has-dropdown");
-      if (parentGroup) parentGroup.classList.add("has-active");
+      // Start the active page's group expanded so the current page is visible
+      // when the mobile menu opens; other groups stay collapsed.
+      if (parentGroup) parentGroup.classList.add("has-active", "expanded");
     }
 
     const toggleBtn = nav.querySelector(".nav-mobile-btn");
@@ -239,6 +241,17 @@
     if (toggleBtn && items) {
       toggleBtn.addEventListener("click", () => items.classList.toggle("open"));
     }
+
+    // On mobile the nav groups are collapsible: tapping a group label toggles
+    // its dropdown. On desktop the dropdowns open on hover, so let the label's
+    // span link/label behave normally there.
+    const isMobileNav = () => window.matchMedia("(max-width: 768px)").matches;
+    nav.querySelectorAll(".nav-item.has-dropdown > span").forEach((label) => {
+      label.addEventListener("click", () => {
+        if (!isMobileNav()) return;
+        label.parentElement.classList.toggle("expanded");
+      });
+    });
 
     wireSearch(nav);
     wireThemeToggle(nav);
