@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spices | NutriMind Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/nav.css">
+<link rel="stylesheet" href="/theme.css">
+<script>try{if(localStorage.getItem('nm-theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(143,190,107,.05) 0%,transparent 50%)}
+  header{text-align:center;margin:18px auto 34px;max-width:900px}
+  .sub-label{font-size:11px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(34px,6vw,64px);font-weight:900;letter-spacing:-.03em;line-height:.95}
+  h1 em{color:var(--accent);font-style:italic}
+  .lead{color:var(--soft);font-size:15px;line-height:1.7;max-width:780px;margin:18px auto 0}
+  .header-line{width:54px;height:2px;background:var(--accent);margin:18px auto 0;opacity:.55}
+  .container{max-width:1100px;margin:0 auto}
+  .notice{background:linear-gradient(145deg,rgba(200,146,42,.12),rgba(143,190,107,.06));border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:20px;color:var(--soft);line-height:1.65;font-size:14px}
+  .notice strong{color:var(--accent)}
+  .section-nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px}
+  .section-nav a{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:8px 12px;border:1px solid var(--border);border-radius:20px;transition:all .15s}
+  .section-nav a:hover,.section-nav a:focus{border-color:var(--accent);color:var(--accent);background:rgba(200,146,42,.08);outline:none}
+  .controls{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 18px}
+  .search-wrap{flex:1;min-width:240px;position:relative}
+  .search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:12px 14px;font-size:13px;outline:none;font-family:'DM Sans',sans-serif}
+  .search-wrap input:focus{border-color:var(--accent)}
+  .filters{display:flex;gap:8px;flex-wrap:wrap}
+  .filter-btn{background:none;border:1px solid var(--border);color:var(--muted);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:8px 12px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif}
+  .filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(200,146,42,.08)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin-bottom:32px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s}
+  .card:hover{border-color:var(--border-hover);transform:translateY(-2px)}
+  .stripe{height:3px;background:var(--accent)}
+  .inner{padding:18px}
+  .card-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+  .card h2{font-family:'Playfair Display',serif;font-size:20px;line-height:1.12}
+  .latin{font-size:12px;color:var(--muted);font-style:italic;margin-top:3px}
+  .role{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
+  .summary{color:var(--soft);font-size:13px;line-height:1.6;margin:12px 0}
+  .details{border-top:1px solid var(--border);padding-top:12px;margin-top:12px}
+  .details h3{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 8px}
+  ul{list-style:none;display:grid;gap:7px}
+  li{font-size:13px;color:var(--soft);line-height:1.45;display:flex;gap:8px}
+  li::before{content:'-';color:var(--accent);flex-shrink:0}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+  .tag{font-size:10px;padding:4px 9px;border-radius:20px;border:1px solid rgba(200,146,42,.28);color:var(--accent);background:rgba(200,146,42,.07)}
+  .tag.green{border-color:rgba(143,190,107,.28);color:var(--green);background:rgba(143,190,107,.07)}
+  .tag.blue{border-color:rgba(91,155,213,.28);color:var(--blue);background:rgba(91,155,213,.07)}
+  .tag.purple{border-color:rgba(155,125,232,.28);color:var(--purple);background:rgba(155,125,232,.07)}
+  .tag.teal{border-color:rgba(91,191,181,.28);color:var(--teal);background:rgba(91,191,181,.07)}
+  .section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;margin:22px 0}
+  .section,#grid{scroll-margin-top:76px}
+  .section h2{font-family:'Playfair Display',serif;font-size:25px;margin-bottom:10px}
+  .section p,.section li{color:var(--soft);font-size:14px;line-height:1.65}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin-top:14px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{padding:12px 14px;text-align:left;color:var(--accent);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:var(--surface);border-bottom:1px solid var(--border)}
+  td{padding:12px 14px;border-bottom:1px solid var(--border);color:var(--soft);line-height:1.55;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td:first-child{color:var(--text);font-weight:500}
+  .no-results{text-align:center;color:var(--muted);font-family:'Playfair Display',serif;font-size:20px;margin:42px 0;display:none}
+  .search-deeplink-target{outline:1px solid var(--accent);box-shadow:0 0 0 4px rgba(200,146,42,.12)}
+  @media(max-width:900px){body{padding-top:24px}.two-col{grid-template-columns:1fr}.role{white-space:normal}}
+</style>
+</head>
+<body>
+<nav class="top-nav" aria-label="Primary"></nav>
+<script src="/nav.js"></script>
+
+<header>
+  <div class="sub-label">Reference Guide</div>
+  <h1>Spices <em>&amp; How to Cook</em></h1>
+  <p class="lead">A practical kitchen reference for everyday spices: what they may do for your health, how to actually use them in cooking, the flavors they pair with, and a few safety notes for concentrated extracts and supplements.</p>
+  <div class="header-line"></div>
+</header>
+
+<main class="container">
+  <div class="notice"><strong>Food-first, not medicine.</strong> Culinary amounts of spices are generally safe and a flavorful way to eat well. Concentrated extracts, capsules, and essential oils are a different story and can interact with medications, pregnancy, blood thinners, blood sugar, and reflux. The benefits below are supportive, not treatments or cures.</div>
+
+  <nav class="section-nav" aria-label="Spices sections">
+    <a href="#grid">Spice Cards</a>
+    <a href="#techniques">Cooking Techniques</a>
+    <a href="#whole-vs-ground">Whole vs Ground</a>
+    <a href="#pairings">Flavor Pairings</a>
+    <a href="#blends">Spice Blends</a>
+    <a href="#storage">Storage & Buying</a>
+  </nav>
+
+  <div class="controls">
+    <div class="search-wrap"><input id="search" placeholder="Search spices, benefits, uses..." oninput="filterCards()"></div>
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">All</button>
+      <button class="filter-btn" data-filter="warming" onclick="setFilter('warming')">Warming</button>
+      <button class="filter-btn" data-filter="pungent" onclick="setFilter('pungent')">Pungent</button>
+      <button class="filter-btn" data-filter="hot" onclick="setFilter('hot')">Hot / Chili</button>
+      <button class="filter-btn" data-filter="sweet" onclick="setFilter('sweet')">Sweet / Baking</button>
+      <button class="filter-btn" data-filter="earthy" onclick="setFilter('earthy')">Earthy / Seed</button>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="no-results" id="noResults">No spices match that search</div>
+
+  <section class="section two-col">
+    <div>
+      <h2>How to Get the Most From Spices</h2>
+      <ul>
+        <li>Heat wakes spices up: bloom ground spices in oil or toast whole ones before grinding.</li>
+        <li>Add whole spices early in cooking and most ground spices in the middle, not the end.</li>
+        <li>Fat carries flavor — many spice compounds are fat-soluble, so cook them in oil, butter, or ghee.</li>
+        <li>Salt and acid (lemon, vinegar, tomato) make spiced dishes taste finished and brighter.</li>
+        <li>Start small, taste, and build; you can always add more but rarely take it back out.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>When to Be Careful</h2>
+      <ul>
+        <li>Pregnancy and breastfeeding: keep to culinary amounts and skip concentrated supplements unless cleared by a clinician.</li>
+        <li>Blood thinners or upcoming surgery: high-dose turmeric, ginger, garlic, and clove can affect bleeding.</li>
+        <li>Reflux, gastritis, or ulcers: chili, black pepper, and mustard can aggravate symptoms.</li>
+        <li>Essential oils (cinnamon, clove, oregano) are very concentrated and not for casual internal use.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="techniques">
+    <h2>Core Cooking Techniques</h2>
+    <p>Spices are not just sprinkled on at the table. How and when you add them changes the flavor more than the amount does. These are the moves that professional and home cooks lean on.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Technique</th><th>What it does</th><th>How to do it</th></tr></thead>
+        <tbody>
+          <tr><td>Blooming (tempering / tadka)</td><td>Releases fat-soluble aroma compounds and removes raw, dusty flavor from ground spices.</td><td>Warm oil, butter, or ghee on medium, add ground spices for 20-60 seconds until fragrant, then add the rest of the dish. Don't let them scorch.</td></tr>
+          <tr><td>Dry toasting</td><td>Deepens and rounds the flavor of whole spices through light caramelization.</td><td>Toast whole seeds (cumin, coriander, fennel, mustard) in a dry pan over medium heat, shaking, until fragrant and a shade darker, then grind.</td></tr>
+          <tr><td>Grinding fresh</td><td>Maximum aroma; ground spice loses potency fast once exposed to air.</td><td>Use a mortar and pestle or a dedicated spice/coffee grinder right before cooking for the strongest flavor.</td></tr>
+          <tr><td>Layering / staging</td><td>Builds depth so flavors taste cooked-in rather than dumped on.</td><td>Whole spices into the oil first, aromatics next, ground spices once onions soften, delicate finishing spices off the heat.</td></tr>
+          <tr><td>Marinades & rubs</td><td>Carries spice flavor into the surface of meat, fish, tofu, or vegetables.</td><td>Mix spices with oil, salt, and acid; rest 30 minutes to overnight before cooking for deeper penetration.</td></tr>
+          <tr><td>Finishing</td><td>Adds bright, fresh aroma that high heat would destroy.</td><td>Sprinkle delicate spices like sumac, smoked paprika, or freshly ground pepper over the plated dish.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" id="whole-vs-ground">
+    <h2>Whole vs Ground</h2>
+    <div class="two-col">
+      <div>
+        <h2 style="font-size:18px">Whole spices</h2>
+        <ul>
+          <li>Keep their aroma far longer (1-2+ years stored well).</li>
+          <li>Best for slow dishes: braises, stocks, rice, pickles, mulled drinks.</li>
+          <li>Toast and grind fresh for the strongest flavor.</li>
+          <li>Fish out big pieces (bay, cinnamon stick, star anise, whole cloves) before serving.</li>
+        </ul>
+      </div>
+      <div>
+        <h2 style="font-size:18px">Ground spices</h2>
+        <ul>
+          <li>Faster and more even, but fade within months once opened.</li>
+          <li>Best bloomed in fat or stirred into doughs, batters, sauces, and rubs.</li>
+          <li>Buy small amounts and label with the date.</li>
+          <li>Add partway through cooking so they cook out raw notes without burning.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pairings">
+    <h2>Flavor Pairings & Cuisines</h2>
+    <p>Spices rarely work alone. A quick map of which spices play well together and where they show up.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Spice</th><th>Pairs well with</th><th>Shines in</th></tr></thead>
+        <tbody>
+          <tr><td>Cumin</td><td>Coriander, chili, garlic, lime, oregano</td><td>Mexican, Indian, Middle Eastern dishes, beans, tacos, curries</td></tr>
+          <tr><td>Cinnamon</td><td>Nutmeg, clove, ginger, vanilla, apple</td><td>Baking, oatmeal, tagines, mulled drinks, savory braises</td></tr>
+          <tr><td>Turmeric</td><td>Black pepper, ginger, cumin, coconut</td><td>Curries, rice, roasted vegetables, golden milk</td></tr>
+          <tr><td>Paprika</td><td>Garlic, onion, cumin, smoked salt</td><td>Stews, rubs, roast chicken, deviled eggs, Spanish & Hungarian dishes</td></tr>
+          <tr><td>Cardamom</td><td>Cinnamon, clove, coffee, citrus, rose</td><td>Chai, Scandinavian baking, rice puddings, Middle Eastern coffee</td></tr>
+          <tr><td>Ginger</td><td>Garlic, soy, lime, honey, chili</td><td>Stir-fries, marinades, baking, tea, dressings</td></tr>
+          <tr><td>Fennel seed</td><td>Pork, tomato, garlic, citrus</td><td>Italian sausage, roasted vegetables, fish, sauces</td></tr>
+          <tr><td>Sumac</td><td>Lemon, olive oil, za'atar, yogurt</td><td>Salads, grilled meats, dips, finishing dishes</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" id="blends">
+    <h2>Common Spice Blends</h2>
+    <p>Blends are shortcuts to a whole flavor profile. Make small batches fresh, or buy quality versions and store them airtight.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Blend</th><th>Typically contains</th><th>Use it for</th></tr></thead>
+        <tbody>
+          <tr><td>Garam masala</td><td>Cumin, coriander, cardamom, cinnamon, clove, pepper</td><td>Finishing Indian curries and dals near the end of cooking.</td></tr>
+          <tr><td>Curry powder</td><td>Turmeric, cumin, coriander, fenugreek, chili, ginger</td><td>An all-purpose warm, golden base for sauces, soups, and rice.</td></tr>
+          <tr><td>Za'atar</td><td>Thyme, sumac, sesame, oregano, salt</td><td>Sprinkling on flatbread, dips, eggs, roasted vegetables with olive oil.</td></tr>
+          <tr><td>Chinese five-spice</td><td>Star anise, fennel, clove, cinnamon, Sichuan pepper</td><td>Roast meats, braises, marinades with a sweet-savory edge.</td></tr>
+          <tr><td>Ras el hanout</td><td>A dozen+ warm spices (cumin, cinnamon, ginger, coriander, more)</td><td>North African tagines, couscous, roasted vegetables and lamb.</td></tr>
+          <tr><td>Cajun / Creole</td><td>Paprika, cayenne, garlic, onion, oregano, thyme</td><td>Blackened fish, rice dishes, rubs with a peppery kick.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" id="storage">
+    <h2>Storage & Buying Tips</h2>
+    <div class="two-col">
+      <div>
+        <h2 style="font-size:18px">Keep them fresh</h2>
+        <ul>
+          <li>Store airtight, away from heat, light, and the steam above your stove.</li>
+          <li>Ground spices fade in 6-12 months; whole spices last 1-2+ years.</li>
+          <li>If a spice has lost its smell, it has lost most of its flavor — replace it.</li>
+          <li>Label jars with the purchase date so you can rotate them.</li>
+        </ul>
+      </div>
+      <div>
+        <h2 style="font-size:18px">Buy smart</h2>
+        <ul>
+          <li>Buy small amounts you'll actually use within a few months.</li>
+          <li>Whole spices you grind yourself give the best flavor per dollar.</li>
+          <li>Shops with high turnover (and bulk bins) tend to be fresher than old supermarket jars.</li>
+          <li>For health claims, treat extracts and capsules as supplements and check interactions.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const SPICES = [
+  {name:"Cinnamon",latin:"Cinnamomum spp.",role:"Warming / Sweet",cats:["warming","sweet"],summary:"Warm, sweet bark used in both baking and savory dishes; one of the most versatile spices in the rack.",benefits:["May help support healthy blood sugar response","Rich in antioxidant polyphenols","Warming and comforting in cold-season foods and drinks"],howto:["Use ground in oatmeal, baked goods, yogurt, and coffee","Add a whole stick to braises, tagines, rice, and mulled drinks, then remove before serving","A pinch deepens savory tomato and meat sauces"],cautions:["Cassia cinnamon is high in coumarin; very large daily amounts may stress the liver","Ceylon cinnamon is lower in coumarin if you use a lot","Cinnamon essential oil is concentrated and not for casual internal use"]},
+  {name:"Turmeric",latin:"Curcuma longa",role:"Earthy / Golden",cats:["warming","earthy"],summary:"Earthy golden rhizome known for curcumin, a heavily studied anti-inflammatory compound that absorbs poorly on its own.",benefits:["Curcumin is studied for anti-inflammatory and antioxidant effects","Pairing with black pepper (piperine) greatly improves absorption","A flavorful way to color and season everyday dishes"],howto:["Bloom in oil with onions and garlic to start curries","Add to rice, roasted vegetables, soups, eggs, and lentils","Whisk into warm milk with pepper and a little fat for golden milk"],cautions:["High-dose extracts can interact with blood thinners","Use caution with gallbladder issues, kidney stones, or before surgery","Stains everything — counters, clothes, and plastic"]},
+  {name:"Cumin",latin:"Cuminum cyminum",role:"Earthy / Warm",cats:["earthy","warming","pungent"],summary:"Warm, earthy, slightly smoky seed that anchors Mexican, Indian, and Middle Eastern cooking.",benefits:["Traditionally used to support digestion","Contains antioxidant plant compounds","Adds savory depth so dishes need less salt to taste full"],howto:["Toast whole seeds in a dry pan, then grind for the best flavor","Bloom ground cumin in oil at the start of beans, chili, and curries","Sprinkle into taco filling, hummus, roasted carrots, and rice"],cautions:["Generally very safe in culinary amounts","Concentrated cumin supplements may lower blood sugar — monitor if diabetic"]},
+  {name:"Coriander",latin:"Coriandrum sativum",role:"Citrusy Seed",cats:["earthy","sweet"],summary:"The seed of the cilantro plant — mild, citrusy, and slightly sweet, it rounds out almost any spice blend.",benefits:["Traditionally used for digestion and bloating","Mild antioxidant content","Balances and softens harsher spices like chili and cumin"],howto:["Toast and crush whole seeds for marinades and rubs","Pair 1:1 with cumin as a base for curries and stews","Use ground in baked goods, sausages, and pickling brines"],cautions:["Safe in culinary amounts for most people","Rarely, people allergic to mugwort or related plants may react"]},
+  {name:"Black Pepper",latin:"Piper nigrum",role:"Pungent / Sharp",cats:["pungent"],summary:"The everyday 'king of spices' — sharp, woody heat that wakes up nearly every savory dish.",benefits:["Piperine boosts absorption of other nutrients, notably curcumin","Mild antioxidant and digestion-stimulating compounds","Adds heat and complexity without chili-level spice"],howto:["Grind fresh — pre-ground pepper loses its aroma quickly","Add near the end of cooking or at the table for the brightest bite","Crack coarsely for steaks, pasta (cacio e pepe), and creamy sauces"],cautions:["Can aggravate reflux, gastritis, or ulcers in large amounts","High-dose piperine supplements may affect how some medications are metabolized"]},
+  {name:"Ginger",latin:"Zingiber officinale",role:"Warming / Pungent",cats:["warming","pungent"],summary:"Bright, warming, peppery root used fresh, dried, or candied across sweet and savory cooking.",benefits:["Well studied for easing nausea and motion sickness","Gingerols support inflammation balance","Warming and soothing in teas and broths"],howto:["Grate fresh into stir-fries, dressings, marinades, and tea","Use dried ground ginger in baking, spice rubs, and curry blends","Simmer slices in water with lemon and honey for a soothing drink"],cautions:["High supplemental doses may increase bleeding risk with blood thinners","Can aggravate reflux in some people"]},
+  {name:"Cardamom",latin:"Elettaria cardamomum",role:"Aromatic / Sweet",cats:["warming","sweet"],summary:"Intensely aromatic pods with a sweet, floral, slightly menthol flavor — prized in both chai and baking.",benefits:["Traditionally used to freshen breath and aid digestion","Contains aromatic antioxidant compounds","A little adds a luxurious lift to drinks and desserts"],howto:["Crush whole green pods and steep in chai, coffee, or rice pudding","Use ground in Scandinavian baking, cakes, and cookies","Add a pod or two to curries and pilafs, removing before serving"],cautions:["Safe in culinary amounts","Concentrated supplements are not well studied in pregnancy"]},
+  {name:"Cloves",latin:"Syzygium aromaticum",role:"Warming / Intense",cats:["warming","sweet"],summary:"Intensely warm, sweet-bitter dried flower buds — powerful, so a little goes a long way.",benefits:["Very high in antioxidant eugenol","Eugenol is traditionally used for toothache and oral comfort","Warming aroma for cold-season cooking"],howto:["Stud an onion or ham with whole cloves for braises and stocks","Use a small pinch of ground clove in baking and spice blends","Add to mulled wine, chai, and biryani, then remove whole cloves"],cautions:["Strong flavor overwhelms a dish quickly — use sparingly","Clove oil (eugenol) is concentrated; avoid swallowing it and keep away from children","High doses can affect bleeding with blood thinners"]},
+  {name:"Nutmeg",latin:"Myristica fragrans",role:"Warming / Sweet",cats:["warming","sweet"],summary:"Warm, sweet, slightly nutty seed best grated fresh in small amounts over sweet and creamy dishes.",benefits:["Contains antioxidant compounds","Warm aroma enhances comfort foods","A tiny grating elevates dairy-based dishes"],howto:["Grate fresh over béchamel, mashed potatoes, and creamed spinach","Add a pinch to eggnog, custards, and baked goods","Pairs with cinnamon and clove in pumpkin and apple dishes"],cautions:["Large amounts (a tablespoon or more) are toxic and can cause hallucinations and illness","Use only culinary pinches; keep well away from large doses"]},
+  {name:"Paprika",latin:"Capsicum annuum",role:"Sweet / Smoky",cats:["sweet","hot"],summary:"Ground dried peppers ranging from sweet to smoky to hot; adds color and gentle warmth.",benefits:["Contains carotenoid antioxidants like beta-carotene","Adds rich color and flavor with little heat (sweet types)","Smoked versions bring depth without added fat"],howto:["Stir into stews, rubs, and roast-chicken seasoning","Bloom briefly in warm oil — but don't burn it or it turns bitter","Dust over deviled eggs, hummus, and roasted potatoes to finish"],cautions:["Hot paprika can aggravate reflux","Buy fresh — paprika fades and dulls quickly"]},
+  {name:"Cayenne",latin:"Capsicum annuum",role:"Hot / Sharp",cats:["hot","pungent"],summary:"Fiery ground chili that adds clean, sharp heat to almost anything savory.",benefits:["Capsaicin is studied for metabolism and pain-signal effects","May add satisfaction and flavor with very few calories","A pinch can reduce the need for salt"],howto:["Add a small pinch early to build heat into sauces and stews","Mix into rubs, marinades, and spice blends","Stir into hot honey, oils, and dressings for a kick"],cautions:["Easy to overdo — start tiny and taste","Can aggravate reflux, ulcers, and hemorrhoids","Wash hands after handling and keep away from eyes"]},
+  {name:"Chili Flakes",latin:"Capsicum annuum",role:"Hot / Crushed",cats:["hot"],summary:"Crushed dried red chilies (often with seeds) for adjustable, sprinkle-on heat.",benefits:["Capsaicin content like other chilies","Easy way to add heat at the table, per person","Brings flavor and warmth with minimal calories"],howto:["Sprinkle over pizza, pasta, and roasted vegetables","Bloom in oil to make chili oil or to start arrabbiata-style sauces","Add to marinades and pickles for background heat"],cautions:["Heat level varies by batch — taste before piling on","Can aggravate reflux and sensitive stomachs"]},
+  {name:"Star Anise",latin:"Illicium verum",role:"Sweet / Licorice",cats:["sweet","warming"],summary:"Star-shaped pod with a strong sweet licorice aroma; a backbone of five-spice and Asian braises.",benefits:["Source of antioxidant compounds","A natural source of shikimic acid (used industrially in antiviral synthesis)","Adds depth to slow-cooked dishes"],howto:["Add whole pods to braises, pho, and red-cooked dishes, then remove","Simmer in mulled drinks and poaching syrups","Use a small amount ground in spice blends"],cautions:["Use Chinese star anise; Japanese star anise is toxic and not for food","Strong flavor — one or two pods is usually plenty"]},
+  {name:"Fennel Seed",latin:"Foeniculum vulgare",role:"Sweet / Anise",cats:["sweet","earthy"],summary:"Sweet, anise-like seeds that brighten rich, fatty foods and Italian sausage.",benefits:["Traditionally chewed after meals to aid digestion and freshen breath","Contains antioxidant aromatic compounds","Cuts through richness in fatty dishes"],howto:["Toast and crush for sausage, pork, and tomato sauces","Add whole to roasted vegetables, breads, and pickles","Steep in hot water for a soothing after-dinner tea"],cautions:["Generally safe in culinary amounts","Concentrated fennel supplements/oils have estrogen-like effects in some studies"]},
+  {name:"Mustard Seed",latin:"Brassica / Sinapis spp.",role:"Pungent / Sharp",cats:["pungent","earthy"],summary:"Tiny seeds that turn sharp and pungent when crushed and mixed with cold liquid.",benefits:["Contains beneficial glucosinolate compounds","Adds bold flavor with almost no calories","Whole seeds bring pleasant pops of texture and mild heat"],howto:["Pop whole seeds in hot oil for Indian tadka and dals","Crush and mix with vinegar or wine to make fresh mustard","Add to pickling brines, dressings, and spice rubs"],cautions:["Heat develops with cold liquid; hot water mellows the pungency","Very large amounts can irritate the stomach"]},
+  {name:"Saffron",latin:"Crocus sativus",role:"Floral / Luxe",cats:["sweet","earthy"],summary:"The world's most expensive spice — delicate red threads giving golden color and a honeyed, floral aroma.",benefits:["Studied for mood support in some small trials","Contains antioxidant carotenoids (crocin, safranal)","A tiny amount transforms color and aroma"],howto:["Steep a pinch of threads in warm water or broth, then add liquid and all","Use in paella, risotto, biryani, and saffron rice","Pair with seafood, chicken, and dairy-based desserts"],cautions:["Use small amounts; very high doses (grams) can be toxic","High doses are not safe in pregnancy","Beware cheap adulterated 'saffron' — buy whole threads from trusted sources"]},
+  {name:"Sumac",latin:"Rhus coriaria",role:"Tangy / Citrus",cats:["earthy","pungent"],summary:"Tangy, lemony purple-red powder from dried berries — a bright finishing spice across the Middle East.",benefits:["Rich in antioxidant polyphenols","Adds bright acidity without liquid","A flavorful, low-salt way to finish dishes"],howto:["Sprinkle over salads, hummus, grilled meats, and roasted vegetables","Mix into za'atar and dry rubs","Use as a lemon-like finishing dust just before serving"],cautions:["Culinary sumac is safe; do not confuse with toxic poison sumac (a different plant)","Generally well tolerated"]},
+  {name:"Allspice",latin:"Pimenta dioica",role:"Warming / Complex",cats:["warming","sweet"],summary:"A single berry that tastes like a blend of cinnamon, clove, and nutmeg — central to Caribbean cooking.",benefits:["Contains antioxidant eugenol like cloves","Warm, complex aroma in one ingredient","Versatile across sweet and savory dishes"],howto:["Use ground in jerk seasoning, marinades, and baking","Add whole berries to braises, pickles, and mulled drinks","Pairs with thyme, scotch bonnet, and citrus in Caribbean dishes"],cautions:["Eugenol content means caution with blood thinners at high doses","Use culinary amounts; the essential oil is concentrated"]},
+  {name:"Smoked Paprika",latin:"Capsicum annuum",role:"Smoky / Sweet",cats:["sweet","warming"],summary:"Spanish pimentón made from oak-smoked peppers — deep, smoky flavor without any grill.",benefits:["Carotenoid antioxidants from the peppers","Adds smoky depth to plant-based dishes (no meat needed)","Flavor-dense, so a little goes far"],howto:["Stir into beans, lentils, stews, and rice for smoky depth","Mix into rubs for chicken, pork, and roasted vegetables","Whisk into aioli, dressings, and dips"],cautions:["Strong and dominant — start with a small amount","Hot (picante) versions add real heat"]},
+  {name:"Fenugreek",latin:"Trigonella foenum-graecum",role:"Bittersweet / Maple",cats:["earthy","pungent"],summary:"Seeds and leaves with a bittersweet, maple-like aroma central to many curry blends.",benefits:["Studied for blood sugar and cholesterol support","Traditionally used to support milk supply (galactagogue)","Distinctive aroma that defines curry-powder flavor"],howto:["Toast seeds gently — over-toasting turns them harsh and bitter","Use ground in curry powders, dals, and pickles","Add dried leaves (kasuri methi) to finish curries"],cautions:["Can interact with diabetes and blood-thinning medications","Large amounts may not be advised in pregnancy","May cause a maple-syrup body odor in some people"]}
+];
+
+const TAGS = {warming:"Warming",pungent:"Pungent",hot:"Hot / Chili",sweet:"Sweet",earthy:"Earthy"};
+let activeFilter = "all";
+
+function deeplinkSlug(name){return String(name).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
+function tagColor(c){return c==="earthy"?"green":c==="pungent"?"blue":c==="sweet"?"purple":c==="warming"?"teal":"";}
+function render(){
+  const q = document.getElementById("search").value.toLowerCase();
+  const items = SPICES.filter(s => {
+    const hay = [s.name,s.latin,s.role,s.summary,...s.benefits,...s.howto,...s.cautions,...s.cats.map(c=>TAGS[c])].join(" ").toLowerCase();
+    return (activeFilter === "all" || s.cats.includes(activeFilter)) && hay.includes(q);
+  });
+  document.getElementById("grid").innerHTML = items.map(s => `
+    <article class="card" id="i-${deeplinkSlug(s.name)}">
+      <div class="stripe"></div>
+      <div class="inner">
+        <div class="card-top"><div><h2>${s.name}</h2><div class="latin">${s.latin}</div></div><div class="role">${s.role}</div></div>
+        <p class="summary">${s.summary}</p>
+        <div class="tags">${s.cats.map(c=>`<span class="tag ${tagColor(c)}">${TAGS[c]}</span>`).join("")}</div>
+        <div class="details"><h3>Health benefits</h3><ul>${s.benefits.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+        <div class="details"><h3>How to cook with it</h3><ul>${s.howto.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+        <div class="details"><h3>Cautions</h3><ul>${s.cautions.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+      </div>
+    </article>`).join("");
+  document.getElementById("noResults").style.display = items.length ? "none" : "block";
+}
+function setFilter(f){activeFilter=f;document.querySelectorAll(".filter-btn").forEach(b=>b.classList.toggle("active",b.dataset.filter===f));render();}
+function filterCards(){render();}
+function focusDeepLink(){
+  if(!/^#i-/.test(location.hash)) return;
+  let el = document.getElementById(location.hash.slice(1));
+  if(!el){document.getElementById("search").value = ""; setFilter("all"); el = document.getElementById(location.hash.slice(1));}
+  if(!el) return;
+  el.classList.add("search-deeplink-target");
+  el.scrollIntoView({behavior:"smooth",block:"center"});
+  setTimeout(()=>el.classList.remove("search-deeplink-target"),2600);
+}
+render();
+focusDeepLink();
+window.addEventListener("hashchange", focusDeepLink);
+</script>
+</body>
+</html>

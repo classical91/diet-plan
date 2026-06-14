@@ -83,6 +83,7 @@ const CARD_PAGES = [
   { file: "foodtypes.html", context: "Food Categories", vars: ["FOODS"], link: (s) => `/foodtypes#i-${s}` },
   { file: "adaptogens.html", context: "Adaptogens", vars: ["ADAPTOGENS"], link: (s) => `/adaptogens#i-${s}` },
   { file: "herbology.html", context: "Herbology", vars: ["HERBS"], link: (s) => `/herbology#i-${s}` },
+  { file: "spices.html", context: "Spices & How to Cook", vars: ["SPICES"], link: (s) => `/spices#i-${s}` },
   { file: "tea.html", context: "Teas & Health Benefits", vars: ["TEAS"], link: (s) => `/tea#i-${s}` },
   { file: "functional-foods.html", context: "Functional Foods", vars: ["FOODS"], link: (s) => `/functional-foods#i-${s}` },
   { file: "overview.html", context: "Vitamins & Minerals", vars: ["NUTRIENTS"], link: (s) => `/overview/${s}` },

@@ -36,6 +36,7 @@
             <a href="/herbology" class="nav-dropdown-item" data-path="/herbology">Herbology</a>
             <a href="/herbology#antiviral" class="nav-dropdown-item">Antiviral Herbs</a>
             <a href="/adaptogens" class="nav-dropdown-item" data-path="/adaptogens">Adaptogens</a>
+            <a href="/spices" class="nav-dropdown-item" data-path="/spices">Spices &amp; Cooking</a>
             <a href="/tea" class="nav-dropdown-item" data-path="/tea">Teas &amp; Benefits</a>
           </div>
         </div>
@@ -96,6 +97,7 @@
     { path: "/foodtypes", title: "Food Categories" },
     { path: "/adaptogens", title: "Adaptogens" },
     { path: "/herbology", title: "Herbology" },
+    { path: "/spices", title: "Spices & How to Cook" },
     { path: "/tea", title: "Teas & Health Benefits" },
     { path: "/functional-foods", title: "Functional Foods" },
     { path: "/superfoods", title: "Superfoods" },
