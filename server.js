@@ -155,5 +155,5 @@ const server = http.createServer(async (request, response) => {
 server.listen(port, () => {
   const address = server.address();
   const actualPort = typeof address === "object" && address ? address.port : port;
-  console.log(`Diet Plan running at http://localhost:${actualPort}`);
+  console.log(`NutriMind running at http://localhost:${actualPort}`);
 });
