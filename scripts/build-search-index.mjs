@@ -96,6 +96,7 @@ const CONTENT_PAGES = [
   { file: "superfoods.html", path: "/superfoods", title: "Superfoods" },
   { file: "food-for-mood.html", path: "/food-for-mood", title: "Food for Mood" },
   { file: "nervous-system.html", path: "/nervous-system", title: "Calm the Nervous System" },
+  { file: "studies.html", path: "/studies", title: "Calming Foods & Herbs Studies" },
   { file: "work-meals.html", path: "/work-meals", title: "Work Meal Planner" },
   { file: "howto.html", path: "/howto", title: "How-To" },
   { file: "seasonal-rotation.html", path: "/seasonal-rotation", title: "Seasonal Rotation" },
