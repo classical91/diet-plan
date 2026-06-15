@@ -3,7 +3,7 @@
     <div class="nav-inner">
       <a href="/nutrition" class="nav-logo">NutriMind</a>
       <div class="nav-items" id="navItems">
-        <a href="https://nutri-mind-production-d054.up.railway.app/" class="nav-item" target="_blank" rel="noreferrer">Diet Plan</a>
+        <a href="https://nutri-mind-production-d054.up.railway.app/" class="nav-item" target="_blank" rel="noreferrer">Meal Planner</a>
         <a href="/work-meals" class="nav-item" data-path="/work-meals">Work Meals</a>
         <div class="nav-item has-dropdown" data-group="nutrition">
           <span>Nutrition <span class="nav-chevron">▾</span></span>

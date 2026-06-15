@@ -1,12 +1,14 @@
-# Diet Plan
+# NutriMind
 
-This workspace now opens the Mediterranean diet planner from the root.
+NutriMind is a nutrition and wholefood reference app. The root serves the
+nutrition guide, with linked libraries for food benefits, deficiencies,
+vitamins &amp; minerals, diet types, herbs &amp; teas, adaptogens, and more.
 
 ## Run
 
-1. `cd "C:\Users\JAson\Documents\codex\diet-plan"`
+1. `cd diet-plan`
 2. `npm run dev`
-3. Open `http://localhost:3004`
+3. Open `http://localhost:3000` (set `PORT` to override the default)
 
 ## Source
 
