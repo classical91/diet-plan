@@ -46,6 +46,9 @@ const server = http.createServer(async (request, response) => {
     if (pathname === "/deficiencies" || pathname === "/deficiencies/") {
       pathname = "/deficiencies.html";
     }
+    if (pathname === "/bodily-deficiencies" || pathname === "/bodily-deficiencies/") {
+      pathname = "/bodily-deficiencies.html";
+    }
     if (pathname === "/overview" || pathname === "/overview/") {
       pathname = "/overview.html";
     }
