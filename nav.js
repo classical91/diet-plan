@@ -12,7 +12,8 @@
             <a href="/nutrition/rich-foods" class="nav-dropdown-item" data-path="/nutrition/rich-foods">Rich Foods for Key Nutrients</a>
             <a href="/overview" class="nav-dropdown-item" data-path="/overview">Vitamins &amp; Minerals</a>
             <a href="/overview#focus" class="nav-dropdown-item">Focus Nutrients</a>
-            <a href="/deficiencies" class="nav-dropdown-item" data-path="/deficiencies">Deficiencies</a>
+            <a href="/deficiencies" class="nav-dropdown-item" data-path="/deficiencies">Nutrient Deficiencies</a>
+            <a href="/bodily-deficiencies" class="nav-dropdown-item" data-path="/bodily-deficiencies">Bodily Deficiencies</a>
             <a href="/hydration" class="nav-dropdown-item" data-path="/hydration">Hydration &amp; Water</a>
           </div>
         </div>
@@ -90,7 +91,8 @@
   const FALLBACK_PAGES = [
     { path: "/nutrition", title: "Nutrition Guide" },
     { path: "/benefits", title: "Food Benefits" },
-    { path: "/deficiencies", title: "Deficiencies" },
+    { path: "/deficiencies", title: "Nutrient Deficiencies" },
+    { path: "/bodily-deficiencies", title: "Bodily Deficiencies" },
     { path: "/overview", title: "Vitamins & Minerals" },
     { path: "/howto", title: "How-To" },
     { path: "/diets", title: "Diet Types" },

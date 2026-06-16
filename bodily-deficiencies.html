@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bodily Deficiencies | NutriMind</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/nav.css">
+<link rel="stylesheet" href="/theme.css">
+<script>try{if(localStorage.getItem('nm-theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; padding: 40px 20px 80px; background-image: radial-gradient(ellipse at 15% 10%, rgba(200,146,42,0.06) 0%, transparent 55%), radial-gradient(ellipse at 85% 90%, rgba(224,92,92,0.04) 0%, transparent 50%); }
+  header { text-align: center; margin-bottom: 36px; }
+  .sub-label { font-size: 11px; font-weight: 500; letter-spacing: 0.35em; text-transform: uppercase; color: var(--red); margin-bottom: 10px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 5vw, 52px); font-weight: 900; letter-spacing: -0.02em; line-height: 1; }
+  h1 em { color: var(--accent); font-style: italic; }
+  .header-line { width: 50px; height: 2px; background: var(--accent); margin: 16px auto 0; opacity: 0.5; }
+  .header-note { max-width: 600px; margin: 16px auto 0; font-size: 13px; color: var(--muted); line-height: 1.6; text-align: center; }
+
+  .controls { max-width: 1000px; margin: 0 auto 24px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .search-wrap { flex: 1; min-width: 200px; position: relative; }
+  .search-wrap input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 10px 14px 10px 36px; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; transition: border 0.2s; }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+  .cat-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cat-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 6px 12px; border-radius: 20px; cursor: pointer; transition: all 0.2s; }
+  .cat-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .cat-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(200,146,42,0.08); }
+
+  .result-count { max-width: 1000px; margin: 0 auto 16px; font-size: 12px; color: var(--muted); letter-spacing: 0.1em; }
+
+  .grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; animation: fadeUp 0.3s ease both; transition: border-color 0.2s, transform 0.2s; }
+  .card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+  .card.expanded { border-color: var(--red); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  .card-top { height: 3px; }
+  .card-header { display: flex; align-items: flex-start; gap: 12px; padding: 16px; cursor: pointer; }
+  .card-icon { font-size: 22px; flex-shrink: 0; }
+  .card-meta { flex: 1; }
+  .card-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .card-sub { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
+  .card-expand { color: var(--muted); flex-shrink: 0; transition: transform 0.2s; margin-top: 3px; }
+  .card.expanded .card-expand { transform: rotate(180deg); }
+
+  .card-body { display: none; padding: 0 16px 16px; }
+  .card.expanded .card-body { display: block; }
+
+  .section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px; margin-top: 14px; }
+
+  .symptom-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+  .symptom-list li { display: flex; gap: 8px; align-items: flex-start; font-size: 12.5px; color: #c8b89a; line-height: 1.45; }
+  .symptom-list li.severe::before { content: '⚠'; color: var(--red); flex-shrink: 0; font-size: 11px; margin-top: 1px; }
+  .symptom-list li.common::before { content: '—'; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+  .symptom-list li.mild::before { content: '·'; color: var(--muted); flex-shrink: 0; font-size: 16px; line-height: 1; }
+
+  .food-sources { display: flex; flex-wrap: wrap; gap: 6px; }
+  .food-pill { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: rgba(143,190,107,0.08); border: 1px solid rgba(143,190,107,0.2); color: var(--green); }
+
+  .risk-bar-wrap { margin-top: 6px; }
+  .risk-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .risk-bar-outer { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .risk-bar-inner { height: 100%; border-radius: 3px; }
+  .risk-low { background: var(--green); }
+  .risk-med { background: var(--accent); }
+  .risk-high { background: var(--red); }
+
+  .divider { height: 1px; background: var(--border); margin: 12px 0; }
+
+  /* Tag colors by category */
+  .tag { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; border: 1px solid; display: inline-block; }
+  .tag-hormone { border-color: rgba(155,125,232,0.3); color: var(--purple); background: rgba(155,125,232,0.07); }
+  .tag-enzyme { border-color: rgba(200,146,42,0.3); color: var(--accent); background: rgba(200,146,42,0.07); }
+  .tag-neuro { border-color: rgba(91,155,213,0.3); color: var(--blue); background: rgba(91,155,213,0.07); }
+  .tag-structural { border-color: rgba(91,191,181,0.3); color: var(--teal); background: rgba(91,191,181,0.07); }
+  .tag-fluid { border-color: rgba(143,190,107,0.3); color: var(--green); background: rgba(143,190,107,0.07); }
+  .tag-other { border-color: rgba(224,92,92,0.3); color: var(--red); background: rgba(224,92,92,0.07); }
+
+  .no-results { max-width: 1000px; margin: 40px auto; text-align: center; color: var(--muted); font-family: 'Playfair Display', serif; font-size: 18px; }
+
+  .prevalence-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; margin-top: 6px; }
+  .prevalence-chip.very-common { background: rgba(224,92,92,0.1); border: 1px solid rgba(224,92,92,0.25); color: var(--red); }
+  .prevalence-chip.common { background: rgba(200,146,42,0.1); border: 1px solid rgba(200,146,42,0.25); color: var(--accent); }
+  .prevalence-chip.less-common { background: rgba(91,155,213,0.1); border: 1px solid rgba(91,155,213,0.25); color: var(--blue); }
+
+  .disclaimer { max-width: 1000px; margin: 28px auto 0; font-size: 11.5px; color: var(--muted); line-height: 1.6; text-align: center; font-style: italic; opacity: 0.85; }
+</style>
+</head>
+<body>
+<nav class="top-nav" aria-label="Primary"></nav>
+<script src="/nav.js"></script>
+
+<header>
+  <div class="sub-label">Health Reference</div>
+  <h1>Bodily <em>Deficiencies</em></h1>
+  <div class="header-line"></div>
+  <p class="header-note">When the body's own systems run low — hormones, enzymes, neurotransmitters, structural tissue, and fluids. Symptoms, severity, and food &amp; lifestyle support to help restore balance. For nutrient shortfalls in vitamins &amp; minerals, see the <a href="/deficiencies" style="color:var(--accent)">Nutrient Deficiencies</a> page.</p>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search" placeholder="Search deficiencies or symptoms..." oninput="filterCards()">
+  </div>
+  <div class="cat-filters">
+    <button class="cat-btn active" data-cat="all" onclick="setCat('all')">All</button>
+    <button class="cat-btn" data-cat="hormone" onclick="setCat('hormone')">Hormonal</button>
+    <button class="cat-btn" data-cat="enzyme" onclick="setCat('enzyme')">Enzymes</button>
+    <button class="cat-btn" data-cat="neuro" onclick="setCat('neuro')">Neurotransmitters</button>
+    <button class="cat-btn" data-cat="structural" onclick="setCat('structural')">Structural</button>
+    <button class="cat-btn" data-cat="fluid" onclick="setCat('fluid')">Fluids &amp; Gases</button>
+    <button class="cat-btn" data-cat="other" onclick="setCat('other')">Systemic</button>
+  </div>
+</div>
+
+<div class="result-count" id="count"></div>
+<div class="grid" id="grid"></div>
+<div class="no-results" id="noResults" style="display:none">No deficiencies found</div>
+
+<p class="disclaimer">Educational reference only — not medical advice. Hormone, enzyme, and neurotransmitter imbalances need proper testing and diagnosis. Talk to a qualified healthcare professional before starting supplements or making changes, especially during pregnancy or if you take medication.</p>
+
+<script>
+const DATA = [
+  // HORMONAL
+  {name:"Thyroid Hormone (Hypothyroidism)",cat:"hormone",icon:"🦋",color:"#5b9bd5",prevalence:"very-common",prevalenceLabel:"~5% diagnosed, many more undetected",
+   symptoms:[
+    {s:"Persistent fatigue and sluggishness despite adequate sleep",level:"common"},
+    {s:"Unexplained weight gain and difficulty losing weight",level:"common"},
+    {s:"Cold intolerance — always feeling chilly",level:"common"},
+    {s:"Dry skin, brittle nails, and hair thinning or loss",level:"common"},
+    {s:"Constipation and slow digestion",level:"mild"},
+    {s:"Brain fog, poor memory, and low mood or depression",level:"common"},
+    {s:"Slow heart rate and puffy face (myxedema)",level:"severe"},
+    {s:"Goiter — visible swelling at the front of the neck",level:"severe"},
+   ],
+   foods:["Seaweed &amp; sea vegetables (iodine)","Brazil nuts (selenium)","Eggs","Fish &amp; shellfish","Tyrosine-rich protein","Zinc-rich foods"],
+   riskLevel:"high",note:"Most common cause is Hashimoto's autoimmune thyroiditis. Ask for a full panel — TSH, free T4, free T3, and thyroid antibodies — not TSH alone."},
+
+  {name:"Testosterone (Low T)",cat:"hormone",icon:"♂️",color:"#9b7de8",prevalence:"common",prevalenceLabel:"Levels decline ~1% per year after 30",
+   symptoms:[
+    {s:"Low libido and erectile dysfunction",level:"common"},
+    {s:"Fatigue and reduced sense of drive or motivation",level:"common"},
+    {s:"Loss of muscle mass and strength",level:"common"},
+    {s:"Increased body fat, especially around the belly",level:"common"},
+    {s:"Low mood, irritability, or depression",level:"common"},
+    {s:"Difficulty concentrating and brain fog",level:"mild"},
+    {s:"Reduced bone density over time (osteoporosis risk)",level:"severe"},
+   ],
+   foods:["Zinc-rich oysters &amp; red meat","Vitamin D / sunlight","Healthy fats (olive oil, eggs)","Magnesium","Resistance training","Quality sleep (7–9 hrs)"],
+   riskLevel:"med",note:"Poor sleep, chronic stress, excess body fat, and overtraining all suppress testosterone. Confirm with an early-morning blood test before considering therapy."},
+
+  {name:"Estrogen (Low Estrogen)",cat:"hormone",icon:"♀️",color:"#e05c5c",prevalence:"very-common",prevalenceLabel:"Universal in menopause",
+   symptoms:[
+    {s:"Hot flashes and night sweats",level:"common"},
+    {s:"Irregular or absent menstrual periods",level:"common"},
+    {s:"Vaginal dryness and discomfort",level:"common"},
+    {s:"Mood swings, anxiety, and low mood",level:"common"},
+    {s:"Accelerated bone loss and osteoporosis",level:"severe"},
+    {s:"Reduced libido",level:"mild"},
+    {s:"Brain fog and disrupted sleep",level:"common"},
+   ],
+   foods:["Flaxseed (phytoestrogens)","Soy foods (tofu, edamame)","Sesame seeds","Healthy fats","Omega-3 fish","Cruciferous vegetables"],
+   riskLevel:"high",note:"Natural in perimenopause and menopause, but very low body fat, over-exercise, or eating disorders can also drop estrogen. Discuss HRT and bone protection with your doctor."},
+
+  {name:"Cortisol (Adrenal Insufficiency)",cat:"hormone",icon:"⚡",color:"#c8922a",prevalence:"less-common",prevalenceLabel:"Rare but serious when present",
+   symptoms:[
+    {s:"Profound, persistent fatigue and weakness",level:"severe"},
+    {s:"Low blood pressure, dizziness, and fainting on standing",level:"severe"},
+    {s:"Salt cravings",level:"common"},
+    {s:"Low blood sugar (shakiness, confusion)",level:"common"},
+    {s:"Unintentional weight loss and poor appetite",level:"common"},
+    {s:"Nausea, vomiting, and abdominal pain",level:"common"},
+    {s:"Darkening of the skin (Addison's disease)",level:"severe"},
+   ],
+   foods:["Regular balanced meals","Adequate salt &amp; fluids","Vitamin C","B5 (pantothenic acid) foods","Stable blood-sugar carbs","Stress management"],
+   riskLevel:"high",note:"True adrenal insufficiency (Addison's) is a medical diagnosis, not 'adrenal fatigue.' An adrenal crisis is life-threatening — seek urgent care for severe weakness, vomiting, and collapse."},
+
+  {name:"Melatonin",cat:"hormone",icon:"🌙",color:"#9b7de8",prevalence:"very-common",prevalenceLabel:"Production declines sharply with age",
+   symptoms:[
+    {s:"Difficulty falling asleep at night",level:"common"},
+    {s:"Fragmented, restless sleep with frequent waking",level:"common"},
+    {s:"Daytime grogginess and fatigue",level:"common"},
+    {s:"Disrupted circadian rhythm (jet lag, shift work)",level:"common"},
+    {s:"Low mood tied to poor sleep",level:"mild"},
+   ],
+   foods:["Tart cherries","Kiwifruit","Walnuts","Darkness at night / no screens","Morning sunlight exposure","Magnesium"],
+   riskLevel:"med",note:"Blue light at night suppresses melatonin. Anchor your body clock with bright morning light and a dark, cool bedroom before reaching for supplements."},
+
+  {name:"Growth Hormone",cat:"hormone",icon:"📏",color:"#5bbfb5",prevalence:"less-common",prevalenceLabel:"Declines naturally with age",
+   symptoms:[
+    {s:"Increased abdominal body fat",level:"common"},
+    {s:"Reduced muscle mass, strength, and slow recovery",level:"common"},
+    {s:"Low energy and reduced exercise capacity",level:"common"},
+    {s:"Decreased bone density",level:"common"},
+    {s:"Poor mood and reduced sense of wellbeing",level:"mild"},
+   ],
+   foods:["Deep slow-wave sleep","Resistance &amp; HIIT training","Adequate protein","Intermittent fasting windows","Limiting sugar before bed","Arginine-rich foods"],
+   riskLevel:"med",note:"GH is released mostly during deep sleep and intense exercise. Adult GH deficiency is diagnosed by an endocrinologist — never self-treat with GH."},
+
+  {name:"Progesterone",cat:"hormone",icon:"🌸",color:"#9b7de8",prevalence:"common",prevalenceLabel:"Common in perimenopause &amp; PCOS",
+   symptoms:[
+    {s:"Severe PMS — irritability, breast tenderness, bloating",level:"common"},
+    {s:"Irregular cycles and mid-cycle spotting",level:"common"},
+    {s:"Anxiety and disrupted sleep in the luteal phase",level:"common"},
+    {s:"Difficulty conceiving or early miscarriage",level:"severe"},
+    {s:"Headaches and migraines before periods",level:"mild"},
+   ],
+   foods:["Vitamin B6 (poultry, bananas)","Zinc","Magnesium","Vitamin C","Healthy fats for hormone synthesis","Stress reduction"],
+   riskLevel:"med",note:"Progesterone rises after ovulation; low levels often signal an anovulatory or short luteal cycle. A day-21 blood test helps confirm the picture."},
+
+  // ENZYMES &amp; DIGESTION
+  {name:"Stomach Acid (Hypochlorhydria)",cat:"enzyme",icon:"🧪",color:"#e05c5c",prevalence:"common",prevalenceLabel:"Rises with age and PPI use",
+   symptoms:[
+    {s:"Bloating, belching, and fullness soon after meals",level:"common"},
+    {s:"Undigested food visible in stool",level:"common"},
+    {s:"Reflux and heartburn — often from too little acid, not too much",level:"common"},
+    {s:"B12, iron, calcium, and magnesium deficiencies",level:"severe"},
+    {s:"Gas and a feeling that food 'sits' in the stomach",level:"mild"},
+    {s:"Increased gut infections from poor sterilization of food",level:"common"},
+   ],
+   foods:["Bitter greens before meals","Apple cider vinegar in water (with care)","Adequate protein to trigger acid","Zinc","Chew thoroughly, eat unhurried","Ginger"],
+   riskLevel:"med",note:"Stomach acid naturally declines with age and is suppressed by long-term acid-blocking drugs (PPIs), reducing absorption of key minerals and B12."},
+
+  {name:"Digestive Enzymes (Pancreatic Insufficiency)",cat:"enzyme",icon:"⚗️",color:"#c8922a",prevalence:"less-common",prevalenceLabel:"Linked to pancreatic conditions",
+   symptoms:[
+    {s:"Greasy, pale, foul-smelling, floating stools (steatorrhea)",level:"severe"},
+    {s:"Bloating and gas after meals",level:"common"},
+    {s:"Unintentional weight loss",level:"severe"},
+    {s:"Deficiency of fat-soluble vitamins (A, D, E, K)",level:"severe"},
+    {s:"Abdominal discomfort and cramping",level:"common"},
+   ],
+   foods:["Pineapple (bromelain)","Papaya (papain)","Fermented foods","Raw honey","Smaller, lower-fat meals","Prescribed enzyme replacement (PERT)"],
+   riskLevel:"high",note:"Exocrine pancreatic insufficiency (EPI) stems from chronic pancreatitis, cystic fibrosis, or pancreatic surgery and needs medical enzyme replacement — not just dietary support."},
+
+  {name:"Lactase",cat:"enzyme",icon:"🥛",color:"#5b9bd5",prevalence:"very-common",prevalenceLabel:"~65% of adults worldwide",
+   symptoms:[
+    {s:"Bloating and abdominal cramps after dairy",level:"common"},
+    {s:"Gas and flatulence",level:"common"},
+    {s:"Diarrhea 30 minutes to 2 hours after milk products",level:"common"},
+    {s:"Nausea and gurgling stomach",level:"mild"},
+   ],
+   foods:["Lactose-free milk","Hard aged cheeses (low lactose)","Live-culture yogurt &amp; kefir","Plant milks","Lactase enzyme drops/tablets","Smaller dairy portions"],
+   riskLevel:"low",note:"Lactase production normally falls after childhood. Many people tolerate fermented dairy and hard cheese, where bacteria have already broken down much of the lactose."},
+
+  {name:"DAO / Histamine Intolerance",cat:"enzyme",icon:"🌡️",color:"#5bbfb5",prevalence:"less-common",prevalenceLabel:"Often misdiagnosed as allergy",
+   symptoms:[
+    {s:"Headaches or migraines after aged or fermented foods",level:"common"},
+    {s:"Facial flushing and warmth, especially with red wine",level:"common"},
+    {s:"Hives, itching, and nasal congestion",level:"common"},
+    {s:"Digestive upset — cramps, diarrhea, bloating",level:"common"},
+    {s:"Racing heart and a sense of anxiety after eating",level:"mild"},
+   ],
+   foods:["Fresh, unaged foods","Vitamin C","Vitamin B6 &amp; copper (DAO cofactors)","Quercetin-rich foods","Avoid aged cheese, cured meat, wine","Freeze leftovers promptly"],
+   riskLevel:"med",note:"Diamine oxidase (DAO) breaks down dietary histamine in the gut. When it's low, histamine-rich and fermented foods trigger allergy-like symptoms without a true allergy."},
+
+  // NEUROTRANSMITTERS
+  {name:"Serotonin",cat:"neuro",icon:"🌞",color:"#c8922a",prevalence:"very-common",prevalenceLabel:"Tied to mood, sleep &amp; gut",
+   symptoms:[
+    {s:"Low mood, sadness, or depression",level:"common"},
+    {s:"Anxiety and excessive worry",level:"common"},
+    {s:"Carbohydrate and sugar cravings",level:"common"},
+    {s:"Poor sleep and difficulty winding down",level:"common"},
+    {s:"Low impulse control and irritability",level:"mild"},
+    {s:"Digestive issues (gut holds ~90% of serotonin)",level:"common"},
+   ],
+   foods:["Tryptophan foods (turkey, eggs, oats)","Complex carbs to aid uptake","Daily sunlight","Exercise","Vitamin B6","Healthy gut / fermented foods"],
+   riskLevel:"med",note:"Serotonin is built from the amino acid tryptophan, with B6, iron, and vitamin D as cofactors. Sunlight, movement, and a healthy gut all support its production."},
+
+  {name:"Dopamine",cat:"neuro",icon:"🎯",color:"#e05c5c",prevalence:"common",prevalenceLabel:"Drained by chronic overstimulation",
+   symptoms:[
+    {s:"Low motivation and difficulty starting tasks",level:"common"},
+    {s:"Anhedonia — loss of pleasure in things you enjoyed",level:"common"},
+    {s:"Fatigue and mental sluggishness",level:"common"},
+    {s:"Poor focus and procrastination",level:"common"},
+    {s:"Cravings for stimulation, sugar, or novelty",level:"mild"},
+    {s:"Low libido",level:"mild"},
+   ],
+   foods:["Tyrosine foods (eggs, meat, cheese)","Mucuna / fava beans (L-dopa)","Exercise","Sunlight","Adequate sleep","Dopamine 'fasting' from overstimulation"],
+   riskLevel:"med",note:"Dopamine drives motivation and reward. Constant high-stimulation inputs (endless scrolling, sugar, fast dopamine hits) can blunt sensitivity over time."},
+
+  {name:"GABA",cat:"neuro",icon:"🧘",color:"#5bbfb5",prevalence:"common",prevalenceLabel:"The brain's main 'brake' chemical",
+   symptoms:[
+    {s:"Anxiety and racing, looping thoughts",level:"common"},
+    {s:"Difficulty relaxing or feeling 'switched off'",level:"common"},
+    {s:"Insomnia and trouble falling asleep",level:"common"},
+    {s:"Muscle tension and restlessness",level:"common"},
+    {s:"Irritability and feeling easily overwhelmed",level:"mild"},
+   ],
+   foods:["Fermented foods (kimchi, miso)","Magnesium","L-theanine (green tea)","Glutamine-rich foods","Exercise &amp; yoga","Breathwork / meditation"],
+   riskLevel:"med",note:"GABA is the primary inhibitory (calming) neurotransmitter. Chronic stress and alcohol withdrawal disrupt GABA signaling, leaving the nervous system over-activated."},
+
+  {name:"Acetylcholine",cat:"neuro",icon:"🧠",color:"#5b9bd5",prevalence:"common",prevalenceLabel:"Key to memory &amp; learning",
+   symptoms:[
+    {s:"Forgetfulness and poor short-term memory",level:"common"},
+    {s:"Brain fog and slow mental recall",level:"common"},
+    {s:"Difficulty focusing and learning new things",level:"common"},
+    {s:"Muscle weakness or poor coordination",level:"mild"},
+    {s:"Reduced dream recall",level:"mild"},
+   ],
+   foods:["Eggs &amp; liver (choline)","Sunflower lecithin","Alpha-GPC sources","Cruciferous vegetables","Exercise","Adequate sleep"],
+   riskLevel:"med",note:"Acetylcholine is synthesized from choline — a nutrient ~90% of people under-consume. It underpins memory, learning, and muscle activation."},
+
+  // STRUCTURAL
+  {name:"Collagen",cat:"structural",icon:"🧬",color:"#c8922a",prevalence:"very-common",prevalenceLabel:"Drops ~1% per year after age 25",
+   symptoms:[
+    {s:"Wrinkles, sagging, and thinning skin",level:"common"},
+    {s:"Joint pain, stiffness, and creaky joints",level:"common"},
+    {s:"Weak, brittle, slow-growing nails",level:"mild"},
+    {s:"Hair thinning and loss of shine",level:"mild"},
+    {s:"Slow wound healing",level:"common"},
+    {s:"Weakened gut lining and connective tissue",level:"common"},
+   ],
+   foods:["Bone broth","Vitamin C (essential cofactor)","Glycine/proline (gelatin, skin-on meats)","Egg whites","Citrus &amp; berries","Copper &amp; zinc foods"],
+   riskLevel:"med",note:"The body can't build collagen without vitamin C. Sugar and UV damage degrade existing collagen, accelerating skin and joint aging."},
+
+  {name:"Bone Density (Osteopenia / Osteoporosis)",cat:"structural",icon:"🦴",color:"#5b9bd5",prevalence:"very-common",prevalenceLabel:"1 in 3 women, 1 in 5 men over 50",
+   symptoms:[
+    {s:"Fractures from minor falls or knocks",level:"severe"},
+    {s:"Gradual height loss over time",level:"common"},
+    {s:"Stooped posture (dowager's hump)",level:"common"},
+    {s:"Back pain from collapsed vertebrae",level:"severe"},
+    {s:"Receding gums and weak grip strength",level:"mild"},
+   ],
+   foods:["Calcium (dairy, sardines, greens)","Vitamin D &amp; K2","Weight-bearing &amp; resistance exercise","Adequate protein","Magnesium","Limit excess alcohol &amp; smoking"],
+   riskLevel:"high",note:"Bone loss is silent until a fracture occurs. A DEXA scan measures bone density — strength training and vitamin D/K2 are central to prevention."},
+
+  {name:"Muscle Mass (Sarcopenia)",cat:"structural",icon:"💪",color:"#e05c5c",prevalence:"very-common",prevalenceLabel:"Accelerates after age 60",
+   symptoms:[
+    {s:"Noticeable loss of strength and muscle size",level:"common"},
+    {s:"Slow walking speed and weak grip",level:"common"},
+    {s:"Frequent falls and poor balance",level:"severe"},
+    {s:"Fatigue with everyday tasks",level:"common"},
+    {s:"Frailty and loss of independence",level:"severe"},
+   ],
+   foods:["Adequate protein (1.2–1.6 g/kg)","Leucine-rich foods (whey, eggs, meat)","Resistance training","Vitamin D","Creatine","Omega-3 fish"],
+   riskLevel:"high",note:"Adults lose 3–8% of muscle per decade after 30, faster after 60. Progressive resistance training plus enough protein is the most effective defense."},
+
+  // FLUIDS &amp; GASES
+  {name:"Hydration (Chronic Dehydration)",cat:"fluid",icon:"💧",color:"#5b9bd5",prevalence:"very-common",prevalenceLabel:"Up to 75% mildly under-hydrated",
+   symptoms:[
+    {s:"Fatigue and low energy",level:"common"},
+    {s:"Headaches and difficulty concentrating",level:"common"},
+    {s:"Dark yellow urine and infrequent urination",level:"common"},
+    {s:"Dry skin, lips, and mouth",level:"mild"},
+    {s:"Dizziness and lightheadedness",level:"common"},
+    {s:"Constipation",level:"mild"},
+   ],
+   foods:["Water throughout the day","Electrolytes (sodium, potassium)","Water-rich fruit &amp; veg","Herbal teas","Soups &amp; broths","Limit excess caffeine/alcohol"],
+   riskLevel:"med",note:"The thirst signal weakens with age, so older adults can be dehydrated without feeling thirsty. Pale-yellow urine is a simple daily hydration gauge."},
+
+  {name:"Oxygen (Hypoxia / Poor Oxygenation)",cat:"fluid",icon:"🫁",color:"#5bbfb5",prevalence:"less-common",prevalenceLabel:"Linked to lung, sleep &amp; blood issues",
+   symptoms:[
+    {s:"Shortness of breath, even at rest in severe cases",level:"severe"},
+    {s:"Fatigue and reduced exercise tolerance",level:"common"},
+    {s:"Headaches, especially in the morning",level:"common"},
+    {s:"Poor concentration and confusion",level:"common"},
+    {s:"Rapid heart rate",level:"common"},
+    {s:"Bluish lips or fingertips (cyanosis)",level:"severe"},
+   ],
+   foods:["Iron for oxygen-carrying hemoglobin","Cardiovascular exercise","Breathing exercises","Fresh air &amp; good ventilation","Treat sleep apnea","Nasal breathing"],
+   riskLevel:"high",note:"Low blood oxygen can stem from lung disease, anemia, or sleep apnea. Sudden severe breathlessness or blue lips is a medical emergency — call for help immediately."},
+
+  // SYSTEMIC
+  {name:"Gut Microbiome Diversity",cat:"other",icon:"🦠",color:"#5bbfb5",prevalence:"very-common",prevalenceLabel:"Eroded by modern diets &amp; antibiotics",
+   symptoms:[
+    {s:"Bloating, irregular bowel habits, and gas",level:"common"},
+    {s:"Weakened immunity and frequent infections",level:"common"},
+    {s:"Low mood and anxiety via the gut-brain axis",level:"common"},
+    {s:"Sugar and processed-food cravings",level:"common"},
+    {s:"Skin flare-ups — acne, eczema",level:"mild"},
+    {s:"Food sensitivities and inflammation",level:"common"},
+   ],
+   foods:["Diverse plant fiber (30+ plants/week)","Fermented foods (kefir, kimchi, sauerkraut)","Prebiotics (onion, garlic, oats)","Polyphenols (berries, cocoa)","Limit ultra-processed food","Limit unnecessary antibiotics"],
+   riskLevel:"med",note:"A single antibiotic course can reduce microbial diversity for months to years. Plant variety is the strongest lever for rebuilding a resilient microbiome."},
+
+  {name:"Bile (Insufficient Bile Flow)",cat:"other",icon:"🫧",color:"#c8922a",prevalence:"common",prevalenceLabel:"Common with gallbladder issues",
+   symptoms:[
+    {s:"Difficulty digesting fatty meals",level:"common"},
+    {s:"Pale, clay-colored, or floating stools",level:"common"},
+    {s:"Nausea or discomfort after rich food",level:"common"},
+    {s:"Deficiency of fat-soluble vitamins (A, D, E, K)",level:"severe"},
+    {s:"Bloating and upper-right abdominal discomfort",level:"mild"},
+   ],
+   foods:["Bitter greens (dandelion, arugula)","Beets &amp; beet greens","Artichoke","Taurine-rich foods","Healthy fats to stimulate release","Adequate hydration"],
+   riskLevel:"med",note:"Bile emulsifies dietary fat so it can be absorbed. Sluggish bile or gallbladder removal can impair fat and fat-soluble vitamin absorption."},
+
+  {name:"Sleep (Chronic Sleep Deficiency)",cat:"other",icon:"😴",color:"#9b7de8",prevalence:"very-common",prevalenceLabel:"~1 in 3 adults under-sleep",
+   symptoms:[
+    {s:"Daytime fatigue and low energy",level:"common"},
+    {s:"Impaired memory, focus, and decision-making",level:"common"},
+    {s:"Mood instability, irritability, and anxiety",level:"common"},
+    {s:"Weakened immune defenses",level:"common"},
+    {s:"Weight gain and increased appetite (ghrelin up)",level:"common"},
+    {s:"Higher long-term risk of heart disease &amp; diabetes",level:"severe"},
+   ],
+   foods:["Consistent sleep/wake schedule","Dark, cool, quiet bedroom","Limit caffeine after midday","Reduce evening screens/blue light","Magnesium &amp; glycine","Morning daylight to set rhythm"],
+   riskLevel:"high",note:"Sleep is when the body repairs tissue, consolidates memory, and clears brain waste. Most adults need 7–9 hours; chronic short sleep compounds nearly every other deficiency here."},
+];
+
+let activeCat = 'all';
+const grid = document.getElementById('grid');
+const noResults = document.getElementById('noResults');
+
+function getRiskColor(level) {
+  if (level === 'high') return 'var(--red)';
+  if (level === 'med') return 'var(--accent)';
+  return 'var(--green)';
+}
+
+function makeCard(item, i) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'i-' + deeplinkSlug(item.name);
+  card.style.animationDelay = (i * 0.02) + 's';
+  card.dataset.name = item.name.toLowerCase();
+  card.dataset.symptoms = item.symptoms.map(s => s.s.toLowerCase()).join(' ');
+
+  const prevalenceClass = item.prevalence;
+
+  card.innerHTML = `
+    <div class="card-top" style="background:${item.color}"></div>
+    <div class="card-header" onclick="this.closest('.card').classList.toggle('expanded')">
+      <span class="card-icon">${item.icon}</span>
+      <div class="card-meta">
+        <div class="card-title">${item.name}</div>
+        <div class="card-sub"><span class="tag tag-${item.cat}">${item.cat}</span></div>
+        <div class="prevalence-chip ${prevalenceClass}">${item.prevalenceLabel}</div>
+      </div>
+      <svg class="card-expand" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <div class="card-body">
+      <div class="risk-bar-wrap">
+        <div class="risk-label">Severity</div>
+        <div class="risk-bar-outer"><div class="risk-bar-inner risk-${item.riskLevel}" style="width:${item.riskLevel==='high'?'90%':item.riskLevel==='med'?'55%':'30%'}"></div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="section-label" style="color:${item.color}">Symptoms</div>
+      <ul class="symptom-list">
+        ${item.symptoms.map(s => `<li class="${s.level}">${s.s}</li>`).join('')}
+      </ul>
+      ${item.note ? `<div class="divider"></div><div style="font-size:12px;color:var(--muted);line-height:1.5;font-style:italic">${item.note}</div>` : ''}
+      <div class="divider"></div>
+      <div class="section-label" style="color:var(--green)">Food &amp; Lifestyle Support</div>
+      <div class="food-sources">
+        ${item.foods.map(f => `<span class="food-pill">${f}</span>`).join('')}
+      </div>
+    </div>`;
+  return card;
+}
+
+function render(items) {
+  grid.innerHTML = '';
+  if (!items.length) { noResults.style.display = 'block'; grid.style.display = 'none'; return; }
+  noResults.style.display = 'none'; grid.style.display = 'grid';
+  document.getElementById('count').textContent = items.length + ' deficiencie' + (items.length === 1 ? 'y' : 's');
+  items.forEach((item, i) => grid.appendChild(makeCard(item, i)));
+}
+
+function filterCards() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const filtered = DATA.filter(d => {
+    const matchCat = activeCat === 'all' || d.cat === activeCat;
+    const matchQ = !q || d.name.toLowerCase().includes(q) || d.symptoms.some(s => s.s.toLowerCase().includes(q)) || d.foods.some(f => f.toLowerCase().includes(q));
+    return matchCat && matchQ;
+  });
+  render(filtered);
+}
+
+function setCat(cat) {
+  activeCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+  filterCards();
+}
+
+render(DATA);
+
+// Search deep links arrive as #i-<slug> (see scripts/build-search-index.mjs).
+// Open and highlight the matching card so the result lands on the exact item.
+function deeplinkSlug(name) {
+  return String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+function focusDeepLink() {
+  if (!/^#i-/.test(location.hash)) return;
+  const id = location.hash.slice(1);
+  let el = document.getElementById(id);
+  if (!el) {
+    const s = document.getElementById('search'); if (s) { s.value = ''; }
+    const allBtn = document.querySelector('[data-cat="all"], [data-filter="all"]');
+    if (allBtn) allBtn.click();
+    el = document.getElementById(id);
+  }
+  if (!el) return;
+  el.classList.add('expanded', 'search-deeplink-target');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => el.classList.remove('search-deeplink-target'), 2600);
+}
+focusDeepLink();
+window.addEventListener('hashchange', focusDeepLink);
+</script>
+</body>
+</html>

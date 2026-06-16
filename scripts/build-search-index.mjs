@@ -77,7 +77,8 @@ function cleanText(text) {
 // Card pages: data array → one entry per item, linking to its deep link.
 const CARD_PAGES = [
   { file: "benefits.html", context: "Food Benefits", vars: ["DATA"], link: (s) => `/benefits/${s}` },
-  { file: "deficiencies.html", context: "Deficiencies", vars: ["DATA"], link: (s) => `/deficiencies#i-${s}` },
+  { file: "deficiencies.html", context: "Nutrient Deficiencies", vars: ["DATA"], link: (s) => `/deficiencies#i-${s}` },
+  { file: "bodily-deficiencies.html", context: "Bodily Deficiencies", vars: ["DATA"], link: (s) => `/bodily-deficiencies#i-${s}` },
   { file: "allergies.html", context: "Allergies", vars: ["DATA"], link: (s) => `/allergies#i-${s}` },
   { file: "diets.html", context: "Diet Types", vars: ["DIETS"], link: (s) => `/diets#i-${s}` },
   { file: "foodtypes.html", context: "Food Categories", vars: ["FOODS"], link: (s) => `/foodtypes#i-${s}` },
