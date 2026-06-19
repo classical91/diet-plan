@@ -50,7 +50,9 @@
   .tag.green{border-color:rgba(143,190,107,.28);color:var(--green);background:rgba(143,190,107,.07)}
   .tag.blue{border-color:rgba(91,155,213,.28);color:var(--blue);background:rgba(91,155,213,.07)}
   .tag.purple{border-color:rgba(155,125,232,.28);color:var(--purple);background:rgba(155,125,232,.07)}
-  .benefits-link{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:12px;font-weight:500;letter-spacing:.04em;color:var(--accent);text-decoration:none;border:1px solid rgba(200,146,42,.28);background:rgba(200,146,42,.07);padding:7px 12px;border-radius:20px;transition:border-color .2s,background .2s}
+  .xlinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .xlinks:empty{display:none}
+  .benefits-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;letter-spacing:.04em;color:var(--accent);text-decoration:none;border:1px solid rgba(200,146,42,.28);background:rgba(200,146,42,.07);padding:7px 12px;border-radius:20px;transition:border-color .2s,background .2s}
   .benefits-link:hover,.benefits-link:focus{border-color:var(--accent);background:rgba(200,146,42,.14);outline:none}
   .benefits-link .arrow{transition:transform .2s}
   .benefits-link:hover .arrow{transform:translateX(2px)}
@@ -243,6 +245,8 @@ const TAGS = {culinary:"Culinary",calm:"Calm",digestive:"Digestive",immune:"Immu
 let activeFilter = "all";
 
 function deeplinkSlug(name){return String(name).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
+// Herbs that are also profiled as teas on /tea, for cross-linking.
+const TEA_SLUGS=new Set(["chamomile","dandelion","echinacea","elderberry","ginger","lemon-balm","nettle","peppermint","tulsi-holy-basil"]);
 function render(){
   const q = document.getElementById("search").value.toLowerCase();
   const items = HERBS.filter(h => {
@@ -258,7 +262,10 @@ function render(){
         <div class="tags">${h.cats.map(c=>`<span class="tag ${c === "culinary" ? "green" : c === "digestive" ? "blue" : c === "calm" ? "purple" : c === "immune" ? "teal" : ""}">${TAGS[c]}</span>`).join("")}</div>
         <div class="details"><h3>Common uses</h3><ul>${h.uses.map(x=>`<li>${x}</li>`).join("")}</ul></div>
         <div class="details"><h3>Cautions</h3><ul>${h.cautions.map(x=>`<li>${x}</li>`).join("")}</ul></div>
-        ${h.benefits ? `<a class="benefits-link" href="/benefits/${h.benefits}">View ${h.name} in the Food Benefits library <span class="arrow">→</span></a>` : ""}
+        ${(() => { const links = [
+          h.benefits ? `<a class="benefits-link" href="/benefits/${h.benefits}">View ${h.name} in the Food Benefits library <span class="arrow">→</span></a>` : "",
+          TEA_SLUGS.has(deeplinkSlug(h.name)) ? `<a class="benefits-link" href="/tea#i-${deeplinkSlug(h.name)}">View ${h.name} in the Teas guide <span class="arrow">→</span></a>` : "",
+        ].filter(Boolean); return links.length ? `<div class="xlinks">${links.join("")}</div>` : ""; })()}
       </div>
     </article>`).join("");
   document.getElementById("noResults").style.display = items.length ? "none" : "block";

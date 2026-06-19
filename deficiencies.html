@@ -61,6 +61,9 @@
 
   .food-sources { display: flex; flex-wrap: wrap; gap: 6px; }
   .food-pill { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: rgba(143,190,107,0.08); border: 1px solid rgba(143,190,107,0.2); color: var(--green); }
+  .xlink { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; color: var(--accent); text-decoration: none; border: 1px solid rgba(200,146,42,0.28); background: rgba(200,146,42,0.07); padding: 7px 12px; border-radius: 20px; transition: border-color 0.2s, background 0.2s; }
+  .xlink:hover, .xlink:focus { border-color: var(--accent); background: rgba(200,146,42,0.14); outline: none; }
+  .xlink span { transition: transform 0.2s; } .xlink:hover span { transform: translateX(2px); }
 
   .risk-bar-wrap { margin-top: 6px; }
   .risk-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
@@ -454,6 +457,11 @@ const DATA = [
 let activeCat = 'all';
 const grid = document.getElementById('grid');
 const noResults = document.getElementById('noResults');
+// Nutrients that also have a detail page on /overview, so each deficiency card
+// can link across to the fuller vitamins & minerals breakdown. Keyed by this
+// page's slug; value is the overview slug (B6/B12 are named with their chemical
+// name there, so their slugs differ).
+const OVERVIEW_LINKS = {"calcium":"calcium","choline":"choline","coenzyme-q10-coq10":"coenzyme-q10-coq10","copper":"copper","fiber":"fiber","iodine":"iodine","iron":"iron","magnesium":"magnesium","potassium":"potassium","selenium":"selenium","vitamin-a":"vitamin-a","vitamin-b12":"vitamin-b12-cobalamin","vitamin-b6":"vitamin-b6-pyridoxine","vitamin-c":"vitamin-c","vitamin-d":"vitamin-d","vitamin-e":"vitamin-e","vitamin-k2":"vitamin-k2","zinc":"zinc"};
 
 function getRiskColor(level) {
   if (level === 'high') return 'var(--red)';
@@ -498,6 +506,7 @@ function makeCard(item, i) {
       <div class="food-sources">
         ${item.foods.map(f => `<span class="food-pill">${f}</span>`).join('')}
       </div>
+      ${OVERVIEW_LINKS[deeplinkSlug(item.name)] ? `<a class="xlink" href="/overview/${OVERVIEW_LINKS[deeplinkSlug(item.name)]}">View ${item.name} in the Vitamins &amp; Minerals guide <span>&rarr;</span></a>` : ''}
     </div>`;
   return card;
 }

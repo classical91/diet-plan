@@ -120,6 +120,9 @@
   .related-item{display:block;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-decoration:none;color:#c0b6a4;font-size:12.5px;font-weight:500;transition:border-color .2s,color .2s}
   .related-item:hover{border-color:var(--accent);color:var(--accent)}
   .detail-disclaimer{font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:22px;padding-top:16px;border-top:1px solid var(--border);font-style:italic}
+  .xlink{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:12px;font-weight:500;letter-spacing:.04em;color:var(--accent);text-decoration:none;border:1px solid rgba(200,146,42,.28);background:rgba(200,146,42,.07);padding:8px 13px;border-radius:20px;transition:border-color .2s,background .2s}
+  .xlink:hover,.xlink:focus{border-color:var(--accent);background:rgba(200,146,42,.14);outline:none}
+  .xlink span{transition:transform .2s}.xlink:hover span{transform:translateX(2px)}
 </style>
 </head>
 <body>
@@ -601,6 +604,11 @@ function slugify(name) {
   return String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 const SLUGS = new Set(NUTRIENTS.map(n => slugify(n.name)));
+// Nutrients that also have a dedicated card on the /deficiencies page, so the
+// detail view can deep-link to its fuller deficiency symptom/severity breakdown.
+// Keyed by this page's slug; value is the deficiencies-page slug (B6/B12 are
+// named with their chemical name here, so their slugs differ).
+const DEF_LINKS = {"calcium":"calcium","choline":"choline","coenzyme-q10-coq10":"coenzyme-q10-coq10","copper":"copper","fiber":"fiber","iodine":"iodine","iron":"iron","magnesium":"magnesium","potassium":"potassium","selenium":"selenium","vitamin-a":"vitamin-a","vitamin-b12-cobalamin":"vitamin-b12","vitamin-b6-pyridoxine":"vitamin-b6","vitamin-c":"vitamin-c","vitamin-d":"vitamin-d","vitamin-e":"vitamin-e","vitamin-k2":"vitamin-k2","zinc":"zinc"};
 const byName = name => NUTRIENTS.find(n => slugify(n.name) === slugify(name));
 const byGroup = g => NUTRIENTS.filter(n => n.group === g);
 // Gut-health nutrients are surfaced together on the landing tab rather than
@@ -670,6 +678,7 @@ function renderDetail(item) {
       <p class="detail-about">${item.about}</p>
       ${sectionList('Key functions', '★', item.functions, 'functions')}
       ${sectionList('Signs you may be low', '⚠', item.deficiency, 'deficiency')}
+      ${DEF_LINKS[slugify(item.name)]?`<a class="xlink" href="/deficiencies#i-${DEF_LINKS[slugify(item.name)]}">See the full ${item.name} deficiency guide <span>&rarr;</span></a>`:''}
       ${item.sources&&item.sources.length?`<div class="detail-section-label"><span class="label-icon">◆</span>Best food sources</div>
         <div class="detail-sources">${item.sources.map(s=>`<span class="pill">${s}</span>`).join('')}</div>`:''}
       ${sectionList('Tips for absorption & timing', '→', item.tips, 'tips')}
