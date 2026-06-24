@@ -18,13 +18,32 @@
   .lead{color:var(--soft);font-size:15px;line-height:1.7;max-width:720px;margin:18px auto 0}
   .header-line{width:54px;height:2px;background:var(--accent);margin:18px auto 0;opacity:.55}
   .container{max-width:760px;margin:0 auto}
-  .note-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:14px 16px;margin:0 0 24px}
+  .note-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:14px 16px;margin:0 0 20px}
   .note{font-size:12.5px;color:var(--soft);line-height:1.6}
   .note strong{color:var(--text)}
+
+  /* Weekly grid: all 7 days x 3 slots, editable inline */
+  .week-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .week-grid-wrap{overflow-x:auto;padding-bottom:6px;margin-bottom:22px}
+  .week-grid{display:grid;grid-template-columns:84px repeat(7,1fr);gap:6px;min-width:700px}
+  .grid-row{display:contents}
+  .grid-row-label{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;white-space:nowrap}
+  .grid-day-head{background:none;border:1px solid var(--border);border-radius:8px;padding:7px 4px;font-family:'Playfair Display',serif;font-weight:700;font-size:12px;color:var(--text);cursor:pointer;transition:all .15s}
+  .grid-day-head:hover{border-color:var(--border-hover)}
+  .grid-day-head.active{border-color:var(--accent);background:rgba(200,146,42,.08);color:var(--accent)}
+  .grid-day-head.is-today:not(.active){color:var(--accent)}
+  .grid-cell{border:1px solid var(--border);border-radius:8px;padding:8px 4px;font-family:'DM Sans',sans-serif;font-size:10.5px;font-weight:500;color:var(--soft);background:var(--surface);cursor:pointer;transition:all .15s;text-align:center}
+  .grid-cell:hover{border-color:var(--border-hover)}
+  .grid-cell.morning.work{color:var(--accent);border-color:rgba(200,146,42,.4);background:rgba(200,146,42,.08)}
+  .grid-cell.afternoon.work{color:var(--blue);border-color:rgba(91,155,213,.4);background:rgba(91,155,213,.08)}
+  .grid-cell.night.work{color:var(--purple);border-color:rgba(155,125,232,.4);background:rgba(155,125,232,.08)}
+  .grid-cell.home{color:var(--green);border-color:rgba(143,190,107,.4);background:rgba(143,190,107,.08)}
+  .grid-cell.skip{color:var(--muted);opacity:.55}
+
   .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
   .summary{font-size:13px;color:var(--soft);line-height:1.5}
   .summary strong{color:var(--text);font-weight:600}
-  .btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:7px 14px;border-radius:20px;cursor:pointer;transition:all .2s}
+  .btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:7px 14px;border-radius:20px;cursor:pointer;transition:all .2s;display:inline-block;text-decoration:none}
   .btn:hover{border-color:var(--accent);color:var(--accent)}
   .slots{display:flex;flex-direction:column;gap:16px}
   .slot{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
@@ -62,8 +81,16 @@
   .item-note{font-size:11.5px;color:var(--muted);margin-top:1px;line-height:1.4}
   .chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
   .chip{font-size:9.5px;padding:2px 8px;border-radius:12px;border:1px solid rgba(143,190,107,.28);color:var(--green);background:rgba(143,190,107,.07);letter-spacing:.02em}
-  .muted-state{font-size:13px;color:var(--muted);line-height:1.6;padding:6px 2px;font-style:italic}
+  .muted-state{font-size:13px;color:var(--muted);line-height:1.6;padding:6px 2px 12px;font-style:italic}
   .ai-tag{display:inline-block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(91,155,213,.3);border-radius:10px;padding:1px 7px;margin-left:8px;vertical-align:middle}
+
+  /* Night → dinner-planner tie-in */
+  .dinner-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 13px}
+  .dinner-card-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .dinner-card-main{font-size:14px;color:var(--text);font-weight:600}
+  .dinner-card-sub{font-size:12px;color:var(--soft);margin-top:2px;line-height:1.5}
+  .dinner-card .btn{margin-top:11px}
+
   /* AI panel */
   .ai-panel{margin-top:24px;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
   .ai-head{display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;user-select:none}
@@ -93,16 +120,19 @@
 <script src="/nav.js"></script>
 
 <header>
-  <div class="sub-label">Daily Planner</div>
+  <div class="sub-label">Weekly Planner</div>
   <h1>Daily Meal <em>Planner</em></h1>
-  <p class="lead">Plan what you'll actually eat at work today. Set each meal to <strong>at work</strong>, <strong>at home</strong>, or <strong>skip</strong> — the plan focuses on your work meals and adjusts the focus when you eat earlier or skip. Your choices are saved on this device.</p>
+  <p class="lead">Plan your whole week. For each day, set Morning, Afternoon, and Night to <strong>at work</strong>, <strong>at home</strong>, or <strong>skip</strong> — the plan focuses on your work meals and adjusts when you eat earlier or skip. Night meals set to <strong>at home</strong> link straight to your <a href="/dinner-planner" style="color:var(--accent);text-decoration:none;border-bottom:1px dotted currentColor">Dinner Planner</a>. Your choices are saved on this device.</p>
   <div class="header-line"></div>
 </header>
 
 <main class="container">
   <div class="note-box">
-    <p class="note"><strong>How it works.</strong> Tick foods as you pack or eat them. If you already ate before work, set Morning to <strong>at home</strong>; if you'll eat once at work and again at home later, set the others accordingly. The "focus" under each work meal shifts based on what you've eaten so far. General guidance, not medical or specific dietary advice.</p>
+    <p class="note"><strong>How it works.</strong> Tap any cell in the weekly grid to cycle that day's slot through <strong>at work → at home → skip</strong> — every day is editable right there, no need to switch days first. Click a day's name to open its full plan and checklist below. Night is usually your one real meal at home — set it to <strong>at home</strong> to see (or build) that day's dinner. General guidance, not medical or specific dietary advice.</p>
   </div>
+
+  <div class="week-label">This week — tap a cell to cycle Work / Home / Skip</div>
+  <div class="week-grid-wrap"><div class="week-grid" id="weekGrid"></div></div>
 
   <div class="toolbar">
     <div class="summary" id="summary"></div>
@@ -119,7 +149,7 @@
       <span class="ai-chev">▾</span>
     </div>
     <div class="ai-body">
-      <p class="hint">Describe your day, what's in the fridge, or any preferences, and Claude will suggest packable food ideas for the meals you've marked <strong>at work</strong>. This runs in your browser with <strong>your own Anthropic API key</strong> — nothing is stored on a server.</p>
+      <p class="hint">Describe your day, what's in the fridge, or any preferences, and Claude will suggest packable food ideas for the meals you've marked <strong>at work</strong> on the selected day. This runs in your browser with <strong>your own Anthropic API key</strong> — nothing is stored on a server.</p>
       <label for="aiKey">Anthropic API key</label>
       <input type="password" id="aiKey" placeholder="sk-ant-..." autocomplete="off" spellcheck="false">
       <label for="aiNotes">Your day / preferences (optional)</label>
@@ -139,6 +169,12 @@ const SLOTS = [
   { id:"afternoon", icon:"☀️", label:"Afternoon", when:"Midday at work" },
   { id:"night",     icon:"🌙", label:"Night",     when:"After work / evening" },
 ];
+
+const DAYS = [
+  { id:"mon", label:"Monday" }, { id:"tue", label:"Tuesday" }, { id:"wed", label:"Wednesday" },
+  { id:"thu", label:"Thursday" }, { id:"fri", label:"Friday" }, { id:"sat", label:"Saturday" }, { id:"sun", label:"Sunday" },
+];
+const todayId = (() => { const map=["sun","mon","tue","wed","thu","fri","sat"]; return map[new Date().getDay()]; })();
 
 // Work-friendly foods, tagged by which slot(s) they suit.
 const WORK_FOODS = [
@@ -162,29 +198,60 @@ const WORK_FOODS = [
   { name:"Grilled chicken + roast vegetables", slots:["night"], note:"Simple balanced plate.", tags:["protein","veg"] },
 ];
 
-const STORE_KEY = "work-meals:v1";
+const STORE_KEY = "work-meals:v2";
 const KEY_KEY = "work-meals:anthropic-key";
+const DINNER_KEY = "dinner-planner:v1";
 const ORDER = SLOTS.map(s => s.id);
 
-let state = { states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{} };
+function freshDay() { return { states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{} }; }
+
+let state = { selectedDay: todayId, days: {} };
+for (const d of DAYS) state.days[d.id] = freshDay();
 try {
   const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
-  if (saved && saved.states) state = Object.assign(state, saved, { states: Object.assign(state.states, saved.states) });
+  if (saved && saved.days && typeof saved.days === "object") {
+    for (const d of DAYS) {
+      const sd = saved.days[d.id];
+      if (sd && sd.states) state.days[d.id] = Object.assign(freshDay(), sd, { states: Object.assign(freshDay().states, sd.states) });
+    }
+  }
+  if (saved && DAYS.some(d => d.id === saved.selectedDay)) state.selectedDay = saved.selectedDay;
 } catch (e) { /* ignore */ }
 
+const weekGridEl = document.getElementById("weekGrid");
 const slotsEl = document.getElementById("slots");
 const summaryEl = document.getElementById("summary");
+
+function currentDay() { return state.days[state.selectedDay]; }
+
+function stateLabel(st) { return st === "work" ? "Work" : st === "home" ? "Home" : "Skip"; }
+function nextState(st) { return st === "work" ? "home" : st === "home" ? "skip" : "work"; }
 
 function persist() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
 }
 
 function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 
-function focusFor(i) {
+function loadDinnerState() {
+  try { return JSON.parse(localStorage.getItem(DINNER_KEY) || "null"); } catch (e) { return null; }
+}
+
+function describeDinner(entry) {
+  if (!entry) return null;
+  if (entry.type === "out") return { main: "🍽️ Ordering out", sub: "" };
+  if (entry.type === "combo" || entry.type === "meal") {
+    const parts = [cap(entry.protein), entry.carb, (entry.veg || []).join(" + ")].filter(Boolean).join(" · ");
+    return { main: entry.name || cap(entry.protein), sub: parts + (entry.sauce ? " · " + entry.sauce : "") };
+  }
+  return null;
+}
+
+function focusFor(day, i) {
   const slot = SLOTS[i];
-  const ateBefore = ORDER.slice(0, i).some(id => state.states[id] === "work" || state.states[id] === "home");
-  const workCount = ORDER.filter(id => state.states[id] === "work").length;
+  const ateBefore = ORDER.slice(0, i).some(id => day.states[id] === "work" || day.states[id] === "home");
+  const workCount = ORDER.filter(id => day.states[id] === "work").length;
   if (slot.id === "night") {
     return ateBefore
       ? "<strong>Wind-down meal.</strong> Include vegetables and protein; go a little lighter if you ate well earlier."
@@ -195,9 +262,9 @@ function focusFor(i) {
   return "<strong>Top-up meal</strong> — keep it lighter, but include protein and veg to sustain energy.";
 }
 
-function itemHtml(slotId, name, note, tags) {
+function itemHtml(day, slotId, name, note, tags) {
   const id = slotId + "|" + slugify(name);
-  const checked = state.checked[id] ? " checked" : "";
+  const checked = day.checked[id] ? " checked" : "";
   const chips = (tags || []).map(t => `<span class="chip">${t}</span>`).join("");
   return `
     <li class="item${checked}" data-id="${id}">
@@ -210,19 +277,50 @@ function itemHtml(slotId, name, note, tags) {
     </li>`;
 }
 
+function renderWeekGrid() {
+  const headerCells = DAYS.map(d => `
+    <button type="button" class="grid-day-head ${d.id === state.selectedDay ? "active" : ""} ${d.id === todayId ? "is-today" : ""}" data-day="${d.id}">${d.label.slice(0, 3)}</button>`).join("");
+  const slotRows = SLOTS.map(slot => {
+    const cells = DAYS.map(d => {
+      const st = state.days[d.id].states[slot.id] || "work";
+      return `<button type="button" class="grid-cell ${slot.id} ${st}" data-day="${d.id}" data-slot="${slot.id}">${stateLabel(st)}</button>`;
+    }).join("");
+    return `<div class="grid-row"><div class="grid-row-label">${slot.icon} ${slot.label}</div>${cells}</div>`;
+  }).join("");
+  weekGridEl.innerHTML = `<div class="grid-row"><div class="grid-row-label"></div>${headerCells}</div>${slotRows}`;
+}
+
 function render() {
+  const day = currentDay();
+  const dinnerState = loadDinnerState();
+
   slotsEl.innerHTML = SLOTS.map((slot, i) => {
-    const st = state.states[slot.id] || "work";
+    const st = day.states[slot.id] || "work";
     let body = "";
     if (st === "work") {
       const foods = WORK_FOODS.filter(f => f.slots.includes(slot.id));
-      const aiList = (state.ai && state.ai[slot.id]) || [];
+      const aiList = (day.ai && day.ai[slot.id]) || [];
       body = `
-        <div class="focus">${focusFor(i)}</div>
+        <div class="focus">${focusFor(day, i)}</div>
         <div class="list-label">Pack or eat at work</div>
-        <ul>${foods.map(f => itemHtml(slot.id, f.name, f.note, f.tags)).join("")}</ul>
-        ${aiList.length ? `<div class="list-label">AI ideas <span class="ai-tag">generated</span></div><ul>${aiList.map(n => itemHtml(slot.id, n, "", [])).join("")}</ul>` : ""}
+        <ul>${foods.map(f => itemHtml(day, slot.id, f.name, f.note, f.tags)).join("")}</ul>
+        ${aiList.length ? `<div class="list-label">AI ideas <span class="ai-tag">generated</span></div><ul>${aiList.map(n => itemHtml(day, slot.id, n, "", [])).join("")}</ul>` : ""}
         <div class="item-note" style="margin-top:10px">+ Bring water; add electrolytes after a hot or physical shift.</div>`;
+    } else if (st === "home" && slot.id === "night") {
+      const dinnerEntry = dinnerState && dinnerState.week ? dinnerState.week[state.selectedDay] : null;
+      const dinner = describeDinner(dinnerEntry);
+      body = dinner
+        ? `<div class="dinner-card">
+             <div class="dinner-card-label">Tonight's dinner</div>
+             <div class="dinner-card-main">${dinner.main}</div>
+             ${dinner.sub ? `<div class="dinner-card-sub">${dinner.sub}</div>` : ""}
+             <a class="btn" href="/dinner-planner?day=${state.selectedDay}">Edit dinner</a>
+           </div>`
+        : `<div class="dinner-card">
+             <div class="dinner-card-label">Tonight's dinner</div>
+             <div class="dinner-card-sub" style="font-style:italic;color:var(--muted)">Nothing planned yet for ${DAYS.find(d => d.id === state.selectedDay).label} night.</div>
+             <a class="btn" href="/dinner-planner?day=${state.selectedDay}">Plan tonight's dinner</a>
+           </div>`;
     } else if (st === "home") {
       body = `<div class="muted-state">Eating this at home — nothing to pack for work.</div>`;
     } else {
@@ -243,39 +341,58 @@ function render() {
         <div class="slot-body">${body}</div>
       </div>`;
   }).join("");
+  renderWeekGrid();
   renderSummary();
   persist();
 }
 
 function renderSummary() {
-  const workCount = ORDER.filter(id => state.states[id] === "work").length;
+  const day = currentDay();
+  const workCount = ORDER.filter(id => day.states[id] === "work").length;
+  const label = DAYS.find(d => d.id === state.selectedDay).label;
   summaryEl.innerHTML = workCount === 0
-    ? "No work meals planned — eating at home or skipping today."
-    : `Planning <strong>${workCount}</strong> work meal${workCount === 1 ? "" : "s"} today. Tick items as you pack or eat them.`;
+    ? `No work meals planned for <strong>${label}</strong> — eating at home or skipping.`
+    : `Planning <strong>${workCount}</strong> work meal${workCount === 1 ? "" : "s"} on <strong>${label}</strong>. Tick items as you pack or eat them.`;
 }
 
-// Event delegation for state buttons and item checkboxes.
+// Event delegation: week grid (day headers + per-cell state cycling), seg buttons, item checkboxes.
+weekGridEl.addEventListener("click", (e) => {
+  const dayHead = e.target.closest(".grid-day-head");
+  if (dayHead) {
+    state.selectedDay = dayHead.getAttribute("data-day");
+    render();
+    return;
+  }
+  const cell = e.target.closest(".grid-cell");
+  if (cell) {
+    const dayId = cell.getAttribute("data-day");
+    const slotId = cell.getAttribute("data-slot");
+    const day = state.days[dayId];
+    day.states[slotId] = nextState(day.states[slotId] || "work");
+    render();
+  }
+});
+
 slotsEl.addEventListener("click", (e) => {
   const stateBtn = e.target.closest(".seg button");
   if (stateBtn) {
     const slotId = stateBtn.parentElement.getAttribute("data-slot");
-    state.states[slotId] = stateBtn.getAttribute("data-state");
+    currentDay().states[slotId] = stateBtn.getAttribute("data-state");
     render();
     return;
   }
   const item = e.target.closest("li.item");
   if (item) {
     const id = item.getAttribute("data-id");
-    state.checked[id] = !state.checked[id];
-    item.classList.toggle("checked", state.checked[id]);
+    const day = currentDay();
+    day.checked[id] = !day.checked[id];
+    item.classList.toggle("checked", day.checked[id]);
     persist();
   }
 });
 
 document.getElementById("resetBtn").addEventListener("click", () => {
-  state.states = { morning:"work", afternoon:"work", night:"work" };
-  state.checked = {};
-  state.ai = {};
+  state.days[state.selectedDay] = freshDay();
   render();
 });
 
@@ -301,16 +418,18 @@ aiGo.addEventListener("click", async () => {
   if (!key) { aiStatus.textContent = "Enter your API key first."; aiStatus.className = "ai-status err"; return; }
   try { localStorage.setItem(KEY_KEY, key); } catch (e) { /* ignore */ }
 
-  const workSlots = SLOTS.filter(s => state.states[s.id] === "work").map(s => s.label);
-  if (workSlots.length === 0) { aiStatus.textContent = "No meals are set to 'at work' yet."; aiStatus.className = "ai-status err"; return; }
-  const homeSlots = SLOTS.filter(s => state.states[s.id] === "home").map(s => s.label);
-  const skipSlots = SLOTS.filter(s => state.states[s.id] === "skip").map(s => s.label);
+  const day = currentDay();
+  const dayLabel = DAYS.find(d => d.id === state.selectedDay).label;
+  const workSlots = SLOTS.filter(s => day.states[s.id] === "work").map(s => s.label);
+  if (workSlots.length === 0) { aiStatus.textContent = "No meals are set to 'at work' yet for " + dayLabel + "."; aiStatus.className = "ai-status err"; return; }
+  const homeSlots = SLOTS.filter(s => day.states[s.id] === "home").map(s => s.label);
+  const skipSlots = SLOTS.filter(s => day.states[s.id] === "skip").map(s => s.label);
 
   aiGo.disabled = true;
   aiStatus.textContent = "Generating…";
   aiStatus.className = "ai-status";
 
-  const prompt = `I'm planning food to eat AT WORK today.
+  const prompt = `I'm planning food to eat AT WORK on ${dayLabel}.
 Meals I'll eat at work: ${workSlots.join(", ") || "none"}.
 Meals at home / already eaten: ${homeSlots.join(", ") || "none"}.
 Meals I'm skipping: ${skipSlots.join(", ") || "none"}.
@@ -342,13 +461,13 @@ Return ONLY a JSON object with keys "morning", "afternoon", and "night". For eac
     const data = await res.json();
     const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
     const parsed = extractJson(text);
-    state.ai = {
+    day.ai = {
       morning: Array.isArray(parsed.morning) ? parsed.morning : [],
       afternoon: Array.isArray(parsed.afternoon) ? parsed.afternoon : [],
       night: Array.isArray(parsed.night) ? parsed.night : [],
     };
     render();
-    aiStatus.textContent = "Added ideas to your work meals.";
+    aiStatus.textContent = "Added ideas to " + dayLabel + "'s work meals.";
     aiStatus.className = "ai-status";
   } catch (err) {
     aiStatus.textContent = (err && err.message) ? err.message : "Something went wrong.";
