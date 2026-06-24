@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glossary | NutriMind Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/nav.css">
+<link rel="stylesheet" href="/theme.css">
+<script>try{if(localStorage.getItem('nm-theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(91,191,181,.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(155,125,232,.05) 0%,transparent 50%)}
+  header{text-align:center;margin:18px auto 38px;max-width:900px}
+  .sub-label{font-size:11px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(34px,6vw,62px);font-weight:900;letter-spacing:-.03em;line-height:.95}
+  h1 em{color:var(--accent);font-style:italic}
+  .lead{color:var(--soft);font-size:15px;line-height:1.7;max-width:760px;margin:18px auto 0}
+  .header-line{width:54px;height:2px;background:var(--accent);margin:18px auto 0;opacity:.55}
+  .container{max-width:1100px;margin:0 auto}
+  .note-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:16px;margin:18px 0 30px}
+  .note{font-size:13px;color:var(--soft);line-height:1.65}
+  .note strong{color:var(--text)}
+  .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 30px}
+  .filter-btn{font-size:12px;font-weight:500;letter-spacing:.03em;color:var(--soft);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:7px 14px;cursor:pointer;transition:border-color .2s,color .2s}
+  .filter-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(200,146,42,.08)}
+  h2{font-family:'Playfair Display',serif;font-size:25px;font-weight:700;margin:34px 0 8px}
+  .sec-desc{font-size:13px;color:var(--soft);line-height:1.65;max-width:820px;margin-bottom:18px}
+  .term-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;margin-bottom:34px}
+  .term-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;transition:border-color .2s,transform .2s}
+  .term-card:hover{border-color:var(--border-hover);transform:translateY(-2px)}
+  .term-card h3{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:6px;color:var(--text)}
+  .term-card p{font-size:13px;color:var(--soft);line-height:1.6}
+  .term-card p strong{color:var(--text);font-weight:600}
+  .also{margin-top:10px;font-size:11px;color:var(--muted)}
+  .also a{color:var(--accent);text-decoration:none}
+  .also a:hover{text-decoration:underline}
+  .term-card[hidden]{display:none}
+  .empty-state{display:none;text-align:center;color:var(--muted);font-size:13px;padding:30px 0}
+  @media(max-width:720px){body{padding:24px 12px 60px}}
+</style>
+</head>
+<body>
+<nav class="top-nav" aria-label="Primary"></nav>
+<script src="/nav.js"></script>
+
+<header>
+  <div class="sub-label">Reference Guide</div>
+  <h1>Glossary of <em>Terms</em></h1>
+  <p class="lead">Plain-language definitions for the recurring scientific terms used across this site — stress &amp; mood biology, heart &amp; cholesterol markers, metabolism, and the plant compounds behind food benefits. Filter by category or use the browser's find (Ctrl/Cmd+F) to jump to a term.</p>
+  <div class="header-line"></div>
+</header>
+
+<main class="container">
+  <div class="note-box">
+    <p class="note"><strong>How to use this.</strong> These are educational summaries, not medical advice or diagnostic criteria. Where a term has its own dedicated page on this site, the card links to it for the full evidence and food/herb sources.</p>
+  </div>
+
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-cat="all">All</button>
+    <button class="filter-btn" data-cat="stress">Stress &amp; Nervous System</button>
+    <button class="filter-btn" data-cat="heart">Heart &amp; Cholesterol</button>
+    <button class="filter-btn" data-cat="metabolism">Metabolism &amp; Blood Sugar</button>
+    <button class="filter-btn" data-cat="compounds">Plant Compounds</button>
+    <button class="filter-btn" data-cat="gut">Gut &amp; Microbiome</button>
+  </div>
+
+  <section data-section="stress">
+    <h2>Stress &amp; Nervous System</h2>
+    <p class="sec-desc">Terms describing how the body senses and responds to perceived threat or pressure.</p>
+    <div class="term-grid">
+      <div class="term-card" data-cat="stress"><h3>Stress</h3><p>The body's physiological response to a demand or threat — short bursts (acute stress) are adaptive, but stress that doesn't resolve (chronic stress) keeps the HPA axis and cortisol elevated, which is linked to anxiety, poor sleep, and cardiovascular strain.</p></div>
+      <div class="term-card" data-cat="stress"><h3>Anxiety</h3><p>A state of heightened alertness, worry, or unease anticipating a future threat, accompanied by physical symptoms like a racing heart or muscle tension. Distinct from fear (a response to an immediate threat) and from a clinical anxiety disorder, which is more persistent and impairing.</p></div>
+      <div class="term-card" data-cat="stress"><h3>Cortisol</h3><p>The primary "stress hormone," released by the adrenal glands under control of the HPA axis. It mobilizes glucose and sharpens short-term focus, but chronically elevated cortisol is associated with anxiety, abdominal fat storage, and disrupted sleep. <span class="also">See <a href="/nervous-system">Calm the Nervous System</a>.</span></p></div>
+      <div class="term-card" data-cat="stress"><h3>HPA Axis</h3><p>Short for hypothalamic-pituitary-adrenal axis — the signaling chain (brain → pituitary gland → adrenal glands) that governs the body's cortisol response to stress. Adaptogens are thought to act mainly by modulating this axis.</p></div>
+      <div class="term-card" data-cat="stress"><h3>Cortisol Awakening Response (CAR)</h3><p>The natural rise in cortisol in the 30-45 minutes after waking, which helps mobilize energy for the day. A blunted or exaggerated CAR is sometimes used as a marker of chronic stress or burnout.</p></div>
+      <div class="term-card" data-cat="stress"><h3>Adaptogen</h3><p>A category of herbs (e.g., ashwagandha, rhodiola, holy basil) studied for helping the body "adapt" to stress by moderating the HPA axis, rather than sedating or stimulating directly. <span class="also">See <a href="/adaptogens">Adaptogens</a>.</span></p></div>
+      <div class="term-card" data-cat="stress"><h3>Vagal Tone / HRV</h3><p>Vagal tone reflects activity of the vagus nerve, the main channel of the parasympathetic ("rest-and-digest") nervous system. It's commonly estimated by heart rate variability (HRV) — the beat-to-beat variation in heart rate. Higher HRV generally tracks with better stress resilience and lower cortisol.</p></div>
+      <div class="term-card" data-cat="stress"><h3>Burnout</h3><p>A state of physical and emotional exhaustion from prolonged, unresolved stress — distinct from a mood disorder, though it shares overlapping symptoms like fatigue, irritability, and reduced motivation.</p></div>
+    </div>
+  </section>
+
+  <section data-section="heart">
+    <h2>Heart &amp; Cholesterol</h2>
+    <p class="sec-desc">Terms used when describing how foods affect lipid (fat/cholesterol) markers and cardiovascular risk.</p>
+    <div class="term-grid">
+      <div class="term-card" data-cat="heart"><h3>LDL ("bad" cholesterol)</h3><p>Low-density lipoprotein — a particle that carries cholesterol from the liver to tissues. High circulating LDL, especially when oxidized, contributes to plaque buildup in artery walls (atherosclerosis), so it's the marker most diet and lifestyle advice targets for lowering.</p></div>
+      <div class="term-card" data-cat="heart"><h3>HDL ("good" cholesterol)</h3><p>High-density lipoprotein — carries excess cholesterol from tissues back to the liver for disposal, sometimes called "reverse transport." Higher HDL is generally associated with lower cardiovascular risk.</p></div>
+      <div class="term-card" data-cat="heart"><h3>Triglycerides</h3><p>The main storage form of fat in the blood and body. Elevated triglycerides, often driven by excess sugar/refined carbs and alcohol, are an independent cardiovascular risk marker alongside LDL.</p></div>
+      <div class="term-card" data-cat="heart"><h3>Lipid Panel</h3><p>A standard blood test reporting total cholesterol, LDL, HDL, and triglycerides — the baseline numbers referenced when a food or supplement claims to "support healthy cholesterol."</p></div>
+      <div class="term-card" data-cat="heart"><h3>LDL Oxidation</h3><p>The chemical alteration of LDL particles by free radicals. Oxidized LDL is considered more dangerous than unoxidized LDL because it's more readily taken up by artery walls, triggering plaque formation. Antioxidant-rich foods (olive oil, berries) are often described as reducing this specifically.</p></div>
+      <div class="term-card" data-cat="heart"><h3>ApoB</h3><p>Apolipoprotein B — a structural protein found on every LDL (and VLDL) particle, one per particle. Because it counts the actual number of cholesterol-carrying particles, many cardiologists consider ApoB a more accurate risk marker than LDL cholesterol concentration alone.</p></div>
+      <div class="term-card" data-cat="heart"><h3>Atherosclerosis</h3><p>The buildup of fatty plaque inside artery walls over years, narrowing them and raising the risk of heart attack and stroke. It's the long-term endpoint that "lowers LDL" and "reduces inflammation" claims are ultimately aimed at preventing.</p></div>
+      <div class="term-card" data-cat="heart"><h3>HMG-CoA Reductase</h3><p>The liver enzyme that controls the rate of cholesterol production in the body — the same enzyme statin drugs block. Some plant compounds (e.g., certain flavonoids) are noted for inhibiting it as well, at a much milder level.</p></div>
+    </div>
+  </section>
+
+  <section data-section="metabolism">
+    <h2>Metabolism &amp; Blood Sugar</h2>
+    <p class="sec-desc">Terms describing how the body handles glucose, insulin, and energy from food.</p>
+    <div class="term-grid">
+      <div class="term-card" data-cat="metabolism"><h3>Insulin Resistance</h3><p>A state where cells respond less effectively to insulin, forcing the pancreas to produce more of it to keep blood sugar in range. It's an early step on the path toward type 2 diabetes and is worsened by chronic stress and high cortisol.</p></div>
+      <div class="term-card" data-cat="metabolism"><h3>Glycemic Index (GI)</h3><p>A ranking of how quickly a carbohydrate-containing food raises blood sugar compared to pure glucose. Lower-GI foods produce a slower, smaller blood sugar rise.</p></div>
+      <div class="term-card" data-cat="metabolism"><h3>Oxidative Stress</h3><p>An imbalance between damaging free radicals and the body's antioxidant defenses. Linked to both elevated cortisol and LDL oxidation, it's a common mechanism cited across stress, cholesterol, and aging research.</p></div>
+      <div class="term-card" data-cat="metabolism"><h3>Inflammation (Chronic, Low-Grade)</h3><p>A persistent, low-level immune activation — distinct from the acute inflammation of a healing injury — that's implicated in cardiovascular disease, insulin resistance, and mood disorders. Many "anti-inflammatory" food claims target this chronic form.</p></div>
+    </div>
+  </section>
+
+  <section data-section="compounds">
+    <h2>Plant Compounds &amp; Nutrition Science</h2>
+    <p class="sec-desc">The recurring active-compound names behind specific food and herb benefit claims.</p>
+    <div class="term-grid">
+      <div class="term-card" data-cat="compounds"><h3>Antioxidant</h3><p>Any compound that neutralizes free radicals before they damage cells, lipids (like LDL), or DNA. Vitamin C, vitamin E, and many plant polyphenols act as antioxidants.</p></div>
+      <div class="term-card" data-cat="compounds"><h3>Polyphenol</h3><p>A large family of plant compounds (including flavonoids) with antioxidant and anti-inflammatory activity, found in foods like olive oil, berries, tea, and cocoa.</p></div>
+      <div class="term-card" data-cat="compounds"><h3>Flavonoid</h3><p>A subclass of polyphenols (anthocyanins, hesperidin, quercetin, etc.) associated with reduced LDL oxidation and improved blood vessel function.</p></div>
+      <div class="term-card" data-cat="compounds"><h3>Beta-Glucan</h3><p>A soluble fiber found in oats and barley that forms a gel in the gut, binding bile acids and lowering LDL cholesterol — one of the few fibers with an established cholesterol-lowering health claim.</p></div>
+      <div class="term-card" data-cat="compounds"><h3>Allicin</h3><p>The sulfur compound responsible for garlic's pungency and much of its studied cardiovascular and antimicrobial activity; formed when raw garlic is crushed or chopped.</p></div>
+      <div class="term-card" data-cat="compounds"><h3>Phytoestrogen</h3><p>A plant compound (e.g., lignans in flaxseed) structurally similar enough to estrogen to weakly bind its receptors, studied for effects on hormone-sensitive conditions.</p></div>
+      <div class="term-card" data-cat="compounds"><h3>Bioavailability</h3><p>The proportion of a nutrient or compound that's actually absorbed and usable by the body after eating it — affected by food form, cooking, and what it's paired with (e.g., fat boosts curcumin absorption).</p></div>
+    </div>
+  </section>
+
+  <section data-section="gut">
+    <h2>Gut &amp; Microbiome</h2>
+    <p class="sec-desc">Terms describing the gut bacteria ecosystem and how diet shapes it.</p>
+    <div class="term-grid">
+      <div class="term-card" data-cat="gut"><h3>Microbiome</h3><p>The trillions of bacteria, fungi, and other microbes living mainly in the gut, which influence digestion, immune function, and — via the gut-brain axis — mood and stress response.</p></div>
+      <div class="term-card" data-cat="gut"><h3>Prebiotic</h3><p>A fiber or compound (like inulin) that isn't digested by the body but feeds beneficial gut bacteria, which ferment it into short-chain fatty acids.</p></div>
+      <div class="term-card" data-cat="gut"><h3>Probiotic</h3><p>A food or supplement containing live beneficial bacteria strains intended to support or restore a healthy gut microbiome (e.g., yogurt, kefir, fermented vegetables).</p></div>
+      <div class="term-card" data-cat="gut"><h3>Gut-Brain Axis</h3><p>The two-way communication network between the gut microbiome and the brain, involving the vagus nerve, immune signaling, and neurotransmitter production — a key reason diet is increasingly studied for anxiety and mood. <span class="also">See <a href="/food-for-mood">Food for Mood</a>.</span></p></div>
+    </div>
+  </section>
+
+  <p class="empty-state" id="emptyState">No terms in this category.</p>
+</main>
+
+<script>
+(function () {
+  const buttons = document.querySelectorAll('.filter-btn');
+  const sections = document.querySelectorAll('section[data-section]');
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      buttons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.dataset.cat;
+      sections.forEach((sec) => {
+        sec.hidden = !(cat === 'all' || sec.dataset.section === cat);
+      });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -66,6 +66,7 @@
             <a href="/howto" class="nav-dropdown-item" data-path="/howto">How-To</a>
             <a href="/nervous-system" class="nav-dropdown-item" data-path="/nervous-system">Calm the Nervous System</a>
             <a href="/studies" class="nav-dropdown-item" data-path="/studies">Calming Foods &amp; Herbs Studies</a>
+            <a href="/glossary" class="nav-dropdown-item" data-path="/glossary">Glossary</a>
           </div>
         </div>
         <a href="https://workout-tracker-production-0ec7.up.railway.app" class="nav-item" target="_blank" rel="noreferrer">Workout</a>
@@ -107,6 +108,7 @@
     { path: "/food-for-mood", title: "Food for Mood" },
     { path: "/nervous-system", title: "Calm the Nervous System" },
     { path: "/studies", title: "Calming Foods & Herbs Studies" },
+    { path: "/glossary", title: "Glossary" },
     { path: "/work-meals", title: "Work Meal Planner" },
     { path: "/foods-dementia-risk", title: "Dementia Risk Foods" },
     { path: "/hydration", title: "Hydration & Water" },
