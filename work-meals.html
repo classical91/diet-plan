@@ -41,6 +41,7 @@
   .grid-cell.skip{color:var(--muted);opacity:.55}
   .grid-cell.dinner.set{color:var(--purple);border-color:rgba(155,125,232,.4);background:rgba(155,125,232,.08)}
   .grid-cell.dinner.out{color:var(--green);border-color:rgba(143,190,107,.4);background:rgba(143,190,107,.08)}
+  .grid-cell.dinner.full{color:var(--blue);border-color:rgba(91,155,213,.4);background:rgba(91,155,213,.08)}
   .grid-cell.dinner.empty{color:var(--muted);opacity:.7}
 
   .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
@@ -119,6 +120,7 @@
   .meal-parts{font-size:11.5px;color:var(--soft);line-height:1.5}
   .meal-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
   .mchip{font-size:9.5px;padding:2px 8px;border-radius:12px;border:1px solid var(--border);color:var(--muted)}
+  .dinner-ai-result{margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 13px;font-size:12.5px;color:var(--soft);line-height:1.6;white-space:pre-wrap}
 
   /* AI panel */
   .ai-panel{margin-top:24px;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
@@ -165,7 +167,10 @@
 
   <div class="toolbar">
     <div class="summary" id="summary"></div>
-    <button class="btn" id="resetBtn" type="button">Reset day</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" id="planWeekBtn" type="button">Plan my week</button>
+      <button class="btn" id="resetBtn" type="button">Reset day</button>
+    </div>
   </div>
 
   <div class="slots" id="slots"></div>
@@ -180,12 +185,30 @@
       <div class="balance" id="dinnerBalance"></div>
       <div class="day-actions">
         <button class="btn" type="button" data-dinner-action="out">Order out</button>
+        <button class="btn" type="button" data-dinner-action="full">Already full</button>
         <button class="btn" type="button" data-dinner-action="surprise">Surprise me</button>
         <button class="btn" type="button" data-dinner-action="clear">Clear dinner</button>
       </div>
       <div id="dinnerBuilder"></div>
       <div class="list-label">Ready-made meals</div>
       <div class="meals-grid" id="mealsGrid"></div>
+    </div>
+  </div>
+
+  <!-- Optional AI feedback on the week's dinners -->
+  <div class="ai-panel" id="dinnerAiPanel">
+    <div class="ai-head" id="dinnerAiHead">
+      <h3>Get AI feedback on my week</h3>
+      <span class="ai-opt">Optional</span>
+      <span class="ai-chev">▾</span>
+    </div>
+    <div class="ai-body">
+      <p class="hint">Send this week's dinner plan to Claude for feedback — repeated proteins or carbs, overall balance, and a suggestion or two — any time after you customize it. Uses the same Anthropic API key as the panel below; enter it there first if you haven't.</p>
+      <div class="ai-actions">
+        <button class="ai-go" id="dinnerAiGo" type="button">Get feedback</button>
+        <span class="ai-status" id="dinnerAiStatus"></span>
+      </div>
+      <div class="dinner-ai-result" id="dinnerAiResult" style="display:none"></div>
     </div>
   </div>
 
@@ -322,6 +345,7 @@ function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 function describeDinner(d) {
   if (!d) return null;
   if (d.type === "out") return { main: "🍽️ Ordering out", sub: "" };
+  if (d.type === "full") return { main: "✅ Already full", sub: "Ate enough earlier — skipping dinner." };
   if (d.protein || d.carb || (d.veg && d.veg.length)) {
     const parts = [cap(d.protein), d.carb, (d.veg || []).join(" + ")].filter(Boolean).join(" · ");
     return { main: d.name || cap(d.protein) || "Dinner planned", sub: parts + (d.sauce ? " · " + d.sauce : "") };
@@ -333,6 +357,7 @@ function carbInfo(name) { return CARBS.find(c => c.name === name) || null; }
 
 function assessDinner(d) {
   if (d.type === "out") return { cls: "", html: "Ordering out tonight — no plate to balance." };
+  if (d.type === "full") return { cls: "good", html: "You're already full from earlier meals — no need to plan dinner tonight." };
   if (!d.protein && !d.carb && d.veg.length === 0) {
     return { cls: "", html: "Pick a protein, a carb or legume, and one or two vegetables to compose a balanced plate." };
   }
@@ -384,7 +409,8 @@ function renderDinner() {
   dinnerBalanceEl.className = "balance" + (assessment.cls ? " " + assessment.cls : "");
   dinnerBalanceEl.innerHTML = assessment.html;
   dinnerSectionEl.querySelector('[data-dinner-action="out"]').classList.toggle("on", d.type === "out");
-  if (d.type === "out") {
+  dinnerSectionEl.querySelector('[data-dinner-action="full"]').classList.toggle("on", d.type === "full");
+  if (d.type === "out" || d.type === "full") {
     dinnerBuilderEl.style.display = "none";
   } else {
     dinnerBuilderEl.style.display = "";
@@ -399,8 +425,9 @@ function renderDinner() {
 }
 
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-function surpriseDinner() {
-  const protein = pick(PROTEINS).name;
+function comboFor(avoidProtein) {
+  let protein;
+  do { protein = pick(PROTEINS).name; } while (PROTEINS.length > 1 && protein === avoidProtein);
   const carbPool = Math.random() < 0.6 ? CARBS.filter(c => c.level !== "heavy") : CARBS;
   const carb = pick(carbPool).name;
   const vegPool = [...VEGETABLES];
@@ -408,8 +435,21 @@ function surpriseDinner() {
   veg.push(vegPool.splice(Math.floor(Math.random() * vegPool.length), 1)[0]);
   if (Math.random() < 0.8) veg.push(vegPool.splice(Math.floor(Math.random() * vegPool.length), 1)[0]);
   const sauce = Math.random() < 0.75 ? pick(SAUCES) : null;
-  currentDay().dinner = { type:"combo", protein, carb, veg, sauce, name:null };
+  return { type:"combo", protein, carb, veg, sauce, name:null };
+}
+function surpriseDinner() {
+  currentDay().dinner = comboFor(null);
   renderDinner(); renderWeekGrid(); persist();
+}
+function isDinnerEmpty(d) { return !d.type && !d.protein && !d.carb && d.veg.length === 0; }
+function planWeek() {
+  let avoidProtein = null;
+  for (const d of DAYS) {
+    const day = state.days[d.id];
+    if (isDinnerEmpty(day.dinner)) day.dinner = comboFor(avoidProtein);
+    avoidProtein = day.dinner.protein;
+  }
+  render();
 }
 
 function focusFor(day, i) {
@@ -453,8 +493,11 @@ function renderWeekGrid() {
   }).join("");
   const dinnerCells = DAYS.map(d => {
     const dd = state.days[d.id].dinner;
-    const cls = dd.type === "out" ? "out" : (dd.protein || dd.name) ? "set" : "empty";
-    const label = dd.type === "out" ? "Order out" : (dd.name || (dd.protein ? cap(dd.protein) : "Plan"));
+    let cls, label;
+    if (dd.type === "out") { cls = "out"; label = "Order out"; }
+    else if (dd.type === "full") { cls = "full"; label = "Already full"; }
+    else if (dd.protein || dd.name) { cls = "set"; label = dd.name || cap(dd.protein); }
+    else { cls = "empty"; label = "Plan"; }
     return `<button type="button" class="grid-cell dinner ${cls}" data-day="${d.id}" data-slot="dinner">${label}</button>`;
   }).join("");
   const dinnerRow = `<div class="grid-row"><div class="grid-row-label">🍽️ Dinner</div>${dinnerCells}</div>`;
@@ -590,6 +633,9 @@ dinnerSectionEl.addEventListener("click", (e) => {
     if (which === "out") {
       day.dinner = day.dinner.type === "out" ? freshDinner() : Object.assign(freshDinner(), { type:"out" });
       renderDinner(); renderWeekGrid(); persist();
+    } else if (which === "full") {
+      day.dinner = day.dinner.type === "full" ? freshDinner() : Object.assign(freshDinner(), { type:"full" });
+      renderDinner(); renderWeekGrid(); persist();
     } else if (which === "surprise") {
       surpriseDinner();
     } else if (which === "clear") {
@@ -610,6 +656,8 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   state.days[state.selectedDay] = freshDay();
   render();
 });
+
+document.getElementById("planWeekBtn").addEventListener("click", planWeek);
 
 // ---- Optional AI generation (browser → Anthropic Messages API with the user's key) ----
 const aiPanel = document.getElementById("aiPanel");
@@ -689,6 +737,68 @@ Return ONLY a JSON object with keys "morning", "afternoon", and "night". For eac
     aiStatus.className = "ai-status err";
   } finally {
     aiGo.disabled = false;
+  }
+});
+
+// ---- Optional AI feedback on the week's planned dinners ----
+const dinnerAiPanel = document.getElementById("dinnerAiPanel");
+document.getElementById("dinnerAiHead").addEventListener("click", () => dinnerAiPanel.classList.toggle("open"));
+
+const dinnerAiStatus = document.getElementById("dinnerAiStatus");
+const dinnerAiGo = document.getElementById("dinnerAiGo");
+const dinnerAiResult = document.getElementById("dinnerAiResult");
+
+dinnerAiGo.addEventListener("click", async () => {
+  const key = aiKey.value.trim();
+  if (!key) { dinnerAiStatus.textContent = "Enter your API key first."; dinnerAiStatus.className = "ai-status err"; return; }
+  try { localStorage.setItem(KEY_KEY, key); } catch (e) { /* ignore */ }
+
+  const lines = DAYS.map(d => {
+    const dd = state.days[d.id].dinner;
+    const summary = describeDinner(dd);
+    if (!summary) return `${d.label}: nothing planned`;
+    return `${d.label}: ${summary.main}${summary.sub ? " — " + summary.sub : ""}`;
+  });
+
+  dinnerAiGo.disabled = true;
+  dinnerAiStatus.textContent = "Asking Claude…";
+  dinnerAiStatus.className = "ai-status";
+  dinnerAiResult.style.display = "none";
+
+  const prompt = `Here is my dinner plan for the week:\n${lines.join("\n")}\n\nGive me brief feedback (a few sentences) on variety, nutritional balance, and any repeated proteins or carbs across the week. End with one or two concrete suggestions. Plain text only, no markdown headers.`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": key,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true",
+      },
+      body: JSON.stringify({
+        model: "claude-opus-4-8",
+        max_tokens: 500,
+        system: "You are a practical, friendly nutrition assistant giving short, concrete feedback on a week of planned dinners.",
+        messages: [{ role: "user", content: prompt }],
+      }),
+    });
+    if (!res.ok) {
+      let msg = "Request failed (" + res.status + ")";
+      try { const err = await res.json(); if (err && err.error && err.error.message) msg = err.error.message; } catch (e) { /* ignore */ }
+      throw new Error(msg);
+    }
+    const data = await res.json();
+    const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
+    dinnerAiResult.textContent = text.trim();
+    dinnerAiResult.style.display = "block";
+    dinnerAiStatus.textContent = "";
+    dinnerAiStatus.className = "ai-status";
+  } catch (err) {
+    dinnerAiStatus.textContent = (err && err.message) ? err.message : "Something went wrong.";
+    dinnerAiStatus.className = "ai-status err";
+  } finally {
+    dinnerAiGo.disabled = false;
   }
 });
 
