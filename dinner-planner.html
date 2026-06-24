@@ -232,6 +232,9 @@ try {
   }
 } catch (e) { /* ignore */ }
 
+const requestedDay = new URLSearchParams(location.search).get("day");
+if (requestedDay && DAYS.some(d => d.id === requestedDay)) state.target = requestedDay;
+
 const weekEl = document.getElementById("week");
 const builderEl = document.getElementById("builder");
 const mealsEl = document.getElementById("meals");
