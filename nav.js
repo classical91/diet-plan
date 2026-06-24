@@ -3,8 +3,7 @@
     <div class="nav-inner">
       <a href="/nutrition" class="nav-logo">NutriMind</a>
       <div class="nav-items" id="navItems">
-        <a href="https://nutri-mind-production-d054.up.railway.app/" class="nav-item" target="_blank" rel="noreferrer">Meal Planner</a>
-        <a href="/work-meals" class="nav-item" data-path="/work-meals">Work Meals</a>
+        <a href="/work-meals" class="nav-item" data-path="/work-meals">Daily Meal Planner</a>
         <div class="nav-item has-dropdown" data-group="nutrition">
           <span>Nutrition <span class="nav-chevron">▾</span></span>
           <div class="nav-dropdown">
@@ -109,7 +108,7 @@
     { path: "/nervous-system", title: "Calm the Nervous System" },
     { path: "/studies", title: "Calming Foods & Herbs Studies" },
     { path: "/glossary", title: "Glossary" },
-    { path: "/work-meals", title: "Work Meal Planner" },
+    { path: "/work-meals", title: "Daily Meal Planner" },
     { path: "/foods-dementia-risk", title: "Dementia Risk Foods" },
     { path: "/hydration", title: "Hydration & Water" },
     { path: "/electrolytes-minerals", title: "Electrolytes & Minerals" },
