@@ -22,15 +22,23 @@
   .note{font-size:12.5px;color:var(--soft);line-height:1.6}
   .note strong{color:var(--text)}
 
-  /* Weekly day strip */
+  /* Weekly grid: all 7 days x 3 slots, editable inline */
   .week-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-  .week-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:22px}
-  .day-tab{flex:0 0 auto;min-width:88px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px 12px;cursor:pointer;text-align:center;transition:all .15s}
-  .day-tab:hover{border-color:var(--border-hover)}
-  .day-tab.active{border-color:var(--accent);background:rgba(200,146,42,.08)}
-  .day-tab .dname{font-family:'Playfair Display',serif;font-weight:700;font-size:13px;color:var(--text)}
-  .day-tab.is-today .dname{color:var(--accent)}
-  .day-tab .dcount{font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:.02em}
+  .week-grid-wrap{overflow-x:auto;padding-bottom:6px;margin-bottom:22px}
+  .week-grid{display:grid;grid-template-columns:84px repeat(7,1fr);gap:6px;min-width:700px}
+  .grid-row{display:contents}
+  .grid-row-label{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;white-space:nowrap}
+  .grid-day-head{background:none;border:1px solid var(--border);border-radius:8px;padding:7px 4px;font-family:'Playfair Display',serif;font-weight:700;font-size:12px;color:var(--text);cursor:pointer;transition:all .15s}
+  .grid-day-head:hover{border-color:var(--border-hover)}
+  .grid-day-head.active{border-color:var(--accent);background:rgba(200,146,42,.08);color:var(--accent)}
+  .grid-day-head.is-today:not(.active){color:var(--accent)}
+  .grid-cell{border:1px solid var(--border);border-radius:8px;padding:8px 4px;font-family:'DM Sans',sans-serif;font-size:10.5px;font-weight:500;color:var(--soft);background:var(--surface);cursor:pointer;transition:all .15s;text-align:center}
+  .grid-cell:hover{border-color:var(--border-hover)}
+  .grid-cell.morning.work{color:var(--accent);border-color:rgba(200,146,42,.4);background:rgba(200,146,42,.08)}
+  .grid-cell.afternoon.work{color:var(--blue);border-color:rgba(91,155,213,.4);background:rgba(91,155,213,.08)}
+  .grid-cell.night.work{color:var(--purple);border-color:rgba(155,125,232,.4);background:rgba(155,125,232,.08)}
+  .grid-cell.home{color:var(--green);border-color:rgba(143,190,107,.4);background:rgba(143,190,107,.08)}
+  .grid-cell.skip{color:var(--muted);opacity:.55}
 
   .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
   .summary{font-size:13px;color:var(--soft);line-height:1.5}
@@ -120,11 +128,11 @@
 
 <main class="container">
   <div class="note-box">
-    <p class="note"><strong>How it works.</strong> Pick a day in the strip below, then tick foods as you pack or eat them. If you already ate before work, set Morning to <strong>at home</strong>; if you'll eat once at work and again at home later, set the others accordingly. Night is usually your one real meal at home — set it to <strong>at home</strong> to see (or build) that day's dinner. General guidance, not medical or specific dietary advice.</p>
+    <p class="note"><strong>How it works.</strong> Tap any cell in the weekly grid to cycle that day's slot through <strong>at work → at home → skip</strong> — every day is editable right there, no need to switch days first. Click a day's name to open its full plan and checklist below. Night is usually your one real meal at home — set it to <strong>at home</strong> to see (or build) that day's dinner. General guidance, not medical or specific dietary advice.</p>
   </div>
 
-  <div class="week-label">This week</div>
-  <div class="week-strip" id="weekStrip"></div>
+  <div class="week-label">This week — tap a cell to cycle Work / Home / Skip</div>
+  <div class="week-grid-wrap"><div class="week-grid" id="weekGrid"></div></div>
 
   <div class="toolbar">
     <div class="summary" id="summary"></div>
@@ -210,11 +218,14 @@ try {
   if (saved && DAYS.some(d => d.id === saved.selectedDay)) state.selectedDay = saved.selectedDay;
 } catch (e) { /* ignore */ }
 
-const weekStripEl = document.getElementById("weekStrip");
+const weekGridEl = document.getElementById("weekGrid");
 const slotsEl = document.getElementById("slots");
 const summaryEl = document.getElementById("summary");
 
 function currentDay() { return state.days[state.selectedDay]; }
+
+function stateLabel(st) { return st === "work" ? "Work" : st === "home" ? "Home" : "Skip"; }
+function nextState(st) { return st === "work" ? "home" : st === "home" ? "skip" : "work"; }
 
 function persist() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
@@ -266,16 +277,17 @@ function itemHtml(day, slotId, name, note, tags) {
     </li>`;
 }
 
-function renderWeekStrip() {
-  weekStripEl.innerHTML = DAYS.map(d => {
-    const day = state.days[d.id];
-    const workCount = ORDER.filter(id => day.states[id] === "work").length;
-    return `
-      <div class="day-tab ${d.id === state.selectedDay ? "active" : ""} ${d.id === todayId ? "is-today" : ""}" data-day="${d.id}">
-        <div class="dname">${d.label.slice(0, 3)}</div>
-        <div class="dcount">${workCount} at work</div>
-      </div>`;
+function renderWeekGrid() {
+  const headerCells = DAYS.map(d => `
+    <button type="button" class="grid-day-head ${d.id === state.selectedDay ? "active" : ""} ${d.id === todayId ? "is-today" : ""}" data-day="${d.id}">${d.label.slice(0, 3)}</button>`).join("");
+  const slotRows = SLOTS.map(slot => {
+    const cells = DAYS.map(d => {
+      const st = state.days[d.id].states[slot.id] || "work";
+      return `<button type="button" class="grid-cell ${slot.id} ${st}" data-day="${d.id}" data-slot="${slot.id}">${stateLabel(st)}</button>`;
+    }).join("");
+    return `<div class="grid-row"><div class="grid-row-label">${slot.icon} ${slot.label}</div>${cells}</div>`;
   }).join("");
+  weekGridEl.innerHTML = `<div class="grid-row"><div class="grid-row-label"></div>${headerCells}</div>${slotRows}`;
 }
 
 function render() {
@@ -329,7 +341,7 @@ function render() {
         <div class="slot-body">${body}</div>
       </div>`;
   }).join("");
-  renderWeekStrip();
+  renderWeekGrid();
   renderSummary();
   persist();
 }
@@ -343,12 +355,22 @@ function renderSummary() {
     : `Planning <strong>${workCount}</strong> work meal${workCount === 1 ? "" : "s"} on <strong>${label}</strong>. Tick items as you pack or eat them.`;
 }
 
-// Event delegation: day strip, state buttons, item checkboxes.
-weekStripEl.addEventListener("click", (e) => {
-  const tab = e.target.closest("[data-day]");
-  if (!tab) return;
-  state.selectedDay = tab.getAttribute("data-day");
-  render();
+// Event delegation: week grid (day headers + per-cell state cycling), seg buttons, item checkboxes.
+weekGridEl.addEventListener("click", (e) => {
+  const dayHead = e.target.closest(".grid-day-head");
+  if (dayHead) {
+    state.selectedDay = dayHead.getAttribute("data-day");
+    render();
+    return;
+  }
+  const cell = e.target.closest(".grid-cell");
+  if (cell) {
+    const dayId = cell.getAttribute("data-day");
+    const slotId = cell.getAttribute("data-slot");
+    const day = state.days[dayId];
+    day.states[slotId] = nextState(day.states[slotId] || "work");
+    render();
+  }
 });
 
 slotsEl.addEventListener("click", (e) => {
