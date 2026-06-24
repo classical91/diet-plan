@@ -22,7 +22,7 @@
   .note{font-size:12.5px;color:var(--soft);line-height:1.6}
   .note strong{color:var(--text)}
 
-  /* Weekly grid: all 7 days x 3 slots, editable inline */
+  /* Weekly grid: all 7 days x 3 work slots + dinner, editable inline */
   .week-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
   .week-grid-wrap{overflow-x:auto;padding-bottom:6px;margin-bottom:22px}
   .week-grid{display:grid;grid-template-columns:84px repeat(7,1fr);gap:6px;min-width:700px}
@@ -32,19 +32,23 @@
   .grid-day-head:hover{border-color:var(--border-hover)}
   .grid-day-head.active{border-color:var(--accent);background:rgba(200,146,42,.08);color:var(--accent)}
   .grid-day-head.is-today:not(.active){color:var(--accent)}
-  .grid-cell{border:1px solid var(--border);border-radius:8px;padding:8px 4px;font-family:'DM Sans',sans-serif;font-size:10.5px;font-weight:500;color:var(--soft);background:var(--surface);cursor:pointer;transition:all .15s;text-align:center}
+  .grid-cell{border:1px solid var(--border);border-radius:8px;padding:8px 4px;font-family:'DM Sans',sans-serif;font-size:10.5px;font-weight:500;color:var(--soft);background:var(--surface);cursor:pointer;transition:all .15s;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .grid-cell:hover{border-color:var(--border-hover)}
   .grid-cell.morning.work{color:var(--accent);border-color:rgba(200,146,42,.4);background:rgba(200,146,42,.08)}
   .grid-cell.afternoon.work{color:var(--blue);border-color:rgba(91,155,213,.4);background:rgba(91,155,213,.08)}
   .grid-cell.night.work{color:var(--purple);border-color:rgba(155,125,232,.4);background:rgba(155,125,232,.08)}
   .grid-cell.home{color:var(--green);border-color:rgba(143,190,107,.4);background:rgba(143,190,107,.08)}
   .grid-cell.skip{color:var(--muted);opacity:.55}
+  .grid-cell.dinner.set{color:var(--purple);border-color:rgba(155,125,232,.4);background:rgba(155,125,232,.08)}
+  .grid-cell.dinner.out{color:var(--green);border-color:rgba(143,190,107,.4);background:rgba(143,190,107,.08)}
+  .grid-cell.dinner.empty{color:var(--muted);opacity:.7}
 
   .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
   .summary{font-size:13px;color:var(--soft);line-height:1.5}
   .summary strong{color:var(--text);font-weight:600}
   .btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:7px 14px;border-radius:20px;cursor:pointer;transition:all .2s;display:inline-block;text-decoration:none}
   .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.on{border-color:var(--accent);color:var(--accent)}
   .slots{display:flex;flex-direction:column;gap:16px}
   .slot{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
   .slot-top{height:3px;background:var(--accent)}
@@ -84,12 +88,37 @@
   .muted-state{font-size:13px;color:var(--muted);line-height:1.6;padding:6px 2px 12px;font-style:italic}
   .ai-tag{display:inline-block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(91,155,213,.3);border-radius:10px;padding:1px 7px;margin-left:8px;vertical-align:middle}
 
-  /* Night → dinner-planner tie-in */
+  /* Night summary card (links down to the Dinner section, same page) */
   .dinner-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 13px}
   .dinner-card-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
   .dinner-card-main{font-size:14px;color:var(--text);font-weight:600}
   .dinner-card-sub{font-size:12px;color:var(--soft);margin-top:2px;line-height:1.5}
-  .dinner-card .btn{margin-top:11px}
+
+  /* Dinner builder (protein / carb / veg / sauce) */
+  .opt-group{margin-bottom:14px}
+  .opt-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:flex;align-items:center;gap:6px}
+  .opt-label .req{color:var(--accent)}
+  .opt-label .hint{color:var(--muted);text-transform:none;letter-spacing:0;font-size:11px}
+  .opts{display:flex;gap:6px;flex-wrap:wrap}
+  .opt{font-size:12px;padding:6px 12px;border-radius:16px;border:1px solid var(--border);color:var(--soft);background:var(--surface);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+  .opt:hover{border-color:var(--border-hover)}
+  .opt.on{color:var(--purple);border-color:rgba(155,125,232,.45);background:rgba(155,125,232,.1)}
+  .opt .lvl{font-size:9px;padding:1px 6px;border-radius:8px;margin-left:2px}
+  .opt .lvl.heavy{background:rgba(217,119,87,.15);color:var(--red)}
+  .opt .lvl.legume{background:rgba(143,190,107,.15);color:var(--green)}
+  .opt .lvl.light{background:rgba(91,155,213,.12);color:var(--blue)}
+  .balance{font-size:12.5px;color:var(--soft);line-height:1.55;background:var(--surface);border-radius:8px;padding:10px 12px;margin-bottom:14px}
+  .balance strong{color:var(--text)}
+  .balance.warn{border-left:3px solid var(--red)}
+  .balance.good{border-left:3px solid var(--green)}
+  .day-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .meals-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:8px}
+  .meal-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px;cursor:pointer;transition:all .15s}
+  .meal-card:hover{border-color:var(--border-hover)}
+  .meal-name{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:4px}
+  .meal-parts{font-size:11.5px;color:var(--soft);line-height:1.5}
+  .meal-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+  .mchip{font-size:9.5px;padding:2px 8px;border-radius:12px;border:1px solid var(--border);color:var(--muted)}
 
   /* AI panel */
   .ai-panel{margin-top:24px;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
@@ -122,16 +151,16 @@
 <header>
   <div class="sub-label">Weekly Planner</div>
   <h1>Daily Meal <em>Planner</em></h1>
-  <p class="lead">Plan your whole week. For each day, set Morning, Afternoon, and Night to <strong>at work</strong>, <strong>at home</strong>, or <strong>skip</strong> — the plan focuses on your work meals and adjusts when you eat earlier or skip. Night meals set to <strong>at home</strong> link straight to your <a href="/dinner-planner" style="color:var(--accent);text-decoration:none;border-bottom:1px dotted currentColor">Dinner Planner</a>. Your choices are saved on this device.</p>
+  <p class="lead">Plan your whole week. For each day, set Morning, Afternoon, and Night to <strong>at work</strong>, <strong>at home</strong>, or <strong>skip</strong> — the plan focuses on your work meals and adjusts when you eat earlier or skip. Build tonight's dinner — protein, carb or legume, vegetables, and sauce — right here in the same weekly view. Your choices are saved on this device.</p>
   <div class="header-line"></div>
 </header>
 
 <main class="container">
   <div class="note-box">
-    <p class="note"><strong>How it works.</strong> Tap any cell in the weekly grid to cycle that day's slot through <strong>at work → at home → skip</strong> — every day is editable right there, no need to switch days first. Click a day's name to open its full plan and checklist below. Night is usually your one real meal at home — set it to <strong>at home</strong> to see (or build) that day's dinner. General guidance, not medical or specific dietary advice.</p>
+    <p class="note"><strong>How it works.</strong> Tap any cell in the weekly grid to cycle that slot through <strong>at work → at home → skip</strong> — every day is editable right there. Tap a day's <strong>Dinner</strong> cell to jump to that day's dinner builder below. Click a day's name to open its full plan, checklist, and dinner for that day. General guidance, not medical or specific dietary advice.</p>
   </div>
 
-  <div class="week-label">This week — tap a cell to cycle Work / Home / Skip</div>
+  <div class="week-label">This week — tap a cell to cycle Work / Home / Skip, or tap Dinner to open that day</div>
   <div class="week-grid-wrap"><div class="week-grid" id="weekGrid"></div></div>
 
   <div class="toolbar">
@@ -140,6 +169,25 @@
   </div>
 
   <div class="slots" id="slots"></div>
+
+  <div class="slot dinner-slot" id="dinnerSection">
+    <div class="slot-top" style="background:var(--purple)"></div>
+    <div class="slot-head">
+      <span class="slot-icon">🍽️</span>
+      <span class="slot-title"><h3>Dinner</h3><div class="when">Tonight's plate — protein, carb/legume, veg & sauce</div></span>
+    </div>
+    <div class="slot-body">
+      <div class="balance" id="dinnerBalance"></div>
+      <div class="day-actions">
+        <button class="btn" type="button" data-dinner-action="out">Order out</button>
+        <button class="btn" type="button" data-dinner-action="surprise">Surprise me</button>
+        <button class="btn" type="button" data-dinner-action="clear">Clear dinner</button>
+      </div>
+      <div id="dinnerBuilder"></div>
+      <div class="list-label">Ready-made meals</div>
+      <div class="meals-grid" id="mealsGrid"></div>
+    </div>
+  </div>
 
   <!-- Optional AI panel -->
   <div class="ai-panel" id="aiPanel">
@@ -198,12 +246,40 @@ const WORK_FOODS = [
   { name:"Grilled chicken + roast vegetables", slots:["night"], note:"Simple balanced plate.", tags:["protein","veg"] },
 ];
 
-const STORE_KEY = "work-meals:v2";
+const PROTEINS = [
+  { name:"chicken breast", type:"lean" }, { name:"chicken thighs", type:"meat" },
+  { name:"ground beef", type:"meat" }, { name:"lean beef", type:"lean" },
+  { name:"steak", type:"meat" }, { name:"turkey", type:"lean" },
+  { name:"salmon", type:"fish" }, { name:"tuna", type:"fish" },
+  { name:"cod", type:"fish" }, { name:"shrimp", type:"fish" },
+  { name:"eggs", type:"veg" }, { name:"tofu", type:"plant" },
+];
+const CARBS = [
+  { name:"lentils", kind:"legume", level:"legume" }, { name:"chickpeas", kind:"legume", level:"legume" },
+  { name:"black beans", kind:"legume", level:"legume" }, { name:"kidney beans", kind:"legume", level:"legume" },
+  { name:"peas", kind:"legume", level:"light" }, { name:"corn", kind:"starch", level:"heavy" },
+  { name:"rice", kind:"starch", level:"heavy" }, { name:"potato", kind:"starch", level:"heavy" },
+  { name:"yam", kind:"starch", level:"heavy" }, { name:"sweet potato", kind:"starch", level:"heavy" },
+];
+const VEGETABLES = ["broccoli","carrots","spinach","kale","green beans","zucchini","mushrooms","bell peppers","cabbage","cauliflower","asparagus","brussels sprouts","onions"];
+const SAUCES = ["olive oil","avocado","butter","tahini","Greek yogurt sauce","tomato sauce","coconut milk curry sauce","garlic herb sauce","lemon pepper sauce"];
+const READY_MEALS = [
+  { name:"Chicken Sweet Potato Bowl", protein:"chicken breast", carb:"sweet potato", veg:["broccoli","carrots"], sauce:"garlic herb sauce" },
+  { name:"Beef Lentil Dinner", protein:"ground beef", carb:"lentils", veg:["spinach","carrots"], sauce:"tomato sauce" },
+  { name:"Salmon Rice Plate", protein:"salmon", carb:"rice", veg:["broccoli","green beans"], sauce:"lemon pepper sauce" },
+  { name:"Turkey Bean Bowl", protein:"turkey", carb:"black beans", veg:["bell peppers","onions"], sauce:"Greek yogurt sauce" },
+  { name:"Shrimp Chickpea Plate", protein:"shrimp", carb:"chickpeas", veg:["zucchini","mushrooms"], sauce:"garlic herb sauce" },
+  { name:"Steak Potato Dinner", protein:"steak", carb:"potato", veg:["broccoli","asparagus"], sauce:"butter" },
+  { name:"Chicken Peas & Rice", protein:"chicken thighs", carb:"peas", veg:["carrots","green beans"], sauce:"olive oil" },
+  { name:"Tofu Lentil Bowl", protein:"tofu", carb:"lentils", veg:["kale","mushrooms"], sauce:"tahini" },
+];
+
+const STORE_KEY = "work-meals:v3";
 const KEY_KEY = "work-meals:anthropic-key";
-const DINNER_KEY = "dinner-planner:v1";
 const ORDER = SLOTS.map(s => s.id);
 
-function freshDay() { return { states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{} }; }
+function freshDinner() { return { type:null, protein:null, carb:null, veg:[], sauce:null, name:null }; }
+function freshDay() { return { states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner() }; }
 
 let state = { selectedDay: todayId, days: {} };
 for (const d of DAYS) state.days[d.id] = freshDay();
@@ -212,7 +288,12 @@ try {
   if (saved && saved.days && typeof saved.days === "object") {
     for (const d of DAYS) {
       const sd = saved.days[d.id];
-      if (sd && sd.states) state.days[d.id] = Object.assign(freshDay(), sd, { states: Object.assign(freshDay().states, sd.states) });
+      if (sd && sd.states) {
+        state.days[d.id] = Object.assign(freshDay(), sd, {
+          states: Object.assign(freshDay().states, sd.states),
+          dinner: Object.assign(freshDinner(), sd.dinner || {}),
+        });
+      }
     }
   }
   if (saved && DAYS.some(d => d.id === saved.selectedDay)) state.selectedDay = saved.selectedDay;
@@ -221,6 +302,10 @@ try {
 const weekGridEl = document.getElementById("weekGrid");
 const slotsEl = document.getElementById("slots");
 const summaryEl = document.getElementById("summary");
+const dinnerSectionEl = document.getElementById("dinnerSection");
+const dinnerBalanceEl = document.getElementById("dinnerBalance");
+const dinnerBuilderEl = document.getElementById("dinnerBuilder");
+const mealsGridEl = document.getElementById("mealsGrid");
 
 function currentDay() { return state.days[state.selectedDay]; }
 
@@ -234,18 +319,97 @@ function persist() {
 function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 
-function loadDinnerState() {
-  try { return JSON.parse(localStorage.getItem(DINNER_KEY) || "null"); } catch (e) { return null; }
-}
-
-function describeDinner(entry) {
-  if (!entry) return null;
-  if (entry.type === "out") return { main: "🍽️ Ordering out", sub: "" };
-  if (entry.type === "combo" || entry.type === "meal") {
-    const parts = [cap(entry.protein), entry.carb, (entry.veg || []).join(" + ")].filter(Boolean).join(" · ");
-    return { main: entry.name || cap(entry.protein), sub: parts + (entry.sauce ? " · " + entry.sauce : "") };
+function describeDinner(d) {
+  if (!d) return null;
+  if (d.type === "out") return { main: "🍽️ Ordering out", sub: "" };
+  if (d.protein || d.carb || (d.veg && d.veg.length)) {
+    const parts = [cap(d.protein), d.carb, (d.veg || []).join(" + ")].filter(Boolean).join(" · ");
+    return { main: d.name || cap(d.protein) || "Dinner planned", sub: parts + (d.sauce ? " · " + d.sauce : "") };
   }
   return null;
+}
+
+function carbInfo(name) { return CARBS.find(c => c.name === name) || null; }
+
+function assessDinner(d) {
+  if (d.type === "out") return { cls: "", html: "Ordering out tonight — no plate to balance." };
+  if (!d.protein && !d.carb && d.veg.length === 0) {
+    return { cls: "", html: "Pick a protein, a carb or legume, and one or two vegetables to compose a balanced plate." };
+  }
+  const missing = [];
+  if (!d.protein) missing.push("a protein");
+  if (!d.carb) missing.push("a carb or legume");
+  if (d.veg.length === 0) missing.push("at least one vegetable");
+  if (missing.length) return { cls: "", html: `Add ${missing.join(", ")} to complete the plate.` };
+  const c = carbInfo(d.carb);
+  const heavySauce = ["butter","coconut milk curry sauce"].includes(d.sauce);
+  if (c && c.level === "heavy" && heavySauce) {
+    return { cls: "warn", html: `<strong>Rich plate.</strong> A heavy starch (${d.carb}) plus ${d.sauce} stacks the calories — go lighter on the sauce or swap to a legume like lentils.` };
+  }
+  if (c && c.level === "legume") {
+    return { cls: "good", html: `<strong>Well balanced.</strong> ${cap(d.carb)} adds fibre and plant protein alongside ${d.protein}, with ${d.veg.join(" and ")}. A complete plate.` };
+  }
+  return { cls: "good", html: `<strong>Looks balanced.</strong> ${cap(d.protein)} + ${d.carb} + ${d.veg.join(" and ")}${d.sauce ? " with " + d.sauce : ""}. One starch, plenty of veg — exactly the formula.` };
+}
+
+function optHtml(group, val, label, lvl) {
+  const d = currentDay().dinner;
+  const on = group === "veg" ? d.veg.includes(val) : d[group] === val;
+  const lvlHtml = lvl ? `<span class="lvl ${lvl.cls}">${lvl.text}</span>` : "";
+  return `<span class="opt ${on ? "on" : ""}" data-pick="${group}" data-val="${val}">${label}${lvlHtml}</span>`;
+}
+
+function levelTag(c) {
+  if (c.level === "heavy") return { cls:"heavy", text:"heavy" };
+  if (c.level === "legume") return { cls:"legume", text:"legume" };
+  if (c.level === "light") return { cls:"light", text:"light" };
+  return null;
+}
+
+function renderDinnerBuilder() {
+  const proteinOpts = PROTEINS.map(p => optHtml("protein", p.name, cap(p.name))).join("");
+  const carbOpts = CARBS.map(c => optHtml("carb", c.name, cap(c.name), levelTag(c))).join("");
+  const vegOpts = VEGETABLES.map(v => optHtml("veg", v, cap(v))).join("");
+  const sauceOpts = SAUCES.map(s => optHtml("sauce", s, cap(s))).join("");
+  dinnerBuilderEl.innerHTML = `
+    <div class="opt-group"><div class="opt-label">Protein <span class="req">*</span></div><div class="opts">${proteinOpts}</div></div>
+    <div class="opt-group"><div class="opt-label">Carb / legume <span class="req">*</span></div><div class="opts">${carbOpts}</div></div>
+    <div class="opt-group"><div class="opt-label">Vegetables <span class="hint">(up to 2)</span></div><div class="opts">${vegOpts}</div></div>
+    <div class="opt-group"><div class="opt-label">Sauce <span class="hint">(optional)</span></div><div class="opts">${sauceOpts}</div></div>`;
+}
+
+function renderDinner() {
+  const d = currentDay().dinner;
+  const assessment = assessDinner(d);
+  dinnerBalanceEl.className = "balance" + (assessment.cls ? " " + assessment.cls : "");
+  dinnerBalanceEl.innerHTML = assessment.html;
+  dinnerSectionEl.querySelector('[data-dinner-action="out"]').classList.toggle("on", d.type === "out");
+  if (d.type === "out") {
+    dinnerBuilderEl.style.display = "none";
+  } else {
+    dinnerBuilderEl.style.display = "";
+    renderDinnerBuilder();
+  }
+  mealsGridEl.innerHTML = READY_MEALS.map((m, i) => `
+    <div class="meal-card" data-meal="${i}">
+      <div class="meal-name">${m.name}</div>
+      <div class="meal-parts">${cap(m.protein)} · ${m.carb} · ${m.veg.join(" + ")}</div>
+      <div class="meal-chips"><span class="mchip">${m.sauce}</span></div>
+    </div>`).join("");
+}
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function surpriseDinner() {
+  const protein = pick(PROTEINS).name;
+  const carbPool = Math.random() < 0.6 ? CARBS.filter(c => c.level !== "heavy") : CARBS;
+  const carb = pick(carbPool).name;
+  const vegPool = [...VEGETABLES];
+  const veg = [];
+  veg.push(vegPool.splice(Math.floor(Math.random() * vegPool.length), 1)[0]);
+  if (Math.random() < 0.8) veg.push(vegPool.splice(Math.floor(Math.random() * vegPool.length), 1)[0]);
+  const sauce = Math.random() < 0.75 ? pick(SAUCES) : null;
+  currentDay().dinner = { type:"combo", protein, carb, veg, sauce, name:null };
+  renderDinner(); renderWeekGrid(); persist();
 }
 
 function focusFor(day, i) {
@@ -287,12 +451,18 @@ function renderWeekGrid() {
     }).join("");
     return `<div class="grid-row"><div class="grid-row-label">${slot.icon} ${slot.label}</div>${cells}</div>`;
   }).join("");
-  weekGridEl.innerHTML = `<div class="grid-row"><div class="grid-row-label"></div>${headerCells}</div>${slotRows}`;
+  const dinnerCells = DAYS.map(d => {
+    const dd = state.days[d.id].dinner;
+    const cls = dd.type === "out" ? "out" : (dd.protein || dd.name) ? "set" : "empty";
+    const label = dd.type === "out" ? "Order out" : (dd.name || (dd.protein ? cap(dd.protein) : "Plan"));
+    return `<button type="button" class="grid-cell dinner ${cls}" data-day="${d.id}" data-slot="dinner">${label}</button>`;
+  }).join("");
+  const dinnerRow = `<div class="grid-row"><div class="grid-row-label">🍽️ Dinner</div>${dinnerCells}</div>`;
+  weekGridEl.innerHTML = `<div class="grid-row"><div class="grid-row-label"></div>${headerCells}</div>${slotRows}${dinnerRow}`;
 }
 
 function render() {
   const day = currentDay();
-  const dinnerState = loadDinnerState();
 
   slotsEl.innerHTML = SLOTS.map((slot, i) => {
     const st = day.states[slot.id] || "work";
@@ -307,19 +477,16 @@ function render() {
         ${aiList.length ? `<div class="list-label">AI ideas <span class="ai-tag">generated</span></div><ul>${aiList.map(n => itemHtml(day, slot.id, n, "", [])).join("")}</ul>` : ""}
         <div class="item-note" style="margin-top:10px">+ Bring water; add electrolytes after a hot or physical shift.</div>`;
     } else if (st === "home" && slot.id === "night") {
-      const dinnerEntry = dinnerState && dinnerState.week ? dinnerState.week[state.selectedDay] : null;
-      const dinner = describeDinner(dinnerEntry);
-      body = dinner
+      const summary = describeDinner(day.dinner);
+      body = summary
         ? `<div class="dinner-card">
              <div class="dinner-card-label">Tonight's dinner</div>
-             <div class="dinner-card-main">${dinner.main}</div>
-             ${dinner.sub ? `<div class="dinner-card-sub">${dinner.sub}</div>` : ""}
-             <a class="btn" href="/dinner-planner?day=${state.selectedDay}">Edit dinner</a>
+             <div class="dinner-card-main">${summary.main}</div>
+             ${summary.sub ? `<div class="dinner-card-sub">${summary.sub}</div>` : ""}
            </div>`
         : `<div class="dinner-card">
              <div class="dinner-card-label">Tonight's dinner</div>
-             <div class="dinner-card-sub" style="font-style:italic;color:var(--muted)">Nothing planned yet for ${DAYS.find(d => d.id === state.selectedDay).label} night.</div>
-             <a class="btn" href="/dinner-planner?day=${state.selectedDay}">Plan tonight's dinner</a>
+             <div class="dinner-card-sub" style="font-style:italic;color:var(--muted)">Nothing planned yet — build it in the Dinner section below.</div>
            </div>`;
     } else if (st === "home") {
       body = `<div class="muted-state">Eating this at home — nothing to pack for work.</div>`;
@@ -342,6 +509,7 @@ function render() {
       </div>`;
   }).join("");
   renderWeekGrid();
+  renderDinner();
   renderSummary();
   persist();
 }
@@ -367,6 +535,11 @@ weekGridEl.addEventListener("click", (e) => {
   if (cell) {
     const dayId = cell.getAttribute("data-day");
     const slotId = cell.getAttribute("data-slot");
+    if (slotId === "dinner") {
+      state.selectedDay = dayId;
+      render();
+      return;
+    }
     const day = state.days[dayId];
     day.states[slotId] = nextState(day.states[slotId] || "work");
     render();
@@ -388,6 +561,48 @@ slotsEl.addEventListener("click", (e) => {
     day.checked[id] = !day.checked[id];
     item.classList.toggle("checked", day.checked[id]);
     persist();
+  }
+});
+
+dinnerSectionEl.addEventListener("click", (e) => {
+  const opt = e.target.closest("[data-pick]");
+  if (opt) {
+    const group = opt.getAttribute("data-pick");
+    const val = opt.getAttribute("data-val");
+    const d = currentDay().dinner;
+    if (group === "veg") {
+      const idx = d.veg.indexOf(val);
+      if (idx >= 0) d.veg.splice(idx, 1);
+      else if (d.veg.length < 2) d.veg.push(val);
+      else { d.veg.shift(); d.veg.push(val); }
+    } else {
+      d[group] = (d[group] === val) ? null : val;
+    }
+    d.name = null;
+    d.type = (d.protein || d.carb || d.veg.length) ? "combo" : null;
+    renderDinner(); renderWeekGrid(); persist();
+    return;
+  }
+  const act = e.target.closest("[data-dinner-action]");
+  if (act) {
+    const which = act.getAttribute("data-dinner-action");
+    const day = currentDay();
+    if (which === "out") {
+      day.dinner = day.dinner.type === "out" ? freshDinner() : Object.assign(freshDinner(), { type:"out" });
+      renderDinner(); renderWeekGrid(); persist();
+    } else if (which === "surprise") {
+      surpriseDinner();
+    } else if (which === "clear") {
+      day.dinner = freshDinner();
+      renderDinner(); renderWeekGrid(); persist();
+    }
+    return;
+  }
+  const mealCard = e.target.closest("[data-meal]");
+  if (mealCard) {
+    const m = READY_MEALS[Number(mealCard.getAttribute("data-meal"))];
+    currentDay().dinner = { type:"meal", name:m.name, protein:m.protein, carb:m.carb, veg:[...m.veg], sauce:m.sauce };
+    renderDinner(); renderWeekGrid(); persist();
   }
 });
 

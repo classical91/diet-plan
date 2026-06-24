@@ -4,7 +4,6 @@
       <a href="/nutrition" class="nav-logo">NutriMind</a>
       <div class="nav-items" id="navItems">
         <a href="/work-meals" class="nav-item" data-path="/work-meals">Daily Meal Planner</a>
-        <a href="/dinner-planner" class="nav-item" data-path="/dinner-planner">Dinner Planner</a>
         <div class="nav-item has-dropdown" data-group="nutrition">
           <span>Nutrition <span class="nav-chevron">▾</span></span>
           <div class="nav-dropdown">
@@ -110,7 +109,6 @@
     { path: "/studies", title: "Calming Foods & Herbs Studies" },
     { path: "/glossary", title: "Glossary" },
     { path: "/work-meals", title: "Daily Meal Planner" },
-    { path: "/dinner-planner", title: "Dinner Planner" },
     { path: "/foods-dementia-risk", title: "Dementia Risk Foods" },
     { path: "/hydration", title: "Hydration & Water" },
     { path: "/electrolytes-minerals", title: "Electrolytes & Minerals" },
