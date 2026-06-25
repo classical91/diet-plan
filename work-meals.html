@@ -323,6 +323,9 @@ try {
   if (saved && DAYS.some(d => d.id === saved.selectedDay)) state.selectedDay = saved.selectedDay;
 } catch (e) { /* ignore */ }
 
+const dayParam = new URLSearchParams(location.search).get("day");
+if (dayParam && DAYS.some(d => d.id === dayParam)) state.selectedDay = dayParam;
+
 const weekGridEl = document.getElementById("weekGrid");
 const slotsEl = document.getElementById("slots");
 const summaryEl = document.getElementById("summary");
