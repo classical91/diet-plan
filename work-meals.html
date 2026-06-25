@@ -90,9 +90,12 @@
   .ai-tag{display:inline-block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(91,155,213,.3);border-radius:10px;padding:1px 7px;margin-left:8px;vertical-align:middle}
 
   .custom-note{margin-top:14px}
-  .custom-note label{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-  .custom-input{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 11px;transition:border-color .15s}
-  .custom-input:focus{outline:none;border-color:var(--accent)}
+  .custom-edit-btn{width:100%;text-align:left;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--accent);background:none;border:1px dashed var(--border);border-radius:8px;padding:9px 11px;cursor:pointer;transition:border-color .15s}
+  .custom-edit-btn:hover{border-color:var(--accent)}
+  .custom-display{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:13px;color:var(--text)}
+  .custom-display button{flex-shrink:0;font-family:'DM Sans',sans-serif;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:none;border:none;cursor:pointer;padding:0}
+  .custom-input{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--surface);border:1px solid var(--accent);border-radius:8px;padding:9px 11px}
+  .custom-input:focus{outline:none}
   .custom-input::placeholder{color:var(--muted)}
 
   /* Night summary card (links down to the Dinner section, same page) */
@@ -353,6 +356,9 @@ function persist() {
 function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 function escapeAttr(s) { return String(s || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;"); }
+function escapeHtml(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+let openCustom = {};
 
 function describeDinner(d) {
   if (!d) return null;
@@ -562,12 +568,21 @@ function render() {
           <button type="button" data-state="home"${st === "home" ? ' class="on"' : ""}>At home</button>
           <button type="button" data-state="skip"${st === "skip" ? ' class="on"' : ""}>Skip</button>
         </div>
-        <div class="slot-body">${body}<div class="custom-note">
-          <label>Type your own (optional)</label>
-          <input type="text" class="custom-input" data-slot="${slot.id}" value="${escapeAttr(day.custom[slot.id])}" placeholder="e.g. Leftover lasagna from Sunday">
-        </div></div>
+        <div class="slot-body">${body}<div class="custom-note">${
+          openCustom[slot.id]
+            ? `<input type="text" class="custom-input" data-slot="${slot.id}" value="${escapeAttr(day.custom[slot.id])}" placeholder="e.g. Leftover lasagna from Sunday">`
+            : day.custom[slot.id]
+              ? `<div class="custom-display"><span>${escapeHtml(day.custom[slot.id])}</span><button type="button" class="custom-edit-btn" data-edit-slot="${slot.id}">Edit</button></div>`
+              : `<button type="button" class="custom-edit-btn" data-edit-slot="${slot.id}">+ Add your own meal</button>`
+        }</div></div>
       </div>`;
   }).join("");
+  SLOTS.forEach(s => {
+    if (openCustom[s.id]) {
+      const inp = slotsEl.querySelector(`.custom-input[data-slot="${s.id}"]`);
+      if (inp) { inp.focus(); const v = inp.value; inp.setSelectionRange(v.length, v.length); }
+    }
+  });
   renderWeekGrid();
   renderDinner();
   renderSummary();
@@ -588,6 +603,7 @@ weekGridEl.addEventListener("click", (e) => {
   const dayHead = e.target.closest(".grid-day-head");
   if (dayHead) {
     state.selectedDay = dayHead.getAttribute("data-day");
+    openCustom = {};
     render();
     return;
   }
@@ -597,6 +613,7 @@ weekGridEl.addEventListener("click", (e) => {
     const slotId = cell.getAttribute("data-slot");
     if (slotId === "dinner") {
       state.selectedDay = dayId;
+      openCustom = {};
       render();
       return;
     }
@@ -607,6 +624,12 @@ weekGridEl.addEventListener("click", (e) => {
 });
 
 slotsEl.addEventListener("click", (e) => {
+  const editBtn = e.target.closest(".custom-edit-btn");
+  if (editBtn) {
+    openCustom[editBtn.getAttribute("data-edit-slot")] = true;
+    render();
+    return;
+  }
   const stateBtn = e.target.closest(".seg button");
   if (stateBtn) {
     const slotId = stateBtn.parentElement.getAttribute("data-slot");
@@ -629,6 +652,14 @@ slotsEl.addEventListener("input", (e) => {
   if (inp) {
     currentDay().custom[inp.getAttribute("data-slot")] = inp.value;
     persist();
+  }
+});
+
+slotsEl.addEventListener("focusout", (e) => {
+  const inp = e.target.closest(".custom-input");
+  if (inp) {
+    openCustom[inp.getAttribute("data-slot")] = false;
+    render();
   }
 });
 
@@ -679,6 +710,7 @@ dinnerSectionEl.addEventListener("click", (e) => {
 
 document.getElementById("resetBtn").addEventListener("click", () => {
   state.days[state.selectedDay] = freshDay();
+  openCustom = {};
   render();
 });
 
