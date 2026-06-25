@@ -28,6 +28,10 @@
   .cal-day h4{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin:0 0 10px;color:var(--text)}
   .cal-row{font-size:12px;line-height:1.6;color:var(--muted);margin-bottom:10px}
   .cal-row b{color:var(--soft);font-weight:600;display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+  .custom-mode{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+  .custom-mode button{font-family:'DM Sans',sans-serif;font-size:10px;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:4px 8px;border-radius:12px;cursor:pointer;transition:all .15s}
+  .custom-mode button:hover{border-color:var(--border-hover)}
+  .custom-mode button.on{color:var(--accent);border-color:rgba(200,146,42,.4);background:rgba(200,146,42,.08)}
   .custom-edit-btn{margin-top:5px;width:100%;text-align:left;font-family:'DM Sans',sans-serif;font-size:11.5px;color:var(--accent);background:none;border:1px dashed var(--border);border-radius:7px;padding:6px 9px;cursor:pointer;transition:border-color .15s}
   .custom-edit-btn:hover{border-color:var(--accent)}
   .custom-display{margin-top:5px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 9px;font-size:12px;color:var(--text)}
@@ -35,6 +39,7 @@
   .custom-input{width:100%;margin-top:5px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);background:var(--surface);border:1px solid var(--accent);border-radius:7px;padding:7px 9px}
   .custom-input:focus{outline:none}
   .custom-input::placeholder{color:var(--muted)}
+  .list-select{width:100%;margin-top:5px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 9px}
 
   .empty-note{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 22px;text-align:center;color:var(--soft);font-size:13.5px;line-height:1.7;margin-bottom:18px}
   .empty-note a{color:var(--accent)}
@@ -99,7 +104,14 @@ function escapeHtml(s) { return String(s || "").replace(/&/g, "&amp;").replace(/
 function customKey(dayId, slotId) { return dayId + "|" + slotId; }
 
 function freshDinner() { return { type:null, protein:null, carb:null, veg:[], sauce:null, name:null }; }
-function freshDay() { return { states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner(), custom:{ morning:"", afternoon:"", night:"" } }; }
+function freshDay() {
+  return {
+    states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner(),
+    custom:{ morning:"", afternoon:"", night:"" },
+    customMode:{ morning:"generated", afternoon:"generated", night:"generated" },
+    customPick:{ morning:"", afternoon:"", night:"" },
+  };
+}
 
 function describeDinner(d) {
   if (!d) return null;
@@ -131,6 +143,7 @@ function calendarSlotText(day, slot) {
 }
 
 let selectedDayForSave = todayId;
+let foodLists = { morning:[], afternoon:[], night:[] };
 
 function loadDays() {
   const days = {};
@@ -146,8 +159,15 @@ function loadDays() {
             states: Object.assign(freshDay().states, sd.states),
             dinner: Object.assign(freshDinner(), sd.dinner || {}),
             custom: Object.assign(freshDay().custom, sd.custom || {}),
+            customMode: Object.assign(freshDay().customMode, sd.customMode || {}),
+            customPick: Object.assign(freshDay().customPick, sd.customPick || {}),
           });
         }
+      }
+    }
+    if (saved && saved.foodLists && typeof saved.foodLists === "object") {
+      for (const slot of SLOTS.map(s => s.id)) {
+        if (Array.isArray(saved.foodLists[slot])) foodLists[slot] = saved.foodLists[slot];
       }
     }
   } catch (e) { /* ignore */ }
@@ -155,7 +175,7 @@ function loadDays() {
 }
 
 function persist() {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify({ selectedDay: selectedDayForSave, days })); } catch (e) { /* ignore */ }
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({ selectedDay: selectedDayForSave, days, foodLists })); } catch (e) { /* ignore */ }
 }
 
 const root = document.getElementById("calendarRoot");
@@ -173,6 +193,7 @@ function updateHint() {
 }
 
 let openCustom = {};
+let openListAdd = {};
 
 function renderGrid() {
   const html = `<div class="week-calendar">${DAYS.map(d => {
@@ -180,14 +201,35 @@ function renderGrid() {
     const rows = SLOTS.map(slot => {
       const key = customKey(d.id, slot.id);
       const isHidden = (day.states[slot.id] || "work") === "skip";
-      const hasCustom = !!(day.custom[slot.id] && day.custom[slot.id].trim());
-      const customHtml = isHidden ? "" : openCustom[key]
-        ? `<input type="text" class="custom-input" data-day="${d.id}" data-slot="${slot.id}" value="${escapeAttr(day.custom[slot.id])}" placeholder="Type your own...">`
-        : hasCustom
-          ? `<div class="custom-display"><span>${escapeHtml(day.custom[slot.id])}</span><button type="button" class="custom-edit-btn" data-edit-day="${d.id}" data-edit-slot="${slot.id}">Edit</button></div>`
-          : `<button type="button" class="custom-edit-btn" data-edit-day="${d.id}" data-edit-slot="${slot.id}">+ Add your own</button>`;
+      const mode = day.customMode[slot.id] || "generated";
+      const hasCustom = (mode === "type" && !!(day.custom[slot.id] && day.custom[slot.id].trim()))
+        || (mode === "list" && !!day.customPick[slot.id]);
+      const modeHtml = isHidden ? "" : `
+        <div class="custom-mode" data-day="${d.id}" data-slot="${slot.id}">
+          <button type="button" data-mode="generated"${mode === "generated" ? ' class="on"' : ""}>Generated</button>
+          <button type="button" data-mode="list"${mode === "list" ? ' class="on"' : ""}>From my list</button>
+          <button type="button" data-mode="type"${mode === "type" ? ' class="on"' : ""}>Type my own</button>
+        </div>`;
+      let customHtml = "";
+      if (!isHidden && mode === "type") {
+        customHtml = openCustom[key]
+          ? `<input type="text" class="custom-input" data-day="${d.id}" data-slot="${slot.id}" value="${escapeAttr(day.custom[slot.id])}" placeholder="Type your own...">`
+          : day.custom[slot.id]
+            ? `<div class="custom-display"><span>${escapeHtml(day.custom[slot.id])}</span><button type="button" class="custom-edit-btn" data-edit-day="${d.id}" data-edit-slot="${slot.id}">Edit</button></div>`
+            : `<button type="button" class="custom-edit-btn" data-edit-day="${d.id}" data-edit-slot="${slot.id}">+ Add your own</button>`;
+      } else if (!isHidden && mode === "list") {
+        const foods = foodLists[slot.id] || [];
+        customHtml = `
+          <select class="list-select" data-day="${d.id}" data-slot="${slot.id}">
+            <option value="">— choose from my list —</option>
+            ${foods.map(f => `<option value="${escapeAttr(f)}"${day.customPick[slot.id] === f ? " selected" : ""}>${escapeHtml(f)}</option>`).join("")}
+          </select>
+          ${openListAdd[key]
+            ? `<input type="text" class="custom-input" data-add-day="${d.id}" data-add-slot="${slot.id}" placeholder="Add a new food to your list">`
+            : `<button type="button" class="custom-edit-btn" data-add-day-btn="${d.id}" data-add-slot-btn="${slot.id}">+ Add new food to my list</button>`}`;
+      }
       const slotText = isHidden ? "" : hasCustom ? "" : calendarSlotText(day, slot);
-      return `<div class="cal-row"><b>${slot.icon} ${slot.label}</b>${slotText}${customHtml}</div>`;
+      return `<div class="cal-row"><b>${slot.icon} ${slot.label}</b>${slotText}${modeHtml}${customHtml}</div>`;
     }).join("");
     return `<div class="cal-day${d.id === todayId ? " is-today" : ""}"><h4>${d.label}</h4>${rows}</div>`;
   }).join("")}</div>`;
@@ -198,6 +240,12 @@ function renderGrid() {
     const inp = document.querySelector(`.custom-input[data-day="${dayId}"][data-slot="${slotId}"]`);
     if (inp) { inp.focus(); const v = inp.value; inp.setSelectionRange(v.length, v.length); }
   }
+  for (const key in openListAdd) {
+    if (!openListAdd[key]) continue;
+    const [dayId, slotId] = key.split("|");
+    const inp = document.querySelector(`.custom-input[data-add-day="${dayId}"][data-add-slot="${slotId}"]`);
+    if (inp) { inp.focus(); const v = inp.value; inp.setSelectionRange(v.length, v.length); }
+  }
 }
 
 root.innerHTML = `<div id="planHint"></div><div id="calGrid"></div>`;
@@ -205,6 +253,20 @@ renderGrid();
 updateHint();
 
 root.addEventListener("click", (e) => {
+  const modeBtn = e.target.closest(".custom-mode button");
+  if (modeBtn) {
+    const wrap = modeBtn.parentElement;
+    days[wrap.getAttribute("data-day")].customMode[wrap.getAttribute("data-slot")] = modeBtn.getAttribute("data-mode");
+    persist();
+    renderGrid();
+    return;
+  }
+  const addBtn = e.target.closest("[data-add-slot-btn]");
+  if (addBtn) {
+    openListAdd[customKey(addBtn.getAttribute("data-add-day-btn"), addBtn.getAttribute("data-add-slot-btn"))] = true;
+    renderGrid();
+    return;
+  }
   const editBtn = e.target.closest(".custom-edit-btn");
   if (editBtn) {
     openCustom[customKey(editBtn.getAttribute("data-edit-day"), editBtn.getAttribute("data-edit-slot"))] = true;
@@ -212,8 +274,18 @@ root.addEventListener("click", (e) => {
   }
 });
 
+root.addEventListener("change", (e) => {
+  const sel = e.target.closest(".list-select");
+  if (sel) {
+    days[sel.getAttribute("data-day")].customPick[sel.getAttribute("data-slot")] = sel.value;
+    persist();
+    renderGrid();
+    updateHint();
+  }
+});
+
 root.addEventListener("input", (e) => {
-  const inp = e.target.closest(".custom-input");
+  const inp = e.target.closest(".custom-input[data-slot]");
   if (inp) {
     days[inp.getAttribute("data-day")].custom[inp.getAttribute("data-slot")] = inp.value;
     persist();
@@ -222,10 +294,26 @@ root.addEventListener("input", (e) => {
 });
 
 root.addEventListener("focusout", (e) => {
-  const inp = e.target.closest(".custom-input");
+  const inp = e.target.closest(".custom-input[data-slot]");
   if (inp) {
     openCustom[customKey(inp.getAttribute("data-day"), inp.getAttribute("data-slot"))] = false;
     renderGrid();
+    return;
+  }
+  const addInp = e.target.closest(".custom-input[data-add-slot]");
+  if (addInp) {
+    const dayId = addInp.getAttribute("data-add-day");
+    const slotId = addInp.getAttribute("data-add-slot");
+    const val = addInp.value.trim();
+    if (val) {
+      foodLists[slotId] = foodLists[slotId] || [];
+      if (!foodLists[slotId].includes(val)) foodLists[slotId].push(val);
+      days[dayId].customPick[slotId] = val;
+    }
+    openListAdd[customKey(dayId, slotId)] = false;
+    persist();
+    renderGrid();
+    updateHint();
   }
 });
 </script>
