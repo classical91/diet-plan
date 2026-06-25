@@ -121,6 +121,11 @@
   .meal-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
   .mchip{font-size:9.5px;padding:2px 8px;border-radius:12px;border:1px solid var(--border);color:var(--muted)}
   .dinner-ai-result{margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 13px;font-size:12.5px;color:var(--soft);line-height:1.6;white-space:pre-wrap}
+  .week-calendar{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:18px}
+  .cal-day{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 13px}
+  .cal-day h4{margin:0 0 8px;font-size:13px;color:var(--soft)}
+  .cal-row{font-size:11.5px;line-height:1.55;color:var(--muted);margin-bottom:6px}
+  .cal-row b{color:var(--soft);font-weight:600}
 
   /* AI panel */
   .ai-panel{margin-top:24px;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
@@ -169,9 +174,12 @@
     <div class="summary" id="summary"></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn" id="planWeekBtn" type="button">Plan my week</button>
+      <button class="btn" id="calendarToggleBtn" type="button">Show week's meals</button>
       <button class="btn" id="resetBtn" type="button">Reset day</button>
     </div>
   </div>
+
+  <div class="week-calendar" id="weekCalendar" style="display:none"></div>
 
   <div class="slots" id="slots"></div>
 
@@ -323,6 +331,7 @@ try {
 } catch (e) { /* ignore */ }
 
 const weekGridEl = document.getElementById("weekGrid");
+const weekCalendarEl = document.getElementById("weekCalendar");
 const slotsEl = document.getElementById("slots");
 const summaryEl = document.getElementById("summary");
 const dinnerSectionEl = document.getElementById("dinnerSection");
@@ -509,6 +518,32 @@ function renderWeekGrid() {
   weekGridEl.innerHTML = `<div class="grid-row"><div class="grid-row-label"></div>${headerCells}</div>${slotRows}${dinnerRow}`;
 }
 
+function checkedFoodsFor(day, slotId) {
+  const foods = WORK_FOODS.filter(f => f.slots.includes(slotId)).map(f => f.name);
+  const aiList = (day.ai && day.ai[slotId]) || [];
+  return [...foods, ...aiList].filter(name => day.checked[slotId + "|" + slugify(name)]);
+}
+
+function calendarSlotText(day, slot) {
+  const st = day.states[slot.id] || "work";
+  if (st === "skip") return "Skipping";
+  if (st === "home" && slot.id === "night") {
+    const summary = describeDinner(day.dinner);
+    return summary ? summary.main + (summary.sub ? " — " + summary.sub : "") : "Nothing planned yet";
+  }
+  if (st === "home") return "Eating at home";
+  const picked = checkedFoodsFor(day, slot.id);
+  return picked.length ? picked.join(", ") : "Not chosen yet";
+}
+
+function renderWeekCalendar() {
+  weekCalendarEl.innerHTML = DAYS.map(d => {
+    const day = state.days[d.id];
+    const rows = SLOTS.map(slot => `<div class="cal-row"><b>${slot.icon} ${slot.label}:</b> ${calendarSlotText(day, slot)}</div>`).join("");
+    return `<div class="cal-day"><h4>${d.label}</h4>${rows}</div>`;
+  }).join("");
+}
+
 function render() {
   const day = currentDay();
 
@@ -558,6 +593,7 @@ function render() {
   }).join("");
   renderWeekGrid();
   renderDinner();
+  renderWeekCalendar();
   renderSummary();
   persist();
 }
@@ -608,6 +644,7 @@ slotsEl.addEventListener("click", (e) => {
     const day = currentDay();
     day.checked[id] = !day.checked[id];
     item.classList.toggle("checked", day.checked[id]);
+    renderWeekCalendar();
     persist();
   }
 });
@@ -672,6 +709,13 @@ document.getElementById("resetBtn").addEventListener("click", () => {
 });
 
 document.getElementById("planWeekBtn").addEventListener("click", planWeek);
+
+const calendarToggleBtn = document.getElementById("calendarToggleBtn");
+calendarToggleBtn.addEventListener("click", () => {
+  const showing = weekCalendarEl.style.display !== "none";
+  weekCalendarEl.style.display = showing ? "none" : "grid";
+  calendarToggleBtn.textContent = showing ? "Show week's meals" : "Hide week's meals";
+});
 
 // ---- Optional AI generation (browser → Anthropic Messages API with the user's key) ----
 const aiPanel = document.getElementById("aiPanel");
