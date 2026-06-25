@@ -39,10 +39,6 @@
   .grid-cell.night.work{color:var(--purple);border-color:rgba(155,125,232,.4);background:rgba(155,125,232,.08)}
   .grid-cell.home{color:var(--green);border-color:rgba(143,190,107,.4);background:rgba(143,190,107,.08)}
   .grid-cell.skip{color:var(--muted);opacity:.55}
-  .grid-cell.dinner.set{color:var(--purple);border-color:rgba(155,125,232,.4);background:rgba(155,125,232,.08)}
-  .grid-cell.dinner.out{color:var(--green);border-color:rgba(143,190,107,.4);background:rgba(143,190,107,.08)}
-  .grid-cell.dinner.full{color:var(--blue);border-color:rgba(91,155,213,.4);background:rgba(91,155,213,.08)}
-  .grid-cell.dinner.empty{color:var(--muted);opacity:.7}
 
   .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
   .summary{font-size:13px;color:var(--soft);line-height:1.5}
@@ -168,10 +164,10 @@
 
 <main class="container">
   <div class="note-box">
-    <p class="note"><strong>How it works.</strong> Tap any cell in the weekly grid to cycle that slot through <strong>at work → at home → skip</strong> — every day is editable right there. Tap a day's <strong>Dinner</strong> cell to jump to that day's dinner builder below. Click a day's name to open its full plan, checklist, and dinner for that day. General guidance, not medical or specific dietary advice.</p>
+    <p class="note"><strong>How it works.</strong> Tap any cell in the weekly grid to cycle that slot through <strong>at work → at home → skip</strong> — every day is editable right there. Click a day's name to open its full plan, checklist, and dinner for that day. General guidance, not medical or specific dietary advice.</p>
   </div>
 
-  <div class="week-label">This week — tap a cell to cycle Work / Home / Skip, or tap Dinner to open that day</div>
+  <div class="week-label">This week — tap a cell to cycle Work / Home / Skip</div>
   <div class="week-grid-wrap"><div class="week-grid" id="weekGrid"></div></div>
 
   <div class="toolbar">
@@ -511,17 +507,7 @@ function renderWeekGrid() {
     }).join("");
     return `<div class="grid-row"><div class="grid-row-label">${slot.icon} ${slot.label}</div>${cells}</div>`;
   }).join("");
-  const dinnerCells = DAYS.map(d => {
-    const dd = state.days[d.id].dinner;
-    let cls, label;
-    if (dd.type === "out") { cls = "out"; label = "Order out"; }
-    else if (dd.type === "full") { cls = "full"; label = "Already full"; }
-    else if (dd.protein || dd.name) { cls = "set"; label = dd.name || cap(dd.protein); }
-    else { cls = "empty"; label = "Plan"; }
-    return `<button type="button" class="grid-cell dinner ${cls}" data-day="${d.id}" data-slot="dinner">${label}</button>`;
-  }).join("");
-  const dinnerRow = `<div class="grid-row"><div class="grid-row-label">🍽️ Dinner</div>${dinnerCells}</div>`;
-  weekGridEl.innerHTML = `<div class="grid-row"><div class="grid-row-label"></div>${headerCells}</div>${slotRows}${dinnerRow}`;
+  weekGridEl.innerHTML = `<div class="grid-row"><div class="grid-row-label"></div>${headerCells}</div>${slotRows}`;
 }
 
 function render() {
@@ -529,8 +515,11 @@ function render() {
 
   slotsEl.innerHTML = SLOTS.map((slot, i) => {
     const st = day.states[slot.id] || "work";
+    const hasCustom = !!(day.custom[slot.id] && day.custom[slot.id].trim());
     let body = "";
-    if (st === "work") {
+    if (hasCustom) {
+      // custom note replaces the generated/picked content below
+    } else if (st === "work") {
       const foods = WORK_FOODS.filter(f => f.slots.includes(slot.id));
       const aiList = (day.ai && day.ai[slot.id]) || [];
       body = `
@@ -611,12 +600,6 @@ weekGridEl.addEventListener("click", (e) => {
   if (cell) {
     const dayId = cell.getAttribute("data-day");
     const slotId = cell.getAttribute("data-slot");
-    if (slotId === "dinner") {
-      state.selectedDay = dayId;
-      openCustom = {};
-      render();
-      return;
-    }
     const day = state.days[dayId];
     day.states[slotId] = nextState(day.states[slotId] || "work");
     render();
