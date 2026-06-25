@@ -25,7 +25,9 @@
   .week-calendar{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
   .cal-day{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
   .cal-day.is-today{border-color:var(--accent)}
-  .cal-day h4{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin:0 0 10px;color:var(--text)}
+  .cal-day h4{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin:0 0 10px;color:var(--text);display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .cal-edit{font-family:'DM Sans',sans-serif;font-weight:500;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);text-decoration:none}
+  .cal-edit:hover{text-decoration:underline}
   .cal-row{font-size:12px;line-height:1.6;color:var(--muted);margin-bottom:8px}
   .cal-row b{color:var(--soft);font-weight:600;display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
 
@@ -153,7 +155,7 @@ if (!hasAnyPlan) {
   root.innerHTML = `<div class="week-calendar">${DAYS.map(d => {
     const day = days[d.id];
     const rows = SLOTS.map(slot => `<div class="cal-row"><b>${slot.icon} ${slot.label}</b>${calendarSlotText(day, slot)}</div>`).join("");
-    return `<div class="cal-day${d.id === todayId ? " is-today" : ""}"><h4>${d.label}</h4>${rows}</div>`;
+    return `<div class="cal-day${d.id === todayId ? " is-today" : ""}"><h4>${d.label}<a class="cal-edit" href="/work-meals?day=${d.id}">Edit</a></h4>${rows}</div>`;
   }).join("")}</div>`;
 }
 </script>
