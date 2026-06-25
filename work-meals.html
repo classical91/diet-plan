@@ -158,16 +158,16 @@
 <header>
   <div class="sub-label">Weekly Planner</div>
   <h1>Daily Meal <em>Planner</em></h1>
-  <p class="lead">Plan your whole week. For each day, set Morning, Afternoon, and Night to <strong>at work</strong>, <strong>at home</strong>, or <strong>skip</strong> — the plan focuses on your work meals and adjusts when you eat earlier or skip. Build tonight's dinner — protein, carb or legume, vegetables, and sauce — right here in the same weekly view. Your choices are saved on this device.</p>
+  <p class="lead">Plan your whole week. For each day, set Morning, Afternoon, and Night to <strong>at work</strong>, <strong>at home</strong>, or <strong>hide</strong> — the plan focuses on your work meals and adjusts when you eat earlier or hide a meal. Build tonight's dinner — protein, carb or legume, vegetables, and sauce — right here in the same weekly view. Your choices are saved on this device.</p>
   <div class="header-line"></div>
 </header>
 
 <main class="container">
   <div class="note-box">
-    <p class="note"><strong>How it works.</strong> Tap any cell in the weekly grid to cycle that slot through <strong>at work → at home → skip</strong> — every day is editable right there. Click a day's name to open its full plan, checklist, and dinner for that day. General guidance, not medical or specific dietary advice.</p>
+    <p class="note"><strong>How it works.</strong> Tap any cell in the weekly grid to cycle that slot through <strong>at work → at home → hide</strong> — every day is editable right there. Click a day's name to open its full plan, checklist, and dinner for that day. General guidance, not medical or specific dietary advice.</p>
   </div>
 
-  <div class="week-label">This week — tap a cell to cycle Work / Home / Skip</div>
+  <div class="week-label">This week — tap a cell to cycle Work / Home / Hide</div>
   <div class="week-grid-wrap"><div class="week-grid" id="weekGrid"></div></div>
 
   <div class="toolbar">
@@ -342,7 +342,7 @@ const mealsGridEl = document.getElementById("mealsGrid");
 
 function currentDay() { return state.days[state.selectedDay]; }
 
-function stateLabel(st) { return st === "work" ? "Work" : st === "home" ? "Home" : "Skip"; }
+function stateLabel(st) { return st === "work" ? "Work" : st === "home" ? "Home" : "Hide"; }
 function nextState(st) { return st === "work" ? "home" : st === "home" ? "skip" : "work"; }
 
 function persist() {
@@ -515,10 +515,11 @@ function render() {
 
   slotsEl.innerHTML = SLOTS.map((slot, i) => {
     const st = day.states[slot.id] || "work";
+    const isHidden = st === "skip";
     const hasCustom = !!(day.custom[slot.id] && day.custom[slot.id].trim());
     let body = "";
-    if (hasCustom) {
-      // custom note replaces the generated/picked content below
+    if (isHidden || hasCustom) {
+      // hidden slots and custom notes replace the generated/picked content below
     } else if (st === "work") {
       const foods = WORK_FOODS.filter(f => f.slots.includes(slot.id));
       const aiList = (day.ai && day.ai[slot.id]) || [];
@@ -542,9 +543,14 @@ function render() {
            </div>`;
     } else if (st === "home") {
       body = `<div class="muted-state">Eating this at home — nothing to pack for work.</div>`;
-    } else {
-      body = `<div class="muted-state">Skipping this meal — your next work meal carries a bit more (see its focus).</div>`;
     }
+    const customNote = isHidden ? "" : `<div class="custom-note">${
+      openCustom[slot.id]
+        ? `<input type="text" class="custom-input" data-slot="${slot.id}" value="${escapeAttr(day.custom[slot.id])}" placeholder="e.g. Leftover lasagna from Sunday">`
+        : day.custom[slot.id]
+          ? `<div class="custom-display"><span>${escapeHtml(day.custom[slot.id])}</span><button type="button" class="custom-edit-btn" data-edit-slot="${slot.id}">Edit</button></div>`
+          : `<button type="button" class="custom-edit-btn" data-edit-slot="${slot.id}">+ Add your own meal</button>`
+    }</div>`;
     return `
       <div class="slot ${slot.id}">
         <div class="slot-top"></div>
@@ -555,15 +561,9 @@ function render() {
         <div class="seg" data-slot="${slot.id}">
           <button type="button" data-state="work"${st === "work" ? ' class="on"' : ""}>At work</button>
           <button type="button" data-state="home"${st === "home" ? ' class="on"' : ""}>At home</button>
-          <button type="button" data-state="skip"${st === "skip" ? ' class="on"' : ""}>Skip</button>
+          <button type="button" data-state="skip"${st === "skip" ? ' class="on"' : ""}>Hide</button>
         </div>
-        <div class="slot-body">${body}<div class="custom-note">${
-          openCustom[slot.id]
-            ? `<input type="text" class="custom-input" data-slot="${slot.id}" value="${escapeAttr(day.custom[slot.id])}" placeholder="e.g. Leftover lasagna from Sunday">`
-            : day.custom[slot.id]
-              ? `<div class="custom-display"><span>${escapeHtml(day.custom[slot.id])}</span><button type="button" class="custom-edit-btn" data-edit-slot="${slot.id}">Edit</button></div>`
-              : `<button type="button" class="custom-edit-btn" data-edit-slot="${slot.id}">+ Add your own meal</button>`
-        }</div></div>
+        <div class="slot-body">${body}${customNote}</div>
       </div>`;
   }).join("");
   SLOTS.forEach(s => {
@@ -583,7 +583,7 @@ function renderSummary() {
   const workCount = ORDER.filter(id => day.states[id] === "work").length;
   const label = DAYS.find(d => d.id === state.selectedDay).label;
   summaryEl.innerHTML = workCount === 0
-    ? `No work meals planned for <strong>${label}</strong> — eating at home or skipping.`
+    ? `No work meals planned for <strong>${label}</strong> — eating at home or hidden.`
     : `Planning <strong>${workCount}</strong> work meal${workCount === 1 ? "" : "s"} on <strong>${label}</strong>. Tick items as you pack or eat them.`;
 }
 
