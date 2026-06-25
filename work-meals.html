@@ -85,7 +85,11 @@
   .muted-state{font-size:13px;color:var(--muted);line-height:1.6;padding:6px 2px 12px;font-style:italic}
   .ai-tag{display:inline-block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(91,155,213,.3);border-radius:10px;padding:1px 7px;margin-left:8px;vertical-align:middle}
 
-  .custom-note{margin-top:14px}
+  .custom-mode{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+  .custom-mode button{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:5px 10px;border-radius:14px;cursor:pointer;transition:all .15s}
+  .custom-mode button:hover{border-color:var(--border-hover)}
+  .custom-mode button.on{color:var(--accent);border-color:rgba(200,146,42,.4);background:rgba(200,146,42,.08)}
+  .custom-note{margin-top:8px}
   .custom-edit-btn{width:100%;text-align:left;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--accent);background:none;border:1px dashed var(--border);border-radius:8px;padding:9px 11px;cursor:pointer;transition:border-color .15s}
   .custom-edit-btn:hover{border-color:var(--accent)}
   .custom-display{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:13px;color:var(--text)}
@@ -93,6 +97,7 @@
   .custom-input{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--surface);border:1px solid var(--accent);border-radius:8px;padding:9px 11px}
   .custom-input:focus{outline:none}
   .custom-input::placeholder{color:var(--muted)}
+  .list-select{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 11px;margin-bottom:8px}
 
   /* Night summary card (links down to the Dinner section, same page) */
   .dinner-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 13px}
@@ -308,9 +313,16 @@ const KEY_KEY = "work-meals:anthropic-key";
 const ORDER = SLOTS.map(s => s.id);
 
 function freshDinner() { return { type:null, protein:null, carb:null, veg:[], sauce:null, name:null }; }
-function freshDay() { return { states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner(), custom:{ morning:"", afternoon:"", night:"" } }; }
+function freshDay() {
+  return {
+    states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner(),
+    custom:{ morning:"", afternoon:"", night:"" },
+    customMode:{ morning:"generated", afternoon:"generated", night:"generated" },
+    customPick:{ morning:"", afternoon:"", night:"" },
+  };
+}
 
-let state = { selectedDay: todayId, days: {} };
+let state = { selectedDay: todayId, days: {}, foodLists: { morning:[], afternoon:[], night:[] } };
 for (const d of DAYS) state.days[d.id] = freshDay();
 try {
   const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
@@ -322,8 +334,15 @@ try {
           states: Object.assign(freshDay().states, sd.states),
           dinner: Object.assign(freshDinner(), sd.dinner || {}),
           custom: Object.assign(freshDay().custom, sd.custom || {}),
+          customMode: Object.assign(freshDay().customMode, sd.customMode || {}),
+          customPick: Object.assign(freshDay().customPick, sd.customPick || {}),
         });
       }
+    }
+  }
+  if (saved && saved.foodLists && typeof saved.foodLists === "object") {
+    for (const slot of SLOTS.map(s => s.id)) {
+      if (Array.isArray(saved.foodLists[slot])) state.foodLists[slot] = saved.foodLists[slot];
     }
   }
   if (saved && DAYS.some(d => d.id === saved.selectedDay)) state.selectedDay = saved.selectedDay;
@@ -355,6 +374,7 @@ function escapeAttr(s) { return String(s || "").replace(/&/g, "&amp;").replace(/
 function escapeHtml(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
 let openCustom = {};
+let openListAdd = {};
 
 function describeDinner(d) {
   if (!d) return null;
@@ -516,10 +536,12 @@ function render() {
   slotsEl.innerHTML = SLOTS.map((slot, i) => {
     const st = day.states[slot.id] || "work";
     const isHidden = st === "skip";
-    const hasCustom = !!(day.custom[slot.id] && day.custom[slot.id].trim());
+    const mode = day.customMode[slot.id] || "generated";
+    const hasCustom = (mode === "type" && !!(day.custom[slot.id] && day.custom[slot.id].trim()))
+      || (mode === "list" && !!day.customPick[slot.id]);
     let body = "";
     if (isHidden || hasCustom) {
-      // hidden slots and custom notes replace the generated/picked content below
+      // hidden slots and chosen custom content replace the generated/picked content below
     } else if (st === "work") {
       const foods = WORK_FOODS.filter(f => f.slots.includes(slot.id));
       const aiList = (day.ai && day.ai[slot.id]) || [];
@@ -544,13 +566,33 @@ function render() {
     } else if (st === "home") {
       body = `<div class="muted-state">Eating this at home — nothing to pack for work.</div>`;
     }
-    const customNote = isHidden ? "" : `<div class="custom-note">${
-      openCustom[slot.id]
-        ? `<input type="text" class="custom-input" data-slot="${slot.id}" value="${escapeAttr(day.custom[slot.id])}" placeholder="e.g. Leftover lasagna from Sunday">`
-        : day.custom[slot.id]
-          ? `<div class="custom-display"><span>${escapeHtml(day.custom[slot.id])}</span><button type="button" class="custom-edit-btn" data-edit-slot="${slot.id}">Edit</button></div>`
-          : `<button type="button" class="custom-edit-btn" data-edit-slot="${slot.id}">+ Add your own meal</button>`
-    }</div>`;
+    const modeButtons = isHidden ? "" : `
+      <div class="custom-mode" data-slot="${slot.id}">
+        <button type="button" data-mode="generated"${mode === "generated" ? ' class="on"' : ""}>Generated</button>
+        <button type="button" data-mode="list"${mode === "list" ? ' class="on"' : ""}>From my list</button>
+        <button type="button" data-mode="type"${mode === "type" ? ' class="on"' : ""}>Type my own</button>
+      </div>`;
+    let customNote = "";
+    if (!isHidden && mode === "type") {
+      customNote = `<div class="custom-note">${
+        openCustom[slot.id]
+          ? `<input type="text" class="custom-input" data-slot="${slot.id}" value="${escapeAttr(day.custom[slot.id])}" placeholder="e.g. Leftover lasagna from Sunday">`
+          : day.custom[slot.id]
+            ? `<div class="custom-display"><span>${escapeHtml(day.custom[slot.id])}</span><button type="button" class="custom-edit-btn" data-edit-slot="${slot.id}">Edit</button></div>`
+            : `<button type="button" class="custom-edit-btn" data-edit-slot="${slot.id}">+ Add your own meal</button>`
+      }</div>`;
+    } else if (!isHidden && mode === "list") {
+      const foods = state.foodLists[slot.id] || [];
+      customNote = `<div class="custom-note">
+        <select class="list-select" data-slot="${slot.id}">
+          <option value="">— choose from my list —</option>
+          ${foods.map(f => `<option value="${escapeAttr(f)}"${day.customPick[slot.id] === f ? " selected" : ""}>${escapeHtml(f)}</option>`).join("")}
+        </select>
+        ${openListAdd[slot.id]
+          ? `<input type="text" class="custom-input" data-add-slot="${slot.id}" placeholder="Add a new food to your list">`
+          : `<button type="button" class="custom-edit-btn" data-add-slot-btn="${slot.id}">+ Add new food to my list</button>`}
+      </div>`;
+    }
     return `
       <div class="slot ${slot.id}">
         <div class="slot-top"></div>
@@ -563,12 +605,16 @@ function render() {
           <button type="button" data-state="home"${st === "home" ? ' class="on"' : ""}>At home</button>
           <button type="button" data-state="skip"${st === "skip" ? ' class="on"' : ""}>Hide</button>
         </div>
-        <div class="slot-body">${body}${customNote}</div>
+        <div class="slot-body">${body}${modeButtons}${customNote}</div>
       </div>`;
   }).join("");
   SLOTS.forEach(s => {
     if (openCustom[s.id]) {
       const inp = slotsEl.querySelector(`.custom-input[data-slot="${s.id}"]`);
+      if (inp) { inp.focus(); const v = inp.value; inp.setSelectionRange(v.length, v.length); }
+    }
+    if (openListAdd[s.id]) {
+      const inp = slotsEl.querySelector(`.custom-input[data-add-slot="${s.id}"]`);
       if (inp) { inp.focus(); const v = inp.value; inp.setSelectionRange(v.length, v.length); }
     }
   });
@@ -593,6 +639,7 @@ weekGridEl.addEventListener("click", (e) => {
   if (dayHead) {
     state.selectedDay = dayHead.getAttribute("data-day");
     openCustom = {};
+    openListAdd = {};
     render();
     return;
   }
@@ -607,6 +654,19 @@ weekGridEl.addEventListener("click", (e) => {
 });
 
 slotsEl.addEventListener("click", (e) => {
+  const modeBtn = e.target.closest(".custom-mode button");
+  if (modeBtn) {
+    const slotId = modeBtn.parentElement.getAttribute("data-slot");
+    currentDay().customMode[slotId] = modeBtn.getAttribute("data-mode");
+    render();
+    return;
+  }
+  const addSlotBtn = e.target.closest("[data-add-slot-btn]");
+  if (addSlotBtn) {
+    openListAdd[addSlotBtn.getAttribute("data-add-slot-btn")] = true;
+    render();
+    return;
+  }
   const editBtn = e.target.closest(".custom-edit-btn");
   if (editBtn) {
     openCustom[editBtn.getAttribute("data-edit-slot")] = true;
@@ -631,17 +691,38 @@ slotsEl.addEventListener("click", (e) => {
 });
 
 slotsEl.addEventListener("input", (e) => {
-  const inp = e.target.closest(".custom-input");
+  const inp = e.target.closest(".custom-input[data-slot]");
   if (inp) {
     currentDay().custom[inp.getAttribute("data-slot")] = inp.value;
     persist();
   }
 });
 
+slotsEl.addEventListener("change", (e) => {
+  const sel = e.target.closest(".list-select");
+  if (sel) {
+    currentDay().customPick[sel.getAttribute("data-slot")] = sel.value;
+    render();
+  }
+});
+
 slotsEl.addEventListener("focusout", (e) => {
-  const inp = e.target.closest(".custom-input");
+  const inp = e.target.closest(".custom-input[data-slot]");
   if (inp) {
     openCustom[inp.getAttribute("data-slot")] = false;
+    render();
+    return;
+  }
+  const addInp = e.target.closest(".custom-input[data-add-slot]");
+  if (addInp) {
+    const slotId = addInp.getAttribute("data-add-slot");
+    const val = addInp.value.trim();
+    if (val) {
+      state.foodLists[slotId] = state.foodLists[slotId] || [];
+      if (!state.foodLists[slotId].includes(val)) state.foodLists[slotId].push(val);
+      currentDay().customPick[slotId] = val;
+    }
+    openListAdd[slotId] = false;
     render();
   }
 });
@@ -694,6 +775,7 @@ dinnerSectionEl.addEventListener("click", (e) => {
 document.getElementById("resetBtn").addEventListener("click", () => {
   state.days[state.selectedDay] = freshDay();
   openCustom = {};
+  openListAdd = {};
   render();
 });
 
