@@ -109,6 +109,7 @@
     { path: "/studies", title: "Calming Foods & Herbs Studies" },
     { path: "/glossary", title: "Glossary" },
     { path: "/work-meals", title: "Daily Meal Planner" },
+    { path: "/weekly-calendar", title: "Weekly Meal Calendar" },
     { path: "/foods-dementia-risk", title: "Dementia Risk Foods" },
     { path: "/hydration", title: "Hydration & Water" },
     { path: "/electrolytes-minerals", title: "Electrolytes & Minerals" },

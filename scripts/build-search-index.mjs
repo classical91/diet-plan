@@ -100,6 +100,7 @@ const CONTENT_PAGES = [
   { file: "studies.html", path: "/studies", title: "Calming Foods & Herbs Studies" },
   { file: "glossary.html", path: "/glossary", title: "Glossary" },
   { file: "work-meals.html", path: "/work-meals", title: "Daily Meal Planner" },
+  { file: "weekly-calendar.html", path: "/weekly-calendar", title: "Weekly Meal Calendar" },
   { file: "howto.html", path: "/howto", title: "How-To" },
   { file: "seasonal-rotation.html", path: "/seasonal-rotation", title: "Seasonal Rotation" },
   { file: "elements-in-biology.html", path: "/elements-in-biology", title: "Elements in Biology" },
