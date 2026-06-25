@@ -25,13 +25,15 @@
   .week-calendar{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
   .cal-day{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
   .cal-day.is-today{border-color:var(--accent)}
-  .cal-day h4{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin:0 0 10px;color:var(--text);display:flex;align-items:baseline;justify-content:space-between;gap:8px}
-  .cal-edit{font-family:'DM Sans',sans-serif;font-weight:500;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);text-decoration:none}
-  .cal-edit:hover{text-decoration:underline}
+  .cal-day h4{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin:0 0 10px;color:var(--text)}
   .cal-row{font-size:12px;line-height:1.6;color:var(--muted);margin-bottom:10px}
   .cal-row b{color:var(--soft);font-weight:600;display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
-  .custom-input{width:100%;margin-top:5px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 9px;transition:border-color .15s}
-  .custom-input:focus{outline:none;border-color:var(--accent)}
+  .custom-edit-btn{margin-top:5px;width:100%;text-align:left;font-family:'DM Sans',sans-serif;font-size:11.5px;color:var(--accent);background:none;border:1px dashed var(--border);border-radius:7px;padding:6px 9px;cursor:pointer;transition:border-color .15s}
+  .custom-edit-btn:hover{border-color:var(--accent)}
+  .custom-display{margin-top:5px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 9px;font-size:12px;color:var(--text)}
+  .custom-display button{flex-shrink:0;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:none;border:none;cursor:pointer;padding:0}
+  .custom-input{width:100%;margin-top:5px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);background:var(--surface);border:1px solid var(--accent);border-radius:7px;padding:7px 9px}
+  .custom-input:focus{outline:none}
   .custom-input::placeholder{color:var(--muted)}
 
   .empty-note{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 22px;text-align:center;color:var(--soft);font-size:13.5px;line-height:1.7;margin-bottom:18px}
@@ -93,6 +95,8 @@ const STORE_KEY = "work-meals:v3";
 function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 function escapeAttr(s) { return String(s || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;"); }
+function escapeHtml(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function customKey(dayId, slotId) { return dayId + "|" + slotId; }
 
 function freshDinner() { return { type:null, protein:null, carb:null, veg:[], sauce:null, name:null }; }
 function freshDay() { return { states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner(), custom:{ morning:"", afternoon:"", night:"" } }; }
@@ -168,13 +172,42 @@ function updateHint() {
   document.getElementById("planHint").innerHTML = hasAnyPlan() ? "" : `<div class="empty-note">No meals planned yet. Head to the <a href="/work-meals">Daily Meal Planner</a> to build your dinners and check off your work-meal picks — or just type directly into a day below.</div>`;
 }
 
-const grid = `<div class="week-calendar">${DAYS.map(d => {
-  const day = days[d.id];
-  const rows = SLOTS.map(slot => `<div class="cal-row"><b>${slot.icon} ${slot.label}</b>${calendarSlotText(day, slot)}<input type="text" class="custom-input" data-day="${d.id}" data-slot="${slot.id}" value="${escapeAttr(day.custom[slot.id])}" placeholder="Type your own..."></div>`).join("");
-  return `<div class="cal-day${d.id === todayId ? " is-today" : ""}"><h4>${d.label}<a class="cal-edit" href="/work-meals?day=${d.id}">Edit</a></h4>${rows}</div>`;
-}).join("")}</div>`;
-root.innerHTML = `<div id="planHint"></div>${grid}`;
+let openCustom = {};
+
+function renderGrid() {
+  const html = `<div class="week-calendar">${DAYS.map(d => {
+    const day = days[d.id];
+    const rows = SLOTS.map(slot => {
+      const key = customKey(d.id, slot.id);
+      const customHtml = openCustom[key]
+        ? `<input type="text" class="custom-input" data-day="${d.id}" data-slot="${slot.id}" value="${escapeAttr(day.custom[slot.id])}" placeholder="Type your own...">`
+        : day.custom[slot.id]
+          ? `<div class="custom-display"><span>${escapeHtml(day.custom[slot.id])}</span><button type="button" class="custom-edit-btn" data-edit-day="${d.id}" data-edit-slot="${slot.id}">Edit</button></div>`
+          : `<button type="button" class="custom-edit-btn" data-edit-day="${d.id}" data-edit-slot="${slot.id}">+ Add your own</button>`;
+      return `<div class="cal-row"><b>${slot.icon} ${slot.label}</b>${calendarSlotText(day, slot)}${customHtml}</div>`;
+    }).join("");
+    return `<div class="cal-day${d.id === todayId ? " is-today" : ""}"><h4>${d.label}</h4>${rows}</div>`;
+  }).join("")}</div>`;
+  document.getElementById("calGrid").innerHTML = html;
+  for (const key in openCustom) {
+    if (!openCustom[key]) continue;
+    const [dayId, slotId] = key.split("|");
+    const inp = document.querySelector(`.custom-input[data-day="${dayId}"][data-slot="${slotId}"]`);
+    if (inp) { inp.focus(); const v = inp.value; inp.setSelectionRange(v.length, v.length); }
+  }
+}
+
+root.innerHTML = `<div id="planHint"></div><div id="calGrid"></div>`;
+renderGrid();
 updateHint();
+
+root.addEventListener("click", (e) => {
+  const editBtn = e.target.closest(".custom-edit-btn");
+  if (editBtn) {
+    openCustom[customKey(editBtn.getAttribute("data-edit-day"), editBtn.getAttribute("data-edit-slot"))] = true;
+    renderGrid();
+  }
+});
 
 root.addEventListener("input", (e) => {
   const inp = e.target.closest(".custom-input");
@@ -182,6 +215,14 @@ root.addEventListener("input", (e) => {
     days[inp.getAttribute("data-day")].custom[inp.getAttribute("data-slot")] = inp.value;
     persist();
     updateHint();
+  }
+});
+
+root.addEventListener("focusout", (e) => {
+  const inp = e.target.closest(".custom-input");
+  if (inp) {
+    openCustom[customKey(inp.getAttribute("data-day"), inp.getAttribute("data-slot"))] = false;
+    renderGrid();
   }
 });
 </script>
