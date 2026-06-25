@@ -28,10 +28,13 @@
   .cal-day h4{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin:0 0 10px;color:var(--text);display:flex;align-items:baseline;justify-content:space-between;gap:8px}
   .cal-edit{font-family:'DM Sans',sans-serif;font-weight:500;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);text-decoration:none}
   .cal-edit:hover{text-decoration:underline}
-  .cal-row{font-size:12px;line-height:1.6;color:var(--muted);margin-bottom:8px}
+  .cal-row{font-size:12px;line-height:1.6;color:var(--muted);margin-bottom:10px}
   .cal-row b{color:var(--soft);font-weight:600;display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+  .custom-input{width:100%;margin-top:5px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 9px;transition:border-color .15s}
+  .custom-input:focus{outline:none;border-color:var(--accent)}
+  .custom-input::placeholder{color:var(--muted)}
 
-  .empty-note{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;text-align:center;color:var(--soft);font-size:13.5px;line-height:1.7}
+  .empty-note{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 22px;text-align:center;color:var(--soft);font-size:13.5px;line-height:1.7;margin-bottom:18px}
   .empty-note a{color:var(--accent)}
 </style>
 </head>
@@ -89,9 +92,10 @@ const STORE_KEY = "work-meals:v3";
 
 function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+function escapeAttr(s) { return String(s || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;"); }
 
 function freshDinner() { return { type:null, protein:null, carb:null, veg:[], sauce:null, name:null }; }
-function freshDay() { return { states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner() }; }
+function freshDay() { return { states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner(), custom:{ morning:"", afternoon:"", night:"" } }; }
 
 function describeDinner(d) {
   if (!d) return null;
@@ -122,11 +126,14 @@ function calendarSlotText(day, slot) {
   return picked.length ? picked.join(", ") : "Not chosen yet";
 }
 
+let selectedDayForSave = todayId;
+
 function loadDays() {
   const days = {};
   for (const d of DAYS) days[d.id] = freshDay();
   try {
     const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+    if (saved && DAYS.some(d => d.id === saved.selectedDay)) selectedDayForSave = saved.selectedDay;
     if (saved && saved.days && typeof saved.days === "object") {
       for (const d of DAYS) {
         const sd = saved.days[d.id];
@@ -134,6 +141,7 @@ function loadDays() {
           days[d.id] = Object.assign(freshDay(), sd, {
             states: Object.assign(freshDay().states, sd.states),
             dinner: Object.assign(freshDinner(), sd.dinner || {}),
+            custom: Object.assign(freshDay().custom, sd.custom || {}),
           });
         }
       }
@@ -142,22 +150,40 @@ function loadDays() {
   return days;
 }
 
+function persist() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({ selectedDay: selectedDayForSave, days })); } catch (e) { /* ignore */ }
+}
+
 const root = document.getElementById("calendarRoot");
 const days = loadDays();
-const hasAnyPlan = DAYS.some(d => {
-  const day = days[d.id];
-  return day.dinner.type || day.dinner.protein || Object.values(day.checked).some(Boolean);
-});
 
-if (!hasAnyPlan) {
-  root.innerHTML = `<div class="empty-note">No meals planned yet. Head to the <a href="/work-meals">Daily Meal Planner</a> to build your dinners and check off your work-meal picks, then come back here to see the whole week.</div>`;
-} else {
-  root.innerHTML = `<div class="week-calendar">${DAYS.map(d => {
+function hasAnyPlan() {
+  return DAYS.some(d => {
     const day = days[d.id];
-    const rows = SLOTS.map(slot => `<div class="cal-row"><b>${slot.icon} ${slot.label}</b>${calendarSlotText(day, slot)}</div>`).join("");
-    return `<div class="cal-day${d.id === todayId ? " is-today" : ""}"><h4>${d.label}<a class="cal-edit" href="/work-meals?day=${d.id}">Edit</a></h4>${rows}</div>`;
-  }).join("")}</div>`;
+    return day.dinner.type || day.dinner.protein || Object.values(day.checked).some(Boolean) || Object.values(day.custom).some(v => v && v.trim());
+  });
 }
+
+function updateHint() {
+  document.getElementById("planHint").innerHTML = hasAnyPlan() ? "" : `<div class="empty-note">No meals planned yet. Head to the <a href="/work-meals">Daily Meal Planner</a> to build your dinners and check off your work-meal picks — or just type directly into a day below.</div>`;
+}
+
+const grid = `<div class="week-calendar">${DAYS.map(d => {
+  const day = days[d.id];
+  const rows = SLOTS.map(slot => `<div class="cal-row"><b>${slot.icon} ${slot.label}</b>${calendarSlotText(day, slot)}<input type="text" class="custom-input" data-day="${d.id}" data-slot="${slot.id}" value="${escapeAttr(day.custom[slot.id])}" placeholder="Type your own..."></div>`).join("");
+  return `<div class="cal-day${d.id === todayId ? " is-today" : ""}"><h4>${d.label}<a class="cal-edit" href="/work-meals?day=${d.id}">Edit</a></h4>${rows}</div>`;
+}).join("")}</div>`;
+root.innerHTML = `<div id="planHint"></div>${grid}`;
+updateHint();
+
+root.addEventListener("input", (e) => {
+  const inp = e.target.closest(".custom-input");
+  if (inp) {
+    days[inp.getAttribute("data-day")].custom[inp.getAttribute("data-slot")] = inp.value;
+    persist();
+    updateHint();
+  }
+});
 </script>
 </body>
 </html>

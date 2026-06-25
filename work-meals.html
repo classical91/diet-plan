@@ -89,6 +89,12 @@
   .muted-state{font-size:13px;color:var(--muted);line-height:1.6;padding:6px 2px 12px;font-style:italic}
   .ai-tag{display:inline-block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(91,155,213,.3);border-radius:10px;padding:1px 7px;margin-left:8px;vertical-align:middle}
 
+  .custom-note{margin-top:14px}
+  .custom-note label{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .custom-input{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 11px;transition:border-color .15s}
+  .custom-input:focus{outline:none;border-color:var(--accent)}
+  .custom-input::placeholder{color:var(--muted)}
+
   /* Night summary card (links down to the Dinner section, same page) */
   .dinner-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 13px}
   .dinner-card-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
@@ -303,7 +309,7 @@ const KEY_KEY = "work-meals:anthropic-key";
 const ORDER = SLOTS.map(s => s.id);
 
 function freshDinner() { return { type:null, protein:null, carb:null, veg:[], sauce:null, name:null }; }
-function freshDay() { return { states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner() }; }
+function freshDay() { return { states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner(), custom:{ morning:"", afternoon:"", night:"" } }; }
 
 let state = { selectedDay: todayId, days: {} };
 for (const d of DAYS) state.days[d.id] = freshDay();
@@ -316,6 +322,7 @@ try {
         state.days[d.id] = Object.assign(freshDay(), sd, {
           states: Object.assign(freshDay().states, sd.states),
           dinner: Object.assign(freshDinner(), sd.dinner || {}),
+          custom: Object.assign(freshDay().custom, sd.custom || {}),
         });
       }
     }
@@ -345,6 +352,7 @@ function persist() {
 
 function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+function escapeAttr(s) { return String(s || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;"); }
 
 function describeDinner(d) {
   if (!d) return null;
@@ -554,7 +562,10 @@ function render() {
           <button type="button" data-state="home"${st === "home" ? ' class="on"' : ""}>At home</button>
           <button type="button" data-state="skip"${st === "skip" ? ' class="on"' : ""}>Skip</button>
         </div>
-        <div class="slot-body">${body}</div>
+        <div class="slot-body">${body}<div class="custom-note">
+          <label>Type your own (optional)</label>
+          <input type="text" class="custom-input" data-slot="${slot.id}" value="${escapeAttr(day.custom[slot.id])}" placeholder="e.g. Leftover lasagna from Sunday">
+        </div></div>
       </div>`;
   }).join("");
   renderWeekGrid();
@@ -609,6 +620,14 @@ slotsEl.addEventListener("click", (e) => {
     const day = currentDay();
     day.checked[id] = !day.checked[id];
     item.classList.toggle("checked", day.checked[id]);
+    persist();
+  }
+});
+
+slotsEl.addEventListener("input", (e) => {
+  const inp = e.target.closest(".custom-input");
+  if (inp) {
+    currentDay().custom[inp.getAttribute("data-slot")] = inp.value;
     persist();
   }
 });
