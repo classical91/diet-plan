@@ -120,7 +120,7 @@ function checkedFoodsFor(day, slotId) {
 
 function calendarSlotText(day, slot) {
   const st = day.states[slot.id] || "work";
-  if (st === "skip") return "Skipping";
+  if (st === "skip") return "Hidden";
   if (st === "home" && slot.id === "night") {
     const summary = describeDinner(day.dinner);
     return summary ? summary.main + (summary.sub ? " — " + summary.sub : "") : "Nothing planned yet";
@@ -179,13 +179,14 @@ function renderGrid() {
     const day = days[d.id];
     const rows = SLOTS.map(slot => {
       const key = customKey(d.id, slot.id);
+      const isHidden = (day.states[slot.id] || "work") === "skip";
       const hasCustom = !!(day.custom[slot.id] && day.custom[slot.id].trim());
-      const customHtml = openCustom[key]
+      const customHtml = isHidden ? "" : openCustom[key]
         ? `<input type="text" class="custom-input" data-day="${d.id}" data-slot="${slot.id}" value="${escapeAttr(day.custom[slot.id])}" placeholder="Type your own...">`
         : hasCustom
           ? `<div class="custom-display"><span>${escapeHtml(day.custom[slot.id])}</span><button type="button" class="custom-edit-btn" data-edit-day="${d.id}" data-edit-slot="${slot.id}">Edit</button></div>`
           : `<button type="button" class="custom-edit-btn" data-edit-day="${d.id}" data-edit-slot="${slot.id}">+ Add your own</button>`;
-      const slotText = hasCustom ? "" : calendarSlotText(day, slot);
+      const slotText = isHidden ? "" : hasCustom ? "" : calendarSlotText(day, slot);
       return `<div class="cal-row"><b>${slot.icon} ${slot.label}</b>${slotText}${customHtml}</div>`;
     }).join("");
     return `<div class="cal-day${d.id === todayId ? " is-today" : ""}"><h4>${d.label}</h4>${rows}</div>`;
