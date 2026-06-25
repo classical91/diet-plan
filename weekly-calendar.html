@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Meal Calendar | NutriMind</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/nav.css">
+<link rel="stylesheet" href="/theme.css">
+<script>try{if(localStorage.getItem('nm-theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(91,155,213,.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(143,190,107,.05) 0%,transparent 50%)}
+  header{text-align:center;margin:18px auto 30px;max-width:900px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(32px,6vw,58px);font-weight:900;letter-spacing:-.03em;line-height:.95}
+  h1 em{color:var(--accent);font-style:italic}
+  .lead{color:var(--soft);font-size:15px;line-height:1.7;max-width:720px;margin:18px auto 0}
+  .header-line{width:54px;height:2px;background:var(--accent);margin:18px auto 0;opacity:.55}
+  .container{max-width:980px;margin:0 auto}
+
+  .toolbar{display:flex;justify-content:flex-end;margin-bottom:18px}
+  .btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:7px 14px;border-radius:20px;cursor:pointer;transition:all .2s;display:inline-block;text-decoration:none}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+
+  .week-calendar{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+  .cal-day{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+  .cal-day.is-today{border-color:var(--accent)}
+  .cal-day h4{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin:0 0 10px;color:var(--text)}
+  .cal-row{font-size:12px;line-height:1.6;color:var(--muted);margin-bottom:8px}
+  .cal-row b{color:var(--soft);font-weight:600;display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+
+  .empty-note{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;text-align:center;color:var(--soft);font-size:13.5px;line-height:1.7}
+  .empty-note a{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Weekly Meal <em>Calendar</em></h1>
+  <p class="lead">A read-only view of what you'll actually be eating each day this week — built from your Daily Meal Planner choices, "Surprise me" picks, and "Plan my week".</p>
+  <div class="header-line"></div>
+</header>
+
+<main class="container">
+  <div class="toolbar">
+    <a class="btn" href="/work-meals">Edit my week</a>
+  </div>
+  <div id="calendarRoot"></div>
+</main>
+
+<script src="/nav.js"></script>
+<script>
+const SLOTS = [
+  { id:"morning",   icon:"🌅", label:"Morning" },
+  { id:"afternoon", icon:"☀️", label:"Afternoon" },
+  { id:"night",     icon:"🌙", label:"Night" },
+];
+
+const DAYS = [
+  { id:"mon", label:"Monday" }, { id:"tue", label:"Tuesday" }, { id:"wed", label:"Wednesday" },
+  { id:"thu", label:"Thursday" }, { id:"fri", label:"Friday" }, { id:"sat", label:"Saturday" }, { id:"sun", label:"Sunday" },
+];
+const todayId = (() => { const map=["sun","mon","tue","wed","thu","fri","sat"]; return map[new Date().getDay()]; })();
+
+const WORK_FOODS = [
+  { name:"Overnight oats with chia & berries", slots:["morning"] },
+  { name:"Greek yogurt + nuts + fruit", slots:["morning","afternoon"] },
+  { name:"Boiled eggs + whole-grain toast", slots:["morning"] },
+  { name:"Nut butter + banana on whole-grain", slots:["morning"] },
+  { name:"Protein smoothie in a bottle", slots:["morning"] },
+  { name:"Cottage cheese + fruit", slots:["morning","afternoon"] },
+  { name:"Chicken or tofu grain bowl", slots:["afternoon","night"] },
+  { name:"Tuna or salmon wrap", slots:["afternoon"] },
+  { name:"Chickpea or lentil salad", slots:["afternoon","night"] },
+  { name:"Hummus + veg sticks + crackers", slots:["afternoon"] },
+  { name:"Mixed nuts + a piece of fruit", slots:["afternoon"] },
+  { name:"Leftover stir-fry + brown rice", slots:["afternoon","night"] },
+  { name:"Salmon + sweet potato + greens", slots:["night"] },
+  { name:"Tofu or tempeh stir-fry + brown rice", slots:["night"] },
+  { name:"Bean chili + side salad", slots:["night"] },
+  { name:"Veg omelette + toast", slots:["night"] },
+  { name:"Lentil soup + whole-grain bread", slots:["night"] },
+  { name:"Grilled chicken + roast vegetables", slots:["night"] },
+];
+
+const STORE_KEY = "work-meals:v3";
+
+function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+
+function freshDinner() { return { type:null, protein:null, carb:null, veg:[], sauce:null, name:null }; }
+function freshDay() { return { states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner() }; }
+
+function describeDinner(d) {
+  if (!d) return null;
+  if (d.type === "out") return { main: "🍽️ Ordering out", sub: "" };
+  if (d.type === "full") return { main: "✅ Already full", sub: "Ate enough earlier — skipping dinner." };
+  if (d.protein || d.carb || (d.veg && d.veg.length)) {
+    const parts = [cap(d.protein), d.carb, (d.veg || []).join(" + ")].filter(Boolean).join(" · ");
+    return { main: d.name || cap(d.protein) || "Dinner planned", sub: parts + (d.sauce ? " · " + d.sauce : "") };
+  }
+  return null;
+}
+
+function checkedFoodsFor(day, slotId) {
+  const foods = WORK_FOODS.filter(f => f.slots.includes(slotId)).map(f => f.name);
+  const aiList = (day.ai && day.ai[slotId]) || [];
+  return [...foods, ...aiList].filter(name => day.checked[slotId + "|" + slugify(name)]);
+}
+
+function calendarSlotText(day, slot) {
+  const st = day.states[slot.id] || "work";
+  if (st === "skip") return "Skipping";
+  if (st === "home" && slot.id === "night") {
+    const summary = describeDinner(day.dinner);
+    return summary ? summary.main + (summary.sub ? " — " + summary.sub : "") : "Nothing planned yet";
+  }
+  if (st === "home") return "Eating at home";
+  const picked = checkedFoodsFor(day, slot.id);
+  return picked.length ? picked.join(", ") : "Not chosen yet";
+}
+
+function loadDays() {
+  const days = {};
+  for (const d of DAYS) days[d.id] = freshDay();
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+    if (saved && saved.days && typeof saved.days === "object") {
+      for (const d of DAYS) {
+        const sd = saved.days[d.id];
+        if (sd && sd.states) {
+          days[d.id] = Object.assign(freshDay(), sd, {
+            states: Object.assign(freshDay().states, sd.states),
+            dinner: Object.assign(freshDinner(), sd.dinner || {}),
+          });
+        }
+      }
+    }
+  } catch (e) { /* ignore */ }
+  return days;
+}
+
+const root = document.getElementById("calendarRoot");
+const days = loadDays();
+const hasAnyPlan = DAYS.some(d => {
+  const day = days[d.id];
+  return day.dinner.type || day.dinner.protein || Object.values(day.checked).some(Boolean);
+});
+
+if (!hasAnyPlan) {
+  root.innerHTML = `<div class="empty-note">No meals planned yet. Head to the <a href="/work-meals">Daily Meal Planner</a> to build your dinners and check off your work-meal picks, then come back here to see the whole week.</div>`;
+} else {
+  root.innerHTML = `<div class="week-calendar">${DAYS.map(d => {
+    const day = days[d.id];
+    const rows = SLOTS.map(slot => `<div class="cal-row"><b>${slot.icon} ${slot.label}</b>${calendarSlotText(day, slot)}</div>`).join("");
+    return `<div class="cal-day${d.id === todayId ? " is-today" : ""}"><h4>${d.label}</h4>${rows}</div>`;
+  }).join("")}</div>`;
+}
+</script>
+</body>
+</html>

@@ -99,6 +99,9 @@ const server = http.createServer(async (request, response) => {
     if (pathname === "/work-meals" || pathname === "/work-meals/") {
       pathname = "/work-meals.html";
     }
+    if (pathname === "/weekly-calendar" || pathname === "/weekly-calendar/") {
+      pathname = "/weekly-calendar.html";
+    }
     if (pathname === "/seasonal-rotation" || pathname === "/seasonal-rotation/") {
       pathname = "/seasonal-rotation.html";
     }
