@@ -438,15 +438,20 @@ function comboFor(avoidProtein) {
   return { type:"combo", protein, carb, veg, sauce, name:null };
 }
 function surpriseDinner() {
-  currentDay().dinner = comboFor(null);
-  renderDinner(); renderWeekGrid(); persist();
+  const day = currentDay();
+  day.dinner = comboFor(null);
+  day.states.night = "home";
+  render();
 }
 function isDinnerEmpty(d) { return !d.type && !d.protein && !d.carb && d.veg.length === 0; }
 function planWeek() {
   let avoidProtein = null;
   for (const d of DAYS) {
     const day = state.days[d.id];
-    if (isDinnerEmpty(day.dinner)) day.dinner = comboFor(avoidProtein);
+    if (isDinnerEmpty(day.dinner)) {
+      day.dinner = comboFor(avoidProtein);
+      day.states.night = "home";
+    }
     avoidProtein = day.dinner.protein;
   }
   render();
@@ -612,7 +617,8 @@ dinnerSectionEl.addEventListener("click", (e) => {
   if (opt) {
     const group = opt.getAttribute("data-pick");
     const val = opt.getAttribute("data-val");
-    const d = currentDay().dinner;
+    const day = currentDay();
+    const d = day.dinner;
     if (group === "veg") {
       const idx = d.veg.indexOf(val);
       if (idx >= 0) d.veg.splice(idx, 1);
@@ -623,7 +629,8 @@ dinnerSectionEl.addEventListener("click", (e) => {
     }
     d.name = null;
     d.type = (d.protein || d.carb || d.veg.length) ? "combo" : null;
-    renderDinner(); renderWeekGrid(); persist();
+    day.states.night = d.type ? "home" : "work";
+    render();
     return;
   }
   const act = e.target.closest("[data-dinner-action]");
@@ -631,24 +638,31 @@ dinnerSectionEl.addEventListener("click", (e) => {
     const which = act.getAttribute("data-dinner-action");
     const day = currentDay();
     if (which === "out") {
-      day.dinner = day.dinner.type === "out" ? freshDinner() : Object.assign(freshDinner(), { type:"out" });
-      renderDinner(); renderWeekGrid(); persist();
+      const turningOn = day.dinner.type !== "out";
+      day.dinner = turningOn ? Object.assign(freshDinner(), { type:"out" }) : freshDinner();
+      day.states.night = turningOn ? "home" : "work";
+      render();
     } else if (which === "full") {
-      day.dinner = day.dinner.type === "full" ? freshDinner() : Object.assign(freshDinner(), { type:"full" });
-      renderDinner(); renderWeekGrid(); persist();
+      const turningOn = day.dinner.type !== "full";
+      day.dinner = turningOn ? Object.assign(freshDinner(), { type:"full" }) : freshDinner();
+      day.states.night = turningOn ? "home" : "work";
+      render();
     } else if (which === "surprise") {
       surpriseDinner();
     } else if (which === "clear") {
       day.dinner = freshDinner();
-      renderDinner(); renderWeekGrid(); persist();
+      day.states.night = "work";
+      render();
     }
     return;
   }
   const mealCard = e.target.closest("[data-meal]");
   if (mealCard) {
     const m = READY_MEALS[Number(mealCard.getAttribute("data-meal"))];
-    currentDay().dinner = { type:"meal", name:m.name, protein:m.protein, carb:m.carb, veg:[...m.veg], sauce:m.sauce };
-    renderDinner(); renderWeekGrid(); persist();
+    const day = currentDay();
+    day.dinner = { type:"meal", name:m.name, protein:m.protein, carb:m.carb, veg:[...m.veg], sauce:m.sauce };
+    day.states.night = "home";
+    render();
   }
 });
 
