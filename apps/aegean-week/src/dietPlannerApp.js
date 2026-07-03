@@ -1,4 +1,4 @@
-import { mealLibrary, usualMealsLibrary, weeklyPlan } from "./dietPlannerData.js";
+import { mealLibrary, usualMealsLibrary, weeklyPlan, myWeekTemplate } from "./dietPlannerData.js";
 import {
   buildGroceryList,
   createMealLookup,
@@ -90,20 +90,21 @@ const DEFAULT_GOALS = { potassium: 4700, magnesium: 420 };
 // ── Planner state ─────────────────────────────────────────────────────────────
 
 const WEEKEND = new Set(["sat", "sun"]);
+const BASE_WEEK = myWeekTemplate ?? weeklyPlan;
 
 function defaultPlannerState() {
   const plan = {};
   const dayTypes = {};
-  for (const day of weeklyPlan) {
+  for (const day of BASE_WEEK) {
     plan[day.id] = { ...day.meals };
     dayTypes[day.id] = WEEKEND.has(day.id) ? "home" : "work";
   }
-  return { plan, dayTypes, selectedDayId: weeklyPlan[0].id, pickerSlot: null };
+  return { plan, dayTypes, selectedDayId: BASE_WEEK[0].id, pickerSlot: null };
 }
 
 function generatePlanFromCustomMeals(dayTypes) {
   const plan = {};
-  for (const day of weeklyPlan) {
+  for (const day of BASE_WEEK) {
     const dayType = dayTypes[day.id] ?? "work";
     const pool = customMeals[dayType] ?? customMeals.work ?? {};
     plan[day.id] = {};
@@ -119,18 +120,18 @@ function generatePlanFromCustomMeals(dayTypes) {
 
 function generatedPlannerState(currentDayTypes = null) {
   const dayTypes = {};
-  for (const day of weeklyPlan) {
+  for (const day of BASE_WEEK) {
     dayTypes[day.id] = currentDayTypes?.[day.id] ?? (WEEKEND.has(day.id) ? "home" : "work");
   }
   let plan;
   if (customMeals) {
     plan = generatePlanFromCustomMeals(dayTypes);
   } else {
-    const generated = generateWeek(weeklyPlan, mealLibrary);
+    const generated = generateWeek(BASE_WEEK, usualMealsLibrary);
     plan = {};
     for (const day of generated) plan[day.id] = { ...day.meals };
   }
-  return { plan, dayTypes, selectedDayId: weeklyPlan[0].id, pickerSlot: null };
+  return { plan, dayTypes, selectedDayId: BASE_WEEK[0].id, pickerSlot: null };
 }
 
 function loadPlannerState() {
@@ -140,7 +141,7 @@ function loadPlannerState() {
     const parsed = JSON.parse(raw);
     const base = defaultPlannerState();
     if (parsed.plan && typeof parsed.plan === "object") {
-      for (const day of weeklyPlan) {
+      for (const day of BASE_WEEK) {
         const candidate = parsed.plan[day.id];
         if (!candidate || typeof candidate !== "object") continue;
         const slots = {};
@@ -154,12 +155,12 @@ function loadPlannerState() {
       }
     }
     if (parsed.dayTypes && typeof parsed.dayTypes === "object") {
-      for (const day of weeklyPlan) {
+      for (const day of BASE_WEEK) {
         const dt = parsed.dayTypes[day.id];
         if (dt === "work" || dt === "home") base.dayTypes[day.id] = dt;
       }
     }
-    if (weeklyPlan.some((d) => d.id === parsed.selectedDayId)) {
+    if (BASE_WEEK.some((d) => d.id === parsed.selectedDayId)) {
       base.selectedDayId = parsed.selectedDayId;
     }
     return base;
@@ -185,7 +186,7 @@ function statusTone(ratio) {
 }
 
 function getActivePlan() {
-  return weeklyPlan.map((day) => ({
+  return BASE_WEEK.map((day) => ({
     ...day,
     meals: planner.plan[day.id] ?? day.meals
   }));
@@ -352,7 +353,7 @@ function renderDayTotals(day) {
 function renderMealSlot(entry, dayId) {
   const { slotKey, meal } = entry;
   const isPickerOpen = planner.pickerSlot === slotKey;
-  const defaultMealId = weeklyPlan.find((d) => d.id === dayId)?.meals[slotKey];
+  const defaultMealId = BASE_WEEK.find((d) => d.id === dayId)?.meals[slotKey];
   const isModified = planner.plan[dayId]?.[slotKey] !== defaultMealId;
 
   return `
@@ -395,10 +396,10 @@ function renderMealPicker(dayId, slotKey) {
       if (!seen.has(meal.id)) { seen.add(meal.id); available.push(meal); }
     }
   }
-  for (const meal of mealLibrary) {
+  for (const meal of usualMealsLibrary) {
     if (meal.slot === slotName && !seen.has(meal.id)) { seen.add(meal.id); available.push(meal); }
   }
-  for (const meal of usualMealsLibrary) {
+  for (const meal of mealLibrary) {
     if (meal.slot === slotName && !seen.has(meal.id)) { seen.add(meal.id); available.push(meal); }
   }
 
@@ -503,9 +504,9 @@ function renderPlannerView() {
   return `
     <header class="masthead">
       <div class="masthead-copy">
-        <p class="eyebrow">Weekly Mediterranean diet planner</p>
+        <p class="eyebrow">Weekly diet planner</p>
         <h1>Aegean Week</h1>
-        <p class="lead">Fish, beef, and chicken arranged into a mineral-forward week with steady potassium and magnesium support.</p>
+        <p class="lead">Your usual chicken, beef, and fish rotation arranged into a steady week with potassium and magnesium support.</p>
         <div class="planner-actions" role="group" aria-label="Planner actions">
           <button type="button" class="reset-btn" data-action="regenerate">Regenerate week</button>
           <button type="button" class="reset-btn" data-action="reset">Reset planner</button>
@@ -520,7 +521,7 @@ function renderPlannerView() {
             <p class="label-line">Week view</p>
             <h2>Dial in each day</h2>
           </div>
-          <p class="section-copy">The week stays Mediterranean at the base: legumes, greens, yogurt, fruit, whole grains, olive oil, and rotating animal proteins.</p>
+          <p class="section-copy">Your usual pattern at the base: a protein (chicken, beef, fish, or eggs/lentils) with a side (rice, potatoes, legumes, or salad) each meal.</p>
         </div>
         <div class="day-strip" role="tablist" aria-label="Days of the week">
           ${week.days.map((day) => renderDayButton(day)).join("")}
@@ -593,7 +594,7 @@ app.addEventListener("click", (event) => {
     }
     if (action === "reset") {
       const ok = typeof window.confirm === "function"
-        ? window.confirm("Reset the planner to defaults? This clears your saved meals and restores the original Mediterranean plan.")
+        ? window.confirm("Reset the planner to defaults? This clears your saved meals and restores your usual weekly plan.")
         : true;
       if (ok) resetPlanner();
       return;
@@ -660,7 +661,7 @@ app.addEventListener("click", (event) => {
   const resetSlotBtn = event.target.closest("[data-my-reset]");
   if (resetSlotBtn) {
     const [dayId, slotKey] = resetSlotBtn.dataset.myReset.split(":");
-    const defaultDay = weeklyPlan.find((d) => d.id === dayId);
+    const defaultDay = BASE_WEEK.find((d) => d.id === dayId);
     if (defaultDay) {
       if (!planner.plan[dayId]) planner.plan[dayId] = {};
       planner.plan[dayId][slotKey] = defaultDay.meals[slotKey];
