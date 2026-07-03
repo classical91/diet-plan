@@ -318,6 +318,49 @@ export function normalizeCustomMeals(raw) {
   return result;
 }
 
+const ALLOWED_SLOT_NAMES = new Set(["Breakfast", "Lunch", "Dinner", "Snack"]);
+
+export function normalizeManualFoods(raw) {
+  if (!Array.isArray(raw)) return [];
+  const seenIds = new Set();
+  const foods = [];
+  for (const item of raw) {
+    const meal = normalizeMeal(item, seenIds);
+    if (!meal) continue;
+    const slotsRaw = Array.isArray(item.slots) ? item.slots : [item.slot];
+    const slots = [...new Set(slotsRaw.filter((s) => ALLOWED_SLOT_NAMES.has(s)))];
+    if (slots.length === 0) slots.push("Snack");
+    foods.push({ ...meal, slot: slots[0], slots });
+  }
+  return foods;
+}
+
+export function mealFitsSlot(meal, slotName) {
+  return meal.slot === slotName || (Array.isArray(meal.slots) && meal.slots.includes(slotName));
+}
+
+const PERIOD_SLOTS = {
+  day: ["Breakfast", "Lunch", "Snack"],
+  night: ["Dinner", "Snack"]
+};
+
+export function suggestQuickPicks(primary, fallback, period, options = {}) {
+  const { count = 2, random = Math.random } = options;
+  const slots = PERIOD_SLOTS[period] ?? PERIOD_SLOTS.night;
+  const fits = (meal) => slots.some((slotName) => mealFitsSlot(meal, slotName));
+  const ranked = [
+    ...shuffle(primary.filter(fits), random),
+    ...shuffle(fallback.filter(fits), random)
+  ];
+
+  const picks = [];
+  for (const meal of ranked) {
+    if (picks.length >= count) break;
+    if (!picks.some((p) => p.id === meal.id)) picks.push(meal);
+  }
+  return picks;
+}
+
 function groupMealsBySlot(mealLibrary) {
   const grouped = new Map();
   for (const meal of mealLibrary) {

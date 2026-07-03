@@ -650,6 +650,19 @@ export const usualMealsLibrary = [
     ],
     nutrients: { potassium: 880, magnesium: 112, protein: 28, fiber: 14, calories: 480 }
   },
+  {
+    id: "my-beyond-sausage-plate",
+    slot: "Dinner",
+    title: "Beyond Sausage Plate",
+    subtitle: "Beyond Meat sausages from the freezer with vegetables and a side.",
+    protein: "Vegetarian",
+    ingredients: [
+      { name: "Beyond Meat sausage", group: "Protein" },
+      { name: "Mixed vegetables", group: "Vegetable" },
+      { name: "Rice", group: "Whole grain" }
+    ],
+    nutrients: { potassium: 700, magnesium: 68, protein: 36, fiber: 8, calories: 590 }
+  },
   // Snacks
   {
     id: "my-fruit",

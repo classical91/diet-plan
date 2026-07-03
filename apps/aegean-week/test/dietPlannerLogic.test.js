@@ -9,8 +9,11 @@ import {
   createMealLookup,
   formatGroceryListText,
   generateWeek,
+  mealFitsSlot,
   normalizeCustomMeals,
+  normalizeManualFoods,
   suggestBoosters,
+  suggestQuickPicks,
   summarizeDay,
   summarizeWeek
 } from "../src/dietPlannerLogic.js";
@@ -221,4 +224,70 @@ test("normalizeCustomMeals coerces unknown protein and group to safe defaults", 
   const result = normalizeCustomMeals(raw);
   assert.equal(result.work.breakfast[0].protein, "Vegetarian");
   assert.equal(result.work.breakfast[0].ingredients[0].group, "Various");
+});
+
+test("normalizeManualFoods keeps valid slots and defaults empty slots to Snack", () => {
+  const raw = [
+    {
+      id: "food-beyond",
+      title: "Beyond Meat sausage",
+      slots: ["Dinner", "Lunch", "Dinner", "Brunch"],
+      ingredients: [{ name: "Beyond Meat sausage", group: "Protein" }]
+    },
+    {
+      id: "food-carrots",
+      title: "Baby carrots",
+      slots: ["Brunch"],
+      ingredients: [{ name: "Baby carrots", group: "Vegetable" }]
+    },
+    { id: "food-broken", title: "", slots: ["Dinner"], ingredients: [] }
+  ];
+  const foods = normalizeManualFoods(raw);
+
+  assert.equal(foods.length, 2);
+  assert.deepEqual(foods[0].slots, ["Dinner", "Lunch"]);
+  assert.equal(foods[0].slot, "Dinner");
+  assert.deepEqual(foods[1].slots, ["Snack"]);
+});
+
+test("mealFitsSlot matches both single-slot meals and multi-slot foods", () => {
+  const libraryMeal = { id: "a", slot: "Dinner" };
+  const manualFood = { id: "b", slot: "Lunch", slots: ["Lunch", "Dinner"] };
+
+  assert.equal(mealFitsSlot(libraryMeal, "Dinner"), true);
+  assert.equal(mealFitsSlot(libraryMeal, "Lunch"), false);
+  assert.equal(mealFitsSlot(manualFood, "Dinner"), true);
+  assert.equal(mealFitsSlot(manualFood, "Breakfast"), false);
+});
+
+test("suggestQuickPicks returns two night items preferring the user's own foods", () => {
+  const manual = [
+    { id: "food-beyond", title: "Beyond sausage", slot: "Dinner", slots: ["Dinner"] },
+    { id: "food-hummus", title: "Hummus cup", slot: "Snack", slots: ["Snack"] },
+    { id: "food-toast", title: "Morning toast", slot: "Breakfast", slots: ["Breakfast"] }
+  ];
+  const fallback = [
+    { id: "lib-dinner", title: "Fish plate", slot: "Dinner" },
+    { id: "lib-snack", title: "Nuts", slot: "Snack" }
+  ];
+  const picks = suggestQuickPicks(manual, fallback, "night", { random: () => 0 });
+
+  assert.equal(picks.length, 2);
+  assert.equal(picks.every((p) => p.id.startsWith("food-")), true);
+  assert.equal(picks.some((p) => p.id === "food-toast"), false);
+});
+
+test("suggestQuickPicks tops up from the fallback library for daytime", () => {
+  const manual = [
+    { id: "food-smoothie", title: "Green smoothie", slot: "Lunch", slots: ["Lunch"] }
+  ];
+  const fallback = [
+    { id: "lib-breakfast", title: "Oats", slot: "Breakfast" },
+    { id: "lib-dinner", title: "Beef plate", slot: "Dinner" }
+  ];
+  const picks = suggestQuickPicks(manual, fallback, "day", { random: () => 0 });
+
+  assert.equal(picks.length, 2);
+  assert.equal(picks[0].id, "food-smoothie");
+  assert.equal(picks[1].id, "lib-breakfast");
 });

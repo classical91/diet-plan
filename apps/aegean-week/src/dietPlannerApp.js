@@ -1,17 +1,21 @@
-import { mealLibrary, usualMealsLibrary, weeklyPlan } from "./dietPlannerData.js";
+import { mealLibrary, usualMealsLibrary, weeklyPlan, myWeekTemplate } from "./dietPlannerData.js";
 import {
   buildGroceryList,
   createMealLookup,
   formatGroceryListText,
   formatMetric,
   generateWeek,
+  mealFitsSlot,
   normalizeCustomMeals,
+  normalizeManualFoods,
   percentText,
+  suggestQuickPicks,
   summarizeWeek
 } from "./dietPlannerLogic.js";
 
 const PLANNER_KEY = "planner:v2";
 const CUSTOM_MEALS_KEY = "my-meals-custom:v1";
+const MY_FOODS_KEY = "my-foods:v1";
 const API_KEY_KEY = "nutrimind-openai-key";
 
 const SLOT_NAMES = { breakfast: "Breakfast", lunch: "Lunch", dinner: "Dinner", snack: "Snack" };
@@ -49,7 +53,7 @@ const PORTION_MAP = {
   "Seeds": "1 tbsp", "Granola": "½ cup", "Yogurt": "¾ cup", "Chicken": "150g",
   "Bread": "2 slices", "Lettuce": "2 leaves", "Sauce": "1 tbsp", "Rice": "½ cup",
   "Vegetables": "½ cup", "Beef": "180g", "Fish": "180g", "Mixed vegetables": "1 cup",
-  "Leftovers": "1 portion"
+  "Leftovers": "1 portion", "Beyond Meat sausage": "2 links"
 };
 
 function loadCustomMeals() {
@@ -58,6 +62,18 @@ function loadCustomMeals() {
     if (!raw) return null;
     return normalizeCustomMeals(JSON.parse(raw));
   } catch { return null; }
+}
+
+function loadManualFoods() {
+  try {
+    const raw = window.localStorage.getItem(MY_FOODS_KEY);
+    if (!raw) return [];
+    return normalizeManualFoods(JSON.parse(raw));
+  } catch { return []; }
+}
+
+function saveManualFoods() {
+  window.localStorage.setItem(MY_FOODS_KEY, JSON.stringify(manualFoods));
 }
 
 function flattenCustomMeals(custom) {
@@ -78,9 +94,10 @@ function flattenCustomMeals(custom) {
 }
 
 function buildAllMealsLookup() {
-  return createMealLookup([...mealLibrary, ...usualMealsLibrary, ...flattenCustomMeals(customMeals)]);
+  return createMealLookup([...mealLibrary, ...usualMealsLibrary, ...flattenCustomMeals(customMeals), ...manualFoods]);
 }
 
+let manualFoods = loadManualFoods();
 let customMeals = loadCustomMeals();
 let allMealsLookup = buildAllMealsLookup();
 
@@ -90,20 +107,21 @@ const DEFAULT_GOALS = { potassium: 4700, magnesium: 420 };
 // ── Planner state ─────────────────────────────────────────────────────────────
 
 const WEEKEND = new Set(["sat", "sun"]);
+const BASE_WEEK = myWeekTemplate ?? weeklyPlan;
 
 function defaultPlannerState() {
   const plan = {};
   const dayTypes = {};
-  for (const day of weeklyPlan) {
+  for (const day of BASE_WEEK) {
     plan[day.id] = { ...day.meals };
     dayTypes[day.id] = WEEKEND.has(day.id) ? "home" : "work";
   }
-  return { plan, dayTypes, selectedDayId: weeklyPlan[0].id, pickerSlot: null };
+  return { plan, dayTypes, selectedDayId: BASE_WEEK[0].id, pickerSlot: null };
 }
 
 function generatePlanFromCustomMeals(dayTypes) {
   const plan = {};
-  for (const day of weeklyPlan) {
+  for (const day of BASE_WEEK) {
     const dayType = dayTypes[day.id] ?? "work";
     const pool = customMeals[dayType] ?? customMeals.work ?? {};
     plan[day.id] = {};
@@ -119,18 +137,18 @@ function generatePlanFromCustomMeals(dayTypes) {
 
 function generatedPlannerState(currentDayTypes = null) {
   const dayTypes = {};
-  for (const day of weeklyPlan) {
+  for (const day of BASE_WEEK) {
     dayTypes[day.id] = currentDayTypes?.[day.id] ?? (WEEKEND.has(day.id) ? "home" : "work");
   }
   let plan;
   if (customMeals) {
     plan = generatePlanFromCustomMeals(dayTypes);
   } else {
-    const generated = generateWeek(weeklyPlan, mealLibrary);
+    const generated = generateWeek(BASE_WEEK, usualMealsLibrary);
     plan = {};
     for (const day of generated) plan[day.id] = { ...day.meals };
   }
-  return { plan, dayTypes, selectedDayId: weeklyPlan[0].id, pickerSlot: null };
+  return { plan, dayTypes, selectedDayId: BASE_WEEK[0].id, pickerSlot: null };
 }
 
 function loadPlannerState() {
@@ -140,7 +158,7 @@ function loadPlannerState() {
     const parsed = JSON.parse(raw);
     const base = defaultPlannerState();
     if (parsed.plan && typeof parsed.plan === "object") {
-      for (const day of weeklyPlan) {
+      for (const day of BASE_WEEK) {
         const candidate = parsed.plan[day.id];
         if (!candidate || typeof candidate !== "object") continue;
         const slots = {};
@@ -154,12 +172,12 @@ function loadPlannerState() {
       }
     }
     if (parsed.dayTypes && typeof parsed.dayTypes === "object") {
-      for (const day of weeklyPlan) {
+      for (const day of BASE_WEEK) {
         const dt = parsed.dayTypes[day.id];
         if (dt === "work" || dt === "home") base.dayTypes[day.id] = dt;
       }
     }
-    if (weeklyPlan.some((d) => d.id === parsed.selectedDayId)) {
+    if (BASE_WEEK.some((d) => d.id === parsed.selectedDayId)) {
       base.selectedDayId = parsed.selectedDayId;
     }
     return base;
@@ -185,7 +203,7 @@ function statusTone(ratio) {
 }
 
 function getActivePlan() {
-  return weeklyPlan.map((day) => ({
+  return BASE_WEEK.map((day) => ({
     ...day,
     meals: planner.plan[day.id] ?? day.meals
   }));
@@ -300,6 +318,84 @@ async function handleGenerateMeals() {
   }
 }
 
+// ── My Foods (manual, no API key) ─────────────────────────────────────────────
+
+const FOOD_TYPES = {
+  "plant-protein": { label: "Plant protein (Beyond, tofu…)", protein: "Vegetarian", group: "Protein" },
+  chicken: { label: "Chicken", protein: "Chicken", group: "Protein" },
+  beef: { label: "Beef", protein: "Beef", group: "Protein" },
+  fish: { label: "Fish", protein: "Fish", group: "Protein" },
+  legume: { label: "Legume", protein: "Vegetarian", group: "Legume" },
+  vegetable: { label: "Vegetable", protein: "Vegetarian", group: "Vegetable" },
+  other: { label: "Other", protein: "Vegetarian", group: "Various" }
+};
+
+const myFoodsState = {
+  name: "",
+  type: "plant-protein",
+  slots: new Set(["Dinner"]),
+  calories: "",
+  protein: "",
+  potassium: "",
+  magnesium: "",
+  error: null,
+  picks: [],
+  picksPeriod: null
+};
+
+function handleAddMyFood() {
+  const name = myFoodsState.name.trim();
+  if (!name) {
+    myFoodsState.error = "Give the food a name first.";
+    render();
+    return;
+  }
+  const type = FOOD_TYPES[myFoodsState.type] ?? FOOD_TYPES["plant-protein"];
+  const slots = [...myFoodsState.slots];
+  const raw = {
+    id: `food-${Date.now().toString(36)}`,
+    title: name,
+    subtitle: "From my own food list.",
+    protein: type.protein,
+    slots: slots.length > 0 ? slots : ["Snack"],
+    ingredients: [{ name, group: type.group }],
+    nutrients: {
+      potassium: Number(myFoodsState.potassium) || 0,
+      magnesium: Number(myFoodsState.magnesium) || 0,
+      protein: Number(myFoodsState.protein) || 0,
+      fiber: 0,
+      calories: Number(myFoodsState.calories) || 0
+    }
+  };
+  manualFoods = normalizeManualFoods([...manualFoods, raw]);
+  saveManualFoods();
+  allMealsLookup = buildAllMealsLookup();
+  Object.assign(myFoodsState, { name: "", calories: "", protein: "", potassium: "", magnesium: "", error: null });
+  render();
+}
+
+function handleRemoveMyFood(foodId) {
+  manualFoods = manualFoods.filter((food) => food.id !== foodId);
+  saveManualFoods();
+  allMealsLookup = buildAllMealsLookup();
+  for (const day of BASE_WEEK) {
+    const slots = planner.plan[day.id];
+    if (!slots) continue;
+    for (const [slotKey, mealId] of Object.entries(slots)) {
+      if (mealId === foodId) slots[slotKey] = day.meals[slotKey];
+    }
+  }
+  myFoodsState.picks = myFoodsState.picks.filter((pick) => pick.id !== foodId);
+  savePlannerState();
+  render();
+}
+
+function handleQuickPicks(period) {
+  myFoodsState.picksPeriod = period;
+  myFoodsState.picks = suggestQuickPicks(manualFoods, usualMealsLibrary, period);
+  render();
+}
+
 // ── Render helpers ────────────────────────────────────────────────────────────
 
 function renderDayButton(day) {
@@ -352,7 +448,7 @@ function renderDayTotals(day) {
 function renderMealSlot(entry, dayId) {
   const { slotKey, meal } = entry;
   const isPickerOpen = planner.pickerSlot === slotKey;
-  const defaultMealId = weeklyPlan.find((d) => d.id === dayId)?.meals[slotKey];
+  const defaultMealId = BASE_WEEK.find((d) => d.id === dayId)?.meals[slotKey];
   const isModified = planner.plan[dayId]?.[slotKey] !== defaultMealId;
 
   return `
@@ -390,15 +486,18 @@ function renderMealPicker(dayId, slotKey) {
   const seen = new Set();
   const available = [];
 
+  for (const meal of manualFoods) {
+    if (mealFitsSlot(meal, slotName) && !seen.has(meal.id)) { seen.add(meal.id); available.push(meal); }
+  }
   if (customMeals) {
     for (const meal of (customMeals[dayType]?.[slotKey] ?? [])) {
       if (!seen.has(meal.id)) { seen.add(meal.id); available.push(meal); }
     }
   }
-  for (const meal of mealLibrary) {
+  for (const meal of usualMealsLibrary) {
     if (meal.slot === slotName && !seen.has(meal.id)) { seen.add(meal.id); available.push(meal); }
   }
-  for (const meal of usualMealsLibrary) {
+  for (const meal of mealLibrary) {
     if (meal.slot === slotName && !seen.has(meal.id)) { seen.add(meal.id); available.push(meal); }
   }
 
@@ -455,6 +554,77 @@ function renderPanel(id, labelLine, heading, body) {
   `;
 }
 
+function renderMyFoodsPanel() {
+  const slotChecks = Object.values(SLOT_NAMES).map((slotName) => `
+    <label class="slot-check">
+      <input type="checkbox" data-my-food-slot="${escapeHtml(slotName)}" ${myFoodsState.slots.has(slotName) ? "checked" : ""} />
+      <span>${escapeHtml(slotName)}</span>
+    </label>
+  `).join("");
+
+  const foodList = manualFoods.length > 0 ? `
+    <ul class="my-food-list">
+      ${manualFoods.map((food) => `
+        <li class="my-food-item">
+          <div>
+            <strong>${escapeHtml(food.title)}</strong>
+            <span class="my-food-meta">${food.slots.map(escapeHtml).join(" · ")}${food.nutrients.calories ? ` · ${formatMetric(food.nutrients.calories)} kcal` : ""}</span>
+          </div>
+          <button type="button" class="slot-btn" data-remove-food="${escapeHtml(food.id)}">Remove</button>
+        </li>
+      `).join("")}
+    </ul>
+  ` : `<p class="setup-active-note">Nothing saved yet. Add your freezer and pantry favorites — they show up in every meal picker and in quick picks.</p>`;
+
+  const picks = myFoodsState.picks.length > 0 ? `
+    <div class="quick-picks">
+      <p class="library-slot-label">${myFoodsState.picksPeriod === "day" ? "Daytime picks" : "Tonight's picks"}</p>
+      ${myFoodsState.picks.map((meal) => `
+        <div class="library-meal-item">
+          <strong>${escapeHtml(meal.title)}</strong>
+          <span>${escapeHtml(meal.subtitle)}${meal.nutrients.calories ? ` · ${formatMetric(meal.nutrients.calories)} kcal` : ""}</span>
+        </div>
+      `).join("")}
+    </div>
+  ` : "";
+
+  const body = `
+    <div class="setup-form">
+      ${foodList}
+      <label class="field">
+        <span>Food name</span>
+        <input type="text" id="myFoodName" value="${escapeHtml(myFoodsState.name)}" placeholder="e.g. Beyond Meat sausage" autocomplete="off" />
+      </label>
+      <label class="field">
+        <span>Type</span>
+        <select id="myFoodType">
+          ${Object.entries(FOOD_TYPES).map(([key, type]) => `<option value="${key}" ${myFoodsState.type === key ? "selected" : ""}>${escapeHtml(type.label)}</option>`).join("")}
+        </select>
+      </label>
+      <div class="field">
+        <span>Works for</span>
+        <div class="slot-check-row">${slotChecks}</div>
+      </div>
+      <div class="nutrient-grid">
+        <label class="field"><span>Calories</span><input type="number" min="0" id="myFoodCalories" value="${escapeHtml(myFoodsState.calories)}" placeholder="optional" /></label>
+        <label class="field"><span>Protein g</span><input type="number" min="0" id="myFoodProtein" value="${escapeHtml(myFoodsState.protein)}" placeholder="optional" /></label>
+        <label class="field"><span>Potassium mg</span><input type="number" min="0" id="myFoodPotassium" value="${escapeHtml(myFoodsState.potassium)}" placeholder="optional" /></label>
+        <label class="field"><span>Magnesium mg</span><input type="number" min="0" id="myFoodMagnesium" value="${escapeHtml(myFoodsState.magnesium)}" placeholder="optional" /></label>
+      </div>
+      ${myFoodsState.error ? `<p class="setup-msg setup-error">${escapeHtml(myFoodsState.error)}</p>` : ""}
+      <div class="setup-actions">
+        <button type="button" class="reset-btn setup-btn" data-action="add-my-food">Add food</button>
+      </div>
+      <div class="setup-actions">
+        <button type="button" class="reset-btn" data-action="quick-picks-day">What can I eat today?</button>
+        <button type="button" class="reset-btn" data-action="quick-picks-night">What can I eat tonight?</button>
+      </div>
+      ${picks}
+    </div>
+  `;
+  return renderPanel("my-foods-panel", "No API key needed", "My Foods & Quick Picks", body);
+}
+
 function renderSetupPanel() {
   const savedApiKey = window.localStorage.getItem(API_KEY_KEY) ?? "";
   const hasCustomMeals = Boolean(customMeals);
@@ -503,9 +673,9 @@ function renderPlannerView() {
   return `
     <header class="masthead">
       <div class="masthead-copy">
-        <p class="eyebrow">Weekly Mediterranean diet planner</p>
+        <p class="eyebrow">Weekly diet planner</p>
         <h1>Aegean Week</h1>
-        <p class="lead">Fish, beef, and chicken arranged into a mineral-forward week with steady potassium and magnesium support.</p>
+        <p class="lead">Your usual chicken, beef, and fish rotation arranged into a steady week with potassium and magnesium support.</p>
         <div class="planner-actions" role="group" aria-label="Planner actions">
           <button type="button" class="reset-btn" data-action="regenerate">Regenerate week</button>
           <button type="button" class="reset-btn" data-action="reset">Reset planner</button>
@@ -520,7 +690,7 @@ function renderPlannerView() {
             <p class="label-line">Week view</p>
             <h2>Dial in each day</h2>
           </div>
-          <p class="section-copy">The week stays Mediterranean at the base: legumes, greens, yogurt, fruit, whole grains, olive oil, and rotating animal proteins.</p>
+          <p class="section-copy">Your usual pattern at the base: a protein (chicken, beef, fish, or eggs/lentils) with a side (rice, potatoes, legumes, or salad) each meal.</p>
         </div>
         <div class="day-strip" role="tablist" aria-label="Days of the week">
           ${week.days.map((day) => renderDayButton(day)).join("")}
@@ -552,6 +722,7 @@ function renderPlannerView() {
       </section>
 
       <aside class="my-inspector">
+        ${renderMyFoodsPanel()}
         ${renderSetupPanel()}
         ${renderPanel("grocery-panel", "This week", "Grocery List", `
           <div class="grocery-actions">
@@ -583,6 +754,9 @@ app.addEventListener("click", (event) => {
     const action = actionButton.dataset.action;
     if (action === "regenerate") { regenerateWeek(); return; }
     if (action === "generate-meals") { handleGenerateMeals(); return; }
+    if (action === "add-my-food") { handleAddMyFood(); return; }
+    if (action === "quick-picks-day") { handleQuickPicks("day"); return; }
+    if (action === "quick-picks-night") { handleQuickPicks("night"); return; }
     if (action === "clear-custom-meals") {
       customMeals = null;
       window.localStorage.removeItem(CUSTOM_MEALS_KEY);
@@ -593,7 +767,7 @@ app.addEventListener("click", (event) => {
     }
     if (action === "reset") {
       const ok = typeof window.confirm === "function"
-        ? window.confirm("Reset the planner to defaults? This clears your saved meals and restores the original Mediterranean plan.")
+        ? window.confirm("Reset the planner to defaults? This clears your saved meals and restores your usual weekly plan.")
         : true;
       if (ok) resetPlanner();
       return;
@@ -602,6 +776,12 @@ app.addEventListener("click", (event) => {
       handleCopyGrocery(actionButton);
       return;
     }
+  }
+
+  const removeFoodBtn = event.target.closest("[data-remove-food]");
+  if (removeFoodBtn) {
+    handleRemoveMyFood(removeFoodBtn.dataset.removeFood);
+    return;
   }
 
   const panelToggle = event.target.closest("[data-panel-toggle]");
@@ -660,7 +840,7 @@ app.addEventListener("click", (event) => {
   const resetSlotBtn = event.target.closest("[data-my-reset]");
   if (resetSlotBtn) {
     const [dayId, slotKey] = resetSlotBtn.dataset.myReset.split(":");
-    const defaultDay = weeklyPlan.find((d) => d.id === dayId);
+    const defaultDay = BASE_WEEK.find((d) => d.id === dayId);
     if (defaultDay) {
       if (!planner.plan[dayId]) planner.plan[dayId] = {};
       planner.plan[dayId][slotKey] = defaultDay.meals[slotKey];
@@ -672,8 +852,22 @@ app.addEventListener("click", (event) => {
 });
 
 app.addEventListener("input", (event) => {
-  if (event.target.id === "setupWorkText") { setupState.workText = event.target.value; }
-  if (event.target.id === "setupHomeText") { setupState.homeText = event.target.value; }
+  const target = event.target;
+  if (target.id === "setupWorkText") { setupState.workText = target.value; }
+  if (target.id === "setupHomeText") { setupState.homeText = target.value; }
+  if (target.id === "myFoodName") { myFoodsState.name = target.value; }
+  if (target.id === "myFoodType") { myFoodsState.type = target.value; }
+  if (target.id === "myFoodCalories") { myFoodsState.calories = target.value; }
+  if (target.id === "myFoodProtein") { myFoodsState.protein = target.value; }
+  if (target.id === "myFoodPotassium") { myFoodsState.potassium = target.value; }
+  if (target.id === "myFoodMagnesium") { myFoodsState.magnesium = target.value; }
+  if (target.dataset?.myFoodSlot) {
+    if (target.checked) {
+      myFoodsState.slots.add(target.dataset.myFoodSlot);
+    } else {
+      myFoodsState.slots.delete(target.dataset.myFoodSlot);
+    }
+  }
 });
 
 render();
