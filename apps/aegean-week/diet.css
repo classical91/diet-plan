@@ -1493,31 +1493,22 @@ button.panel-toggle {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
-.my-food-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.my-foods-library {
   display: grid;
-  gap: 6px;
+  gap: 4px;
 }
-.my-food-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  border: 1px solid #2e2a24;
-  border-radius: 10px;
-  padding: 9px 12px;
-  background: #201d19;
+.my-foods-library .library-group {
+  margin-top: 10px;
 }
-.my-food-item strong {
-  display: block;
-  font-size: 0.88rem;
-  color: #f0ebe3;
+.my-library-card {
+  display: grid;
+  gap: 4px;
 }
-.my-food-meta {
-  font-size: 0.75rem;
-  color: #7a7063;
+.my-library-card .picker-meal-btn {
+  width: 100%;
+}
+.my-library-remove {
+  justify-self: end;
 }
 .quick-picks {
   display: grid;
