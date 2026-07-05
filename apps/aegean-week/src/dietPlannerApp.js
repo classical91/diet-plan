@@ -554,6 +554,52 @@ function renderPanel(id, labelLine, heading, body) {
   `;
 }
 
+function renderMyFoodsLibrary() {
+  if (manualFoods.length === 0) {
+    return `<p class="setup-active-note">Nothing saved yet. Add your freezer and pantry favorites below — they'll show up here as tappable cards, in every meal picker, and in quick picks.</p>`;
+  }
+
+  const selectedDay = BASE_WEEK.find((d) => d.id === planner.selectedDayId) ?? BASE_WEEK[0];
+
+  const groups = Object.entries(SLOT_NAMES).map(([slotKey, slotName]) => {
+    const foods = manualFoods.filter((food) => mealFitsSlot(food, slotName));
+    if (foods.length === 0) return "";
+    const currentMealId = planner.plan[selectedDay.id]?.[slotKey];
+    return `
+      <div class="library-group">
+        <p class="library-slot-label">${escapeHtml(slotName)}</p>
+        <div class="picker-grid">
+          ${foods.map((food) => {
+            const meta = [
+              food.nutrients.calories ? `${formatMetric(food.nutrients.calories)} kcal` : "",
+              food.nutrients.protein ? `${formatMetric(food.nutrients.protein)}g protein` : ""
+            ].filter(Boolean).join(" · ");
+            return `
+              <div class="my-library-card">
+                <button type="button" class="picker-meal-btn ${food.id === currentMealId ? "is-current" : ""}" data-my-pick="${escapeHtml(selectedDay.id)}:${escapeHtml(slotKey)}:${escapeHtml(food.id)}">
+                  <strong>${escapeHtml(food.title)}</strong>
+                  <span>${escapeHtml(meta || food.subtitle)}</span>
+                  <div class="picker-tags">
+                    ${food.ingredients.slice(0, 3).map((i) => `<span>${escapeHtml(i.name)}</span>`).join("")}
+                  </div>
+                </button>
+                <button type="button" class="slot-btn my-library-remove" data-remove-food="${escapeHtml(food.id)}">Remove</button>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  return `
+    <div class="my-foods-library">
+      <p class="setup-active-note">Tap a food to make it ${escapeHtml(selectedDay.name)}'s meal for that slot. The highlighted card is what's planned now.</p>
+      ${groups}
+    </div>
+  `;
+}
+
 function renderMyFoodsPanel() {
   const slotChecks = Object.values(SLOT_NAMES).map((slotName) => `
     <label class="slot-check">
@@ -562,19 +608,7 @@ function renderMyFoodsPanel() {
     </label>
   `).join("");
 
-  const foodList = manualFoods.length > 0 ? `
-    <ul class="my-food-list">
-      ${manualFoods.map((food) => `
-        <li class="my-food-item">
-          <div>
-            <strong>${escapeHtml(food.title)}</strong>
-            <span class="my-food-meta">${food.slots.map(escapeHtml).join(" · ")}${food.nutrients.calories ? ` · ${formatMetric(food.nutrients.calories)} kcal` : ""}</span>
-          </div>
-          <button type="button" class="slot-btn" data-remove-food="${escapeHtml(food.id)}">Remove</button>
-        </li>
-      `).join("")}
-    </ul>
-  ` : `<p class="setup-active-note">Nothing saved yet. Add your freezer and pantry favorites — they show up in every meal picker and in quick picks.</p>`;
+  const foodList = renderMyFoodsLibrary();
 
   const picks = myFoodsState.picks.length > 0 ? `
     <div class="quick-picks">
