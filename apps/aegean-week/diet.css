@@ -1514,3 +1514,37 @@ button.panel-toggle {
   display: grid;
   gap: 6px;
 }
+
+/* Dinner Ideas panel */
+.dinner-ideas-scroll {
+  max-height: 420px;
+  overflow-y: auto;
+  margin-top: 10px;
+  padding-right: 4px;
+}
+.dinner-idea-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.dinner-idea-chip {
+  background: #1a1714;
+  border: 1px solid #2e2a24;
+  border-radius: 999px;
+  color: #d8cfc2;
+  font-family: inherit;
+  font-size: 12px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.dinner-idea-chip:hover {
+  border-color: #c8922a;
+  color: #f0ebe3;
+}
+.dinner-idea-chip.is-current {
+  border-color: #c8922a;
+  background: rgba(200, 146, 42, 0.14);
+  color: #f0ebe3;
+  font-weight: 600;
+}

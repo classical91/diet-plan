@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { boosterFoods, goalPresets, mealLibrary, weeklyPlan } from "../src/dietPlannerData.js";
+import { boosterFoods, dinnerTitles, goalPresets, mealLibrary, weeklyPlan } from "../src/dietPlannerData.js";
 import {
+  buildDinnerIdeas,
   buildGroceryList,
   buildStaples,
   countProteins,
@@ -290,4 +291,45 @@ test("suggestQuickPicks tops up from the fallback library for daytime", () => {
   assert.equal(picks.length, 2);
   assert.equal(picks[0].id, "food-smoothie");
   assert.equal(picks[1].id, "lib-breakfast");
+});
+
+test("buildDinnerIdeas turns the whole title bank into unique dinner meals", () => {
+  const ideas = buildDinnerIdeas(dinnerTitles);
+
+  assert.equal(ideas.length, dinnerTitles.length);
+  assert.equal(new Set(ideas.map((i) => i.id)).size, ideas.length);
+  assert.equal(ideas.every((i) => i.slot === "Dinner"), true);
+  assert.equal(ideas.every((i) => i.ingredients.length > 0), true);
+  const lookup = createMealLookup(ideas);
+  assert.equal(ideas.every((i) => lookup.has(i.id)), true);
+});
+
+test("buildDinnerIdeas infers protein, side, and vegetable from the title", () => {
+  const [idea] = buildDinnerIdeas(["Chicken Broccoli"]);
+  assert.equal(idea.protein, "Chicken");
+  assert.deepEqual(idea.ingredients.map((i) => i.name), ["Chicken", "Broccoli"]);
+  assert.ok(idea.nutrients.calories > 0);
+  assert.ok(idea.nutrients.potassium > 0);
+});
+
+test("buildDinnerIdeas keeps green beans a vegetable, not the legume bean", () => {
+  const [greenBean] = buildDinnerIdeas(["Green Bean Rice"]);
+  assert.equal(greenBean.protein, "Vegetarian");
+  assert.deepEqual(greenBean.ingredients.map((i) => i.name), ["Rice", "Green beans"]);
+
+  const [burrito] = buildDinnerIdeas(["Bean Rice Burrito"]);
+  assert.equal(burrito.ingredients.some((i) => i.name === "Beans" && i.group === "Legume"), true);
+});
+
+test("buildDinnerIdeas falls back to the title when no keyword matches", () => {
+  const [idea] = buildDinnerIdeas(["Mystery Plate"]);
+  assert.equal(idea.ingredients.length, 1);
+  assert.equal(idea.ingredients[0].name, "Mystery Plate");
+  assert.ok(idea.nutrients.calories > 0);
+});
+
+test("buildDinnerIdeas disambiguates duplicate titles with suffixes", () => {
+  const ideas = buildDinnerIdeas(["Tuna", "Tuna"]);
+  assert.equal(ideas.length, 2);
+  assert.notEqual(ideas[0].id, ideas[1].id);
 });
