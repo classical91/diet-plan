@@ -410,3 +410,119 @@ export function generateWeek(basePlan, mealLibrary, options = {}) {
     return { ...day, meals };
   });
 }
+
+// ── Dinner idea bank ────────────────────────────────────────────────────────
+// Turns simple dinner title strings (e.g. "Chicken Broccoli") into pickable
+// dinner meals by matching known protein/side/vegetable keywords. Nutrients are
+// rough estimates so day totals and the grocery list still work when picked.
+
+const PROTEIN_KEYWORDS = [
+  { match: ["chicken"], label: "Chicken", protein: "Chicken", ingredient: { name: "Chicken", group: "Protein" }, nutrients: { potassium: 620, magnesium: 40, protein: 40, fiber: 0, calories: 280 } },
+  { match: ["turkey"], label: "Turkey", protein: "Turkey", ingredient: { name: "Turkey", group: "Protein" }, nutrients: { potassium: 600, magnesium: 38, protein: 38, fiber: 0, calories: 260 } },
+  { match: ["bolognese", "cabbage roll", "beef"], label: "Beef", protein: "Beef", ingredient: { name: "Beef", group: "Protein" }, nutrients: { potassium: 560, magnesium: 32, protein: 36, fiber: 0, calories: 320 } },
+  { match: ["salmon"], label: "Salmon", protein: "Fish", ingredient: { name: "Salmon", group: "Protein" }, nutrients: { potassium: 700, magnesium: 45, protein: 40, fiber: 0, calories: 300 } },
+  { match: ["tuna"], label: "Tuna", protein: "Fish", ingredient: { name: "Tuna", group: "Protein" }, nutrients: { potassium: 500, magnesium: 40, protein: 42, fiber: 0, calories: 200 } },
+  { match: ["beyond"], label: "Beyond", protein: "Vegetarian", ingredient: { name: "Beyond Meat", group: "Protein" }, nutrients: { potassium: 500, magnesium: 30, protein: 20, fiber: 3, calories: 260 } },
+  { match: ["egg"], label: "Egg", protein: "Vegetarian", ingredient: { name: "Eggs", group: "Protein" }, nutrients: { potassium: 200, magnesium: 24, protein: 18, fiber: 0, calories: 180 } },
+  { match: ["lentil"], label: "Lentil", protein: "Vegetarian", ingredient: { name: "Lentils", group: "Legume" }, nutrients: { potassium: 730, magnesium: 71, protein: 18, fiber: 15, calories: 230 } },
+  { match: ["bean", "burrito"], label: "Bean", protein: "Vegetarian", ingredient: { name: "Beans", group: "Legume" }, nutrients: { potassium: 600, magnesium: 60, protein: 15, fiber: 12, calories: 240 } }
+];
+
+const SIDE_KEYWORDS = [
+  { match: ["mac cheese"], ingredient: { name: "Macaroni and cheese", group: "Whole grain" }, nutrients: { potassium: 200, magnesium: 30, protein: 14, fiber: 2, calories: 350 } },
+  { match: ["perogy", "perogies"], ingredient: { name: "Perogies", group: "Whole grain" }, nutrients: { potassium: 400, magnesium: 40, protein: 8, fiber: 3, calories: 300 } },
+  { match: ["potato"], ingredient: { name: "Potatoes", group: "Vegetable" }, nutrients: { potassium: 620, magnesium: 50, protein: 6, fiber: 4, calories: 200 } },
+  { match: ["pasta"], ingredient: { name: "Pasta", group: "Whole grain" }, nutrients: { potassium: 180, magnesium: 50, protein: 12, fiber: 4, calories: 280 } },
+  { match: ["rice"], ingredient: { name: "Rice", group: "Whole grain" }, nutrients: { potassium: 110, magnesium: 25, protein: 5, fiber: 1, calories: 220 } }
+];
+
+const VEG_KEYWORDS = [
+  { match: ["mixed veg"], ingredient: { name: "Mixed vegetables", group: "Vegetable" }, nutrients: { potassium: 300, magnesium: 30, protein: 5, fiber: 6, calories: 80 } },
+  { match: ["green bean"], ingredient: { name: "Green beans", group: "Vegetable" }, nutrients: { potassium: 210, magnesium: 25, protein: 2, fiber: 4, calories: 35 } },
+  { match: ["broccoli"], ingredient: { name: "Broccoli", group: "Vegetable" }, nutrients: { potassium: 460, magnesium: 30, protein: 4, fiber: 5, calories: 55 } },
+  { match: ["corn"], ingredient: { name: "Corn", group: "Vegetable" }, nutrients: { potassium: 270, magnesium: 40, protein: 5, fiber: 4, calories: 130 } },
+  { match: ["peas"], ingredient: { name: "Peas", group: "Vegetable" }, nutrients: { potassium: 240, magnesium: 33, protein: 8, fiber: 7, calories: 120 } },
+  { match: ["sauerkraut"], ingredient: { name: "Sauerkraut", group: "Vegetable" }, nutrients: { potassium: 170, magnesium: 13, protein: 1, fiber: 3, calories: 25 } },
+  { match: ["cabbage"], ingredient: { name: "Cabbage", group: "Vegetable" }, nutrients: { potassium: 170, magnesium: 12, protein: 1, fiber: 2, calories: 22 } },
+  { match: ["salsa"], ingredient: { name: "Salsa", group: "Vegetable" }, nutrients: { potassium: 290, magnesium: 20, protein: 2, fiber: 2, calories: 40 } },
+  { match: ["tomato"], ingredient: { name: "Tomatoes", group: "Vegetable" }, nutrients: { potassium: 290, magnesium: 20, protein: 2, fiber: 2, calories: 40 } }
+];
+
+function slugifyTitle(title) {
+  return title.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+function firstMatch(keywords, haystack) {
+  for (const entry of keywords) {
+    if (entry.match.some((needle) => haystack.includes(needle))) return entry;
+  }
+  return null;
+}
+
+function addNutrients(target, addition) {
+  for (const key of NUTRIENT_KEYS) {
+    target[key] += addition[key] ?? 0;
+  }
+}
+
+export function buildDinnerIdeas(titles) {
+  if (!Array.isArray(titles)) return [];
+  const seenIds = new Set();
+  const ideas = [];
+
+  for (const rawTitle of titles) {
+    if (typeof rawTitle !== "string" || !rawTitle.trim()) continue;
+    const title = rawTitle.trim();
+    // Strip "green bean" before scanning the legume "bean" keyword so they don't collide.
+    const haystack = title.toLowerCase();
+    const legumeSafe = haystack.replace(/green bean/g, "");
+
+    const ingredients = [];
+    const nutrients = { potassium: 0, magnesium: 0, protein: 0, fiber: 0, calories: 0 };
+
+    // "Green bean" is a vegetable, not the legume "bean", so the Bean protein
+    // keyword scans a copy with "green bean" removed.
+    const proteinEntry = PROTEIN_KEYWORDS.find((entry) => {
+      const scan = entry.label === "Bean" ? legumeSafe : haystack;
+      return entry.match.some((needle) => scan.includes(needle));
+    });
+
+    let protein = "Vegetarian";
+    if (proteinEntry) {
+      protein = proteinEntry.protein;
+      ingredients.push({ ...proteinEntry.ingredient });
+      addNutrients(nutrients, proteinEntry.nutrients);
+    }
+
+    const sideEntry = firstMatch(SIDE_KEYWORDS, haystack);
+    if (sideEntry) {
+      ingredients.push({ ...sideEntry.ingredient });
+      addNutrients(nutrients, sideEntry.nutrients);
+    }
+
+    const vegEntry = firstMatch(VEG_KEYWORDS, haystack);
+    if (vegEntry) {
+      ingredients.push({ ...vegEntry.ingredient });
+      addNutrients(nutrients, vegEntry.nutrients);
+    }
+
+    if (ingredients.length === 0) {
+      // Fallback so grocery list and totals still have something to show.
+      ingredients.push({ name: title, group: "Various" });
+      addNutrients(nutrients, { potassium: 300, magnesium: 25, protein: 15, fiber: 3, calories: 250 });
+    }
+
+    let id = `dinner-idea-${slugifyTitle(title)}`;
+    if (seenIds.has(id)) {
+      let suffix = 2;
+      while (seenIds.has(`${id}-${suffix}`)) suffix += 1;
+      id = `${id}-${suffix}`;
+    }
+    seenIds.add(id);
+
+    const subtitle = ingredients.map((i) => i.name).join(", ") + ".";
+    ideas.push({ id, slot: "Dinner", title, subtitle, protein, ingredients, nutrients });
+  }
+
+  return ideas;
+}

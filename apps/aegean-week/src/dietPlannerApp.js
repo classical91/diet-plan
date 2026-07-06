@@ -1,5 +1,6 @@
-import { mealLibrary, usualMealsLibrary, weeklyPlan, myWeekTemplate } from "./dietPlannerData.js";
+import { mealLibrary, usualMealsLibrary, weeklyPlan, myWeekTemplate, dinnerTitles } from "./dietPlannerData.js";
 import {
+  buildDinnerIdeas,
   buildGroceryList,
   createMealLookup,
   formatGroceryListText,
@@ -12,6 +13,8 @@ import {
   suggestQuickPicks,
   summarizeWeek
 } from "./dietPlannerLogic.js";
+
+const dinnerIdeas = buildDinnerIdeas(dinnerTitles);
 
 const PLANNER_KEY = "planner:v2";
 const CUSTOM_MEALS_KEY = "my-meals-custom:v1";
@@ -94,7 +97,7 @@ function flattenCustomMeals(custom) {
 }
 
 function buildAllMealsLookup() {
-  return createMealLookup([...mealLibrary, ...usualMealsLibrary, ...flattenCustomMeals(customMeals), ...manualFoods]);
+  return createMealLookup([...mealLibrary, ...usualMealsLibrary, ...flattenCustomMeals(customMeals), ...manualFoods, ...dinnerIdeas]);
 }
 
 let manualFoods = loadManualFoods();
@@ -497,6 +500,11 @@ function renderMealPicker(dayId, slotKey) {
   for (const meal of usualMealsLibrary) {
     if (meal.slot === slotName && !seen.has(meal.id)) { seen.add(meal.id); available.push(meal); }
   }
+  if (slotName === "Dinner") {
+    for (const meal of dinnerIdeas) {
+      if (!seen.has(meal.id)) { seen.add(meal.id); available.push(meal); }
+    }
+  }
   for (const meal of mealLibrary) {
     if (meal.slot === slotName && !seen.has(meal.id)) { seen.add(meal.id); available.push(meal); }
   }
@@ -598,6 +606,55 @@ function renderMyFoodsLibrary() {
       ${groups}
     </div>
   `;
+}
+
+const DINNER_IDEA_GROUPS = [
+  { label: "Chicken", test: (t) => t.includes("chicken") },
+  { label: "Turkey", test: (t) => t.includes("turkey") },
+  { label: "Beef", test: (t) => t.includes("beef") || t.includes("bolognese") || t.includes("cabbage roll") },
+  { label: "Fish", test: (t) => t.includes("salmon") || t.includes("tuna") },
+  { label: "Plant-based", test: (t) => t.includes("beyond") },
+  { label: "Eggs", test: (t) => t.includes("egg") },
+  { label: "Legumes", test: (t) => t.includes("lentil") || t.includes("bean") || t.includes("burrito") },
+  { label: "Bowls & sides", test: () => true }
+];
+
+function dinnerIdeaGroup(idea) {
+  const title = idea.title.toLowerCase();
+  return (DINNER_IDEA_GROUPS.find((g) => g.test(title)) ?? DINNER_IDEA_GROUPS.at(-1)).label;
+}
+
+function renderDinnerIdeasPanel() {
+  const selectedDay = BASE_WEEK.find((d) => d.id === planner.selectedDayId) ?? BASE_WEEK[0];
+  const currentMealId = planner.plan[selectedDay.id]?.dinner;
+
+  const grouped = new Map(DINNER_IDEA_GROUPS.map((g) => [g.label, []]));
+  for (const idea of dinnerIdeas) grouped.get(dinnerIdeaGroup(idea)).push(idea);
+
+  const groups = DINNER_IDEA_GROUPS.map(({ label }) => {
+    const ideas = grouped.get(label);
+    if (!ideas || ideas.length === 0) return "";
+    return `
+      <div class="library-group">
+        <p class="library-slot-label">${escapeHtml(label)}</p>
+        <div class="dinner-idea-grid">
+          ${ideas.map((idea) => `
+            <button type="button" class="dinner-idea-chip ${idea.id === currentMealId ? "is-current" : ""}" data-my-pick="${escapeHtml(selectedDay.id)}:dinner:${escapeHtml(idea.id)}" title="${escapeHtml(idea.subtitle)}">
+              ${escapeHtml(idea.title)}
+            </button>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  const body = `
+    <div class="dinner-ideas">
+      <p class="setup-active-note">Tap any idea to set it as ${escapeHtml(selectedDay.name)}'s dinner. Sorted by main protein. The highlighted one is planned now.</p>
+      <div class="dinner-ideas-scroll">${groups}</div>
+    </div>
+  `;
+  return renderPanel("dinner-ideas-panel", "My dinner bank", "Dinner Ideas", body);
 }
 
 function renderMyFoodsPanel() {
@@ -756,6 +813,7 @@ function renderPlannerView() {
       </section>
 
       <aside class="my-inspector">
+        ${renderDinnerIdeasPanel()}
         ${renderMyFoodsPanel()}
         ${renderSetupPanel()}
         ${renderPanel("grocery-panel", "This week", "Grocery List", `
