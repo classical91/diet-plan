@@ -3,8 +3,10 @@ import {
   buildDinnerIdeas,
   buildGroceryList,
   createMealLookup,
+  DINNER_CATEGORIES,
   formatGroceryListText,
   formatMetric,
+  generateDinnerWeek,
   generateWeek,
   mealFitsSlot,
   normalizeCustomMeals,
@@ -608,30 +610,57 @@ function renderMyFoodsLibrary() {
   `;
 }
 
-const DINNER_IDEA_GROUPS = [
-  { label: "Chicken", test: (t) => t.includes("chicken") },
-  { label: "Turkey", test: (t) => t.includes("turkey") },
-  { label: "Beef", test: (t) => t.includes("beef") || t.includes("bolognese") || t.includes("cabbage roll") },
-  { label: "Fish", test: (t) => t.includes("salmon") || t.includes("tuna") },
-  { label: "Plant-based", test: (t) => t.includes("beyond") },
-  { label: "Eggs", test: (t) => t.includes("egg") },
-  { label: "Legumes", test: (t) => t.includes("lentil") || t.includes("bean") || t.includes("burrito") },
-  { label: "Bowls & sides", test: () => true }
-];
+// Categories that actually have at least one dinner idea, in DINNER_CATEGORIES order.
+const AVAILABLE_DINNER_CATEGORIES = DINNER_CATEGORIES
+  .map((c) => c.label)
+  .filter((label) => dinnerIdeas.some((idea) => idea.category === label));
 
-function dinnerIdeaGroup(idea) {
-  const title = idea.title.toLowerCase();
-  return (DINNER_IDEA_GROUPS.find((g) => g.test(title)) ?? DINNER_IDEA_GROUPS.at(-1)).label;
+// Generator starts with every available category selected.
+const generatorState = { categories: new Set(AVAILABLE_DINNER_CATEGORIES) };
+
+function buildDinnerWeek() {
+  const categories = [...generatorState.categories];
+  const assignment = generateDinnerWeek(BASE_WEEK, dinnerIdeas, { categories });
+  if (Object.keys(assignment).length === 0) return;
+  for (const [dayId, dinnerId] of Object.entries(assignment)) {
+    if (!planner.plan[dayId]) planner.plan[dayId] = {};
+    planner.plan[dayId].dinner = dinnerId;
+  }
+  savePlannerState();
+  render();
+}
+
+function renderDinnerGenerator() {
+  const toggles = AVAILABLE_DINNER_CATEGORIES.map((label) => `
+    <label class="slot-check">
+      <input type="checkbox" data-dinner-category="${escapeHtml(label)}" ${generatorState.categories.has(label) ? "checked" : ""} />
+      <span>${escapeHtml(label)}</span>
+    </label>
+  `).join("");
+  const noneSelected = generatorState.categories.size === 0;
+
+  return `
+    <div class="dinner-generator">
+      <p class="library-slot-label">Build a week from these proteins</p>
+      <div class="slot-check-row">${toggles}</div>
+      <div class="setup-actions" style="margin-top:10px">
+        <button type="button" class="reset-btn setup-btn" data-action="build-dinner-week" ${noneSelected ? "disabled" : ""}>Build dinner week</button>
+      </div>
+      ${noneSelected ? `<p class="setup-active-note">Pick at least one protein to build the week.</p>` : ""}
+    </div>
+  `;
 }
 
 function renderDinnerIdeasPanel() {
   const selectedDay = BASE_WEEK.find((d) => d.id === planner.selectedDayId) ?? BASE_WEEK[0];
   const currentMealId = planner.plan[selectedDay.id]?.dinner;
 
-  const grouped = new Map(DINNER_IDEA_GROUPS.map((g) => [g.label, []]));
-  for (const idea of dinnerIdeas) grouped.get(dinnerIdeaGroup(idea)).push(idea);
+  const grouped = new Map(AVAILABLE_DINNER_CATEGORIES.map((label) => [label, []]));
+  for (const idea of dinnerIdeas) {
+    if (grouped.has(idea.category)) grouped.get(idea.category).push(idea);
+  }
 
-  const groups = DINNER_IDEA_GROUPS.map(({ label }) => {
+  const groups = AVAILABLE_DINNER_CATEGORIES.map((label) => {
     const ideas = grouped.get(label);
     if (!ideas || ideas.length === 0) return "";
     return `
@@ -650,7 +679,8 @@ function renderDinnerIdeasPanel() {
 
   const body = `
     <div class="dinner-ideas">
-      <p class="setup-active-note">Tap any idea to set it as ${escapeHtml(selectedDay.name)}'s dinner. Sorted by main protein. The highlighted one is planned now.</p>
+      ${renderDinnerGenerator()}
+      <p class="setup-active-note">Or tap any idea to set it as ${escapeHtml(selectedDay.name)}'s dinner. Sorted by main protein. The highlighted one is planned now.</p>
       <div class="dinner-ideas-scroll">${groups}</div>
     </div>
   `;
@@ -849,6 +879,7 @@ app.addEventListener("click", (event) => {
     if (action === "add-my-food") { handleAddMyFood(); return; }
     if (action === "quick-picks-day") { handleQuickPicks("day"); return; }
     if (action === "quick-picks-night") { handleQuickPicks("night"); return; }
+    if (action === "build-dinner-week") { buildDinnerWeek(); return; }
     if (action === "clear-custom-meals") {
       customMeals = null;
       window.localStorage.removeItem(CUSTOM_MEALS_KEY);
@@ -959,6 +990,14 @@ app.addEventListener("input", (event) => {
     } else {
       myFoodsState.slots.delete(target.dataset.myFoodSlot);
     }
+  }
+  if (target.dataset?.dinnerCategory) {
+    if (target.checked) {
+      generatorState.categories.add(target.dataset.dinnerCategory);
+    } else {
+      generatorState.categories.delete(target.dataset.dinnerCategory);
+    }
+    render();
   }
 });
 

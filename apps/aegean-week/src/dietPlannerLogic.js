@@ -465,6 +465,26 @@ function addNutrients(target, addition) {
   }
 }
 
+// Display/rotation category for a dinner idea, derived from its title. The last
+// entry is a catch-all, so this always returns a label.
+export const DINNER_CATEGORIES = [
+  { label: "Chicken", test: (t) => t.includes("chicken") },
+  { label: "Turkey", test: (t) => t.includes("turkey") },
+  { label: "Beef", test: (t) => t.includes("beef") || t.includes("bolognese") || t.includes("cabbage roll") },
+  { label: "Fish", test: (t) => t.includes("salmon") || t.includes("tuna") },
+  { label: "Plant-based", test: (t) => t.includes("beyond") },
+  { label: "Eggs", test: (t) => t.includes("egg") },
+  { label: "Legumes", test: (t) => t.includes("lentil") || t.includes("bean") || t.includes("burrito") },
+  { label: "Bowls & sides", test: () => true }
+];
+
+export function dinnerCategory(title) {
+  // Strip "green bean" so it never trips the Legumes bucket — it's a vegetable,
+  // matching how buildDinnerIdeas classifies its ingredients.
+  const haystack = String(title).toLowerCase().replace(/green bean/g, "");
+  return (DINNER_CATEGORIES.find((c) => c.test(haystack)) ?? DINNER_CATEGORIES.at(-1)).label;
+}
+
 export function buildDinnerIdeas(titles) {
   if (!Array.isArray(titles)) return [];
   const seenIds = new Set();
@@ -521,8 +541,63 @@ export function buildDinnerIdeas(titles) {
     seenIds.add(id);
 
     const subtitle = ingredients.map((i) => i.name).join(", ") + ".";
-    ideas.push({ id, slot: "Dinner", title, subtitle, protein, ingredients, nutrients });
+    ideas.push({ id, slot: "Dinner", title, subtitle, protein, category: dinnerCategory(title), ingredients, nutrients });
   }
 
   return ideas;
+}
+
+// Assigns one dinner idea to each day, rotating through the chosen categories for
+// variety and avoiding repeats until the pool is exhausted. Returns a plain object
+// mapping day id -> dinner idea id. Days whose category pool is empty are skipped.
+export function generateDinnerWeek(days, dinnerIdeas, options = {}) {
+  const { categories = null, random = Math.random } = options;
+  if (!Array.isArray(days) || !Array.isArray(dinnerIdeas)) return {};
+
+  const wanted = categories && categories.length > 0 ? new Set(categories) : null;
+  const pool = dinnerIdeas.filter((idea) => !wanted || wanted.has(idea.category));
+  if (pool.length === 0) return {};
+
+  // Group the pool by category, in the order categories first appear, and shuffle each.
+  const byCategory = new Map();
+  for (const idea of pool) {
+    if (!byCategory.has(idea.category)) byCategory.set(idea.category, []);
+    byCategory.get(idea.category).push(idea);
+  }
+  const order = [...byCategory.keys()];
+  for (const label of order) byCategory.set(label, shuffle(byCategory.get(label), random));
+
+  const cursors = new Map(order.map((label) => [label, 0]));
+  const usedIds = new Set();
+  const assignment = {};
+
+  days.forEach((day, index) => {
+    // Try each category once, starting at the rotating offset, preferring an unused idea.
+    let picked = null;
+    for (let step = 0; step < order.length && !picked; step += 1) {
+      const label = order[(index + step) % order.length];
+      const list = byCategory.get(label);
+      for (let scan = 0; scan < list.length; scan += 1) {
+        const cursor = (cursors.get(label) + scan) % list.length;
+        const candidate = list[cursor];
+        if (!usedIds.has(candidate.id)) {
+          picked = candidate;
+          cursors.set(label, cursor + 1);
+          break;
+        }
+      }
+    }
+    // Every idea used already: fall back to the rotating category's next item.
+    if (!picked) {
+      const label = order[index % order.length];
+      const list = byCategory.get(label);
+      const cursor = cursors.get(label) % list.length;
+      picked = list[cursor];
+      cursors.set(label, cursor + 1);
+    }
+    usedIds.add(picked.id);
+    assignment[day.id] = picked.id;
+  });
+
+  return assignment;
 }

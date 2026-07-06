@@ -5,6 +5,8 @@ import { boosterFoods, dinnerTitles, goalPresets, mealLibrary, weeklyPlan } from
 import {
   buildDinnerIdeas,
   buildGroceryList,
+  dinnerCategory,
+  generateDinnerWeek,
   buildStaples,
   countProteins,
   createMealLookup,
@@ -332,4 +334,56 @@ test("buildDinnerIdeas disambiguates duplicate titles with suffixes", () => {
   const ideas = buildDinnerIdeas(["Tuna", "Tuna"]);
   assert.equal(ideas.length, 2);
   assert.notEqual(ideas[0].id, ideas[1].id);
+});
+
+test("dinnerCategory sorts titles into protein buckets", () => {
+  assert.equal(dinnerCategory("Chicken Rice"), "Chicken");
+  assert.equal(dinnerCategory("Turkey Corn"), "Turkey");
+  assert.equal(dinnerCategory("Beef Bolognese"), "Beef");
+  assert.equal(dinnerCategory("Salmon Plate"), "Fish");
+  assert.equal(dinnerCategory("Beyond Rice"), "Plant-based");
+  assert.equal(dinnerCategory("Egg Scramble"), "Eggs");
+  assert.equal(dinnerCategory("Lentil Bowl"), "Legumes");
+  assert.equal(dinnerCategory("Broccoli Rice"), "Bowls & sides");
+});
+
+test("buildDinnerIdeas tags each idea with its category", () => {
+  const ideas = buildDinnerIdeas(["Chicken Rice", "Beyond Burger", "Green Bean Rice"]);
+  assert.deepEqual(ideas.map((i) => i.category), ["Chicken", "Plant-based", "Bowls & sides"]);
+});
+
+const days7 = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"].map((id) => ({ id }));
+
+test("generateDinnerWeek fills every day with a valid dinner idea id", () => {
+  const ideas = buildDinnerIdeas(dinnerTitles);
+  const lookup = createMealLookup(ideas);
+  const assignment = generateDinnerWeek(days7, ideas, { random: seededRandom(5) });
+
+  assert.equal(Object.keys(assignment).length, 7);
+  for (const day of days7) {
+    assert.ok(lookup.has(assignment[day.id]), `${day.id} should map to a real idea`);
+  }
+});
+
+test("generateDinnerWeek only uses ideas from the chosen categories", () => {
+  const ideas = buildDinnerIdeas(dinnerTitles);
+  const byId = new Map(ideas.map((i) => [i.id, i]));
+  const assignment = generateDinnerWeek(days7, ideas, { categories: ["Chicken", "Fish"], random: seededRandom(9) });
+
+  for (const dinnerId of Object.values(assignment)) {
+    assert.ok(["Chicken", "Fish"].includes(byId.get(dinnerId).category));
+  }
+});
+
+test("generateDinnerWeek rotates categories and avoids repeats when the pool allows", () => {
+  const ideas = buildDinnerIdeas(dinnerTitles);
+  const assignment = generateDinnerWeek(days7, ideas, { random: seededRandom(3) });
+  const ids = Object.values(assignment);
+  // 84 ideas across a 7-day week: no dinner should repeat.
+  assert.equal(new Set(ids).size, ids.length);
+});
+
+test("generateDinnerWeek returns empty when no category matches", () => {
+  const ideas = buildDinnerIdeas(["Chicken Rice"]);
+  assert.deepEqual(generateDinnerWeek(days7, ideas, { categories: ["Fish"] }), {});
 });
