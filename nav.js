@@ -69,6 +69,7 @@
           </div>
         </div>
         <a href="https://workout-tracker-production-0ec7.up.railway.app" class="nav-item" target="_blank" rel="noreferrer">Workout</a>
+        <a href="https://chatgpt.com/g/g-688a5226c9a48191ad07c08f57fe46b2-keto-agent" class="nav-item" target="_blank" rel="noreferrer">Keto Agent</a>
       </div>
       <div class="nav-search" id="navSearch">
         <input type="search" class="nav-search-input" id="navSearchInput"
