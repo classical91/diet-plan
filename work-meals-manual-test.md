@@ -1,6 +1,7 @@
 # Manual test notes
 
-No CI checks are configured for this repo.
+No CI checks are configured for this repo. The checks below were also run as a
+headless Chromium script (Playwright) against `npm run dev` on port 3000.
 
 Manual browser checks for `/work-meals`:
 
@@ -18,3 +19,16 @@ Manual browser checks for `/work-meals`:
 12. Add a title the app cannot read, such as `Pasta bolognese`. The card should still show the title, and the Dinner balance box should ask for the missing parts rather than inventing a protein or defaulting the vegetable to broccoli.
 13. With the night list empty, choose `Mix generated + my dinner list` and tap `Replace week`. The week should fill with generated dinners and say so, rather than refusing. `My dinner list only` should still refuse with an empty list.
 14. With the source set to `Generated dinners only`, tap `Plan my week` in the top toolbar and confirm it honours that choice.
+15. Plan a full week, clear only Monday, Wednesday and Friday, then choose
+    `Mix generated + my dinner list` and tap `Fill blanks`. Those three should alternate
+    generated → my list → generated based on the order they are filled, not on the weekday.
+16. Open `/weekly-calendar` and confirm a planned dinner shows in Night whether that night is
+    `At work` or `At home`. Setting the night to `Hide` should still suppress it.
+17. Confirm a title-only dinner such as `Pasta bolognese` shows by name in `/weekly-calendar`
+    with no invented protein, carb or vegetable.
+18. Open `/work-meals?day=thu` and confirm Thursday is the selected day.
+19. In `Generate ideas with AI`, enter an Anthropic API key and generate ideas for a day with
+    at least one `At work` slot. Ideas should appear as tickable items in those slots, and any
+    ticked idea should also show for that day in `/weekly-calendar`.
+20. In `Get AI feedback on my week`, tap `Get feedback` and confirm the response renders below
+    the button (needs the key from the panel underneath).

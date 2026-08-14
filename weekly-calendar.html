@@ -117,7 +117,7 @@ function describeDinner(d) {
   if (!d) return null;
   if (d.type === "out") return { main: "🍽️ Ordering out", sub: "" };
   if (d.type === "full") return { main: "✅ Already full", sub: "Ate enough earlier — skipping dinner." };
-  if (d.protein || d.carb || (d.veg && d.veg.length)) {
+  if (d.name || d.protein || d.carb || (d.veg && d.veg.length)) {
     const parts = [cap(d.protein), d.carb, (d.veg || []).join(" + ")].filter(Boolean).join(" · ");
     return { main: d.name || cap(d.protein) || "Dinner planned", sub: parts + (d.sauce ? " · " + d.sauce : "") };
   }
@@ -133,9 +133,11 @@ function checkedFoodsFor(day, slotId) {
 function calendarSlotText(day, slot) {
   const st = day.states[slot.id] || "work";
   if (st === "skip") return "Hidden";
-  if (st === "home" && slot.id === "night") {
+  if (slot.id === "night") {
+    // A planned dinner shows whether the night is at work or at home — matching /work-meals.
     const summary = describeDinner(day.dinner);
-    return summary ? summary.main + (summary.sub ? " — " + summary.sub : "") : "Nothing planned yet";
+    if (summary) return summary.main + (summary.sub ? " — " + summary.sub : "");
+    if (st === "home") return "Nothing planned yet";
   }
   if (st === "home") return "Eating at home";
   const picked = checkedFoodsFor(day, slot.id);
@@ -184,7 +186,7 @@ const days = loadDays();
 function hasAnyPlan() {
   return DAYS.some(d => {
     const day = days[d.id];
-    return day.dinner.type || day.dinner.protein || Object.values(day.checked).some(Boolean) || Object.values(day.custom).some(v => v && v.trim());
+    return !!describeDinner(day.dinner) || Object.values(day.checked).some(Boolean) || Object.values(day.custom).some(v => v && v.trim());
   });
 }
 
