@@ -27,8 +27,14 @@ Manual browser checks for `/work-meals`:
 17. Confirm a title-only dinner such as `Pasta bolognese` shows by name in `/weekly-calendar`
     with no invented protein, carb or vegetable.
 18. Open `/work-meals?day=thu` and confirm Thursday is the selected day.
-19. In `Generate ideas with AI`, enter an Anthropic API key and generate ideas for a day with
-    at least one `At work` slot. Ideas should appear as tickable items in those slots, and any
-    ticked idea should also show for that day in `/weekly-calendar`.
+19. In `Generate ideas with AI`, generate ideas for a day with at least one `At work` slot.
+    Ideas should appear as tickable items in those slots, and any ticked idea should also show
+    for that day in `/weekly-calendar`.
 20. In `Get AI feedback on my week`, tap `Get feedback` and confirm the response renders below
-    the button (needs the key from the panel underneath).
+    the button.
+21. Start the server with `ANTHROPIC_API_KEY` set. The key field should be hidden, the note
+    should say the server key is in use, and both panels should work without typing a key.
+22. Start the server without `ANTHROPIC_API_KEY`. The key field should appear with a note that
+    the key stays in this browser. Tapping `Generate ideas` with the field empty should say
+    `Enter your API key first.`; entering a key should work and reveal `Forget key`, which
+    clears the stored key for good (confirm it stays cleared after a reload).
