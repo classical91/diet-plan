@@ -20,10 +20,88 @@ const mimeTypes = {
   ".woff2": "font/woff2",
 };
 
+// Anthropic proxy. When ANTHROPIC_API_KEY is set the browser calls /api/ai and
+// the key never leaves the server; without it the endpoint reports 501 and the
+// planner falls back to a key the user types in.
+const AI_BASE = process.env.ANTHROPIC_BASE_URL || "https://api.anthropic.com";
+const AI_MODEL = "claude-opus-4-8";
+const AI_MAX_BODY = 64 * 1024;
+
+function sendJson(response, status, payload) {
+  response.writeHead(status, {
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": "no-store"
+  });
+  response.end(JSON.stringify(payload));
+}
+
+async function readBody(request) {
+  const chunks = [];
+  let size = 0;
+  for await (const chunk of request) {
+    size += chunk.length;
+    if (size > AI_MAX_BODY) throw new Error("Request body too large");
+    chunks.push(chunk);
+  }
+  return Buffer.concat(chunks).toString("utf8");
+}
+
+async function handleAi(request, response) {
+  const key = process.env.ANTHROPIC_API_KEY;
+
+  // Lets the page decide whether to ask the user for a key at all.
+  if (request.method === "GET") return sendJson(response, 200, { configured: !!key });
+  if (request.method !== "POST") return sendJson(response, 405, { error: { message: "Use POST." } });
+  if (!key) return sendJson(response, 501, { error: { message: "No server API key configured." } });
+
+  let body;
+  try {
+    body = JSON.parse(await readBody(request));
+  } catch (error) {
+    return sendJson(response, 400, { error: { message: "Invalid request body." } });
+  }
+
+  // Rebuild the payload rather than forwarding it — the client picks the prompt,
+  // not the model, the token budget, or any header.
+  const messages = Array.isArray(body.messages) ? body.messages.slice(0, 8) : [];
+  if (!messages.length) return sendJson(response, 400, { error: { message: "No messages to send." } });
+  const payload = {
+    model: AI_MODEL,
+    max_tokens: Math.min(Math.max(Number(body.max_tokens) || 1024, 1), 2048),
+    messages,
+  };
+  if (typeof body.system === "string" && body.system) payload.system = body.system;
+
+  try {
+    const upstream = await fetch(`${AI_BASE}/v1/messages`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": key,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify(payload),
+    });
+    const text = await upstream.text();
+    response.writeHead(upstream.status, {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store"
+    });
+    response.end(text);
+  } catch (error) {
+    sendJson(response, 502, { error: { message: "Could not reach the Anthropic API." } });
+  }
+}
+
 const server = http.createServer(async (request, response) => {
   try {
     const url = new URL(request.url || "/", `http://${request.headers.host}`);
     let pathname = url.pathname;
+
+    if (pathname === "/api/ai") {
+      await handleAi(request, response);
+      return;
+    }
 
     // Route / and /nutrition -> nutrition.html
     if (pathname === "/" || pathname === "") {

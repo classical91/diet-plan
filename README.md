@@ -10,6 +10,17 @@ vitamins &amp; minerals, diet types, herbs &amp; teas, adaptogens, and more.
 2. `npm run dev`
 3. Open `http://localhost:3000` (set `PORT` to override the default)
 
+### Optional AI features
+
+The Daily Meal Planner's two AI panels call the Anthropic Messages API. Set
+`ANTHROPIC_API_KEY` before starting the server and the browser posts to
+`/api/ai`, which adds the key server-side — the key never reaches the page.
+Without it the panels ask each visitor for their own key, which is then held in
+that browser's `localStorage` and sent directly to `api.anthropic.com`; the
+panel says so, and a **Forget key** button clears it. Prefer the server key on
+anything shared or public. `ANTHROPIC_BASE_URL` overrides the upstream host for
+testing.
+
 ## Source
 
 - [`index.html`](./index.html) is the root entry page and loads the planner directly.
