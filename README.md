@@ -21,6 +21,29 @@ panel says so, and a **Forget key** button clears it. Prefer the server key on
 anything shared or public. `ANTHROPIC_BASE_URL` overrides the upstream host for
 testing.
 
+### Cross-device dinner-plan sync
+
+The Daily Meal Planner remains offline-first: `work-meals:v3` in browser
+`localStorage` is always updated immediately. To sync desktop and mobile, attach
+a Postgres service and expose its `DATABASE_URL` to the NutriMind service. The
+server creates the same `dinner_plans` table defined in
+`migrations/001_create_dinner_plans.sql` with `CREATE TABLE IF NOT EXISTS`.
+
+Enter the same private sync code (20-128 letters, numbers, `_` or `-`) on both
+devices. The code itself is never stored in Postgres; a SHA-256 hash identifies
+the row. On the first connection, an existing local plan is uploaded only when
+no remote row exists. Later devices download that row. Revision checks reject
+stale writes rather than silently overwriting a newer device, and the local copy
+continues working when offline. Treat the sync code like a password.
+
+Railway setup:
+
+1. Add a Railway Postgres service to the NutriMind project.
+2. Add `DATABASE_URL=${{Postgres.DATABASE_URL}}` (using the actual Postgres
+   service name) to the NutriMind service.
+3. Redeploy from the merged source, then enter one private code on desktop and
+   the same code on mobile. No manual data import is required.
+
 ## Source
 
 - [`index.html`](./index.html) is the root entry page and loads the planner directly.
