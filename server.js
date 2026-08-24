@@ -3,10 +3,12 @@ import { stat } from "node:fs/promises";
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { createDinnerSync } from "./dinner-sync.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const port = Number(process.env.PORT) || 3000;
+const dinnerSync = createDinnerSync();
 
 const mimeTypes = {
   ".css": "text/css; charset=utf-8",
@@ -100,6 +102,11 @@ const server = http.createServer(async (request, response) => {
 
     if (pathname === "/api/ai") {
       await handleAi(request, response);
+      return;
+    }
+    if (pathname === "/api/dinner-plan") {
+      if (!dinnerSync.configured) return sendJson(response, 503, { error: "Dinner sync is not configured." });
+      await dinnerSync.handle(request, response, sendJson);
       return;
     }
 

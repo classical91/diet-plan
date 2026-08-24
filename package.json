@@ -6,10 +6,13 @@
   "scripts": {
     "dev": "node server.js",
     "build:search": "node scripts/build-search-index.mjs",
-    "test": "npm --prefix apps/aegean-week test",
+    "test": "npm --prefix apps/aegean-week test && node --test test/*.test.js",
     "start": "node server.js"
   },
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "pg": "^8.16.3"
   }
 }

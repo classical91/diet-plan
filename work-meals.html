@@ -7,6 +7,7 @@
 <link rel='stylesheet' href='/nav.css'>
 <link rel='stylesheet' href='/theme.css'>
 <link rel='stylesheet' href='/work-meals.css'>
+<style>.sync-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.sync-row input{flex:1;min-width:220px}.sync-row .btn{white-space:nowrap}</style>
 <script>try{if(localStorage.getItem('nm-theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
 </head>
 <body>
@@ -14,7 +15,7 @@
 <script src='/nav.js'></script>
 <main class='wrap'>
 <header class='top'><div class='label gold'>Weekly Planner</div><h1>Daily Meal <em>Planner</em></h1><p class='lead'>Plan work meals and build dinners from generated plates, your own dinner list, or both.</p></header>
-<section class='box'><p class='soft'><b>How it works.</b> Tap a grid cell to cycle Work / Home / Hide. Click a day to edit it. Pick a dinner template, and if you cook in bulk let one cook cover the days after it. Everything saves on this device.</p></section>
+<section class='box'><p class='soft'><b>How it works.</b> Tap a grid cell to cycle Work / Home / Hide. Click a day to edit it. Pick a dinner template, and if you cook in bulk let one cook cover the days after it. Your browser stays as an offline cache.</p><div class='sync-row'><input id='syncCode' type='password' placeholder='Cross-device sync code' autocomplete='off' spellcheck='false'><button class='btn' id='syncConnect'>Connect sync</button><button class='btn' id='syncForget' hidden>Forget</button></div><p class='note' id='syncStatus'>Not synced. Enter the same private code on desktop and mobile.</p></section>
 <div class='label'>This week</div><div class='scroller'><div class='grid' id='grid'></div></div>
 <div class='toolbar box'><div id='summary'></div><div class='actions'><button class='btn' id='planWeek'>Plan my week</button><a class='btn' href='/weekly-calendar'>Calendar</a><button class='btn' id='resetDay'>Reset day</button></div></div>
 <div id='slots'></div>

@@ -190,10 +190,42 @@ function persist() {
   const state = { selectedDay: selectedDayForSave, days, foodLists };
   if (genSettings) state.gen = genSettings;
   try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+  queueCalendarSync();
 }
 
 const root = document.getElementById("calendarRoot");
 const days = loadDays();
+let calendarRevision = 0;
+let calendarSyncCode = "";
+let calendarSyncTimer;
+function queueCalendarSync() {
+  if (!calendarSyncCode || !calendarRevision) return;
+  clearTimeout(calendarSyncTimer);
+  calendarSyncTimer = setTimeout(async () => {
+    const plan = { selectedDay: selectedDayForSave, days, foodLists };
+    if (genSettings) plan.gen = genSettings;
+    try {
+      const response = await fetch("/api/dinner-plan", { method:"PUT", headers:{ "content-type":"application/json", "x-sync-code":calendarSyncCode }, body:JSON.stringify({ plan, revision:calendarRevision }) });
+      if (response.ok) calendarRevision = (await response.json()).revision;
+    } catch (e) { /* local cache remains authoritative while offline */ }
+  }, 700);
+}
+async function refreshCalendarSync() {
+  try { calendarSyncCode = localStorage.getItem("work-meals:sync-code") || ""; } catch (e) { return; }
+  if (!calendarSyncCode) return;
+  try {
+    const response = await fetch("/api/dinner-plan", { headers:{ "x-sync-code":calendarSyncCode } });
+    if (!response.ok) return;
+    const data = await response.json();
+    calendarRevision = data.revision;
+    if (sessionStorage.getItem("work-meals:calendar-loaded") !== calendarSyncCode + "|" + data.revision) {
+      localStorage.setItem(STORE_KEY, JSON.stringify(data.plan));
+      sessionStorage.setItem("work-meals:calendar-loaded", calendarSyncCode + "|" + data.revision);
+      location.reload();
+    }
+  } catch (e) { /* render the offline cache */ }
+}
+refreshCalendarSync();
 
 function hasAnyPlan() {
   return DAYS.some(d => {
