@@ -38,3 +38,24 @@ Manual browser checks for `/work-meals`:
     the key stays in this browser. Tapping `Generate ideas` with the field empty should say
     `Enter your API key first.`; entering a key should work and reveal `Forget key`, which
     clears the stored key for good (confirm it stays cleared after a reload).
+23. In the dinner generator set `Template` to `Simple dinner` and tap `Replace week`. Every
+    dinner should be one easy main — `Frozen pizza`, `Hamburger`, `Chicken`, `Beef` or `Fish` —
+    and the note under the picker should describe the chosen template.
+24. Work through the other templates (`Balanced plate`, `One-pan tray bake`, `Bowl or stir-fry`,
+    `Bulk batch pot`, `Mix all templates`) and confirm each one names its dinners in its own
+    style and fills protein, carb and veg sensibly. `Surprise me` should use the chosen template.
+25. Set `Bulk cooking` to `Cook once, eat it 2 days` and tap `Replace week`. Days should pair up:
+    Monday cooks, Tuesday repeats it. The repeated day's dinner card should read
+    `♻️ Leftovers from Monday`, and the message should say how many were eaten again from a batch.
+26. Tick `Pack the leftovers as the next day's lunch` and regenerate. Each day after a cook
+    should show a `♻️ Leftovers` card in its Afternoon slot; `Remove` should drop just that card.
+27. Plan a dinner on any day and tap `Cook double → carry over`. The next day should get the same
+    meal as its dinner (marked as leftovers from the day you cooked) plus a leftovers lunch.
+    On Sunday it should carry over to Monday.
+28. Change `Template`, `Bulk cooking` and the leftovers checkbox, reload the page, and confirm all
+    three — and the source picker — come back as you left them.
+29. Open `/weekly-calendar` after a bulk-cooked week. Repeat dinners should say
+    `♻️ Leftovers from <day>` and packed lunches should show in Afternoon. Return to
+    `/work-meals` and confirm the generator settings survived the calendar visit.
+30. With `Bulk cooking` set to 2 or 3, clear only some dinners and tap `Fill blanks`. Only the
+    blanks should change, and a batch should never carry across a day you had already planned.
