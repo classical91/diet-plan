@@ -19,7 +19,10 @@ export function normalizePlan(input) {
       ? [...new Set(input.foodLists[slot].map(String).map((v) => v.trim()).filter(Boolean))].slice(0, 200)
       : [];
   }
-  return { selectedDay: DAY_IDS.includes(input.selectedDay) ? input.selectedDay : "mon", days, foodLists };
+  const value = { selectedDay: DAY_IDS.includes(input.selectedDay) ? input.selectedDay : "mon", days, foodLists };
+  // The dinner generator's own settings (template, bulk cooking, leftovers) ride along.
+  if (input.gen && typeof input.gen === "object" && !Array.isArray(input.gen)) value.gen = input.gen;
+  return value;
 }
 
 export function hashSyncCode(code) {

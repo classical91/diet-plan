@@ -103,10 +103,12 @@ function escapeAttr(s) { return String(s || "").replace(/&/g, "&amp;").replace(/
 function escapeHtml(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 function customKey(dayId, slotId) { return dayId + "|" + slotId; }
 
-function freshDinner() { return { type:null, protein:null, carb:null, veg:[], sauce:null, name:null }; }
+function freshDinner() { return { type:null, protein:null, carb:null, veg:[], sauce:null, name:null, tpl:null, from:null }; }
+function freshLeftovers() { return { morning:"", afternoon:"", night:"" }; }
+function dayLabel(id) { const d = DAYS.find(x => x.id === id); return d ? d.label : ""; }
 function freshDay() {
   return {
-    states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner(),
+    states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner(), leftovers: freshLeftovers(),
     custom:{ morning:"", afternoon:"", night:"" },
     customMode:{ morning:"generated", afternoon:"generated", night:"generated" },
     customPick:{ morning:"", afternoon:"", night:"" },
@@ -118,8 +120,10 @@ function describeDinner(d) {
   if (d.type === "out") return { main: "🍽️ Ordering out", sub: "" };
   if (d.type === "full") return { main: "✅ Already full", sub: "Ate enough earlier — skipping dinner." };
   if (d.name || d.protein || d.carb || (d.veg && d.veg.length)) {
-    const parts = [cap(d.protein), d.carb, (d.veg || []).join(" + ")].filter(Boolean).join(" · ");
-    return { main: d.name || cap(d.protein) || "Dinner planned", sub: parts + (d.sauce ? " · " + d.sauce : "") };
+    const parts = [cap(d.protein), d.carb, (d.veg || []).join(" + ")].filter(Boolean).join(" · ") + (d.sauce ? " · " + d.sauce : "");
+    // A leftover serving keeps the meal's own name and says which day's cook it came from.
+    const from = d.from ? "♻️ Leftovers from " + dayLabel(d.from) + (parts ? " · " : "") : "";
+    return { main: d.name || cap(d.protein) || "Dinner planned", sub: from + parts };
   }
   return null;
 }
@@ -133,6 +137,8 @@ function checkedFoodsFor(day, slotId) {
 function calendarSlotText(day, slot) {
   const st = day.states[slot.id] || "work";
   if (st === "skip") return "Hidden";
+  const leftover = (day.leftovers || {})[slot.id];
+  if (leftover && slot.id !== "night") return "♻️ Leftovers — " + leftover;
   if (slot.id === "night") {
     // A planned dinner shows whether the night is at work or at home — matching /work-meals.
     const summary = describeDinner(day.dinner);
@@ -146,6 +152,8 @@ function calendarSlotText(day, slot) {
 
 let selectedDayForSave = todayId;
 let foodLists = { morning:[], afternoon:[], night:[] };
+// Generator settings belong to /work-meals; this page only carries them through a save.
+let genSettings = null;
 
 function loadDays() {
   const days = {};
@@ -153,6 +161,7 @@ function loadDays() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
     if (saved && DAYS.some(d => d.id === saved.selectedDay)) selectedDayForSave = saved.selectedDay;
+    if (saved && saved.gen) genSettings = saved.gen;
     if (saved && saved.days && typeof saved.days === "object") {
       for (const d of DAYS) {
         const sd = saved.days[d.id];
@@ -160,6 +169,7 @@ function loadDays() {
           days[d.id] = Object.assign(freshDay(), sd, {
             states: Object.assign(freshDay().states, sd.states),
             dinner: Object.assign(freshDinner(), sd.dinner || {}),
+            leftovers: Object.assign(freshLeftovers(), sd.leftovers || {}),
             custom: Object.assign(freshDay().custom, sd.custom || {}),
             customMode: Object.assign(freshDay().customMode, sd.customMode || {}),
             customPick: Object.assign(freshDay().customPick, sd.customPick || {}),
@@ -177,7 +187,9 @@ function loadDays() {
 }
 
 function persist() {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify({ selectedDay: selectedDayForSave, days, foodLists })); } catch (e) { /* ignore */ }
+  const state = { selectedDay: selectedDayForSave, days, foodLists };
+  if (genSettings) state.gen = genSettings;
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
   queueCalendarSync();
 }
 
@@ -191,6 +203,7 @@ function queueCalendarSync() {
   clearTimeout(calendarSyncTimer);
   calendarSyncTimer = setTimeout(async () => {
     const plan = { selectedDay: selectedDayForSave, days, foodLists };
+    if (genSettings) plan.gen = genSettings;
     try {
       const response = await fetch("/api/dinner-plan", { method:"PUT", headers:{ "content-type":"application/json", "x-sync-code":calendarSyncCode }, body:JSON.stringify({ plan, revision:calendarRevision }) });
       if (response.ok) calendarRevision = (await response.json()).revision;
@@ -217,7 +230,8 @@ refreshCalendarSync();
 function hasAnyPlan() {
   return DAYS.some(d => {
     const day = days[d.id];
-    return !!describeDinner(day.dinner) || Object.values(day.checked).some(Boolean) || Object.values(day.custom).some(v => v && v.trim());
+    return !!describeDinner(day.dinner) || Object.values(day.checked).some(Boolean) || Object.values(day.custom).some(v => v && v.trim())
+      || Object.values(day.leftovers || {}).some(v => v && v.trim());
   });
 }
 
