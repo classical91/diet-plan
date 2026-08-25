@@ -14,7 +14,7 @@ Manual browser checks for `/work-meals`:
 7. Choose `Mix generated + my dinner list`, tap `Replace week`, then confirm the week alternates generated dinners and saved-list dinners.
 8. Clear one dinner, tap `Fill blanks`, and confirm only the empty dinner is filled.
 9. Leave Night on `At work` and confirm a generated dinner still shows in the Night slot card. Clear that dinner and confirm the packable night suggestions come back.
-10. In any slot choose `Type my own`, enter a title with an apostrophe such as `Shepherd's pie`, switch modes and reload the page, then confirm the text is still intact.
+10. In any slot choose `From my list` and add a title with an apostrophe such as `Shepherd's pie`, switch modes and reload the page, then confirm the entry is still intact and still selected.
 11. Add `Chicken burger` to the night list and generate from `My dinner list only`. The dinner card should read chicken breast, not lean beef. `Turkey burger` should read turkey, `Lean burger` lean beef.
 12. Add a title the app cannot read, such as `Pasta bolognese`. The card should still show the title, and the Dinner balance box should ask for the missing parts rather than inventing a protein or defaulting the vegetable to broccoli.
 13. With the night list empty, choose `Mix generated + my dinner list` and tap `Replace week`. The week should fill with generated dinners and say so, rather than refusing. `My dinner list only` should still refuse with an empty list.
@@ -59,3 +59,8 @@ Manual browser checks for `/work-meals`:
     `/work-meals` and confirm the generator settings survived the calendar visit.
 30. With `Bulk cooking` set to 2 or 3, clear only some dinners and tap `Fill blanks`. Only the
     blanks should change, and a batch should never carry across a day you had already planned.
+31. Each slot should offer only `Generated` and `From my list` — `Type my own` is gone from both
+    `/work-meals` and `/weekly-calendar`, since the list mode already takes new titles.
+32. Load a plan saved before that removal with a slot on `Type my own`. The typed meal should
+    appear as an entry in that slot's list, selected, with the slot switched to `From my list`;
+    a slot left on `Type my own` with nothing typed should fall back to `Generated`.

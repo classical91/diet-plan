@@ -34,8 +34,6 @@
   .custom-mode button.on{color:var(--accent);border-color:rgba(200,146,42,.4);background:rgba(200,146,42,.08)}
   .custom-edit-btn{margin-top:5px;width:100%;text-align:left;font-family:'DM Sans',sans-serif;font-size:11.5px;color:var(--accent);background:none;border:1px dashed var(--border);border-radius:7px;padding:6px 9px;cursor:pointer;transition:border-color .15s}
   .custom-edit-btn:hover{border-color:var(--accent)}
-  .custom-display{margin-top:5px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 9px;font-size:12px;color:var(--text)}
-  .custom-display button{flex-shrink:0;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:none;border:none;cursor:pointer;padding:0}
   .custom-input{width:100%;margin-top:5px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);background:var(--surface);border:1px solid var(--accent);border-radius:7px;padding:7px 9px}
   .custom-input:focus{outline:none}
   .custom-input::placeholder{color:var(--muted)}
@@ -109,7 +107,6 @@ function dayLabel(id) { const d = DAYS.find(x => x.id === id); return d ? d.labe
 function freshDay() {
   return {
     states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner(), leftovers: freshLeftovers(),
-    custom:{ morning:"", afternoon:"", night:"" },
     customMode:{ morning:"generated", afternoon:"generated", night:"generated" },
     customPick:{ morning:"", afternoon:"", night:"" },
   };
@@ -170,16 +167,30 @@ function loadDays() {
             states: Object.assign(freshDay().states, sd.states),
             dinner: Object.assign(freshDinner(), sd.dinner || {}),
             leftovers: Object.assign(freshLeftovers(), sd.leftovers || {}),
-            custom: Object.assign(freshDay().custom, sd.custom || {}),
             customMode: Object.assign(freshDay().customMode, sd.customMode || {}),
             customPick: Object.assign(freshDay().customPick, sd.customPick || {}),
           });
+          delete days[d.id].custom;
         }
       }
     }
     if (saved && saved.foodLists && typeof saved.foodLists === "object") {
       for (const slot of SLOTS.map(s => s.id)) {
         if (Array.isArray(saved.foodLists[slot])) foodLists[slot] = saved.foodLists[slot];
+      }
+    }
+    // "Type my own" is gone; a typed meal becomes an entry in that slot's own list.
+    if (saved && saved.days && typeof saved.days === "object") {
+      for (const d of DAYS) {
+        const day = days[d.id];
+        for (const slot of SLOTS.map(s => s.id)) {
+          if (day.customMode[slot] !== "type") continue;
+          const typed = String((saved.days[d.id]?.custom || {})[slot] || "").trim();
+          if (!typed) { day.customMode[slot] = "generated"; continue; }
+          if (!foodLists[slot].includes(typed)) foodLists[slot].push(typed);
+          day.customPick[slot] = typed;
+          day.customMode[slot] = "list";
+        }
       }
     }
   } catch (e) { /* ignore */ }
@@ -230,16 +241,15 @@ refreshCalendarSync();
 function hasAnyPlan() {
   return DAYS.some(d => {
     const day = days[d.id];
-    return !!describeDinner(day.dinner) || Object.values(day.checked).some(Boolean) || Object.values(day.custom).some(v => v && v.trim())
-      || Object.values(day.leftovers || {}).some(v => v && v.trim());
+    return !!describeDinner(day.dinner) || Object.values(day.checked).some(Boolean)
+      || Object.values(day.customPick).some(v => v && v.trim()) || Object.values(day.leftovers || {}).some(v => v && v.trim());
   });
 }
 
 function updateHint() {
-  document.getElementById("planHint").innerHTML = hasAnyPlan() ? "" : `<div class="empty-note">No meals planned yet. Head to the <a href="/work-meals">Daily Meal Planner</a> to build your dinners and check off your work-meal picks — or just type directly into a day below.</div>`;
+  document.getElementById("planHint").innerHTML = hasAnyPlan() ? "" : `<div class="empty-note">No meals planned yet. Head to the <a href="/work-meals">Daily Meal Planner</a> to build your dinners and check off your work-meal picks — or pick from your own food list on a day below.</div>`;
 }
 
-let openCustom = {};
 let openListAdd = {};
 
 function renderGrid() {
@@ -249,22 +259,14 @@ function renderGrid() {
       const key = customKey(d.id, slot.id);
       const isHidden = (day.states[slot.id] || "work") === "skip";
       const mode = day.customMode[slot.id] || "generated";
-      const hasCustom = (mode === "type" && !!(day.custom[slot.id] && day.custom[slot.id].trim()))
-        || (mode === "list" && !!day.customPick[slot.id]);
+      const hasCustom = mode === "list" && !!day.customPick[slot.id];
       const modeHtml = isHidden ? "" : `
         <div class="custom-mode" data-day="${d.id}" data-slot="${slot.id}">
           <button type="button" data-mode="generated"${mode === "generated" ? ' class="on"' : ""}>Generated</button>
           <button type="button" data-mode="list"${mode === "list" ? ' class="on"' : ""}>From my list</button>
-          <button type="button" data-mode="type"${mode === "type" ? ' class="on"' : ""}>Type my own</button>
         </div>`;
       let customHtml = "";
-      if (!isHidden && mode === "type") {
-        customHtml = openCustom[key]
-          ? `<input type="text" class="custom-input" data-day="${d.id}" data-slot="${slot.id}" value="${escapeAttr(day.custom[slot.id])}" placeholder="Type your own...">`
-          : day.custom[slot.id]
-            ? `<div class="custom-display"><span>${escapeHtml(day.custom[slot.id])}</span><button type="button" class="custom-edit-btn" data-edit-day="${d.id}" data-edit-slot="${slot.id}">Edit</button></div>`
-            : `<button type="button" class="custom-edit-btn" data-edit-day="${d.id}" data-edit-slot="${slot.id}">+ Add your own</button>`;
-      } else if (!isHidden && mode === "list") {
+      if (!isHidden && mode === "list") {
         const foods = foodLists[slot.id] || [];
         customHtml = `
           <select class="list-select" data-day="${d.id}" data-slot="${slot.id}">
@@ -281,12 +283,6 @@ function renderGrid() {
     return `<div class="cal-day${d.id === todayId ? " is-today" : ""}"><h4>${d.label}</h4>${rows}</div>`;
   }).join("")}</div>`;
   document.getElementById("calGrid").innerHTML = html;
-  for (const key in openCustom) {
-    if (!openCustom[key]) continue;
-    const [dayId, slotId] = key.split("|");
-    const inp = document.querySelector(`.custom-input[data-day="${dayId}"][data-slot="${slotId}"]`);
-    if (inp) { inp.focus(); const v = inp.value; inp.setSelectionRange(v.length, v.length); }
-  }
   for (const key in openListAdd) {
     if (!openListAdd[key]) continue;
     const [dayId, slotId] = key.split("|");
@@ -314,11 +310,6 @@ root.addEventListener("click", (e) => {
     renderGrid();
     return;
   }
-  const editBtn = e.target.closest(".custom-edit-btn");
-  if (editBtn) {
-    openCustom[customKey(editBtn.getAttribute("data-edit-day"), editBtn.getAttribute("data-edit-slot"))] = true;
-    renderGrid();
-  }
 });
 
 root.addEventListener("change", (e) => {
@@ -331,22 +322,7 @@ root.addEventListener("change", (e) => {
   }
 });
 
-root.addEventListener("input", (e) => {
-  const inp = e.target.closest(".custom-input[data-slot]");
-  if (inp) {
-    days[inp.getAttribute("data-day")].custom[inp.getAttribute("data-slot")] = inp.value;
-    persist();
-    updateHint();
-  }
-});
-
 root.addEventListener("focusout", (e) => {
-  const inp = e.target.closest(".custom-input[data-slot]");
-  if (inp) {
-    openCustom[customKey(inp.getAttribute("data-day"), inp.getAttribute("data-slot"))] = false;
-    renderGrid();
-    return;
-  }
   const addInp = e.target.closest(".custom-input[data-add-slot]");
   if (addInp) {
     const dayId = addInp.getAttribute("data-add-day");
