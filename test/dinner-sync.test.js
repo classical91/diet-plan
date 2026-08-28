@@ -26,8 +26,8 @@ test("normalizes planner data without duplicating food-list entries", () => {
   assert.deepEqual(value.foodLists.morning, []);
 });
 
-test("carries the dinner generator settings across devices", () => {
-  const gen = { src: "gen", tpl: "simple", batch: "2", lunch: true };
+test("carries the week-fill settings across devices", () => {
+  const gen = { batch: "2", lunch: true };
   assert.deepEqual(normalizePlan({ ...plan, gen }).gen, gen);
   assert.equal(normalizePlan({ ...plan, gen: "simple" }).gen, undefined);
 });

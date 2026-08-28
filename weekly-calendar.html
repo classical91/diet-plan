@@ -79,18 +79,12 @@ const WORK_FOODS = [
   { name:"Nut butter + banana on whole-grain", slots:["morning"] },
   { name:"Protein smoothie in a bottle", slots:["morning"] },
   { name:"Cottage cheese + fruit", slots:["morning","afternoon"] },
-  { name:"Chicken or tofu grain bowl", slots:["afternoon","night"] },
+  { name:"Chicken or tofu grain bowl", slots:["afternoon"] },
   { name:"Tuna or salmon wrap", slots:["afternoon"] },
-  { name:"Chickpea or lentil salad", slots:["afternoon","night"] },
+  { name:"Chickpea or lentil salad", slots:["afternoon"] },
   { name:"Hummus + veg sticks + crackers", slots:["afternoon"] },
   { name:"Mixed nuts + a piece of fruit", slots:["afternoon"] },
-  { name:"Leftover stir-fry + brown rice", slots:["afternoon","night"] },
-  { name:"Salmon + sweet potato + greens", slots:["night"] },
-  { name:"Tofu or tempeh stir-fry + brown rice", slots:["night"] },
-  { name:"Bean chili + side salad", slots:["night"] },
-  { name:"Veg omelette + toast", slots:["night"] },
-  { name:"Lentil soup + whole-grain bread", slots:["night"] },
-  { name:"Grilled chicken + roast vegetables", slots:["night"] },
+  { name:"Leftover stir-fry + brown rice", slots:["afternoon"] },
 ];
 
 const STORE_KEY = "work-meals:v3";
@@ -101,7 +95,7 @@ function escapeAttr(s) { return String(s || "").replace(/&/g, "&amp;").replace(/
 function escapeHtml(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 function customKey(dayId, slotId) { return dayId + "|" + slotId; }
 
-function freshDinner() { return { type:null, protein:null, carb:null, veg:[], sauce:null, name:null, tpl:null, from:null }; }
+function freshDinner() { return { type:null, pick:null, name:null, protein:null, carb:null, veg:[], sauce:null, meat:null, sides:[], from:null }; }
 function freshLeftovers() { return { morning:"", afternoon:"", night:"" }; }
 function dayLabel(id) { const d = DAYS.find(x => x.id === id); return d ? d.label : ""; }
 function freshDay() {
@@ -117,7 +111,10 @@ function describeDinner(d) {
   if (d.type === "out") return { main: "🍽️ Ordering out", sub: "" };
   if (d.type === "full") return { main: "✅ Already full", sub: "Ate enough earlier — skipping dinner." };
   if (d.name || d.protein || d.carb || (d.veg && d.veg.length)) {
-    const parts = [cap(d.protein), d.carb, (d.veg || []).join(" + ")].filter(Boolean).join(" · ") + (d.sauce ? " · " + d.sauce : "");
+    // A dinner picked from the dinner list lists only what was added to it; the heading is the dinner itself.
+    const parts = d.pick
+      ? [d.meat, ...(d.sides || [])].filter(Boolean).join(" · ")
+      : [d.name ? cap(d.protein) : null, d.carb, (d.veg || []).join(" + "), d.sauce].filter(Boolean).join(" · ");
     // A leftover serving keeps the meal's own name and says which day's cook it came from.
     const from = d.from ? "♻️ Leftovers from " + dayLabel(d.from) + (parts ? " · " : "") : "";
     return { main: d.name || cap(d.protein) || "Dinner planned", sub: from + parts };
@@ -140,7 +137,7 @@ function calendarSlotText(day, slot) {
     // A planned dinner shows whether the night is at work or at home — matching /work-meals.
     const summary = describeDinner(day.dinner);
     if (summary) return summary.main + (summary.sub ? " — " + summary.sub : "");
-    if (st === "home") return "Nothing planned yet";
+    return "Nothing planned yet";
   }
   if (st === "home") return "Eating at home";
   const picked = checkedFoodsFor(day, slot.id);
@@ -258,9 +255,11 @@ function renderGrid() {
     const rows = SLOTS.map(slot => {
       const key = customKey(d.id, slot.id);
       const isHidden = (day.states[slot.id] || "work") === "skip";
-      const mode = day.customMode[slot.id] || "generated";
+      // Dinner always comes from the dinner list on /work-meals, so the night row has no food list of its own.
+      const isNight = slot.id === "night";
+      const mode = isNight ? "generated" : (day.customMode[slot.id] || "generated");
       const hasCustom = mode === "list" && !!day.customPick[slot.id];
-      const modeHtml = isHidden ? "" : `
+      const modeHtml = isHidden || isNight ? "" : `
         <div class="custom-mode" data-day="${d.id}" data-slot="${slot.id}">
           <button type="button" data-mode="generated"${mode === "generated" ? ' class="on"' : ""}>Generated</button>
           <button type="button" data-mode="list"${mode === "list" ? ' class="on"' : ""}>From my list</button>
