@@ -32,6 +32,21 @@ test("carries the week-fill settings across devices", () => {
   assert.equal(normalizePlan({ ...plan, gen: "simple" }).gen, undefined);
 });
 
+test("carries the reader's own dinner list across devices", () => {
+  const dinners = [{ id: "pizza", name: "Frozen pizza", sides: [], on: [] }, { id: "d1", name: "Curry", sides: ["rice"], on: ["rice"] }];
+  assert.deepEqual(normalizePlan({ ...plan, dinners, v: 4 }).dinners, dinners);
+  assert.equal(normalizePlan({ ...plan, dinners, v: 4 }).v, 4);
+  // A plan saved before the lists became editable carries no dinner list at all.
+  assert.equal(normalizePlan(plan).dinners, undefined);
+  assert.equal(normalizePlan(plan).v, undefined);
+});
+
+test("drops dinner entries that are not objects and caps the list", () => {
+  assert.deepEqual(normalizePlan({ ...plan, dinners: ["Curry", null, 7, ["x"]] }).dinners, []);
+  assert.equal(normalizePlan({ ...plan, dinners: Array.from({ length: 250 }, (_, i) => ({ name: "d" + i })) }).dinners.length, 100);
+  assert.equal(normalizePlan({ ...plan, dinners: "Curry" }).dinners, undefined);
+});
+
 test("hashes private sync codes before database lookup", () => {
   assert.equal(hashSyncCode(code).length, 64);
   assert.equal(hashSyncCode(code), hashSyncCode(code));

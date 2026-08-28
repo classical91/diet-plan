@@ -28,16 +28,6 @@
   .cal-day h4{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin:0 0 10px;color:var(--text)}
   .cal-row{font-size:12px;line-height:1.6;color:var(--muted);margin-bottom:10px}
   .cal-row b{color:var(--soft);font-weight:600;display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
-  .custom-mode{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
-  .custom-mode button{font-family:'DM Sans',sans-serif;font-size:10px;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:4px 8px;border-radius:12px;cursor:pointer;transition:all .15s}
-  .custom-mode button:hover{border-color:var(--border-hover)}
-  .custom-mode button.on{color:var(--accent);border-color:rgba(200,146,42,.4);background:rgba(200,146,42,.08)}
-  .custom-edit-btn{margin-top:5px;width:100%;text-align:left;font-family:'DM Sans',sans-serif;font-size:11.5px;color:var(--accent);background:none;border:1px dashed var(--border);border-radius:7px;padding:6px 9px;cursor:pointer;transition:border-color .15s}
-  .custom-edit-btn:hover{border-color:var(--accent)}
-  .custom-input{width:100%;margin-top:5px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);background:var(--surface);border:1px solid var(--accent);border-radius:7px;padding:7px 9px}
-  .custom-input:focus{outline:none}
-  .custom-input::placeholder{color:var(--muted)}
-  .list-select{width:100%;margin-top:5px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 9px}
 
   .empty-note{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 22px;text-align:center;color:var(--soft);font-size:13.5px;line-height:1.7;margin-bottom:18px}
   .empty-note a{color:var(--accent)}
@@ -72,28 +62,12 @@ const DAYS = [
 ];
 const todayId = (() => { const map=["sun","mon","tue","wed","thu","fri","sat"]; return map[new Date().getDay()]; })();
 
-const WORK_FOODS = [
-  { name:"Overnight oats with chia & berries", slots:["morning"] },
-  { name:"Greek yogurt + nuts + fruit", slots:["morning","afternoon"] },
-  { name:"Boiled eggs + whole-grain toast", slots:["morning"] },
-  { name:"Nut butter + banana on whole-grain", slots:["morning"] },
-  { name:"Protein smoothie in a bottle", slots:["morning"] },
-  { name:"Cottage cheese + fruit", slots:["morning","afternoon"] },
-  { name:"Chicken or tofu grain bowl", slots:["afternoon"] },
-  { name:"Tuna or salmon wrap", slots:["afternoon"] },
-  { name:"Chickpea or lentil salad", slots:["afternoon"] },
-  { name:"Hummus + veg sticks + crackers", slots:["afternoon"] },
-  { name:"Mixed nuts + a piece of fruit", slots:["afternoon"] },
-  { name:"Leftover stir-fry + brown rice", slots:["afternoon"] },
-];
 
 const STORE_KEY = "work-meals:v3";
 
 function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
-function escapeAttr(s) { return String(s || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;"); }
 function escapeHtml(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-function customKey(dayId, slotId) { return dayId + "|" + slotId; }
 
 function freshDinner() { return { type:null, pick:null, name:null, protein:null, carb:null, veg:[], sauce:null, meat:null, sides:[], from:null }; }
 function freshLeftovers() { return { morning:"", afternoon:"", night:"" }; }
@@ -101,8 +75,6 @@ function dayLabel(id) { const d = DAYS.find(x => x.id === id); return d ? d.labe
 function freshDay() {
   return {
     states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner(), leftovers: freshLeftovers(),
-    customMode:{ morning:"generated", afternoon:"generated", night:"generated" },
-    customPick:{ morning:"", afternoon:"", night:"" },
   };
 }
 
@@ -123,9 +95,8 @@ function describeDinner(d) {
 }
 
 function checkedFoodsFor(day, slotId) {
-  const foods = WORK_FOODS.filter(f => f.slots.includes(slotId)).map(f => f.name);
   const aiList = (day.ai && day.ai[slotId]) || [];
-  return [...foods, ...aiList].filter(name => day.checked[slotId + "|" + slugify(name)]);
+  return [...(foodLists[slotId] || []), ...aiList].filter(name => day.checked[slotId + "|" + slugify(name)]);
 }
 
 function calendarSlotText(day, slot) {
@@ -146,8 +117,11 @@ function calendarSlotText(day, slot) {
 
 let selectedDayForSave = todayId;
 let foodLists = { morning:[], afternoon:[], night:[] };
-// Generator settings belong to /work-meals; this page only carries them through a save.
+// The dinner list and week-fill settings belong to /work-meals; this page only carries
+// them through a save, so viewing the calendar never drops what was edited there.
 let genSettings = null;
+let dinnerList = null;
+let planVersion = null;
 
 function loadDays() {
   const days = {};
@@ -156,6 +130,8 @@ function loadDays() {
     const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
     if (saved && DAYS.some(d => d.id === saved.selectedDay)) selectedDayForSave = saved.selectedDay;
     if (saved && saved.gen) genSettings = saved.gen;
+    if (Array.isArray(saved?.dinners)) dinnerList = saved.dinners;
+    if (saved && saved.v !== undefined) planVersion = saved.v;
     if (saved && saved.days && typeof saved.days === "object") {
       for (const d of DAYS) {
         const sd = saved.days[d.id];
@@ -164,10 +140,10 @@ function loadDays() {
             states: Object.assign(freshDay().states, sd.states),
             dinner: Object.assign(freshDinner(), sd.dinner || {}),
             leftovers: Object.assign(freshLeftovers(), sd.leftovers || {}),
-            customMode: Object.assign(freshDay().customMode, sd.customMode || {}),
-            customPick: Object.assign(freshDay().customPick, sd.customPick || {}),
           });
           delete days[d.id].custom;
+          delete days[d.id].customMode;
+          delete days[d.id].customPick;
         }
       }
     }
@@ -176,27 +152,20 @@ function loadDays() {
         if (Array.isArray(saved.foodLists[slot])) foodLists[slot] = saved.foodLists[slot];
       }
     }
-    // "Type my own" is gone; a typed meal becomes an entry in that slot's own list.
-    if (saved && saved.days && typeof saved.days === "object") {
-      for (const d of DAYS) {
-        const day = days[d.id];
-        for (const slot of SLOTS.map(s => s.id)) {
-          if (day.customMode[slot] !== "type") continue;
-          const typed = String((saved.days[d.id]?.custom || {})[slot] || "").trim();
-          if (!typed) { day.customMode[slot] = "generated"; continue; }
-          if (!foodLists[slot].includes(typed)) foodLists[slot].push(typed);
-          day.customPick[slot] = typed;
-          day.customMode[slot] = "list";
-        }
-      }
-    }
   } catch (e) { /* ignore */ }
   return days;
 }
 
-function persist() {
+function planState() {
   const state = { selectedDay: selectedDayForSave, days, foodLists };
   if (genSettings) state.gen = genSettings;
+  if (dinnerList) state.dinners = dinnerList;
+  if (planVersion !== null) state.v = planVersion;
+  return state;
+}
+
+function persist() {
+  const state = planState();
   try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
   queueCalendarSync();
 }
@@ -210,8 +179,7 @@ function queueCalendarSync() {
   if (!calendarSyncCode || !calendarRevision) return;
   clearTimeout(calendarSyncTimer);
   calendarSyncTimer = setTimeout(async () => {
-    const plan = { selectedDay: selectedDayForSave, days, foodLists };
-    if (genSettings) plan.gen = genSettings;
+    const plan = planState();
     try {
       const response = await fetch("/api/dinner-plan", { method:"PUT", headers:{ "content-type":"application/json", "x-sync-code":calendarSyncCode }, body:JSON.stringify({ plan, revision:calendarRevision }) });
       if (response.ok) calendarRevision = (await response.json()).revision;
@@ -239,105 +207,32 @@ function hasAnyPlan() {
   return DAYS.some(d => {
     const day = days[d.id];
     return !!describeDinner(day.dinner) || Object.values(day.checked).some(Boolean)
-      || Object.values(day.customPick).some(v => v && v.trim()) || Object.values(day.leftovers || {}).some(v => v && v.trim());
+      || Object.values(day.leftovers || {}).some(v => v && v.trim());
   });
 }
 
 function updateHint() {
-  document.getElementById("planHint").innerHTML = hasAnyPlan() ? "" : `<div class="empty-note">No meals planned yet. Head to the <a href="/work-meals">Daily Meal Planner</a> to build your dinners and check off your work-meal picks — or pick from your own food list on a day below.</div>`;
+  document.getElementById("planHint").innerHTML = hasAnyPlan() ? "" : `<div class="empty-note">No meals planned yet. Head to the <a href="/work-meals">Daily Meal Planner</a> to pick your dinners and tick off the foods you're taking.</div>`;
 }
-
-let openListAdd = {};
 
 function renderGrid() {
   const html = `<div class="week-calendar">${DAYS.map(d => {
     const day = days[d.id];
     const rows = SLOTS.map(slot => {
-      const key = customKey(d.id, slot.id);
       const isHidden = (day.states[slot.id] || "work") === "skip";
-      // Dinner always comes from the dinner list on /work-meals, so the night row has no food list of its own.
-      const isNight = slot.id === "night";
-      const mode = isNight ? "generated" : (day.customMode[slot.id] || "generated");
-      const hasCustom = mode === "list" && !!day.customPick[slot.id];
-      const modeHtml = isHidden || isNight ? "" : `
-        <div class="custom-mode" data-day="${d.id}" data-slot="${slot.id}">
-          <button type="button" data-mode="generated"${mode === "generated" ? ' class="on"' : ""}>Generated</button>
-          <button type="button" data-mode="list"${mode === "list" ? ' class="on"' : ""}>From my list</button>
-        </div>`;
-      let customHtml = "";
-      if (!isHidden && mode === "list") {
-        const foods = foodLists[slot.id] || [];
-        customHtml = `
-          <select class="list-select" data-day="${d.id}" data-slot="${slot.id}">
-            <option value="">— choose from my list —</option>
-            ${foods.map(f => `<option value="${escapeAttr(f)}"${day.customPick[slot.id] === f ? " selected" : ""}>${escapeHtml(f)}</option>`).join("")}
-          </select>
-          ${openListAdd[key]
-            ? `<input type="text" class="custom-input" data-add-day="${d.id}" data-add-slot="${slot.id}" placeholder="Add a new food to your list">`
-            : `<button type="button" class="custom-edit-btn" data-add-day-btn="${d.id}" data-add-slot-btn="${slot.id}">+ Add new food to my list</button>`}`;
-      }
-      const slotText = isHidden ? "" : hasCustom ? "" : calendarSlotText(day, slot);
-      return `<div class="cal-row"><b>${slot.icon} ${slot.label}</b>${slotText}${modeHtml}${customHtml}</div>`;
+      // Slot text is plain text built from the reader's own food and dinner names.
+      const slotText = isHidden ? "" : escapeHtml(calendarSlotText(day, slot));
+      return `<div class="cal-row"><b>${slot.icon} ${slot.label}</b>${slotText}</div>`;
     }).join("");
     return `<div class="cal-day${d.id === todayId ? " is-today" : ""}"><h4>${d.label}</h4>${rows}</div>`;
   }).join("")}</div>`;
   document.getElementById("calGrid").innerHTML = html;
-  for (const key in openListAdd) {
-    if (!openListAdd[key]) continue;
-    const [dayId, slotId] = key.split("|");
-    const inp = document.querySelector(`.custom-input[data-add-day="${dayId}"][data-add-slot="${slotId}"]`);
-    if (inp) { inp.focus(); const v = inp.value; inp.setSelectionRange(v.length, v.length); }
-  }
 }
 
 root.innerHTML = `<div id="planHint"></div><div id="calGrid"></div>`;
 renderGrid();
 updateHint();
 
-root.addEventListener("click", (e) => {
-  const modeBtn = e.target.closest(".custom-mode button");
-  if (modeBtn) {
-    const wrap = modeBtn.parentElement;
-    days[wrap.getAttribute("data-day")].customMode[wrap.getAttribute("data-slot")] = modeBtn.getAttribute("data-mode");
-    persist();
-    renderGrid();
-    return;
-  }
-  const addBtn = e.target.closest("[data-add-slot-btn]");
-  if (addBtn) {
-    openListAdd[customKey(addBtn.getAttribute("data-add-day-btn"), addBtn.getAttribute("data-add-slot-btn"))] = true;
-    renderGrid();
-    return;
-  }
-});
-
-root.addEventListener("change", (e) => {
-  const sel = e.target.closest(".list-select");
-  if (sel) {
-    days[sel.getAttribute("data-day")].customPick[sel.getAttribute("data-slot")] = sel.value;
-    persist();
-    renderGrid();
-    updateHint();
-  }
-});
-
-root.addEventListener("focusout", (e) => {
-  const addInp = e.target.closest(".custom-input[data-add-slot]");
-  if (addInp) {
-    const dayId = addInp.getAttribute("data-add-day");
-    const slotId = addInp.getAttribute("data-add-slot");
-    const val = addInp.value.trim();
-    if (val) {
-      foodLists[slotId] = foodLists[slotId] || [];
-      if (!foodLists[slotId].includes(val)) foodLists[slotId].push(val);
-      days[dayId].customPick[slotId] = val;
-    }
-    openListAdd[customKey(dayId, slotId)] = false;
-    persist();
-    renderGrid();
-    updateHint();
-  }
-});
 </script>
 </body>
 </html>
