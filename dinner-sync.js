@@ -22,6 +22,13 @@ export function normalizePlan(input) {
   const value = { selectedDay: DAY_IDS.includes(input.selectedDay) ? input.selectedDay : "mon", days, foodLists };
   // The planner's week-fill settings (bulk cooking, leftover lunches) ride along.
   if (input.gen && typeof input.gen === "object" && !Array.isArray(input.gen)) value.gen = input.gen;
+  // So does the reader's own dinner list, and the marker saying their lists have been seeded.
+  if (Array.isArray(input.dinners)) {
+    value.dinners = input.dinners
+      .filter((dinner) => dinner && typeof dinner === "object" && !Array.isArray(dinner))
+      .slice(0, 100);
+  }
+  if (Number.isSafeInteger(input.v)) value.v = input.v;
   return value;
 }
 

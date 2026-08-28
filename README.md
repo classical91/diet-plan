@@ -21,15 +21,24 @@ panel says so, and a **Forget key** button clears it. Prefer the server key on
 anything shared or public. `ANTHROPIC_BASE_URL` overrides the upstream host for
 testing.
 
-### Dinners
+### Your own food lists
 
-Dinner is a fixed, deliberately short list — frozen pizza, chicken, beef, fish,
-hamburger, lasagna and pasta. Tap one to set a night; chicken, beef and fish add
-rice and/or veggies, and the hamburger switches between a beef and a chicken
-patty. `Fill blank nights` and `Replace week` draw from the same seven, never
-repeating a dinner two nights running, and bulk cooking makes one cook cover the
-days after it. The list lives in `DINNERS` at the top of
-[`work-meals-app.js`](./work-meals-app.js) — edit that array to change it.
+Every list in the planner belongs to the reader. Morning and Afternoon each hold a
+list of foods you tick off; Night holds your dinners. **Edit list** in any of the
+three reveals a ✕ on each entry, a field for adding one, and **Reset to defaults**.
+
+A browser that has never opened the planner is seeded once — the morning and
+afternoon foods from `FOOD_SEEDS`, and seven dinners from `DINNER_SEEDS`, both at
+the top of [`work-meals-app.js`](./work-meals-app.js). After that the seeds are
+never consulted again, so a removed entry stays removed. The live lists are saved
+under `work-meals:v3` and travel with the cross-device sync below.
+
+Dinners carry a little more than a name. `sides` are the optional extras a dinner
+offers (rice, veggies) and `on` is what it starts with; `meats` is a choice between
+two versions of the same dinner, which is how the hamburger switches between beef
+and chicken. A dinner you add by hand gets the rice and veggies toggles, both off.
+`Fill blank nights` and `Replace week` draw from your dinner list and never repeat
+one two nights running, and bulk cooking makes a single cook cover the days after it.
 
 ### Cross-device dinner-plan sync
 
