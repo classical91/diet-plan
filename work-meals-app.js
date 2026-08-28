@@ -4,7 +4,7 @@ const SLOTS=[['morning','ðŸŒ…','Morning','Before work / start'],['afternoon','â˜
 // note and tags a seeded food keeps.
 // Starting foods for a browser that has never used the planner, seeded once into
 // st.foodLists. After that they are never consulted again except by Reset to defaults.
-const FOOD_SEEDS={morning:['Overnight oats with chia & berries','Greek yogurt + nuts + fruit','Boiled eggs + whole-grain toast','Nut butter + banana on whole-grain','Protein smoothie in a bottle','Cottage cheese + fruit'],afternoon:['Greek yogurt + nuts + fruit','Cottage cheese + fruit','Chicken or tofu grain bowl','Tuna or salmon wrap','Chickpea or lentil salad','Hummus + veg sticks + crackers','Mixed nuts + a piece of fruit','Leftover stir-fry + brown rice']};
+const FOOD_SEEDS={morning:['Eggs','Oat cereals','Oatmeal'],afternoon:['Greek yogurt + nuts + fruit','Cottage cheese + fruit','Chicken or tofu grain bowl','Tuna or salmon wrap','Chickpea or lentil salad','Hummus + veg sticks + crackers','Mixed nuts + a piece of fruit','Leftover stir-fry + brown rice']};
 const seedFoods=slot=>[...(FOOD_SEEDS[slot]||[])];
 // Starting dinners, seeded once into st.dinners. `sides` are optional extras toggled per
 // night and `meats` is a choice between two versions of the same dinner; a dinner added by
