@@ -21,6 +21,16 @@ panel says so, and a **Forget key** button clears it. Prefer the server key on
 anything shared or public. `ANTHROPIC_BASE_URL` overrides the upstream host for
 testing.
 
+### Dinners
+
+Dinner is a fixed, deliberately short list — frozen pizza, chicken, beef, fish,
+hamburger, lasagna and pasta. Tap one to set a night; chicken, beef and fish add
+rice and/or veggies, and the hamburger switches between a beef and a chicken
+patty. `Fill blank nights` and `Replace week` draw from the same seven, never
+repeating a dinner two nights running, and bulk cooking makes one cook cover the
+days after it. The list lives in `DINNERS` at the top of
+[`work-meals-app.js`](./work-meals-app.js) — edit that array to change it.
+
 ### Cross-device dinner-plan sync
 
 The Daily Meal Planner remains offline-first: `work-meals:v3` in browser

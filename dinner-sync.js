@@ -20,7 +20,7 @@ export function normalizePlan(input) {
       : [];
   }
   const value = { selectedDay: DAY_IDS.includes(input.selectedDay) ? input.selectedDay : "mon", days, foodLists };
-  // The dinner generator's own settings (template, bulk cooking, leftovers) ride along.
+  // The planner's week-fill settings (bulk cooking, leftover lunches) ride along.
   if (input.gen && typeof input.gen === "object" && !Array.isArray(input.gen)) value.gen = input.gen;
   return value;
 }
