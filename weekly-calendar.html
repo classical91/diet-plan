@@ -83,10 +83,12 @@ function describeDinner(d) {
   if (d.type === "out") return { main: "🍽️ Ordering out", sub: "" };
   if (d.type === "full") return { main: "✅ Already full", sub: "Ate enough earlier — skipping dinner." };
   if (d.name || d.protein || d.carb || (d.veg && d.veg.length)) {
-    // A dinner picked from the dinner list lists only what was added to it; the heading is the dinner itself.
+    // A dinner picked from the dinner list lists only what was added to it; the heading is the
+    // dinner itself, so an older dinner's protein only follows when it adds something.
+    const sameName = d.name && d.protein && d.name.toLowerCase() === d.protein.toLowerCase();
     const parts = d.pick
       ? [d.meat, ...(d.sides || [])].filter(Boolean).join(" · ")
-      : [d.name ? cap(d.protein) : null, d.carb, (d.veg || []).join(" + "), d.sauce].filter(Boolean).join(" · ");
+      : [d.name && !sameName ? cap(d.protein) : null, d.carb, (d.veg || []).join(" + "), d.sauce].filter(Boolean).join(" · ");
     // A leftover serving keeps the meal's own name and says which day's cook it came from.
     const from = d.from ? "♻️ Leftovers from " + dayLabel(d.from) + (parts ? " · " : "") : "";
     return { main: d.name || cap(d.protein) || "Dinner planned", sub: from + parts };

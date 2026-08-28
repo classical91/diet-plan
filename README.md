@@ -23,22 +23,28 @@ testing.
 
 ### Your own food lists
 
-Every list in the planner belongs to the reader. Morning and Afternoon each hold a
-list of foods you tick off; Night holds your dinners. **Edit list** in any of the
-three reveals a ✕ on each entry, a field for adding one, and **Reset to defaults**.
+Every list in the planner belongs to the reader, and all three read the same way:
+a row per entry with a marker, the name, and — while editing — a ✕. Morning and
+Afternoon are tick boxes, because several things get packed; Night is a radio,
+because it is one dinner. Each section carries one **Edit list** chip that reveals
+the ✕s, a field for adding an entry, and **Reset to defaults**.
 
-A browser that has never opened the planner is seeded once — the morning and
-afternoon foods from `FOOD_SEEDS`, and seven dinners from `DINNER_SEEDS`, both at
-the top of [`work-meals-app.js`](./work-meals-app.js). After that the seeds are
-never consulted again, so a removed entry stays removed. The live lists are saved
-under `work-meals:v3` and travel with the cross-device sync below.
+An entry is just a name. Tonight's dinner is chosen in the Night slot itself,
+alongside `Surprise me`, `Carry over to tomorrow`, `Order out`, `Already full`
+and `Clear`; only the week-filling controls sit in their own box below.
+
+A browser that has never opened the planner is seeded once, from `FOOD_SEEDS` and
+`DINNER_SEEDS` at the top of [`work-meals-app.js`](./work-meals-app.js). After that
+the seeds are only reached by Reset, so a removed entry stays removed. The live
+lists are saved under `work-meals:v3` and travel with the sync below.
 
 Dinners carry a little more than a name. `sides` are the optional extras a dinner
 offers (rice, veggies) and `on` is what it starts with; `meats` is a choice between
 two versions of the same dinner, which is how the hamburger switches between beef
-and chicken. A dinner you add by hand gets the rice and veggies toggles, both off.
-`Fill blank nights` and `Replace week` draw from your dinner list and never repeat
-one two nights running, and bulk cooking makes a single cook cover the days after it.
+and chicken. The chosen dinner shows those options inline on its own row. A dinner
+you add by hand gets the rice and veggies toggles, both off. `Fill blank nights`
+and `Replace week` draw from your dinner list and never repeat one two nights
+running, and bulk cooking makes a single cook cover the days after it.
 
 ### Cross-device dinner-plan sync
 
