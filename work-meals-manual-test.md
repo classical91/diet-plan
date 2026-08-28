@@ -7,9 +7,9 @@ Manual browser checks for `/work-meals`:
 
 ## The lists
 
-1. Open `/work-meals` in a browser that has never used it. Morning holds its six seeded
-   foods, Afternoon its eight, and Night the seven dinners: `Frozen pizza`, `Chicken`,
-   `Beef`, `Fish`, `Hamburger`, `Lasagna`, `Pasta`.
+1. Open `/work-meals` in a browser that has never used it. Morning holds its three seeded
+   foods — `Eggs`, `Oat cereals`, `Oatmeal` — Afternoon its eight, and Night the seven
+   dinners: `Frozen pizza`, `Chicken`, `Beef`, `Fish`, `Hamburger`, `Lasagna`, `Pasta`.
 2. All three sections read the same: a marker, the name, nothing else. No notes, no tags,
    no cards, and no `Generated` / `From my list` toggle. Morning and Afternoon use square tick
    boxes (several can be on); Night uses round radios (one at a time).
@@ -24,7 +24,9 @@ Manual browser checks for `/work-meals`:
    and a ticked food shows for that day in `/weekly-calendar`.
 7. Set Morning to `At home`. Your list should still be listed. `Hide` drops the whole section.
 8. Tap `Reset to defaults` in each section and confirm the seeded entries come back and your
-   additions are dropped.
+   additions are dropped. In Morning that means the three breakfasts, whatever the list held
+   before — this is also how a browser already carrying an older seeded list picks up a change
+   to `FOOD_SEEDS`.
 9. Reload after every kind of edit and confirm all three lists come back as left.
 
 ## Dinners, in the Night slot
