@@ -10,6 +10,7 @@ const seedFoods=slot=>[...(FOOD_SEEDS[slot]||[])];
 // night and `meats` is a choice between two versions of the same dinner; a dinner added by
 // hand gets the rice and veggies toggles, both off, and no meat choice.
 const DINNER_SEEDS=[{id:'pizza',icon:'🍕',name:'Frozen pizza'},{id:'chicken',icon:'🍗',name:'Chicken',protein:'chicken',sides:['rice','veggies'],on:['rice','veggies']},{id:'beef',icon:'🥩',name:'Beef',protein:'beef',sides:['rice','veggies'],on:['rice','veggies']},{id:'fish',icon:'🐟',name:'Fish',protein:'fish',sides:['rice','veggies'],on:['rice','veggies']},{id:'burger',icon:'🍔',name:'Hamburger',meats:['beef','chicken']},{id:'lasagna',icon:'🍲',name:'Lasagna',protein:'beef',carb:'pasta'},{id:'pasta',icon:'🍝',name:'Pasta',carb:'pasta'},{id:'frozen-chicken-strips',icon:'🍗',name:'Frozen chicken strips',protein:'chicken'},{id:'frozen-chicken-nuggets',icon:'🍗',name:'Frozen chicken nuggets',protein:'chicken'},{id:'frozen-chicken-burger',icon:'🍔',name:'Frozen chicken burger',protein:'chicken'},{id:'ground-turkey',icon:'🦃',name:'Ground turkey',protein:'turkey',sides:['rice','veggies'],on:['rice','veggies']},{id:'shepard-pie',icon:'🥧',name:'Shepard pie',protein:'beef',carb:'potato'},{id:'chicken-lasagna',icon:'🍲',name:'Chicken lasagna',protein:'chicken',carb:'pasta'}];
+const PLAN_VERSION=5,NEW_DINNER_IDS=new Set(['frozen-chicken-strips','frozen-chicken-nuggets','frozen-chicken-burger','ground-turkey','shepard-pie','chicken-lasagna']);
 const SIDES=['rice','veggies'];
 const byId=id=>st.dinners.find(m=>m.id===id);
 function fd(){return{type:null,pick:null,name:null,protein:null,carb:null,veg:[],sauce:null,meat:null,sides:[],from:null}}function fl(){return{morning:'',afternoon:'',night:''}}function fresh(){return{states:{morning:'work',afternoon:'work',night:'work'},checked:{},ai:{},dinner:fd(),leftovers:fl()}}
@@ -18,7 +19,7 @@ const trim=(x,n)=>String(x==null?'':x).replace(/\s+/g,' ').trim().slice(0,n);
 function cleanDinner(m,i){if(!m||typeof m!=='object')return null;let name=trim(m.name,60);if(!name)return null;let sides=Array.isArray(m.sides)?SIDES.filter(x=>m.sides.includes(x)):[];return{id:trim(m.id,40)||'d'+i+'-'+Math.random().toString(36).slice(2,7),icon:trim(m.icon,4)||'🍽️',name,protein:trim(m.protein,30)||null,carb:trim(m.carb,30)||null,sides,on:Array.isArray(m.on)?sides.filter(x=>m.on.includes(x)):[],meats:Array.isArray(m.meats)?m.meats.map(x=>trim(x,20)).filter(Boolean).slice(0,4):[]}}
 const cleanList=a=>[...new Set((Array.isArray(a)?a:[]).map(x=>trim(x,80)).filter(Boolean))].slice(0,200);
 function newDinner(name){return cleanDinner({name,icon:'🍽️',sides:SIDES,on:[]},st.dinners.length)}
-let st={selectedDay:today,days:{},foodLists:{morning:[],afternoon:[],night:[]},dinners:DINNER_SEEDS.map(cleanDinner),gen:{batch:'1',lunch:false},v:4};
+let st={selectedDay:today,days:{},foodLists:{morning:[],afternoon:[],night:[]},dinners:DINNER_SEEDS.map(cleanDinner),gen:{batch:'1',lunch:false},v:PLAN_VERSION};
 SLOTS.forEach(a=>st.foodLists[a[0]]=seedFoods(a[0]));DAYS.forEach(d=>st.days[d[0]]=fresh());
 try{let s=JSON.parse(localStorage.getItem(KEY)||'null');if(s){
 if(s.days)DAYS.forEach(d=>{let x=s.days[d[0]];if(x)st.days[d[0]]=Object.assign(fresh(),x,{states:Object.assign(fresh().states,x.states||{}),dinner:Object.assign(fd(),x.dinner||{}),leftovers:Object.assign(fl(),x.leftovers||{})});let t=st.days[d[0]];if(!Array.isArray(t.dinner.veg))t.dinner.veg=[];if(!Array.isArray(t.dinner.sides))t.dinner.sides=[];delete t.custom;delete t.customMode;delete t.customPick});
@@ -28,6 +29,7 @@ if(s.gen){if(['1','2','3'].includes(String(s.gen.batch)))st.gen.batch=String(s.g
 let old=!(s.v>=4);
 SLOTS.forEach(a=>{let saved=cleanList((s.foodLists||{})[a[0]]);st.foodLists[a[0]]=old?[...new Set([...st.foodLists[a[0]],...saved])]:saved});
 if(Array.isArray(s.dinners)&&!old)st.dinners=s.dinners.map(cleanDinner).filter(Boolean);
+if(!old&&!(s.v>=PLAN_VERSION)){let names=new Set(st.dinners.map(m=>m.name.toLowerCase()));st.dinners=st.dinners.concat(DINNER_SEEDS.filter(m=>NEW_DINNER_IDS.has(m.id)&&!names.has(m.name.toLowerCase())).map(cleanDinner).filter(Boolean))}
 // A pre-v4 plan kept typed dinner titles in the night list; they become dinners of their own.
 if(old){let extra=cleanList((s.foodLists||{}).night).filter(x=>!st.dinners.some(m=>m.name.toLowerCase()===x.toLowerCase()));st.dinners=st.dinners.concat(extra.map(newDinner));st.foodLists.night=[]}
 // A slot that used to sit on "From my list" had one meal chosen; keep it as a ticked item.
