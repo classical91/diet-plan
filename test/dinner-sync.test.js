@@ -102,3 +102,23 @@ test("rejects missing identity and malformed JSON", async () => {
   await sync.handle(bad, {}, result.sendJson);
   assert.equal(result.output.status, 400);
 });
+
+test("reading a plan hashes the code, and separates no plan from a bad code", async () => {
+  const calls = [];
+  const pool = { async query(sql, values) { calls.push({ sql, values }); return sql.startsWith("CREATE") ? {} : { rowCount: 1, rows: [{ plan, revision: "4", updated_at: new Date() }] }; } };
+  const sync = createDinnerSync({ pool });
+
+  const stored = await sync.readPlan(code);
+  assert.equal(stored.revision, 4);
+  assert.equal(stored.plan.days.tue.dinner.name, "Salmon rice");
+  assert.equal(calls[1].values[0], hashSyncCode(code));
+  assert.equal(calls[1].values.includes(code), false, "the raw sync code reached the database");
+
+  // A code that has simply never saved anything is not an error — the card
+  // reading this has to be able to say "nothing synced yet".
+  const empty = createDinnerSync({ pool: { async query(sql) { return sql.startsWith("CREATE") ? {} : { rowCount: 0, rows: [] }; } } });
+  assert.equal(await empty.readPlan(code), null);
+
+  await assert.rejects(() => sync.readPlan("short"), (error) => error.status === 401);
+  await assert.rejects(() => sync.readPlan(undefined), (error) => error.status === 401);
+});

@@ -4,6 +4,7 @@ import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createDinnerSync } from "./dinner-sync.js";
+import { dailyMealPlan } from "./daily-meal-plan.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -95,6 +96,23 @@ async function handleAi(request, response) {
   }
 }
 
+// Today's three meals, for another app to show.
+//
+// The Daily Meal Planner owns the week and the Weekly Meal Calendar owns how a
+// day reads; this route is those two answering a question about one day, using
+// the same meal-day.js the calendar page renders from. Nothing is recomputed on
+// the reader's side, so a card elsewhere and /weekly-calendar cannot drift.
+async function handleDailyMealPlan(request, response) {
+  const url = new URL(request.url || "/", `http://${request.headers.host}`);
+  const { status, payload } = await dailyMealPlan({
+    method: request.method,
+    dateKey: url.searchParams.get("date"),
+    syncCode: request.headers["x-sync-code"],
+    readPlan: (code) => dinnerSync.readPlan(code)
+  });
+  sendJson(response, status, payload);
+}
+
 const server = http.createServer(async (request, response) => {
   try {
     const url = new URL(request.url || "/", `http://${request.headers.host}`);
@@ -107,6 +125,11 @@ const server = http.createServer(async (request, response) => {
     if (pathname === "/api/dinner-plan") {
       if (!dinnerSync.configured) return sendJson(response, 503, { error: "Dinner sync is not configured." });
       await dinnerSync.handle(request, response, sendJson);
+      return;
+    }
+    if (pathname === "/api/daily-meal-plan") {
+      if (!dinnerSync.configured) return sendJson(response, 503, { error: "Dinner sync is not configured." });
+      await handleDailyMealPlan(request, response);
       return;
     }
 
