@@ -49,72 +49,26 @@
 </main>
 
 <script src="/nav.js"></script>
-<script>
-const SLOTS = [
-  { id:"morning",   icon:"🌅", label:"Morning" },
-  { id:"afternoon", icon:"☀️", label:"Afternoon" },
-  { id:"night",     icon:"🌙", label:"Night" },
-];
+<script type="module">
+// How a day reads — the three slot lines, and what a planned dinner says — lives
+// in meal-day.js, because this page is no longer the only thing that shows it:
+// /api/daily-meal-plan answers with the same summary for the hub's dashboard.
+// One copy means the card and this calendar cannot end up saying different
+// things about the same night.
+import { SLOTS, DAYS, dayIdFromDate, describeDinner, summarizeDay } from "/meal-day.js";
 
-const DAYS = [
-  { id:"mon", label:"Monday" }, { id:"tue", label:"Tuesday" }, { id:"wed", label:"Wednesday" },
-  { id:"thu", label:"Thursday" }, { id:"fri", label:"Friday" }, { id:"sat", label:"Saturday" }, { id:"sun", label:"Sunday" },
-];
-const todayId = (() => { const map=["sun","mon","tue","wed","thu","fri","sat"]; return map[new Date().getDay()]; })();
-
+const todayId = dayIdFromDate();
 
 const STORE_KEY = "work-meals:v3";
 
-function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
-function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 function escapeHtml(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
 function freshDinner() { return { type:null, pick:null, name:null, protein:null, carb:null, veg:[], sauce:null, meat:null, sides:[], from:null }; }
 function freshLeftovers() { return { morning:"", afternoon:"", night:"" }; }
-function dayLabel(id) { const d = DAYS.find(x => x.id === id); return d ? d.label : ""; }
 function freshDay() {
   return {
     states:{ morning:"work", afternoon:"work", night:"work" }, checked:{}, ai:{}, dinner: freshDinner(), leftovers: freshLeftovers(),
   };
-}
-
-function describeDinner(d) {
-  if (!d) return null;
-  if (d.type === "out") return { main: "🍽️ Ordering out", sub: "" };
-  if (d.type === "full") return { main: "✅ Already full", sub: "Ate enough earlier — skipping dinner." };
-  if (d.name || d.protein || d.carb || (d.veg && d.veg.length)) {
-    // A dinner picked from the dinner list lists only what was added to it; the heading is the
-    // dinner itself, so an older dinner's protein only follows when it adds something.
-    const sameName = d.name && d.protein && d.name.toLowerCase() === d.protein.toLowerCase();
-    const parts = d.pick
-      ? [d.meat, ...(d.sides || [])].filter(Boolean).join(" · ")
-      : [d.name && !sameName ? cap(d.protein) : null, d.carb, (d.veg || []).join(" + "), d.sauce].filter(Boolean).join(" · ");
-    // A leftover serving keeps the meal's own name and says which day's cook it came from.
-    const from = d.from ? "♻️ Leftovers from " + dayLabel(d.from) + (parts ? " · " : "") : "";
-    return { main: d.name || cap(d.protein) || "Dinner planned", sub: from + parts };
-  }
-  return null;
-}
-
-function checkedFoodsFor(day, slotId) {
-  const aiList = (day.ai && day.ai[slotId]) || [];
-  return [...(foodLists[slotId] || []), ...aiList].filter(name => day.checked[slotId + "|" + slugify(name)]);
-}
-
-function calendarSlotText(day, slot) {
-  const st = day.states[slot.id] || "work";
-  if (st === "skip") return "Hidden";
-  const leftover = (day.leftovers || {})[slot.id];
-  if (leftover && slot.id !== "night") return "♻️ Leftovers — " + leftover;
-  if (slot.id === "night") {
-    // A planned dinner shows whether the night is at work or at home — matching /work-meals.
-    const summary = describeDinner(day.dinner);
-    if (summary) return summary.main + (summary.sub ? " — " + summary.sub : "");
-    return "Nothing planned yet";
-  }
-  if (st === "home") return "Eating at home";
-  const picked = checkedFoodsFor(day, slot.id);
-  return picked.length ? picked.join(", ") : "Not chosen yet";
 }
 
 let selectedDayForSave = todayId;
@@ -218,12 +172,14 @@ function updateHint() {
 }
 
 function renderGrid() {
+  const plan = planState();
   const html = `<div class="week-calendar">${DAYS.map(d => {
-    const day = days[d.id];
-    const rows = SLOTS.map(slot => {
-      const isHidden = (day.states[slot.id] || "work") === "skip";
+    // Every row is drawn, a hidden slot included, so the three rows line up
+    // across the days sitting next to each other. The summary is asked for all
+    // of them and a hidden one is left blank here.
+    const rows = summarizeDay(plan, d.id, { includeHidden:true }).slots.map(slot => {
       // Slot text is plain text built from the reader's own food and dinner names.
-      const slotText = isHidden ? "" : escapeHtml(calendarSlotText(day, slot));
+      const slotText = slot.hidden ? "" : escapeHtml(slot.text);
       return `<div class="cal-row"><b>${slot.icon} ${slot.label}</b>${slotText}</div>`;
     }).join("");
     return `<div class="cal-day${d.id === todayId ? " is-today" : ""}"><h4>${d.label}</h4>${rows}</div>`;

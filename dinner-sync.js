@@ -58,6 +58,24 @@ export function createDinnerSync({ databaseUrl = process.env.DATABASE_URL, pool:
   return {
     configured: true,
     async close() { if (!suppliedPool) await pool.end(); },
+    /**
+     * The stored plan for a sync code, or null when that code has never saved one.
+     *
+     * The sync code is the only key there is, so an unreadable one is refused
+     * here rather than turned into a lookup that cannot match: a bad code and a
+     * code with no plan yet are different answers, and a reader acting on them
+     * — /api/daily-meal-plan — has to be able to tell them apart.
+     */
+    async readPlan(code) {
+      if (typeof code !== "string" || !CODE_RE.test(code)) {
+        throw Object.assign(new Error("A valid sync code is required."), { status: 401 });
+      }
+      await ensure();
+      const result = await pool.query("SELECT plan, revision, updated_at FROM dinner_plans WHERE identity_hash = $1", [hashSyncCode(code)]);
+      if (!result.rowCount) return null;
+      const row = result.rows[0];
+      return { plan: row.plan, revision: Number(row.revision), updatedAt: row.updated_at };
+    },
     async handle(request, response, sendJson) {
       const code = request.headers["x-sync-code"];
       if (typeof code !== "string" || !CODE_RE.test(code)) return sendJson(response, 401, { error: "A valid sync code is required." });
