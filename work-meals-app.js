@@ -34,7 +34,10 @@ if(!old&&!(s.v>=PLAN_VERSION)){let names=new Set(st.dinners.map(m=>m.name.toLowe
 if(old){let extra=cleanList((s.foodLists||{}).night).filter(x=>!st.dinners.some(m=>m.name.toLowerCase()===x.toLowerCase()));st.dinners=st.dinners.concat(extra.map(newDinner));st.foodLists.night=[]}
 // A slot that used to sit on "From my list" had one meal chosen; keep it as a ticked item.
 if(old&&s.days)DAYS.forEach(d=>{let x=s.days[d[0]]||{},t=st.days[d[0]];SLOTS.forEach(a=>{if(a[0]==='night')return;let v=trim((x.customPick||{})[a[0]]||(x.custom||{})[a[0]],80);if(!v||(x.customMode||{})[a[0]]==='generated')return;if(!st.foodLists[a[0]].includes(v))st.foodLists[a[0]].push(v);t.checked[a[0]+'|'+slug(v)]=true})});
-if(DAYS.some(d=>d[0]===s.selectedDay))st.selectedDay=s.selectedDay}}catch(e){}
+// A saved plan owns the meals, not the day the editor should open on. Restoring
+// another device's last-selected day made Sunday look like "today" on Saturday.
+// Start on this device's current day; an explicit ?day= link can still override it.
+}}catch(e){}
 if(!st.dinners.length)st.dinners=DINNER_SEEDS.map(cleanDinner);
 try{let p=new URLSearchParams(location.search).get('day');if(p&&DAYS.some(d=>d[0]===p))st.selectedDay=p}catch(e){}
 const AIKEY='work-meals:anthropic-key';

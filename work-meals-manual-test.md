@@ -63,7 +63,9 @@ Manual browser checks for `/work-meals`:
 23. With `Bulk cooking` at 2 or 3, clear only some dinners and tap `Fill blank nights`. Only
     the blanks change, and a batch never carries across a night you had already planned.
 24. Change `Bulk cooking` and the leftovers checkbox, reload, and confirm both come back.
-25. Open `/work-meals?day=thu` and confirm Thursday is the selected day.
+25. Select a different day, reload `/work-meals`, and confirm the planner opens on the
+    device's current day rather than the previously selected day. Then open
+    `/work-meals?day=thu` and confirm the explicit link selects Thursday.
 
 ## The calendar
 
