@@ -54,30 +54,38 @@ Manual browser checks for `/work-meals`:
 
 ## The week grid
 
-W1. Every cell of `This week` names its own meal. With nothing planned it reads `Pick a meal`
-    in grey; it never reads `Work`, `Home` or `Hide` on its own.
-W2. Tap a cell. A picker opens over the page naming that day and slot, offering that slot's
-    own list (foods for Morning and Afternoon, dinners for Night) and `Clear` / `Hide meal`
-    — and nothing about where the meal is eaten. Night also offers `Surprise me`,
-    `Order out` and `Already full`. The tapped cell's day becomes the selected day, so the
-    sections below follow it.
-W3. In Morning or Afternoon, tick two foods. The picker stays open, both show as picked, the
+W1. Every cell of `This week` names its own meal, in gold. With nothing picked it reads
+    `Pick a meal` in grey inside a dashed border, so an empty cell reads as something to tap;
+    it never reads `Work`, `Home` or `Hide` on its own.
+W2. Tap a cell. A menu drops from that cell — attached to it, not a full-screen overlay —
+    naming the day and slot, and offering that slot's own list (foods for Morning and
+    Afternoon, dinners for Night) with `Clear` / `Hide` under it, and nothing about where the
+    meal is eaten. Night also offers `Surprise me`, `Order out` and `Already full`. The
+    tapped cell is outlined while its menu is down, and its day becomes the selected day, so
+    the sections below follow it.
+W3. In Morning or Afternoon, tick two foods. The menu stays open where it is, both show as
+    picked, the
     cell reads them comma-separated, and the same foods are ticked in the section below.
     Tapping a picked food again unpicks it.
-W4. In Night, tap a dinner. The picker closes, the cell names that dinner, and the Night
+W4. In Night, tap a dinner. The menu closes, the cell names that dinner, and the Night
     section shows it selected with its own sides. Reopening and tapping the same dinner
-    clears it and leaves the picker open.
-W5. `Hide meal` hides that meal and closes the picker; the cell reads `Hidden` and the section
+    clears it and leaves the menu open.
+W5. `Hide` hides that meal and closes the menu; the cell reads `Hidden` in grey and the section
     below disappears. `Hide this meal` in the section itself does the same. Reopen the cell:
     picking a meal — or `Unhide` — brings it back, keeping whatever was picked.
 W6. `Clear` empties just that cell (ticked foods and any leftovers card for Morning and
-    Afternoon, the dinner for Night) and leaves the picker open.
+    Afternoon, the dinner for Night) and leaves the menu open.
 W7. The toolbar under the grid counts the selected day: `2 of 3 meals picked on Monday`,
     with `, 1 hidden` after it when something is.
-W8. Close the picker with `✕`, the Escape key, or a tap outside it. The page behind does not
-    scroll while it is open.
-W9. A cell with a leftovers card reads `♻️ <dinner>`; a night set to `Order out` or
-    `Already full` reads that. Reload and confirm every cell comes back as left.
+W8. Close the menu with `✕`, the Escape key, a second tap on its own cell, or a tap anywhere
+    outside — which still lands on whatever was tapped. Tapping a different cell moves the
+    menu there in one tap.
+W9. With a menu open, scroll the page and scroll the week sideways: the menu follows its cell
+    rather than closing or drifting, and closes only once that cell is scrolled out of sight.
+    Do the same on a phone-width window: the menu stays fully on screen, flipping above the
+    cell when there is no room below it.
+W10. A cell with a leftovers card reads `♻️ <dinner>`; a night set to `Order out` or
+     `Already full` reads that. Reload and confirm every cell comes back as left.
 
 ## The week
 
