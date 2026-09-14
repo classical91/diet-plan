@@ -22,7 +22,8 @@ Manual browser checks for `/work-meals`:
 5. Add a name with an apostrophe such as `Shepherd's pie`, reload, and confirm it is intact.
 6. Tick a food you added in Morning. Ticking works whether or not the list is being edited,
    and a ticked food shows for that day in `/weekly-calendar`.
-7. Set Morning to `At home`. Your list should still be listed. `Hide` drops the whole section.
+7. `Hide this meal`, next to `Edit list`, drops the whole section. There is no `At work` /
+   `At home` choice anywhere on the page — a meal is either planned or hidden.
 8. Tap `Reset to defaults` in each section and confirm the seeded entries come back and your
    additions are dropped. In Morning that means the three breakfasts, whatever the list held
    before — this is also how a browser already carrying an older seeded list picks up a change
@@ -55,10 +56,11 @@ Manual browser checks for `/work-meals`:
 
 W1. Every cell of `This week` names its own meal. With nothing planned it reads `Pick a meal`
     in grey; it never reads `Work`, `Home` or `Hide` on its own.
-W2. Tap a cell. A picker opens over the page naming that day and slot, offering `At work` /
-    `At home`, that slot's own list (foods for Morning and Afternoon, dinners for Night), and
-    `Clear` / `Hide meal`. Night also offers `Surprise me`, `Order out` and `Already full`.
-    The tapped cell's day becomes the selected day, so the sections below follow it.
+W2. Tap a cell. A picker opens over the page naming that day and slot, offering that slot's
+    own list (foods for Morning and Afternoon, dinners for Night) and `Clear` / `Hide meal`
+    — and nothing about where the meal is eaten. Night also offers `Surprise me`,
+    `Order out` and `Already full`. The tapped cell's day becomes the selected day, so the
+    sections below follow it.
 W3. In Morning or Afternoon, tick two foods. The picker stays open, both show as picked, the
     cell reads them comma-separated, and the same foods are ticked in the section below.
     Tapping a picked food again unpicks it.
@@ -66,12 +68,12 @@ W4. In Night, tap a dinner. The picker closes, the cell names that dinner, and t
     section shows it selected with its own sides. Reopening and tapping the same dinner
     clears it and leaves the picker open.
 W5. `Hide meal` hides that meal and closes the picker; the cell reads `Hidden` and the section
-    below disappears. Reopen the cell: picking a meal — or `Unhide` — brings it back as
-    `At work`, keeping whatever was picked.
+    below disappears. `Hide this meal` in the section itself does the same. Reopen the cell:
+    picking a meal — or `Unhide` — brings it back, keeping whatever was picked.
 W6. `Clear` empties just that cell (ticked foods and any leftovers card for Morning and
     Afternoon, the dinner for Night) and leaves the picker open.
-W7. `At work` / `At home` in the picker matches the segmented control in the section below;
-    the cell's colour follows it (gold at work, green at home) while still naming the meal.
+W7. The toolbar under the grid counts the selected day: `2 of 3 meals picked on Monday`,
+    with `, 1 hidden` after it when something is.
 W8. Close the picker with `✕`, the Escape key, or a tap outside it. The page behind does not
     scroll while it is open.
 W9. A cell with a leftovers card reads `♻️ <dinner>`; a night set to `Order out` or
@@ -95,9 +97,10 @@ W9. A cell with a leftovers card reads `♻️ <dinner>`; a night set to `Order 
 
 ## The calendar
 
-26. Open `/weekly-calendar`. A picked dinner shows in Night whether that night is `At work` or
-    `At home`, with only its chosen sides after the name (`Chicken — rice · veggies`,
-    `Frozen pizza` on its own). `Hide` suppresses it.
+26. Open `/weekly-calendar`. A picked dinner shows in Night with only its chosen sides after
+    the name (`Chicken — rice · veggies`, `Frozen pizza` on its own). A hidden night
+    suppresses it. A plan saved before this change, with a meal set to `At home`, reads as
+    its picked foods rather than `Eating at home`.
 27. Ticked foods show in Morning and Afternoon. The calendar has no editing controls at all —
     no mode chips, no list picker, no add field. All editing lives on `/work-meals`.
 28. Edit your dinner list on `/work-meals`, visit `/weekly-calendar`, then go back. The edited
@@ -107,7 +110,7 @@ W9. A cell with a leftovers card reads `♻️ <dinner>`; a night set to `Order 
 
 ## AI panels
 
-30. In `Generate ideas with AI`, generate ideas for a day with at least one `At work` slot.
+30. In `Generate ideas with AI`, generate ideas for a day with at least one meal not hidden.
     Ideas appear as tickable items under `AI ideas` in Morning and Afternoon, separate from
     your list, and any ticked idea also shows in `/weekly-calendar`.
 31. In `Get AI feedback on my week`, tap `Get feedback` and confirm the response renders below

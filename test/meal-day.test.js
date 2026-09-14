@@ -23,7 +23,7 @@ const plan = {
       leftovers: { morning: "", afternoon: "", night: "" }
     },
     thu: {
-      states: { morning: "home", afternoon: "skip", night: "work" },
+      states: { morning: "show", afternoon: "skip", night: "show" },
       checked: {},
       ai: {},
       dinner: { name: "Chicken", from: "wed" },
@@ -56,9 +56,9 @@ test("a slot set to Hide is left out of a summary, and kept for the calendar", (
   assert.equal(full.slots[1].text, "Hidden");
 });
 
-test("eating at home, a packed leftover lunch and a leftover dinner each say so", () => {
+test("a packed leftover lunch and a leftover dinner each say so", () => {
   const thursday = summarizeDay(plan, "thu", { includeHidden: true });
-  assert.equal(thursday.slots[0].text, "Eating at home");
+  assert.equal(thursday.slots[0].text, "Not chosen yet");
   // The lunch is hidden on Thursday, but the same leftover in a shown slot reads
   // as the planner wrote it.
   assert.equal(thursday.slots[1].text, "Hidden");
