@@ -51,6 +51,32 @@ Manual browser checks for `/work-meals`:
 19. Set a night to a dinner, then remove that dinner from the list. The night keeps what it was
     set to, reads correctly on both pages, and no row shows as selected.
 
+## The week grid
+
+W1. Every cell of `This week` names its own meal. With nothing planned it reads `Pick a meal`
+    in grey; it never reads `Work`, `Home` or `Hide` on its own.
+W2. Tap a cell. A picker opens over the page naming that day and slot, offering `At work` /
+    `At home`, that slot's own list (foods for Morning and Afternoon, dinners for Night), and
+    `Clear` / `Hide meal`. Night also offers `Surprise me`, `Order out` and `Already full`.
+    The tapped cell's day becomes the selected day, so the sections below follow it.
+W3. In Morning or Afternoon, tick two foods. The picker stays open, both show as picked, the
+    cell reads them comma-separated, and the same foods are ticked in the section below.
+    Tapping a picked food again unpicks it.
+W4. In Night, tap a dinner. The picker closes, the cell names that dinner, and the Night
+    section shows it selected with its own sides. Reopening and tapping the same dinner
+    clears it and leaves the picker open.
+W5. `Hide meal` hides that meal and closes the picker; the cell reads `Hidden` and the section
+    below disappears. Reopen the cell: picking a meal — or `Unhide` — brings it back as
+    `At work`, keeping whatever was picked.
+W6. `Clear` empties just that cell (ticked foods and any leftovers card for Morning and
+    Afternoon, the dinner for Night) and leaves the picker open.
+W7. `At work` / `At home` in the picker matches the segmented control in the section below;
+    the cell's colour follows it (gold at work, green at home) while still naming the meal.
+W8. Close the picker with `✕`, the Escape key, or a tap outside it. The page behind does not
+    scroll while it is open.
+W9. A cell with a leftovers card reads `♻️ <dinner>`; a night set to `Order out` or
+    `Already full` reads that. Reload and confirm every cell comes back as left.
+
 ## The week
 
 20. Clear one dinner, tap `Fill blank nights`, and confirm only the empty night is filled.
