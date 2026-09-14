@@ -98,10 +98,11 @@ function checkedFoodsFor(plan, day, slotId) {
  */
 export function slotEntry(plan, dayId, slot) {
   const day = dayOf(plan, dayId);
-  const state = day.states[slot.id] || "work";
+  // A meal is either happening or hidden; older plans also wrote "work" or "home" here.
+  const hidden = day.states[slot.id] === "skip";
   const base = { id: slot.id, icon: slot.icon, label: slot.label };
 
-  if (state === "skip") return { ...base, text: "Hidden", hidden: true, planned: false };
+  if (hidden) return { ...base, text: "Hidden", hidden: true, planned: false };
 
   const leftover = day.leftovers[slot.id];
   if (leftover && slot.id !== "night") {
@@ -115,8 +116,6 @@ export function slotEntry(plan, dayId, slot) {
     }
     return { ...base, text: "Nothing planned yet", hidden: false, planned: false };
   }
-
-  if (state === "home") return { ...base, text: "Eating at home", hidden: false, planned: true };
 
   const picked = checkedFoodsFor(plan, day, slot.id);
   return picked.length
