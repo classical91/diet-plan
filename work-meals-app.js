@@ -58,7 +58,7 @@ function build(replace){let batch=Math.max(1,+st.gen.batch||1),lunch=!!st.gen.lu
 // Hidden — rather than only where it is eaten; where still shows as the cell's colour.
 function pickedFoods(d,slot){return[...(st.foodLists[slot]||[]),...((d.ai||{})[slot]||[])].filter(x=>x&&d.checked[slot+'|'+slug(x)])}
 function cellText(dayId,slot){let d=st.days[dayId];if(hiddenNow(d,slot))return{state:'skip',text:'Hidden'};if(slot==='night'){let sm=summary(d.dinner);return{state:'planned',text:sm?sm[0]:''}}let lo=(d.leftovers||{})[slot];if(lo)return{state:'planned',text:'\u267b\ufe0f '+lo};return{state:'planned',text:pickedFoods(d,slot).join(', ')}}
-function renderGrid(){let h=DAYS.map(d=>`<button class='day ${d[0]===st.selectedDay?'active':''} ${d[0]===today?'gold':''}' data-day='${d[0]}'>${d[1].slice(0,3)}</button>`).join(''),rows=SLOTS.map(s=>`<div>${s[1]} ${s[2]}</div>`+DAYS.map(d=>{let c=cellText(d[0],s[0]),t=c.text||'Pick a meal';return`<button class='cell ${c.state} ${s[0]}${c.text?'':' blank'}${picking&&picking.day===d[0]&&picking.slot===s[0]?' open':''}' data-day='${d[0]}' data-slot='${s[0]}' title='${esc(dayName(d[0])+' \u00b7 '+s[2]+' \u2014 '+t)}'>${esc(t)}</button>`}).join('')).join('');$('#grid').innerHTML=`<div></div>${h}${rows}`}
+function renderGrid(){let h=DAYS.map(d=>`<button class='day ${d[0]===st.selectedDay?'active':''} ${d[0]===today?'gold':''}' data-day='${d[0]}'>${d[1].slice(0,3)}</button>`).join(''),rows=SLOTS.map(s=>`<div>${s[1]} ${s[2]}</div>`+DAYS.map(d=>{let c=cellText(d[0],s[0]),t=c.text||'Pick a meal';return`<button class='cell ${c.state} ${s[0]}${c.text?'':' blank'}' data-day='${d[0]}' data-slot='${s[0]}' title='${esc(dayName(d[0])+' \u00b7 '+s[2]+' \u2014 '+t)}'>${esc(t)}</button>`}).join('')).join('');$('#grid').innerHTML=`<div></div>${h}${rows}`}
 function slug(x){return String(x).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
 function row(sel,attr,name,inner,slot,rm){return`<div class='food ${sel}' ${attr}><span class='check'></span><span class='grow'><span class='name'>${name}</span>${inner||''}</span>${editing[slot]?`<button class='x' ${rm} title='Remove from my list'>✕</button>`:''}</div>`}
 function food(day,slot,name){let id=slot+'|'+slug(name);return row(day.checked[id]?'done':'',`data-check='${id}'`,esc(name),'',slot,`data-remove='${slot}' data-name='${esc(name)}'`)}
@@ -68,44 +68,12 @@ function dinnerRow(d,m){let on=d.pick===m.id,chips=on?((m.meats||[]).length?m.me
 function editBar(slot,what){return editing[slot]?`<div class='editrow'><input data-add='${slot}' placeholder='Add ${what}, then press Enter'><button class='chip' data-reset='${slot}'>Reset to defaults</button></div>`:''}
 function editChip(slot){return`<div class='chips mode'><button class='chip edit ${editing[slot]?'on':''}' data-edit='${slot}'>${editing[slot]?'Done editing':'Edit list'}</button><button class='chip' data-hide='${slot}'>Hide this meal</button></div>`}
 function renderSlots(){let d=day();$('#slots').innerHTML=(SLOTS.every(s=>d.states[s[0]]==='skip')?"<p class=note>Every meal is hidden for this day — use the grid above to bring one back.</p>":'')+SLOTS.map(s=>{let slot=s[0],body='';if(hiddenNow(d,slot))return'';let lo=(d.leftovers||{})[slot],loBox=lo?`<div class='box leftover'><b>♻️ Leftovers — ${esc(lo)}</b><div class='note'>From the batch cooked the night before. <button class='chip' data-drop='${slot}'>Remove</button></div></div>`:'';if(slot==='night'){let dn=d.dinner,sm=summary(dn),sides=plate(dn),status=dn.type==='out'?'Ordering out tonight.':dn.type==='full'?'Already full — no dinner needed.':dn.from?'♻️ <b>'+esc(dn.name)+'</b> again — leftovers from '+dayName(dn.from)+'.':sm?'<b>Tonight: '+esc(sm[0])+'</b>'+(sides?' · '+esc(sides):''):'Nothing picked yet — tap one of your dinners below.';body=`<div class='box' id='balance'>${status}</div>`+(st.dinners.length?st.dinners.map(m=>dinnerRow(dn,m)).join(''):'<p class=note>Your dinner list is empty — tap <b>Edit list</b> to add one.</p>')+`<div class='actions mt'><button class='btn' data-act='surprise'>Surprise me</button><button class='btn' data-act='carry'>Carry over to tomorrow</button><button class='btn' data-act='out'>Order out</button><button class='btn' data-act='full'>Already full</button><button class='btn' data-act='clear'>Clear</button></div>`+(dmsg?`<p class='msg'>${esc(dmsg)}</p>`:'')}else{let list=st.foodLists[slot]||[],ai=((d.ai||{})[slot]||[]).filter(Boolean);body=(list.length?list.map(x=>food(d,slot,x)).join(''):'<p class=note>Your list is empty — tap <b>Edit list</b> to add something.</p>')+(ai.length?"<div class=label>AI ideas</div>"+ai.map(x=>food(d,slot,x)).join(''):'')}return`<section class='slot ${slot}'><h3>${s[1]} ${s[2]}</h3><p class=note>${s[3]}</p>${loBox}${body}${editBar(slot,slot==='night'?'a dinner':'a food')}${editChip(slot)}</section>`}).join('')}
-function render(){renderGrid();renderSlots();renderPicker();let on=SLOTS.filter(s=>!hiddenNow(day(),s[0])),n=on.filter(s=>cellText(st.selectedDay,s[0]).text).length,hid=SLOTS.length-on.length;$('#summary').innerHTML='<b>'+n+'</b> of <b>'+on.length+'</b> meal'+(on.length===1?'':'s')+' picked on <b>'+dayName(st.selectedDay)+'</b>'+(hid?', '+hid+' hidden':'')+'.';save()}
-$('#grid').onclick=e=>{let b=e.target.closest('button');if(!b)return;if(b.dataset.day&&!b.dataset.slot){st.selectedDay=b.dataset.day;render()}else if(b.dataset.slot)openPicker(b.dataset.day,b.dataset.slot)};
-// Tapping a grid cell drops a menu under it: the meals that slot offers, plus Hide. It sits
-// over the page rather than in it, so nothing below shifts, and it is a view of the plan —
-// nothing here is saved on its own.
-let picking=null;const pickerEl=$('#picker');
-function openPicker(dayId,slot){picking=picking&&picking.day===dayId&&picking.slot===slot?null:{day:dayId,slot};if(picking)st.selectedDay=dayId;render()}
-function closePicker(){picking=null;renderPicker()}
-// The menu hangs off the cell it belongs to, so it is placed wherever that cell sits right
-// now and moved again whenever the cell does — a page scroll, the week's own sideways
-// scroll, a phone hiding its address bar. Only a cell scrolled out of sight closes it:
-// closing on the scroll itself made a tap that nudged the page open and shut the menu.
-function placeMenu(){let cell=document.querySelector(`.cell[data-day='${picking.day}'][data-slot='${picking.slot}']`);if(!cell)return closePicker();let r=cell.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight||r.right<0||r.left>innerWidth)return closePicker();let w=pickerEl.offsetWidth,h=pickerEl.offsetHeight,gap=6,left=Math.min(Math.max(8,r.left),Math.max(8,innerWidth-w-8)),top=r.bottom+gap;if(top+h>innerHeight-8)top=r.top-h-gap;pickerEl.style.left=left+'px';pickerEl.style.top=Math.max(8,Math.min(top,innerHeight-h-8))+'px'}
-let placing=0;
-function followCell(e){if(!picking||placing)return;if(e&&e.target&&e.target.nodeType===1&&pickerEl.contains(e.target))return;placing=requestAnimationFrame(()=>{placing=0;if(picking)placeMenu()})}
-function pickerItem(on,attr,text){return`<button class='pickItem ${on?'on':''}' ${attr}>${text}</button>`}
-function pickerItems(d,slot){if(slot==='night')return st.dinners.length?st.dinners.map(m=>pickerItem(d.dinner.pick===m.id,`data-pickdinner='${m.id}'`,m.icon+' '+esc(m.name))).join(''):"<p class=note>Your dinner list is empty \u2014 add one under <b>Night</b> below.</p>";let list=[...(st.foodLists[slot]||[]),...((d.ai||{})[slot]||[]).filter(Boolean)];return list.length?list.map(x=>pickerItem(d.checked[slot+'|'+slug(x)],`data-pickfood='${esc(x)}'`,esc(x))).join(''):"<p class=note>Your list is empty \u2014 add a food in that slot below.</p>"}
-function renderPicker(){if(!picking){pickerEl.hidden=true;pickerEl.innerHTML='';return}
-let dayId=picking.day,slot=picking.slot,d=st.days[dayId],s=SLOTS.find(x=>x[0]===slot),hidden=hiddenNow(d,slot);
-pickerEl.innerHTML=`<div class='menuHead'><span class='label'>${esc(dayName(dayId).slice(0,3))} \u00b7 ${s[1]} ${esc(s[2])}</span><button class='x' data-pickclose title='Close'>\u2715</button></div>`
-+`<div class='menuList'>${hidden?"<p class=note>Hidden \u2014 picking one brings it back.</p>":''}${pickerItems(d,slot)}</div>`
-+`<div class='menuFoot'>${slot==='night'?"<button class='chip' data-pickact='surprise'>Surprise me</button><button class='chip' data-pickact='out'>Order out</button><button class='chip' data-pickact='full'>Already full</button>":''}<button class='chip' data-pickact='clear'>Clear</button><button class='chip ${hidden?'on':''}' data-pickact='hide'>${hidden?'Unhide':'Hide'}</button></div>`;
-pickerEl.hidden=false;placeMenu()}
-function clearCell(d,slot){if(slot==='night'){d.dinner=fd();dmsg='';return}Object.keys(d.checked).forEach(k=>{if(k.indexOf(slot+'|')===0)delete d.checked[k]});if(d.leftovers)d.leftovers[slot]=''}
-function unhide(d,slot){d.states[slot]='show'}
-document.addEventListener('click',e=>{if(picking&&!pickerEl.contains(e.target)&&!e.target.closest('.cell'))closePicker()},true);
-['scroll','resize'].forEach(ev=>addEventListener(ev,followCell,{passive:true,capture:true}));
-pickerEl.onclick=e=>{if(!picking)return;let b=e.target.closest('button');if(!b)return;let slot=picking.slot,d=st.days[picking.day];
-if(b.hasAttribute('data-pickclose')){closePicker();return}
-if(b.dataset.pickfood!==undefined){let id=slot+'|'+slug(b.dataset.pickfood);d.checked[id]=!d.checked[id];unhide(d,slot);render();return}
-if(b.dataset.pickdinner){let on=d.dinner.pick===b.dataset.pickdinner;d.dinner=on?fd():dinnerOf(b.dataset.pickdinner,d.dinner.meat);dmsg='';if(!on)unhide(d,slot);render();if(!on)closePicker();return}
-let a=b.dataset.pickact;if(!a)return;
-if(a==='hide'){let was=hiddenNow(d,slot);d.states[slot]=was?'show':'skip';render();if(!was)closePicker();return}
-if(a==='clear'){clearCell(d,slot);render();return}
-if(a==='surprise')d.dinner=randomDinner(null);else d.dinner=Object.assign(fd(),{type:a});
-dmsg='';unhide(d,slot);render();closePicker()};
+function render(){renderGrid();renderSlots();let on=SLOTS.filter(s=>!hiddenNow(day(),s[0])),n=on.filter(s=>cellText(st.selectedDay,s[0]).text).length,hid=SLOTS.length-on.length;$('#summary').innerHTML='<b>'+n+'</b> of <b>'+on.length+'</b> meal'+(on.length===1?'':'s')+' picked on <b>'+dayName(st.selectedDay)+'</b>'+(hid?', '+hid+' hidden':'')+'.';save()}
+// A grid cell is the plan's on/off switch: tapping one selects that day and turns that meal
+// between planned and hidden. What the meal actually is gets picked in its own section
+// below, which follows the selected day.
 function hiddenNow(d,slot){return d.states[slot]==='skip'}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&picking)closePicker()});
+$('#grid').onclick=e=>{let b=e.target.closest('button');if(!b)return;if(b.dataset.day&&!b.dataset.slot){st.selectedDay=b.dataset.day;render()}else if(b.dataset.slot){let d=st.days[b.dataset.day];d.states[b.dataset.slot]=hiddenNow(d,b.dataset.slot)?'show':'skip';st.selectedDay=b.dataset.day;render()}};
 // Editing a list is a per-slot mode of the page, not part of the saved plan.
 function addTo(slot,raw){let v=trim(String(raw||'').replace(/,+$/,''),80);if(!v)return;if(slot==='night'){if(!st.dinners.some(m=>m.name.toLowerCase()===v.toLowerCase()))st.dinners.push(newDinner(v))}else if(!(st.foodLists[slot]||[]).includes(v))st.foodLists[slot].push(v);render();let el=document.querySelector("[data-add='"+slot+"']");if(el)el.focus()}
 function resetList(slot){if(slot==='night')st.dinners=DINNER_SEEDS.map(cleanDinner);else st.foodLists[slot]=seedFoods(slot);render()}
