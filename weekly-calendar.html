@@ -18,7 +18,7 @@
   .header-line{width:54px;height:2px;background:var(--accent);margin:18px auto 0;opacity:.55}
   .container{max-width:980px;margin:0 auto}
 
-  .toolbar{display:flex;justify-content:flex-end;margin-bottom:18px}
+  .toolbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:18px}
   .btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:7px 14px;border-radius:20px;cursor:pointer;transition:all .2s;display:inline-block;text-decoration:none}
   .btn:hover{border-color:var(--accent);color:var(--accent)}
 
@@ -43,6 +43,7 @@
 
 <main class="container">
   <div class="toolbar">
+    <a class="btn" href="/checkmarks">Checkmarks</a>
     <a class="btn" href="/work-meals">Edit my week</a>
   </div>
   <div id="calendarRoot"></div>

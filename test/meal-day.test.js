@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { dayIdFromDate, dayIdFromDateKey, describeDinner, summarizeDay } from "../meal-day.js";
+import { checkmarksForDay, dayIdFromDate, dayIdFromDateKey, describeDinner, summarizeDay } from "../meal-day.js";
 import { dailyMealPlan } from "../daily-meal-plan.js";
 
 const code = "desktop-mobile-private-code-123";
@@ -76,6 +76,25 @@ test("an empty day is answered as empty rather than left out", () => {
   assert.equal(summarizeDay({}, "sun").slots.length, 3);
 });
 
+test("checkmarks are only what was ticked, slot by slot", () => {
+  const wednesday = checkmarksForDay(plan, "wed");
+  assert.equal(wednesday.label, "Wednesday");
+  assert.equal(wednesday.count, 4);
+  assert.deepEqual(wednesday.slots.map(slot => [slot.id, slot.items]), [
+    ["morning", ["Eggs"]],
+    ["afternoon", ["Tuna or salmon wrap", "Mixed nuts + a piece of fruit"]],
+    ["night", ["Chicken"]]
+  ]);
+
+  // An unticked food, a hidden slot and an empty slot are all left out: a
+  // leftover lunch is not a checkmark, and Thursday's lunch is hidden anyway.
+  assert.deepEqual(checkmarksForDay(plan, "thu").slots.map(slot => [slot.id, slot.items]), [
+    ["night", ["Chicken"]]
+  ]);
+  assert.deepEqual(checkmarksForDay(plan, "fri"), { day: "fri", label: "Friday", slots: [], count: 0 });
+  assert.equal(checkmarksForDay({}, "sun").count, 0);
+});
+
 test("ordering out and a night already eaten are dinners too", () => {
   assert.deepEqual(describeDinner({ type: "out" }), { main: "🍽️ Ordering out", sub: "" });
   assert.equal(describeDinner({ type: "full" }).main, "✅ Already full");
@@ -112,6 +131,14 @@ test("the day asked for is the day answered with", async () => {
   assert.equal(answer.payload.today.day, "wed");
   assert.equal(answer.payload.today.slots[0].text, "Eggs");
   assert.equal(answer.payload.revision, 7);
+});
+
+test("the answer carries the day's checkmarks and the page that shows them", async () => {
+  const answer = await dailyMealPlan({ method: "GET", dateKey: "2026-09-09", syncCode: code, readPlan });
+  assert.equal(answer.payload.checkmarks.day, "wed");
+  assert.equal(answer.payload.checkmarks.count, 4);
+  assert.deepEqual(answer.payload.checkmarks.slots[0].items, ["Eggs"]);
+  assert.equal(answer.payload.links.checkmarks, "/checkmarks?day=wed");
 });
 
 test("the week, the food lists and the dinner list never leave", async () => {

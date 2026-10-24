@@ -4,7 +4,7 @@
 // method, a date, a sync code, and a way to read the plan — so the rules about
 // what each kind of bad request gets back can be tested without a socket or a
 // database.
-import { dayIdFromDate, dayIdFromDateKey, summarizeDay } from "./meal-day.js";
+import { checkmarksForDay, dayIdFromDate, dayIdFromDateKey, summarizeDay } from "./meal-day.js";
 
 /**
  * @param {object} query
@@ -34,12 +34,15 @@ export async function dailyMealPlan({ method, dateKey, syncCode, readPlan, now =
 
   // The whole plan stays on this side. What leaves is one day of it, already
   // written out as the lines the calendar shows — not the week, not the food
-  // lists, and not the dinner list behind them.
+  // lists, and not the dinner list behind them. `checkmarks` is the same day
+  // cut down to what was ticked, and `links.checkmarks` is the page showing it.
   return {
     status: 200,
     payload: {
       date: dateKey || null,
       today: summarizeDay(stored.plan, dayId),
+      checkmarks: checkmarksForDay(stored.plan, dayId),
+      links: { checkmarks: "/checkmarks?day=" + dayId },
       updatedAt: stored.updatedAt,
       revision: stored.revision
     }

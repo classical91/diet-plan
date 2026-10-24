@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkmarks | NutriMind</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/nav.css">
+<link rel="stylesheet" href="/theme.css">
+<script>try{if(localStorage.getItem('nm-theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:40px 20px 80px;background-image:radial-gradient(ellipse at 15% 10%,rgba(91,155,213,.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(143,190,107,.05) 0%,transparent 50%)}
+  header{text-align:center;margin:18px auto 30px;max-width:900px}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(32px,6vw,58px);font-weight:900;letter-spacing:-.03em;line-height:.95}
+  h1 em{color:var(--accent);font-style:italic}
+  .lead{color:var(--soft);font-size:15px;line-height:1.7;max-width:720px;margin:18px auto 0}
+  .header-line{width:54px;height:2px;background:var(--accent);margin:18px auto 0;opacity:.55}
+  .container{max-width:980px;margin:0 auto}
+
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+  .toolbar .group{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:7px 14px;border-radius:20px;cursor:pointer;transition:all .2s;display:inline-block;text-decoration:none}
+  .btn:hover,.btn.on{border-color:var(--accent);color:var(--accent)}
+
+  .days{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+  .days .btn{padding:6px 11px}
+
+  .week{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+  .day{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+  .day.is-today{border-color:var(--accent)}
+  .day h4{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin:0 0 10px;color:var(--text);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .day h4 a{color:inherit;text-decoration:none}
+  .day h4 a:hover{color:var(--accent)}
+  .count{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.08em}
+  .single{max-width:520px;margin:0 auto}
+  .single .day{padding:22px}
+  .single .day h4{font-size:22px}
+  .slot{margin-bottom:12px}
+  .slot b{color:var(--soft);font-weight:600;display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+  .slot ul{list-style:none}
+  .slot li{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;line-height:1.5;color:var(--text);padding:3px 0}
+  .tick{flex:none;width:17px;height:17px;border:1px solid var(--accent);border-radius:5px;display:inline-grid;place-items:center;color:var(--accent);font-size:12px;margin-top:2px}
+  .none{font-size:12.5px;color:var(--muted)}
+
+  .empty-note{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 22px;text-align:center;color:var(--soft);font-size:13.5px;line-height:1.7;margin-bottom:18px}
+  .empty-note a{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Check<em>marks</em></h1>
+  <p class="lead">Only what you've ticked off in the Daily Meal Planner — the foods checked for Morning and Afternoon, and the dinner chosen for Night.</p>
+  <div class="header-line"></div>
+</header>
+
+<main class="container">
+  <div class="toolbar">
+    <div class="group" id="viewToggle"></div>
+    <div class="group">
+      <a class="btn" href="/weekly-calendar">Calendar</a>
+      <a class="btn" href="/work-meals">Edit my week</a>
+    </div>
+  </div>
+  <div id="checkRoot"></div>
+</main>
+
+<script src="/nav.js"></script>
+<script type="module">
+// What counts as a checkmark lives in meal-day.js, next to how a day reads, so
+// this page and the checkmarks /api/daily-meal-plan sends the hub always agree.
+import { DAYS, dayIdFromDate, checkmarksForDay } from "/meal-day.js";
+
+const STORE_KEY = "work-meals:v3";
+const todayId = dayIdFromDate();
+
+// ?day=mon opens one day, ?view=week the whole week; with neither, today.
+const params = new URLSearchParams(location.search);
+let view = params.get("view") === "week" ? "week" : "day";
+let dayId = DAYS.some(d => d.id === params.get("day")) ? params.get("day") : todayId;
+
+function escapeHtml(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+function loadLocalPlan() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY) || "null") || {}; } catch (e) { return {}; }
+}
+
+let plan = loadLocalPlan();
+
+function setUrl() {
+  const next = new URLSearchParams();
+  if (view === "week") next.set("view", "week");
+  else if (dayId !== todayId) next.set("day", dayId);
+  const query = next.toString();
+  history.replaceState(null, "", location.pathname + (query ? "?" + query : ""));
+}
+
+function dayCard(id) {
+  const marks = checkmarksForDay(plan, id);
+  // Item names are plain text built from the reader's own food and dinner names.
+  const body = marks.slots.length
+    ? marks.slots.map(slot => `<div class="slot"><b>${slot.icon} ${slot.label}</b><ul>${
+        slot.items.map(item => `<li><span class="tick">✓</span><span>${escapeHtml(item)}</span></li>`).join("")
+      }</ul></div>`).join("")
+    : `<p class="none">Nothing ticked yet.</p>`;
+  const title = view === "week" ? `<a href="/checkmarks?day=${id}">${marks.label}</a>` : marks.label;
+  return `<div class="day${id === todayId ? " is-today" : ""}"><h4>${title}<span class="count">${marks.count} ✓</span></h4>${body}</div>`;
+}
+
+function render() {
+  document.getElementById("viewToggle").innerHTML =
+    `<button class="btn${view === "day" && dayId === todayId ? " on" : ""}" data-view="today">Today</button>` +
+    `<button class="btn${view === "week" ? " on" : ""}" data-view="week">This week</button>`;
+
+  const total = DAYS.reduce((sum, d) => sum + checkmarksForDay(plan, d.id).count, 0);
+  const hint = total ? "" : `<div class="empty-note">Nothing ticked yet this week. Open the <a href="/work-meals">Daily Meal Planner</a> and tick off the foods you're having.</div>`;
+
+  const root = document.getElementById("checkRoot");
+  if (view === "week") {
+    root.innerHTML = hint + `<div class="week">${DAYS.map(d => dayCard(d.id)).join("")}</div>`;
+  } else {
+    const picker = `<div class="days">${DAYS.map(d =>
+      `<button class="btn${d.id === dayId ? " on" : ""}" data-day="${d.id}">${d.label.slice(0, 3)}</button>`).join("")}</div>`;
+    root.innerHTML = hint + picker + `<div class="single">${dayCard(dayId)}</div>`;
+  }
+}
+
+document.addEventListener("click", e => {
+  const b = e.target.closest("button[data-view],button[data-day]");
+  if (!b) return;
+  if (b.dataset.view === "today") { view = "day"; dayId = todayId; }
+  else if (b.dataset.view === "week") view = "week";
+  else if (b.dataset.day) { view = "day"; dayId = b.dataset.day; }
+  setUrl();
+  render();
+});
+
+render();
+
+// The synced copy is the newest one when a sync code is set. This page only
+// reads, so it shows that copy without writing it over the local cache.
+(async () => {
+  let code = "";
+  try { code = localStorage.getItem("work-meals:sync-code") || ""; } catch (e) { return; }
+  if (!code) return;
+  try {
+    const response = await fetch("/api/dinner-plan", { headers: { "x-sync-code": code } });
+    if (!response.ok) return;
+    const data = await response.json();
+    if (data && data.plan) { plan = data.plan; render(); }
+  } catch (e) { /* the local cache is already on screen */ }
+})();
+</script>
+</body>
+</html>
