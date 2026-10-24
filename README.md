@@ -46,6 +46,17 @@ you add by hand gets the rice and veggies toggles, both off. `Fill blank nights`
 and `Replace week` draw from your dinner list and never repeat one two nights
 running, and bulk cooking makes a single cook cover the days after it.
 
+### Checkmarks
+
+[`/checkmarks`](./checkmarks.html) shows only what has been ticked: the foods
+checked off for Morning and Afternoon and the dinner chosen for Night. It opens
+on today; `/checkmarks?day=mon` opens one day and `/checkmarks?view=week` the
+whole week. It reads the same plan as the calendar, synced copy first.
+
+`GET /api/daily-meal-plan` sends the same list for the hub as `checkmarks`
+(`{ day, label, slots: [{ id, icon, label, items }], count }`), with
+`links.checkmarks` holding the page path for that day.
+
 ### Cross-device dinner-plan sync
 
 The Daily Meal Planner remains offline-first: `work-meals:v3` in browser

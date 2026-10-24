@@ -142,3 +142,31 @@ export function summarizeDay(plan, dayId, { includeHidden = false } = {}) {
     planned: slots.some(entry => entry.planned),
   };
 }
+
+/**
+ * Only what has been ticked on a day: the foods checked off in Morning and
+ * Afternoon, and the dinner chosen for Night (its row carries the same ✓).
+ *
+ * This is the list /checkmarks shows and the hub's card can show instead of
+ * the full day — nothing unticked, nothing hidden, and no "Not chosen yet".
+ */
+export function checkmarksForDay(plan, dayId) {
+  const day = dayOf(plan, dayId);
+  const slots = SLOTS.filter(slot => day.states[slot.id] !== "skip").map(slot => {
+    let items;
+    if (slot.id === "night") {
+      const summary = describeDinner(day.dinner);
+      items = summary ? [summary.main] : [];
+    } else {
+      items = checkedFoodsFor(plan, day, slot.id);
+    }
+    return { id: slot.id, icon: slot.icon, label: slot.label, items };
+  }).filter(slot => slot.items.length);
+
+  return {
+    day: dayId,
+    label: dayLabel(dayId),
+    slots,
+    count: slots.reduce((total, slot) => total + slot.items.length, 0),
+  };
+}
