@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import pg from "pg";
+import { normalizeSupplementPlan } from "./supplement-plan.js";
 
 const { Pool } = pg;
 const MAX_BODY = 256 * 1024;
@@ -48,11 +49,14 @@ async function readJson(request) {
   catch { throw Object.assign(new Error("Invalid JSON"), { status: 400 }); }
 }
 
-export function createDinnerSync({ databaseUrl = process.env.DATABASE_URL, pool: suppliedPool } = {}) {
+export function createDinnerSync({ databaseUrl = process.env.DATABASE_URL, pool: suppliedPool, kind = "dinner" } = {}) {
+  if (!["dinner", "supplements"].includes(kind)) throw new Error("Unknown sync store.");
+  const table = kind === "supplements" ? "supplement_plans" : "dinner_plans";
+  const normalize = kind === "supplements" ? normalizeSupplementPlan : normalizePlan;
   if (!databaseUrl && !suppliedPool) return { configured: false };
   const pool = suppliedPool || new Pool({ connectionString: databaseUrl, ssl: databaseUrl.includes("localhost") ? false : { rejectUnauthorized: false } });
   let ready;
-  const ensure = () => ready ||= pool.query(`CREATE TABLE IF NOT EXISTS dinner_plans (
+  const ensure = () => ready ||= pool.query(`CREATE TABLE IF NOT EXISTS ${table} (
     identity_hash TEXT PRIMARY KEY, plan JSONB NOT NULL, revision BIGINT NOT NULL DEFAULT 1,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`);
   return {
@@ -71,7 +75,7 @@ export function createDinnerSync({ databaseUrl = process.env.DATABASE_URL, pool:
         throw Object.assign(new Error("A valid sync code is required."), { status: 401 });
       }
       await ensure();
-      const result = await pool.query("SELECT plan, revision, updated_at FROM dinner_plans WHERE identity_hash = $1", [hashSyncCode(code)]);
+      const result = await pool.query(`SELECT plan, revision, updated_at FROM ${table} WHERE identity_hash = $1`, [hashSyncCode(code)]);
       if (!result.rowCount) return null;
       const row = result.rows[0];
       return { plan: row.plan, revision: Number(row.revision), updatedAt: row.updated_at };
@@ -82,7 +86,7 @@ export function createDinnerSync({ databaseUrl = process.env.DATABASE_URL, pool:
       await ensure();
       const identity = hashSyncCode(code);
       if (request.method === "GET") {
-        const result = await pool.query("SELECT plan, revision, updated_at FROM dinner_plans WHERE identity_hash = $1", [identity]);
+        const result = await pool.query(`SELECT plan, revision, updated_at FROM ${table} WHERE identity_hash = $1`, [identity]);
         if (!result.rowCount) return sendJson(response, 404, { error: "No synced plan yet." });
         const row = result.rows[0];
         return sendJson(response, 200, { plan: row.plan, revision: Number(row.revision), updatedAt: row.updated_at });
@@ -91,12 +95,13 @@ export function createDinnerSync({ databaseUrl = process.env.DATABASE_URL, pool:
       let body;
       try { body = await readJson(request); }
       catch (error) { return sendJson(response, error.status || 400, { error: error.message }); }
-      const plan = normalizePlan(body.plan);
+      if (!body || typeof body !== "object" || Array.isArray(body)) return sendJson(response, 400, { error: "Invalid plan or revision." });
+      const plan = normalize(body.plan);
       const revision = Number(body.revision);
       if (!plan || !Number.isSafeInteger(revision) || revision < 0) return sendJson(response, 400, { error: "Invalid plan or revision." });
-      const result = await pool.query(`INSERT INTO dinner_plans (identity_hash, plan, revision) VALUES ($1, $2::jsonb, 1)
-        ON CONFLICT (identity_hash) DO UPDATE SET plan = EXCLUDED.plan, revision = dinner_plans.revision + 1, updated_at = NOW()
-        WHERE dinner_plans.revision = $3 RETURNING revision, updated_at`, [identity, JSON.stringify(plan), revision]);
+      const result = await pool.query(`INSERT INTO ${table} (identity_hash, plan, revision) VALUES ($1, $2::jsonb, 1)
+        ON CONFLICT (identity_hash) DO UPDATE SET plan = EXCLUDED.plan, revision = ${table}.revision + 1, updated_at = NOW()
+        WHERE ${table}.revision = $3 RETURNING revision, updated_at`, [identity, JSON.stringify(plan), revision]);
       if (!result.rowCount) return sendJson(response, 409, { error: "The plan changed on another device. Refresh before saving." });
       return sendJson(response, 200, { revision: Number(result.rows[0].revision), updatedAt: result.rows[0].updated_at });
     }

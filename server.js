@@ -10,6 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const port = Number(process.env.PORT) || 3000;
 const dinnerSync = createDinnerSync();
+const supplementSync = createDinnerSync({ kind: "supplements" });
 
 const mimeTypes = {
   ".css": "text/css; charset=utf-8",
@@ -122,6 +123,12 @@ const server = http.createServer(async (request, response) => {
       await handleAi(request, response);
       return;
     }
+    if (pathname === "/api/supplement-plan") {
+      if (!supplementSync.configured) return sendJson(response, 503, { error: "Supplement sync is not configured. Changes stay on this device." });
+      await supplementSync.handle(request, response, sendJson);
+      return;
+    }
+    if (pathname === "/supplements" || pathname === "/supplements/") pathname = "/supplements.html";
     if (pathname === "/api/dinner-plan") {
       if (!dinnerSync.configured) return sendJson(response, 503, { error: "Dinner sync is not configured." });
       await dinnerSync.handle(request, response, sendJson);

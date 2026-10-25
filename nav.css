@@ -321,3 +321,15 @@
     max-width: none;
   }
 }
+
+/* Leave room for planner links and search without widening the page. */
+.nav-inner { height: auto; min-height: 56px; }
+.nav-items { flex-wrap: wrap; min-width: 0; }
+.nav-search { flex-shrink: 1; min-width: 0; }
+.nav-search-input { max-width: 100%; }
+@media (max-width: 768px) {
+  .nav-inner { padding: 0 12px; }
+  .nav-logo { margin-right: 8px; }
+  .nav-search { flex: 1; margin-left: 0; margin-right: 4px; }
+  .nav-search-input, .nav-search-input:focus { width: 100%; }
+}

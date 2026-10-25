@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Supplement Calendar | NutriMind</title>
+    <link rel="stylesheet" href="/nav.css" />
+    <link rel="stylesheet" href="/theme.css" />
+    <link rel="stylesheet" href="/supplements.css" />
+    <script>
+      try {
+        if (localStorage.getItem("nm-theme") === "light")
+          document.documentElement.dataset.theme = "light";
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <nav class="top-nav" aria-label="Primary"></nav>
+    <script src="/nav.js"></script>
+    <main class="supp-wrap">
+      <header class="supp-header">
+        <div>
+          <p class="eyebrow">YOUR ROUTINE, AT A GLANCE</p>
+          <h1>Supplement <em>calendar</em></h1>
+          <p class="lead">
+            See what’s planned, when you’re taking a break, and what you’ve
+            taken.
+          </p>
+        </div>
+        <button class="primary" id="addSupplement">+ Add supplement</button>
+      </header>
+      <div class="summary-cards" id="summary" aria-live="polite"></div>
+      <section class="calendar-panel" aria-labelledby="calendarTitle">
+        <div class="calendar-tools">
+          <div>
+            <p class="eyebrow">CALENDAR MATRIX</p>
+            <h2 id="calendarTitle">Your next two weeks</h2>
+            <p id="rangeLabel" class="soft"></p>
+          </div>
+          <div class="tool-buttons">
+            <button id="previous" aria-label="Previous period">←</button
+            ><button id="today">Today</button
+            ><button id="next" aria-label="Next period">→</button
+            ><label class="sr-only" for="range">Days to show</label
+            ><select id="range">
+              <option value="7">7 days</option>
+              <option value="14" selected>14 days</option>
+              <option value="28">28 days</option>
+            </select>
+          </div>
+        </div>
+        <div class="legend">
+          <span><i class="planned">○</i> Planned</span
+          ><span><i class="taken">✓</i> Taken</span
+          ><span><i class="skipped">×</i> Skipped</span
+          ><span><i class="break">Ⅱ</i> Break</span
+          ><span><i>—</i> Not scheduled / off</span>
+        </div>
+        <p class="soft instructions">
+          Choose a supplement’s name to edit its schedule. Tap today or a past
+          day to cycle: taken → skipped → clear. Each mark records the day, not
+          individual doses.
+        </p>
+        <div
+          class="matrix-scroll"
+          tabindex="0"
+          aria-label="Scrollable supplement calendar"
+        >
+          <table id="matrix">
+            <caption class="sr-only">
+              Supplement schedule and daily records
+            </caption>
+          </table>
+        </div>
+        <div class="calendar-footer">
+          <label
+            ><input type="checkbox" id="showArchived" /> Show archived
+            supplements</label
+          ><span id="saveStatus" role="status">Saved on this device</span>
+        </div>
+      </section>
+      <section class="bottom-grid">
+        <div class="info-panel">
+          <p class="eyebrow">PLAN YOUR COURSE</p>
+          <h2>A start, a break, a review.</h2>
+          <p>
+            Use daily or weekday schedules, a fixed course with an end date, or
+            a repeating on/off cycle. Add a review date so it stays visible when
+            it’s time to check your routine.
+          </p>
+          <p class="soft">
+            No doses or durations are assigned automatically. Enter the
+            directions from your product label or pharmacist. Short-term safety
+            research does not establish a standard cycling schedule.
+          </p>
+          <p class="soft">
+            References:
+            <a
+              href="https://www.nccih.nih.gov/health/ashwagandha"
+              target="_blank"
+              rel="noreferrer"
+              >NCCIH: ashwagandha</a
+            >
+            ·
+            <a
+              href="https://www.nccih.nih.gov/health/melatonin-what-you-need-to-know"
+              target="_blank"
+              rel="noreferrer"
+              >NCCIH: melatonin</a
+            >
+          </p>
+        </div>
+        <div class="info-panel">
+          <p class="eyebrow">DESKTOP + MOBILE</p>
+          <h2>Keep your calendar together.</h2>
+          <p class="soft">
+            Use the same private sync code as your meal planner. Supplement
+            schedules are saved separately.
+          </p>
+          <form id="syncForm">
+            <label for="syncCode">Private sync code</label>
+            <div class="sync-row">
+              <input
+                id="syncCode"
+                type="password"
+                autocomplete="off"
+                minlength="20"
+                maxlength="128"
+              /><button type="submit">Connect</button
+              ><button type="button" id="syncForget" hidden>Disconnect</button>
+            </div>
+          </form>
+          <p class="soft" id="syncStatus" role="status">
+            Not connected. Changes stay on this device.
+          </p>
+          <div id="syncChoices" hidden>
+            <button type="button" id="useRemote">Use synced copy</button>
+            <button type="button" id="keepLocal">
+              Keep this device’s copy
+            </button>
+          </div>
+          <button type="button" id="downloadBackup">Download backup</button>
+        </div>
+      </section>
+      <p id="announcement" class="sr-only" role="status" aria-live="polite"></p>
+    </main>
+    <dialog id="editor" aria-labelledby="editorTitle">
+      <form id="supplementForm">
+        <div class="dialog-head">
+          <div>
+            <p class="eyebrow">YOUR SUPPLEMENT</p>
+            <h2 id="editorTitle">Edit supplement</h2>
+          </div>
+          <button type="button" id="closeEditor" aria-label="Close editor">
+            ×
+          </button>
+        </div>
+        <input type="hidden" id="supplementId" />
+        <label for="name">Name / product</label
+        ><input id="name" required maxlength="80" />
+        <div class="form-grid">
+          <div>
+            <label for="dose">Dose from your label (optional)</label
+            ><input id="dose" maxlength="160" placeholder="Amount and unit" />
+          </div>
+          <div>
+            <label for="timing">When you take it (optional)</label
+            ><input
+              id="timing"
+              maxlength="120"
+              placeholder="Your usual time / with food"
+            />
+          </div>
+        </div>
+        <label for="mode">Schedule</label
+        ><select id="mode">
+          <option value="unset">Not scheduled yet</option>
+          <option value="daily">Every day</option>
+          <option value="weekdays">Selected weekdays</option>
+          <option value="course">Fixed course</option>
+          <option value="cycle">Repeating on / off cycle</option>
+          <option value="asneeded">As needed</option>
+          <option value="paused">Paused</option>
+        </select>
+        <div id="scheduleFields">
+          <div class="form-grid">
+            <div>
+              <label for="start">Start date</label
+              ><input id="start" type="date" max="9999-12-31" />
+            </div>
+            <div>
+              <label for="end">End date (optional, inclusive)</label
+              ><input id="end" type="date" max="9999-12-31" />
+            </div>
+          </div>
+          <fieldset id="weekdayFields" hidden>
+            <legend>Days of the week</legend>
+            <div class="weekdays">
+              <label
+                ><input type="checkbox" name="weekday" value="1" /> Mon</label
+              ><label
+                ><input type="checkbox" name="weekday" value="2" /> Tue</label
+              ><label
+                ><input type="checkbox" name="weekday" value="3" /> Wed</label
+              ><label
+                ><input type="checkbox" name="weekday" value="4" /> Thu</label
+              ><label
+                ><input type="checkbox" name="weekday" value="5" /> Fri</label
+              ><label
+                ><input type="checkbox" name="weekday" value="6" /> Sat</label
+              ><label
+                ><input type="checkbox" name="weekday" value="0" /> Sun</label
+              >
+            </div>
+          </fieldset>
+          <div id="courseFields" hidden>
+            <label for="duration">Course length in days</label
+            ><input id="duration" type="number" min="1" max="3650" step="1" />
+            <p class="soft">
+              The start date counts as day 1. The calendar stops planning after
+              the course ends.
+            </p>
+          </div>
+          <div id="cycleFields" class="form-grid" hidden>
+            <div>
+              <label for="onDays">Days on</label
+              ><input id="onDays" type="number" min="1" max="3650" step="1" />
+            </div>
+            <div>
+              <label for="offDays">Days off / break</label
+              ><input id="offDays" type="number" min="1" max="3650" step="1" />
+            </div>
+            <p class="soft full-width">
+              Cycles count calendar days from the start date and repeat until
+              the end date, if set. A skipped day does not move the cycle.
+            </p>
+          </div>
+        </div>
+        <label for="review">Review date (optional)</label
+        ><input id="review" type="date" max="9999-12-31" />
+        <label for="notes">Label directions / notes</label
+        ><textarea
+          id="notes"
+          rows="3"
+          maxlength="1500"
+          placeholder="Product ingredients, label directions, or instructions you want to keep"
+        ></textarea>
+        <p class="soft">
+          Choose a schedule based on your product’s directions or professional
+          advice.
+        </p>
+        <p id="formError" class="error" role="alert"></p>
+        <div class="dialog-actions">
+          <button type="button" id="archive">Archive</button
+          ><button type="button" id="cancelEditor">Cancel</button
+          ><button type="submit" class="primary">Save schedule</button>
+        </div>
+      </form>
+    </dialog>
+    <script type="module" src="/supplements-app.js"></script>
+  </body>
+</html>
