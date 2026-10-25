@@ -126,7 +126,7 @@ $('#slots').onclick=e=>{let b=e.target.closest('button,.food');if(!b)return;if(l
 listKeys($('#slots'));
 function genUi(){$('#batch').value=st.gen.batch;$('#lunchLeft').checked=!!st.gen.lunch}
 $('#genOpts').onchange=e=>{let t=e.target;if(t.id==='lunchLeft')st.gen.lunch=t.checked;else if(t.id&&st.gen[t.id]!==undefined)st.gen[t.id]=t.value;save();genUi()};genUi();
-$('#fill').onclick=()=>build(false);$('#replace').onclick=()=>build(true);$('#planWeek').onclick=()=>build(false,true);$('#resetDay').onclick=()=>{st.days[st.selectedDay]=fresh();render()};render();
+$('#fill').onclick=()=>build(false);$('#replace').onclick=()=>build(true);$('#planWeek').onclick=()=>build(false,true);$('#resetDay').onclick=()=>{st.days[st.selectedDay]=fresh();render()};$('#resetWeek').onclick=()=>{if(!confirm('Clear every meal for the whole week? Your saved food lists stay.'))return;DAYS.forEach(([id])=>st.days[id]=fresh());$('#msg').textContent='';$('#planWeekMsg').textContent='Week reset.';render()};render();
 const SYNC_KEY='work-meals:sync-code',syncCodeEl=$('#syncCode'),syncStatusEl=$('#syncStatus'),syncForgetEl=$('#syncForget');let syncCode='',syncRevision=0,syncTimer=null,syncApplying=false;
 function syncStatus(message){syncStatusEl.textContent=message;syncForgetEl.hidden=!syncCode}
 function applyRemote(plan,revision){syncApplying=true;try{localStorage.setItem(KEY,JSON.stringify(plan));sessionStorage.setItem('work-meals:sync-loaded',syncCode+'|'+revision);location.reload()}catch(e){syncApplying=false;syncStatus('Synced plan downloaded, but local storage is unavailable.')}}
