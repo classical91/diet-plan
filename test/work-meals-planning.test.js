@@ -11,7 +11,7 @@ const legacyAfternoons = ['Greek yogurt + nuts + fruit', 'Cottage cheese + fruit
 const key = 'work-meals:v3';
 
 // Exercise the actual button handlers and persisted plan without a network or AI call.
-function planner(saved) {
+function planner(saved, answer = true) {
   const storage = new Map(saved ? [[key, JSON.stringify(saved)]] : []);
   const nodes = new Map();
   const document = { querySelector(selector) {
@@ -19,7 +19,7 @@ function planner(saved) {
     return nodes.get(selector);
   } };
   const context = vm.createContext({
-    document, location: { search: '' }, URLSearchParams,
+    document, location: { search: '' }, URLSearchParams, confirm: () => answer,
     localStorage: { getItem: k => storage.get(k) ?? null, setItem: (k, v) => storage.set(k, v), removeItem: k => storage.delete(k) },
     fetch: async () => ({ json: async () => ({ configured: false }) })
   });
@@ -175,4 +175,20 @@ test('a saved dinner title without a list id is already a planned dinner', () =>
   const app = planner(saved);
   app.click('#planWeek');
   assert.deepEqual(app.plan().days.mon.dinner, saved.days.mon.dinner);
+});
+
+test('Reset week clears every day but keeps saved lists, and does nothing if cancelled', () => {
+  const kept = planner(savedPlan(), false);
+  kept.click('#planWeek');
+  const before = kept.plan();
+  kept.click('#resetWeek');
+  assert.deepEqual(kept.plan().days, before.days);
+
+  const app = planner(savedPlan());
+  app.click('#planWeek');
+  app.click('#resetWeek');
+  const plan = app.plan();
+  for (const id of days) assert.ok(summarizeDay(plan, id).slots.every(s => !s.planned));
+  assert.deepEqual(plan.foodLists, savedPlan().foodLists);
+  assert.equal(app.message(), 'Week reset.');
 });
