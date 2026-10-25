@@ -46,6 +46,19 @@ you add by hand gets the rice and veggies toggles, both off. `Fill blank nights`
 and `Replace week` draw from your dinner list and never repeat one two nights
 running, and bulk cooking makes a single cook cover the days after it.
 
+**Plan my week** fills empty, visible Morning, Afternoon and Night slots using
+only your saved lists. Morning and Afternoon each get one entry, with no consecutive
+repeat when the list offers another choice. Existing picks (including selected AI
+ideas), packed leftovers and hidden slots are kept. Dinners use the bulk-cooking
+and next-day lunch settings; leftover lunches fill only empty, visible afternoons.
+Empty lists stay empty and the planner points to **Edit list** instead of adding foods.
+**Fill blank nights** and **Replace week** remain dinner-only actions.
+
+The afternoon starter list is Chicken sandwich, Quesadillas, Eggs, Pasta, Veggie
+stir fry and Veggie shake. An unused, untouched older afternoon starter list updates
+once; customized lists and lists with selected foods stay intact. **Reset to defaults**
+in Afternoon also restores these six meals.
+
 ### Checkmarks
 
 [`/checkmarks`](./checkmarks.html) shows only what has been ticked: the foods

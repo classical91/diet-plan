@@ -73,7 +73,7 @@ W7. Reload and confirm every cell comes back as left — picked, empty or hidden
 ## The week
 
 20. Clear one dinner, tap `Fill blank nights`, and confirm only the empty night is filled.
-    `Plan my week` in the top toolbar does the same. Both report in the `Fill the week` box.
+    `Plan my week` in the top toolbar also fills empty visible Morning and Afternoon slots from their saved lists, one entry per slot. It keeps existing picks and hidden slots, and reports below the toolbar as well as in the `Fill the week` box.
 21. Set `Bulk cooking` to `Cook once, eat it 2 days` and tap `Replace week`. Days should pair
     up: Monday cooks, Tuesday repeats it. The repeated day should read `♻️ Leftovers from
     Monday`, and the message should say how many were eaten again from a batch.
@@ -123,3 +123,19 @@ W7. Reload and confirm every cell comes back as left — picked, empty or hidden
     once rather than twice — a generated dinner called `Turkey` reads
     `Turkey · lentils · zucchini + cabbage · …`, never `Turkey · Turkey · …` — and that picking
     a dinner from your list replaces it cleanly.
+
+## Plan my week from saved lists
+
+36. Customize all three lists, remove a few defaults and click `Plan my week`. Every
+    new pick must belong to the relevant saved list. Morning and Afternoon each get
+    one entry; adjacent new picks differ when there is more than one entry.
+37. Select two morning foods, an AI afternoon idea and `Order out` for one day. Hide
+    all three meals on another. Plan the week and confirm those days are untouched.
+38. Enable leftover lunches, preselect an afternoon meal and hide another afternoon.
+    Plan the week with a two-day batch. Only empty visible afternoons get leftovers;
+    the two exceptions keep their saved choices. Calendar and Checkmarks must agree.
+39. Empty all three lists, reload and plan the week. No defaults return, nothing
+    crashes, and the message points to `Edit list`. A one-entry list may repeat.
+40. An unused older afternoon starter list updates to Chicken sandwich, Quesadillas,
+    Eggs, Pasta, Veggie stir fry and Veggie shake. Custom lists and starter lists
+    with selected foods stay intact. Reset to defaults restores these six entries.

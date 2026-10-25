@@ -1,16 +1,14 @@
 const SLOTS=[['morning','🌅','Morning','Start of the day'],['afternoon','☀️','Afternoon','Midday'],['night','🌙','Night','Evening']],DAYS=[['mon','Monday'],['tue','Tuesday'],['wed','Wednesday'],['thu','Thursday'],['fri','Friday'],['sat','Saturday'],['sun','Sunday']],today=['sun','mon','tue','wed','thu','fri','sat'][new Date().getDay()],KEY='work-meals:v3';
-// Starting foods for a browser that has never used the planner. Once seeded they live in
-// st.foodLists, which the reader edits — nothing here is consulted again except for the
-// note and tags a seeded food keeps.
-// Starting foods for a browser that has never used the planner, seeded once into
-// st.foodLists. After that they are never consulted again except by Reset to defaults.
-const FOOD_SEEDS={morning:['Eggs','Oat cereals','Oatmeal'],afternoon:['Greek yogurt + nuts + fruit','Cottage cheese + fruit','Chicken or tofu grain bowl','Tuna or salmon wrap','Chickpea or lentil salad','Hummus + veg sticks + crackers','Mixed nuts + a piece of fruit','Leftover stir-fry + brown rice']};
+// Starter foods seed a new browser or Reset to defaults. Saved lists own later picks;
+// the one-time migration below updates only the unused older afternoon starter list.
+const LEGACY_AFTERNOON_SEEDS=['Greek yogurt + nuts + fruit','Cottage cheese + fruit','Chicken or tofu grain bowl','Tuna or salmon wrap','Chickpea or lentil salad','Hummus + veg sticks + crackers','Mixed nuts + a piece of fruit','Leftover stir-fry + brown rice'];
+const FOOD_SEEDS={morning:['Eggs','Oat cereals','Oatmeal'],afternoon:['Chicken sandwich','Quesadillas','Eggs','Pasta','Veggie stir fry','Veggie shake']};
 const seedFoods=slot=>[...(FOOD_SEEDS[slot]||[])];
 // Starting dinners, seeded once into st.dinners. `sides` are optional extras toggled per
 // night and `meats` is a choice between two versions of the same dinner; a dinner added by
 // hand gets the rice and veggies toggles, both off, and no meat choice.
 const DINNER_SEEDS=[{id:'pizza',icon:'🍕',name:'Frozen pizza'},{id:'chicken',icon:'🍗',name:'Chicken',protein:'chicken',sides:['rice','veggies'],on:['rice','veggies']},{id:'beef',icon:'🥩',name:'Beef',protein:'beef',sides:['rice','veggies'],on:['rice','veggies']},{id:'fish',icon:'🐟',name:'Fish',protein:'fish',sides:['rice','veggies'],on:['rice','veggies']},{id:'burger',icon:'🍔',name:'Hamburger',meats:['beef','chicken']},{id:'lasagna',icon:'🍲',name:'Lasagna',protein:'beef',carb:'pasta'},{id:'pasta',icon:'🍝',name:'Pasta',carb:'pasta'},{id:'frozen-chicken-strips',icon:'🍗',name:'Frozen chicken strips',protein:'chicken'},{id:'frozen-chicken-nuggets',icon:'🍗',name:'Frozen chicken nuggets',protein:'chicken'},{id:'frozen-chicken-burger',icon:'🍔',name:'Frozen chicken burger',protein:'chicken'},{id:'ground-turkey',icon:'🦃',name:'Ground turkey',protein:'turkey',sides:['rice','veggies'],on:['rice','veggies']},{id:'shepard-pie',icon:'🥧',name:'Shepard pie',protein:'beef',carb:'potato'},{id:'chicken-lasagna',icon:'🍲',name:'Chicken lasagna',protein:'chicken',carb:'pasta'}];
-const PLAN_VERSION=5,NEW_DINNER_IDS=new Set(['frozen-chicken-strips','frozen-chicken-nuggets','frozen-chicken-burger','ground-turkey','shepard-pie','chicken-lasagna']);
+const PLAN_VERSION=6,NEW_DINNER_IDS=new Set(['frozen-chicken-strips','frozen-chicken-nuggets','frozen-chicken-burger','ground-turkey','shepard-pie','chicken-lasagna']);
 const SIDES=['rice','veggies'];
 const byId=id=>st.dinners.find(m=>m.id===id);
 function fd(){return{type:null,pick:null,name:null,protein:null,carb:null,veg:[],sauce:null,meat:null,sides:[],from:null}}function fl(){return{morning:'',afternoon:'',night:''}}function fresh(){return{states:{morning:'show',afternoon:'show',night:'show'},checked:{},ai:{},dinner:fd(),leftovers:fl()}}
@@ -29,7 +27,15 @@ if(s.gen){if(['1','2','3'].includes(String(s.gen.batch)))st.gen.batch=String(s.g
 let old=!(s.v>=4);
 SLOTS.forEach(a=>{let saved=cleanList((s.foodLists||{})[a[0]]);st.foodLists[a[0]]=old?[...new Set([...st.foodLists[a[0]],...saved])]:saved});
 if(Array.isArray(s.dinners)&&!old)st.dinners=s.dinners.map(cleanDinner).filter(Boolean);
-if(!old&&!(s.v>=PLAN_VERSION)){let names=new Set(st.dinners.map(m=>m.name.toLowerCase()));st.dinners=st.dinners.concat(DINNER_SEEDS.filter(m=>NEW_DINNER_IDS.has(m.id)&&!names.has(m.name.toLowerCase())).map(cleanDinner).filter(Boolean))}
+if(!old&&!(s.v>=5)){let names=new Set(st.dinners.map(m=>m.name.toLowerCase()));st.dinners=st.dinners.concat(DINNER_SEEDS.filter(m=>NEW_DINNER_IDS.has(m.id)&&!names.has(m.name.toLowerCase())).map(cleanDinner).filter(Boolean))}
+// Refresh only an untouched, unused starter list. Custom lists (including empty ones)
+// and lists with picked foods stay authoritative, so an upgrade never loses a meal.
+if(!old&&s.v<6){
+  let list=st.foodLists.afternoon;
+  let untouched=list.length===LEGACY_AFTERNOON_SEEDS.length&&LEGACY_AFTERNOON_SEEDS.every(x=>list.includes(x));
+  let used=DAYS.some(([id])=>list.some(x=>st.days[id].checked['afternoon|'+slug(x)]));
+  if(untouched&&!used)st.foodLists.afternoon=seedFoods('afternoon');
+}
 // A pre-v4 plan kept typed dinner titles in the night list; they become dinners of their own.
 if(old){let extra=cleanList((s.foodLists||{}).night).filter(x=>!st.dinners.some(m=>m.name.toLowerCase()===x.toLowerCase()));st.dinners=st.dinners.concat(extra.map(newDinner));st.foodLists.night=[]}
 // A slot that used to sit on "From my list" had one meal chosen; keep it as a ticked item.
@@ -38,7 +44,6 @@ if(old&&s.days)DAYS.forEach(d=>{let x=s.days[d[0]]||{},t=st.days[d[0]];SLOTS.for
 // another device's last-selected day made Sunday look like "today" on Saturday.
 // Start on this device's current day; an explicit ?day= link can still override it.
 }}catch(e){}
-if(!st.dinners.length)st.dinners=DINNER_SEEDS.map(cleanDinner);
 try{let p=new URLSearchParams(location.search).get('day');if(p&&DAYS.some(d=>d[0]===p))st.selectedDay=p}catch(e){}
 const AIKEY='work-meals:anthropic-key';
 let editing={morning:false,afternoon:false,night:false},dmsg='';
@@ -47,13 +52,49 @@ const dayName=id=>(DAYS.find(d=>d[0]===id)||[])[1]||'';
 const same=(a,b)=>!!a&&!!b&&String(a).toLowerCase()===String(b).toLowerCase();
 // The heading already names the dinner, so the protein only follows when it adds something.
 function plate(d){if(d.pick)return[d.meat,...(d.sides||[])].filter(Boolean).join(' · ');return[d.name&&!same(d.name,d.protein)?cap(d.protein):null,d.carb,(d.veg||[]).join(' + '),d.sauce].filter(Boolean).join(' · ')}
-function summary(d){if(!d)return null;if(d.type==='out')return['🍽️ Ordering out',''];if(d.type==='full')return['✅ Already full','Ate enough earlier.'];if(d.name||d.protein||d.carb||d.veg?.length){let parts=plate(d);return[d.name||cap(d.protein)||'Dinner planned',(d.from?'♻️ Leftovers from '+dayName(d.from)+(parts?' · ':''):'')+parts]}return null}function empty(d){return!d||(!d.type&&!d.pick&&!d.protein&&!d.carb&&!(d.veg||[]).length)}
+function summary(d){if(!d)return null;if(d.type==='out')return['🍽️ Ordering out',''];if(d.type==='full')return['✅ Already full','Ate enough earlier.'];if(d.name||d.protein||d.carb||d.veg?.length){let parts=plate(d);return[d.name||cap(d.protein)||'Dinner planned',(d.from?'♻️ Leftovers from '+dayName(d.from)+(parts?' · ':''):'')+parts]}return null}function empty(d){return!d||(!d.type&&!d.pick&&!d.name&&!d.protein&&!d.carb&&!(d.veg||[]).length)}
 function dinnerOf(id,keepMeat){let m=byId(id);if(!m)return fd();let d=Object.assign(fd(),{type:'meal',pick:m.id,name:m.name,protein:m.protein||null,carb:m.carb||null});setSides(d,m.on||[]);if((m.meats||[]).length){d.meat=m.meats.includes(keepMeat)?keepMeat:m.meats[0];d.protein=d.meat}return d}
-function randomDinner(avoid){let pool=st.dinners.filter(m=>m.id!==avoid);return dinnerOf(pick(pool.length?pool:st.dinners).id)}
+function randomDinner(avoid){let pool=st.dinners.filter(m=>m.id!==avoid),chosen=pick(pool.length?pool:st.dinners);return chosen?dinnerOf(chosen.id):fd()}
 function hasSide(d,s){return(d.sides||[]).includes(s)}
 function setSides(d,list){let on=new Set(list);d.sides=((byId(d.pick)||{}).sides||[]).filter(x=>on.has(x));d.carb=on.has('rice')?'rice':null;d.veg=on.has('veggies')?['veggies']:[]}
 function label(d){return d.name||cap(d.protein)||"Last night's dinner"}function leftoverOf(d,from){return Object.assign({},d,{veg:[...(d.veg||[])],sides:[...(d.sides||[])],name:label(d),from})}
-function build(replace){let batch=Math.max(1,+st.gen.batch||1),lunch=!!st.gen.lunch,n=0,carried=0,last=null,base=null,baseDay=null,left=0;if(replace)DAYS.forEach(d=>st.days[d[0]].leftovers.afternoon='');DAYS.forEach((d,di)=>{let x=st.days[d[0]];if(!replace&&!empty(x.dinner)){base=null;left=0;last=x.dinner.pick;return}if(left>0&&base){x.dinner=leftoverOf(base,baseDay);left--;carried++}else{x.dinner=randomDinner(last);base=x.dinner;baseDay=d[0];left=batch-1}if(lunch&&DAYS[di+1])st.days[DAYS[di+1][0]].leftovers.afternoon=label(x.dinner);last=x.dinner.pick;n++});$('#msg').textContent=n?(replace?'Replaced ':'Filled ')+n+' dinner'+(n===1?'':'s')+(carried?' — '+carried+' of them eaten again from a batch':''):'No blank dinners to fill.';render()}
+// Both actions use the saved lists; only Plan my week fills mornings and afternoons.
+function build(replace,allMeals=false){
+  let batch=Math.max(1,+st.gen.batch||1),lunch=!!st.gen.lunch,n=0,carried=0,lunches=0,last=null,base=null,baseDay=null,left=0;
+  if(replace)DAYS.forEach(([id])=>{if(!hiddenNow(st.days[id],'afternoon'))st.days[id].leftovers.afternoon=''});
+  DAYS.forEach(([id],di)=>{
+    let x=st.days[id];
+    if(hiddenNow(x,'night')||(!replace&&!empty(x.dinner))){base=null;left=0;last=x.dinner.pick;return}
+    if(!st.dinners.length){base=null;left=0;return}
+    if(left>0&&base){x.dinner=leftoverOf(base,baseDay);left--;carried++}
+    else{x.dinner=randomDinner(last);base=x.dinner;baseDay=id;left=batch-1}
+    if(lunch&&DAYS[di+1]){
+      let next=st.days[DAYS[di+1][0]];
+      if(!hiddenNow(next,'afternoon')&&(replace||!cellText(DAYS[di+1][0],'afternoon').text)){next.leftovers.afternoon=label(x.dinner);lunches++}
+    }
+    last=x.dinner.pick;n++;
+  });
+  let foods=0,missing=[];
+  if(allMeals){
+    for(let slot of ['morning','afternoon']){
+      let previous=null,list=st.foodLists[slot]||[];
+      for(let [id] of DAYS){
+        let x=st.days[id];
+        if(hiddenNow(x,slot))continue;
+        if(cellText(id,slot).text){previous=pickedFoods(x,slot)[0]||null;continue}
+        if(!list.length){if(!missing.includes(cap(slot)))missing.push(cap(slot));continue}
+        let pool=list.filter(name=>name!==previous),chosen=pick(pool.length?pool:list);
+        x.checked[slot+'|'+slug(chosen)]=true;previous=chosen;foods++;
+      }
+    }
+  }
+  if(!st.dinners.length&&DAYS.some(([id])=>!hiddenNow(st.days[id],'night')&&empty(st.days[id].dinner)))missing.push('Night');
+  let count=n+foods+(allMeals?lunches:0),message=count?(replace?'Replaced ':'Filled ')+count+' '+(allMeals?'meal':'dinner')+(count===1?'':'s')+(carried?' — '+carried+' dinners eaten again from a batch':'')+'.':(allMeals?'No empty meals to fill.':'No blank dinners to fill.');
+  if(missing.length)message+=' Add foods with Edit list in '+missing.join(' and ')+'.';
+  $('#msg').textContent=message;
+  $('#planWeekMsg').textContent=allMeals?message:'';
+  render();
+}
 // A grid cell says what that meal *is* — the foods ticked for it, tonight's dinner, or
 // Hidden — rather than only where it is eaten; where still shows as the cell's colour.
 function pickedFoods(d,slot){return[...(st.foodLists[slot]||[]),...((d.ai||{})[slot]||[])].filter(x=>x&&d.checked[slot+'|'+slug(x)])}
@@ -85,7 +126,7 @@ $('#slots').onclick=e=>{let b=e.target.closest('button,.food');if(!b)return;if(l
 listKeys($('#slots'));
 function genUi(){$('#batch').value=st.gen.batch;$('#lunchLeft').checked=!!st.gen.lunch}
 $('#genOpts').onchange=e=>{let t=e.target;if(t.id==='lunchLeft')st.gen.lunch=t.checked;else if(t.id&&st.gen[t.id]!==undefined)st.gen[t.id]=t.value;save();genUi()};genUi();
-$('#fill').onclick=()=>build(false);$('#replace').onclick=()=>build(true);$('#planWeek').onclick=()=>build(false);$('#resetDay').onclick=()=>{st.days[st.selectedDay]=fresh();render()};render();
+$('#fill').onclick=()=>build(false);$('#replace').onclick=()=>build(true);$('#planWeek').onclick=()=>build(false,true);$('#resetDay').onclick=()=>{st.days[st.selectedDay]=fresh();render()};render();
 const SYNC_KEY='work-meals:sync-code',syncCodeEl=$('#syncCode'),syncStatusEl=$('#syncStatus'),syncForgetEl=$('#syncForget');let syncCode='',syncRevision=0,syncTimer=null,syncApplying=false;
 function syncStatus(message){syncStatusEl.textContent=message;syncForgetEl.hidden=!syncCode}
 function applyRemote(plan,revision){syncApplying=true;try{localStorage.setItem(KEY,JSON.stringify(plan));sessionStorage.setItem('work-meals:sync-loaded',syncCode+'|'+revision);location.reload()}catch(e){syncApplying=false;syncStatus('Synced plan downloaded, but local storage is unavailable.')}}
