@@ -102,6 +102,7 @@ const CONTENT_PAGES = [
   { file: "work-meals.html", path: "/work-meals", title: "Daily Meal Planner" },
   { file: "weekly-calendar.html", path: "/weekly-calendar", title: "Weekly Meal Calendar" },
   { file: "checkmarks.html", path: "/checkmarks", title: "Checkmarks" },
+  { file: "supplements.html", path: "/supplements", title: "Supplement Calendar" },
   { file: "howto.html", path: "/howto", title: "How-To" },
   { file: "seasonal-rotation.html", path: "/seasonal-rotation", title: "Seasonal Rotation" },
   { file: "elements-in-biology.html", path: "/elements-in-biology", title: "Elements in Biology" },

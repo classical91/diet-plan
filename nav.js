@@ -4,6 +4,7 @@
       <a href="/nutrition" class="nav-logo">NutriMind</a>
       <div class="nav-items" id="navItems">
         <a href="/work-meals" class="nav-item" data-path="/work-meals">Daily Meal Planner</a>
+        <a href="/supplements" class="nav-item" data-path="/supplements">Supplements</a>
         <a href="/checkmarks" class="nav-item" data-path="/checkmarks">Checkmarks</a>
         <div class="nav-item has-dropdown" data-group="nutrition">
           <span>Nutrition <span class="nav-chevron">▾</span></span>
@@ -113,6 +114,7 @@
     { path: "/work-meals", title: "Daily Meal Planner" },
     { path: "/weekly-calendar", title: "Weekly Meal Calendar" },
     { path: "/checkmarks", title: "Checkmarks" },
+    { path: "/supplements", title: "Supplement Calendar" },
     { path: "/foods-dementia-risk", title: "Dementia Risk Foods" },
     { path: "/hydration", title: "Hydration & Water" },
     { path: "/electrolytes-minerals", title: "Electrolytes & Minerals" },

@@ -59,6 +59,29 @@ stir fry and Veggie shake. An unused, untouched older afternoon starter list upd
 once; customized lists and lists with selected foods stay intact. **Reset to defaults**
 in Afternoon also restores these six meals.
 
+### Supplement calendar
+
+`/supplements` is a separate calendar matrix with 7-, 14- and 28-day views.
+It starts with Ashwagandha, Vitamin D, Zinc, Melatonin, Immune complex (Purana),
+Calcium + magnesium and Biotin. All begin **Not scheduled**, with no assumed dose,
+cycle or duration. Select a row name to edit the product, label dose, timing, notes,
+start/end dates and review date. Supported schedules are daily, selected weekdays,
+fixed courses, repeating on/off cycles, as needed, paused and not scheduled.
+
+The start date counts as course day 1; the optional end date is inclusive. Cycles
+count calendar days from the start and do not move when a dose is skipped. Review
+dates are visible reminders in the page, not background notifications. Each cell
+records the day as taken or skipped, not individual doses. Future dates cannot be
+marked taken. Tap a past/today cell to cycle taken → skipped → clear. Actual logs
+survive schedule changes and archiving; archived rows can be restored.
+
+The calendar saves to `nutrimind:supplements:v1` locally. With `DATABASE_URL`
+configured, the existing private sync code connects to `/api/supplement-plan`,
+which uses its own `supplement_plans` table and the revision checks used for meals.
+The table is initialized on first sync (`migrations/002_create_supplement_plans.sql`).
+Conflicts require choosing the synced copy or this device's copy; neither silently
+replaces the other. Download backup exports the calendar as JSON.
+
 ### Checkmarks
 
 [`/checkmarks`](./checkmarks.html) shows only what has been ticked: the foods
