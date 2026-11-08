@@ -476,6 +476,26 @@
   </div>
 
   <div class="subsec">Detox Shakes</div>
+  <div class="recipe-card" id="daily-detox-green">
+    <div class="recipe-title">Daily Detox · Shake A — Green Hydration</div>
+    <div class="recipe-sub" style="color:var(--green)">Morning · Light &amp; watery · Fibre + potassium · ~150–170 kcal</div>
+    <div class="recipe-cols">
+      <div><div class="recipe-label">Ingredients (~500 ml)</div><ul class="ing-list"><li>Cucumber — 1/2 large (150 g)</li><li>Celery — 2 stalks (80–100 g)</li><li>Parsley — 1/2 packed cup (10–15 g)</li><li>Kale — 1–1.5 packed cups (30–40 g)</li><li>Coconut water — 1 cup (250 ml)</li><li>Flax seeds, ground — 1 tbsp (10 g)</li><li>Ginger powder — 1/2 tsp (1 g), or 1 tsp grated fresh</li><li>Salt — tiny pinch</li><li>Optional: juice of 1/2 lemon or lime; 1/2 green apple if too bitter</li></ul></div>
+      <div><div class="recipe-label">Protocol</div><ul class="ing-list"><li>Blend the liquid, cucumber and celery first, then the greens, then the flax</li><li>Drink in the morning, before or alongside breakfast</li><li>Cucumber, celery and coconut water supply water and potassium; kale and flax supply fibre that keeps digestion regular</li><li>Grind flax (or buy it ground): whole seeds pass through undigested</li><li>Flax thickens as it sits, so drink within about 30 minutes</li></ul></div>
+    </div>
+  </div>
+
+  <div class="recipe-card" id="daily-detox-golden">
+    <div class="recipe-title">Daily Detox · Shake B — Golden Cacao</div>
+    <div class="recipe-sub" style="color:var(--accent)">Midday or afternoon · Creamy · Healthy fats + polyphenols · ~330–370 kcal</div>
+    <div class="recipe-cols">
+      <div><div class="recipe-label">Ingredients (~450 ml)</div><ul class="ing-list"><li>Almond milk, unsweetened — 1 cup (250 ml)</li><li>Avocado — 1/2 medium (70–100 g)</li><li>Kale — 1 packed cup (30–40 g)</li><li>Pumpkin seeds — 2 tbsp (15–20 g)</li><li>Cacao — 1–2 tbsp (5–10 g)</li><li>Turmeric root — 1 tbsp grated (10–15 g)</li><li>Black pepper — pinch</li><li>Burdock root — 1–2 tsp (2–4 g)</li><li>Olive oil — 1 tsp (5 ml), optional: the avocado already provides fat</li><li>Salt — tiny pinch</li><li>Optional: ice, cinnamon, or 1 date / 1/2 banana if too bitter</li></ul></div>
+      <div><div class="recipe-label">Protocol</div><ul class="ing-list"><li>Blend everything until smooth; add water if too thick</li><li>Works as a snack or a light meal: the fat and fibre keep you full</li><li>Turmeric is paired with black pepper and fat (avocado, oil) because both raise curcumin absorption</li><li>Cacao covers burdock's earthy taste</li><li>Together A + B use the same amounts as the original single shake, plus cucumber, celery and parsley</li></ul></div>
+    </div>
+    <div class="recipe-label" style="margin-top:14px">Cautions for A + B</div>
+    <ul class="ing-list"><li>Blood thinners (e.g. warfarin): kale and parsley are high in vitamin K, and turmeric can add to bleeding risk. Keep greens consistent day to day and check with your prescriber</li><li>Burdock: avoid in pregnancy or with a ragweed / daisy-family allergy; it is mildly diuretic and may lower blood sugar</li><li>Turmeric: avoid large amounts with gallstones; it can upset the stomach</li><li>Kidney disease or potassium-sparing medication: coconut water, avocado, celery and kale are all high in potassium</li><li>Kidney stone history: parsley and cacao are higher in oxalate</li><li>Rotate kale with romaine or other greens every week or two instead of drinking it raw every day indefinitely</li></ul>
+  </div>
+
   <div class="recipe-card">
     <div class="recipe-title">Heavy Metal Detox Shake</div>
     <div class="recipe-sub" style="color:var(--green)">Chlorophyll · Chelation · Morning Protocol</div>
@@ -600,7 +620,7 @@ function showTab(id, updateHash = true) {
 function openHashTarget() {
   const hash = window.location.hash.replace(/^#/, '');
   if (!hash) return;
-  if (hash === 'lymph-antioxidant-shake') {
+  if (['lymph-antioxidant-shake', 'daily-detox-green', 'daily-detox-golden'].includes(hash)) {
     showTab('shakes', false);
     requestAnimationFrame(() => {
       const el = document.getElementById(hash);

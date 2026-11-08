@@ -132,6 +132,12 @@ const STATIC_ENTRIES = [
     text: "Focus nutrients vitamins minerals attention concentration brain function fatigue cognitive support. Iron supports oxygen transport to the brain and helps prevent fatigue and cognitive impairment when low. Omega-3 fatty acids DHA EPA support brain function focus attention mood. B vitamins especially B12 and B6 support brain function nerve function neurotransmitters red blood cells and may reduce fatigue when deficient. Magnesium supports nerve and muscle function sleep stress regulation and attention. Vitamin D supports brain development function mood immune health and cognitive performance. Food-first balanced diet is best; consult a healthcare professional before supplements."
   },
   {
+    path: "/howto#daily-detox-green",
+    title: "Daily Detox Shakes (Green Hydration + Golden Cacao)",
+    context: "How-To",
+    text: "Daily detox shake smoothie split into two. Shake A green hydration: cucumber celery parsley kale coconut water ground flax seeds ginger salt lemon. Shake B golden cacao: almond milk avocado kale pumpkin seeds cacao turmeric root black pepper burdock root olive oil. Fibre potassium hydration curcumin absorption. Cautions: blood thinners vitamin K, burdock pregnancy ragweed allergy, turmeric gallstones, potassium kidney disease, oxalate kidney stones, rotate greens."
+  },
+  {
     path: "/howto#lymph-antioxidant-shake",
     title: "Lymph & Antioxidant Support Shake",
     context: "How-To",
