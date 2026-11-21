@@ -35,7 +35,9 @@ and `Clear`; only the week-filling controls sit in their own box below.
 
 A browser that has never opened the planner is seeded once, from `FOOD_SEEDS` and
 `DINNER_SEEDS` at the top of [`work-meals-app.js`](./work-meals-app.js). After that
-the seeds are only reached by Reset, so a removed entry stays removed. The live
+the seeds are only reached by Reset, so a removed entry stays removed. Dinners added to
+the seeds later join a saved list once, on the upgrade that introduced them, unless
+one of the same name is already there. The live
 lists are saved under `work-meals:v3` and travel with the sync below.
 
 Dinners carry a little more than a name. `sides` are the optional extras a dinner

@@ -163,10 +163,23 @@ test('new afternoon defaults match the supplied meals and upgrade only unused st
   assert.deepEqual(planner(saved).plan().foodLists.afternoon, ['My custom sandwich']);
 });
 
+const v7Dinners = ['cabbage-rolls', 'cooked-shrimp', 'gyoza', 'turkey-burgers', 'fish-in-bags', 'perogies', 'veggie-pasta'];
+
 test('upgrading a v5 plan never restores removed dinners', () => {
   const saved = savedPlan();
   saved.v = 5;
+  assert.deepEqual(planner(saved).plan().dinners.map(d => d.id), ['my-curry', 'my-pasta', ...v7Dinners]);
+  saved.v = 7;
   assert.deepEqual(planner(saved).plan().dinners.map(d => d.id), ['my-curry', 'my-pasta']);
+});
+
+test('upgrading a v6 plan adds the new dinners once, skipping names already on the list', () => {
+  const saved = savedPlan();
+  saved.v = 6;
+  saved.dinners.push({ id: 'mine', name: 'Gyoza' });
+  const dinners = planner(saved).plan().dinners;
+  assert.deepEqual(dinners.map(d => d.id), ['my-curry', 'my-pasta', 'mine', ...v7Dinners.filter(id => id !== 'gyoza')]);
+  assert.equal(dinners.find(d => d.id === 'perogies').name, 'Perogies');
 });
 
 test('a saved dinner title without a list id is already a planned dinner', () => {
